@@ -1,0 +1,181 @@
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ------------------------------
+   BODY
+--------------------------------*/
+body {
+  background-color: #000000;      /* black site background */
+  color: #ffffff;                 /* white text */
+  font-family: sans-serif;
+  text-align: center;
+  min-height: 100vh;
+  padding-top: 76px; /* header + nav */
+}
+
+
+
+/* ------------------------------
+   FIXED HEADER
+--------------------------------*/
+.header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #050505;  /* very dark gray instead of pure black */
+  z-index: 1000;
+}
+
+.top-bg-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 46px;
+  background: #050505;  /* match header */
+  z-index: -1;
+}
+
+/* ------------------------------
+   HEADER ROW
+--------------------------------*/
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 4px 16px;
+  position: relative;
+}
+
+/* left circular logo */
+.left-logo {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 32px;
+  object-fit: cover;
+  cursor: pointer;
+  filter: brightness(0) invert(1); /* normal white */
+  transition: filter 0.3s ease;
+  z-index: 10;
+}
+
+.left-logo:hover {
+  filter: brightness(0) sepia(1) saturate(5000%) hue-rotate(200deg)
+          drop-shadow(0 0 4px #4d9dff)
+          drop-shadow(0 0 8px #4d9dff); /* combined in same filter */
+}
+
+
+/* centered text logo */
+.logo-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.logo-text {
+  margin: 0;
+  font-family: 'BankGothic Lt BT', sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  color: #ffffff; /* white */
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.logo-text .big {
+  font-size: 32px;
+}
+
+/* link adjustments */
+.logo-link {
+  text-decoration: none; /* remove underline */
+  color: inherit;
+}
+.logo-link:visited {
+  color: inherit;
+  text-decoration: none;
+}
+.logo-link:focus,
+.logo-link:active {
+  outline: none;
+}
+
+/* hover effect: blue with glow */
+.logo-text:hover {
+  color:#4d9dff; /* blue */
+  /* text-shadow: 0 0 8px rgba(0, 102, 204, 0.8), 0 0 15px rgba(0, 102, 204, 0.6); */
+}
+
+/* ------------------------------
+   RIGHT SEARCH BUTTON
+--------------------------------*/
+.nav-search-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 7px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  z-index: 9;
+}
+.nav-search-btn svg {
+  fill: none;
+  stroke: #ffffff; /* white */
+  transition: filter 0.3s, stroke 0.2s;
+}
+.nav-search-btn:hover svg,
+.nav-search-btn:focus svg {
+  filter: drop-shadow(0 0 7px #2196f3) drop-shadow(0 0 13px #2196f3);
+}
+
+/* ------------------------------
+   NAVIGATION
+--------------------------------*/
+nav {
+  background: #050505; /* match header */
+  padding: 6px 12px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 997;
+}
+
+/* link adjustments */
+nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #e0e0e0; /* softer white for contrast on gray */
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+nav a:hover {
+  color: rgba(0, 102, 204, 0.9); /* blue highlight */
+}
+nav a.active {
+  color: rgba(0, 102, 204, 0.9); /* blue highlight */
+  font-weight: 600;
+}
+
+
+@media (max-width: 768px) {
+  nav {
+    display: none;
+  }
+}

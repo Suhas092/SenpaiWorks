@@ -1,0 +1,274 @@
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div id="top-drawer" class="top-drawer">
+
+  <style>
+/* ====== Base Drawer Styles (Desktop Default) ====== */
+.top-drawer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 400px;
+  max-height: 85vh;
+  background: #fff;
+  z-index: 9999;
+  box-shadow: 0 5px 24px rgba(255, 255, 255, 0.16);
+  display: none;
+  flex-direction: column;
+  transform: translateY(-100%);
+  animation: drawerOpen 0.3s ease-out;
+  opacity: 0;
+  transition: transform .36s cubic-bezier(.24,.74,.23,.92), opacity .23s;
+  overflow: visible;
+}
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black; /* Or semi-transparent like rgba(0,0,0,0.4) */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+  z-index: 9998; /* Just behind drawer */
+}
+
+.drawer-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+@keyframes drawerOpen {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.top-drawer.show {
+  display: flex;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.drawer-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #2a2a2a;
+  cursor: pointer;
+  z-index: 10000;
+  padding: 0 0.3em;
+  border-radius: 50%;
+  transition: background .18s;
+}
+.drawer-close-btn:hover {
+  background: #ececec;
+}
+
+.drawer-content {
+  width: 96vw;
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  padding: 50px 30px 36px 40px;
+  justify-content: space-between;
+  align-items: flex-start;
+  box-sizing: border-box;
+  gap: 60px;
+}
+
+.drawer-menu {
+  background-color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 50px;
+  height: 100%;
+  max-width: 64%;
+  flex: 3 1 0;
+}
+
+.drawer-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  margin-bottom: 1.2em;
+  flex: 1 1 180px;
+  max-height: 300px; 
+}
+
+.drawer-group-title {
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #000000;
+  margin-bottom: 0.7em;
+  white-space: nowrap;
+}
+
+.drawer-item {
+  font-size: 1rem;
+  text-align: left;
+  color: #474747;
+  margin-bottom: 0.30em;
+  padding: 9px 13px 9px 0;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background .19s, color .16s;
+  display: block;
+  text-decoration: none;
+  position: relative;
+  white-space: nowrap;
+}
+.drawer-item.active, .drawer-item:hover {
+  background: #f0f1fc;
+  color: #073DD7;
+}
+
+.drawer-image-preview {
+  flex: 1 1 270px;
+  min-width: 200px;
+  max-width: 370px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 24px);
+  background: transparent;
+}
+.drawer-image-preview img {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 12px;
+  box-shadow: 0 6px 26px rgba(20,50,90,0.16);
+  background: #f8fafc;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.drawer-image-preview img.active { opacity: 1; }
+
+#logo-button.drawer-active {
+  filter: grayscale(1) brightness(0.86);
+}
+#logo-button {
+  transition: filter 0.2s;
+}
+
+/* ====== Tablet Adjustments ====== */
+@media (max-width: 1250px) {
+  .drawer-content { 
+    padding: 35px 10px 26px 10px; 
+    gap: 20px;
+  }
+  .drawer-menu { 
+    max-width: 100%; /* take full width */
+    gap: 27px;
+  }
+  /* Hide image preview from tablet down */
+  .drawer-image-preview {
+    display: none !important;
+  }
+}
+
+/* ====== Mobile: Left-Side Drawer ====== */
+@media (max-width: 768px) {
+  .top-drawer {
+    height: 100vh;
+    max-height: 100vh;
+    width: 280px;
+    transform: translateX(-100%);
+    animation: drawerOpenLeft 0.3s ease-out;
+    overflow-y: auto; /* allow scrolling */
+  }
+  .top-drawer.show {
+    transform: translateX(0);
+  }
+  @keyframes drawerOpenLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+
+    .drawer-content {
+    flex-direction: column;
+    padding: 20px 15px;
+    gap: 20px;
+    height: auto;
+    max-width: 100%;
+    margin: 0;
+    overflow-y: auto; /* scrollable content */
+  }
+
+  .drawer-menu {
+    max-width: 100%;
+    flex: 1 1 auto;
+    gap: 25px;
+  }
+
+  .drawer-close-btn {
+    top: 10px;
+    right: 10px;
+    font-size: 1.6rem;
+  }
+}
+
+
+/* Smaller devices tweaks */
+@media (max-width: 600px) {
+  .drawer-content { padding: 16px 5px 6px 5px; }
+  .drawer-close-btn { font-size: 1.4rem; top: 6px; right: 12px; }
+}
+
+/* Add top margin for small screens so content doesn't overlap logo */
+@media (max-width: 768px) {
+  .drawer-menu {
+    margin-top: 30px; 
+  }
+}
+</style>
+
+
+  <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close menu">✕</button>
+
+  <div class="drawer-content">
+    <nav class="drawer-menu">
+      <div class="drawer-group">
+        <a href="2dworld.html" class="drawer-group-title">2D WORLD</a>
+          <a href="2dworld.html#digital-art" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/miku_full_copy_vdritm.webp">DIGITAL ART</a>
+          <a href="2dworld.html#insane-artwork" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp">INSANE ARTWORK</a>
+          <a href="2dworld.html#color-pencil" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rose_copy_hqkhss.webp">COLOR PENCIL</a>
+          <a href="2dworld.html#charcoal-pencil" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp">CHARCOAL AND PENCIL</a>
+          <a href="2dworld.html#digital-logo" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/chronos_plays_fl47xm.webp">DIGITAL LOGO</a>
+          <a href="2dworld.html#d2-animation" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/deadpool_animation_2d_copy_fgyxve.webp">2D ANIMATION</a>
+      </div>
+      <div class="drawer-group">
+        <a href="3dworld.html" class="drawer-group-title">3D WORLD</a>
+        <a href="3dworld.html#projects-d3" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp">3D ANIMATION</a>
+        <a href="3dworld.html#models-d3" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630826/deadpool_bg_copy_p37rjh.webp">3D MODELS</a>
+        <a href="3dworld.html#environments-d3" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630826/Showcase_remake_copy_ctirhm.webp">3D ENVIRONMENT</a>
+        <a href="3dworld.html#vfx-d3" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630826/explosion_copy_tqyxif.webp">VFX AND SIMULATION</a>
+      </div>
+
+      <div class="drawer-group">
+        <a href="techworld.html" class="drawer-group-title">TECH WORLD</a>
+        <a href="#" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp">MACHINE LEARNING</a>
+        <a href="#" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp">ANDROID DEVELOPMENT</a>
+        <a href="#" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp">WEB DEVELOPMENT</a>
+        <a href="#" class="drawer-item" data-img="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp">BIG DATA</a>
+      </div>
+      <!-- Add more drawer-group's as needed -->
+    </nav>
+    <div class="drawer-image-preview">
+      <img id="drawer-img-preview"
+           src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/drawer_default_copy_iqzgh7.webp"
+           alt=""
+           class="active" />
+    </div>
+  </div>
+<script src="scripts/drawer.js"></script>
+</div>

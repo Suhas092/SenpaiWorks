@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SenpaiWorks</title>
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+
+  <link rel="stylesheet" href="3dworld.css">
+    <link rel="stylesheet" href="techworld.css">
+</head>
+
+<body>
+
+  <!-- Marvel-style logo -->
+<div id="header-placeholder"></div>
+<script src="scripts/header.js"></script>
+
+
+<div class="top-bg-strip"></div>
+
+<div id="drawer-container"></div>
+<script src="scripts/drawer.js"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  fetch('drawer.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('drawer-container').innerHTML = html;
+
+      const drawer = document.getElementById('top-drawer');
+      const closeBtn = document.getElementById('drawer-close-btn');
+      const items = drawer.querySelectorAll('.drawer-item');
+      const previewImg = drawer.querySelector('#drawer-img-preview');
+      const logoBtn = document.getElementById('logo-button'); // Your logo <img>
+
+      // IMPORTANT: Store the original image source on first script load
+      const originalLogoSrc = logoBtn.src;
+      const altLogoSrc = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/chronos_plays_fl47xm.webp';
+
+      // Drawer open/close logic with logo image swap
+      function openDrawer() {
+        drawer.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        logoBtn.src = altLogoSrc;
+      }
+      function closeDrawer() {
+        drawer.classList.remove('show');
+        document.body.style.overflow = '';
+        logoBtn.src = originalLogoSrc;
+      }
+
+      // Toggle drawer on logo click
+      if (logoBtn) {
+        logoBtn.addEventListener('click', () => {
+          if (drawer.classList.contains('show')) {
+            closeDrawer();
+          } else {
+            openDrawer();
+          }
+        });
+      }
+
+      // Close logic (button, esc, click outside)
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeDrawer);
+      }
+      document.addEventListener('keydown', (e) => {
+        if (drawer.classList.contains('show') && e.key === 'Escape') {
+          closeDrawer();
+        }
+      });
+      drawer.addEventListener('click', (e) => {
+        if (e.target === drawer) {
+          closeDrawer();
+        }
+      });
+
+      // Drawer hover preview (if used)
+      if (items && previewImg) {
+        items.forEach(item => {
+          item.addEventListener('mouseenter', () => {
+            const imgUrl = item.getAttribute('data-img');
+            if (imgUrl) {
+              previewImg.classList.remove('active');
+              setTimeout(() => {
+                previewImg.src = imgUrl;
+                previewImg.classList.add('active');
+              }, 12);
+            }
+          });
+        });
+      }
+    });
+});
+
+</script>
+
+
+  <!-- Hero Section -->
+  <section class="tech-hero-section">
+    <div class="tech-hero-bg" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630849/binary_copy_lorfhy.webp');"></div>
+    <div class="tech-hero-overlay">
+      <div class="tech-hero-content">
+        <h1 class="tech-title">TECH WORLD</h1>
+        <p class="tech-description">Welcome to SenpaiWorks tech — where hardware meets code, and creativity powers every circuit. Dive into my electronics builds, AI models, custom tools, and experimental engineering projects.</p>
+        <div class="hero-buttons">
+          <a href="#projects-tech" class="watch-now">Explore Projects</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <!-- Tech Projects Grid -->
+  <!-- <section class="tech-projects" id="projects">
+    <h2>Featured Projects</h2>
+    <div class="tech-cards">
+
+      <div class="tech-card">
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="Custom PCB Design">
+        <h3>Custom PCB Design</h3>
+        <p>Designed and manufactured my own PCBs using KiCAD and fabricated using JLCPCB for robotics and automation applications.</p>
+      </div>
+
+      <div class="tech-card">
+        <img src="https://images.unsplash.com/photo-1618424187744-79d304d5b618?auto=format&fit=crop&w=800&q=80" alt="AI Face Detection">
+        <h3>AI Face Detection</h3>
+        <p>Real-time face detection system using OpenCV and a trained YOLOv5 model integrated with live camera feed and alert system.</p>
+      </div>
+
+      <div class="tech-card">
+        <img src="https://images.unsplash.com/photo-1581090700227-1e8e1ab63b04?auto=format&fit=crop&w=800&q=80" alt="IoT Sensor Grid">
+        <h3>IoT Sensor Grid</h3>
+        <p>Built a wireless environmental monitoring grid using ESP32, MQTT, and Node-RED dashboard — visualizing live temp, humidity & air quality.</p>
+      </div>
+ 
+      <div class="tech-card">
+        <img src="https://images.unsplash.com/photo-1555617117-08fda8c8f4c9?auto=format&fit=crop&w=800&q=80" alt="Blender Python Tool">
+        <h3>Blender Python Tool</h3>
+        <p>Developed a custom Blender add-on using Python for procedural modeling and batch material setups for 3D production pipelines.</p>
+      </div>
+    </div>
+  </section> -->
+
+
+  <section class="tech-section" id="projects-tech">
+  <h2 class="trending-title">Tech Projects</h2>
+  <div class="vfx-image-container">
+    <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630849/code_copy_jq3ic6.webp" alt="Tech Projects">
+    <div class="vfx-overlay">
+      <h2>Still working and under development, will be uploaded soon.</h2>
+      <!-- <p>Available Soon</p> -->
+    </div>
+  </div>
+</section>
+
+<div id="footer-container"></div>
+<script src="scripts/footer.js"></script>
+
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Marcellus&display=swap');
+
+@font-face {
+  font-family: 'BankGothic Lt BT';
+  src: url('assets/font_assets/BNKGOTHL.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif; /* default for everything */
+}
+
+.footer {
+    background-color: rgba(0, 102, 204, 1);
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.footer-logo {
+    display: flex;
+    flex-direction: column;   /* stack image + text vertically */
+    align-items: center;
+}
+
+.footer-logo img {
+    width: 50px;
+    border-radius: 50%;
+    margin-bottom: 0px;
+    filter: brightness(0) invert(1);
+}
+
+.footer-logo .logo-text {
+    margin: 0;
+    font-family: 'BankGothic Lt BT', sans-serif; /* <-- only SenpaiWorks uses Marcellus */
+    font-weight: bold;
+    line-height: 1;
+    font-size: 16px;   /* base size */
+    white-space: nowrap; /* ensure SenpaiWorks stays one word */
+}
+
+/* Bigger S and W */
+.footer-logo .big {
+    font-size: 22px;   /* slightly larger */
+}
+
+.footer-nav {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.footer-nav li {
+    margin: 5px 15px;
+}
+
+.footer-nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+}
+
+.footer-nav a:hover {
+    text-decoration: underline;
+}
+
+.follow-text {
+    margin-top: 30px;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.social-icons {
+    margin: 15px 0;
+}
+
+.social-icons a img {
+    width: 30px;
+    margin: 0 20px;
+    filter: brightness(0) invert(1); /* Makes icons white */
+    transition: transform 0.3s;
+}
+
+.social-icons a img:hover {
+    transform: scale(1.2);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 12px;
+}
+
+.surface-btn {
+    background-color: #ffffff;
+    color: #012a63;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+/* If you want hover effect uncomment */
+ /* .surface-btn:hover {
+    background-color: #012a63;
+    color: #ffffff;
+} */

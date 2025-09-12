@@ -1,0 +1,120 @@
+
+
+.contact-section {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+.contact-container {
+
+  display: flex;
+  align-items: stretch;   /* <-- ensures both sides same height */
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+
+}
+
+.contact-text {
+  flex: 1;
+  max-width: 700px;
+  text-align: left;
+  color: rgba(0, 102, 204, 0.9);
+}
+
+.contact-text h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: rgba(0, 102, 204, 0.9);
+}
+
+.contact-text p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.contact-text label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  color: rgba(0, 102, 204, 0.9);
+}
+
+.email-box {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* spacing between icon and text */
+  padding: 12px 18px;
+  border: 2px solid rgba(0, 102, 204, 0.9);
+  border-radius: 6px;
+  background: #f8f9ff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(0, 102, 204, 0.9);
+  width: fit-content;
+  text-decoration: none; /* removes underline */
+  transition: background-color 0.3s ease, color 0.3s ease; /* smooth color change */
+}
+
+.email-box:hover {
+  background: rgba(0, 102, 204, 0.9);
+  color: #ffffff; /* text turns white */
+}
+
+
+.email-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.contact-image {
+  flex: 1;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.contact-image img {
+  width: 100%;
+  height: 300px; /* reduced height */
+  object-fit: cover; /* crop if needed */
+
+}
+
+
+
+
+
+@media (max-width: 900px) {
+  .contact-block, .contact-block.reverse {
+    flex-direction: column;
+  }
+  .contact-image, .contact-text {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+  .contact-text h2 {
+    font-size: 1.6rem;
+  }
+  /* More vertical height for the image on mobile */
+  .contact-image {
+    min-height: 350px;   /* Or 400px */
+  }
+  .contact-image img {
+    height: 100%;
+    min-height: 350px;   /* Ensures the image fills the container */
+    object-fit: cover;
+  }
+}
+
+
+
+
+
+
+

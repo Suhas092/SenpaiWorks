@@ -1,0 +1,173 @@
+/* ===== BASE RESET ===== */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+
+/* ===== DETAIL SECTION ===== */
+.detail-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  background: #0f0f0f;
+  min-height: 100vh;
+  overflow: hidden;
+  
+  /* Add this */
+  padding-top: 80px; /* replace 80px with your header height */
+}
+
+
+/* Cover Image Column */
+.detail-cover-col {
+  flex: 0 0 22vw;
+  display: flex;
+  justify-content: center;
+    padding: 2rem 1.5rem; 
+}
+
+.detail-cover-image {
+  width: auto;                /* don’t stretch */
+  max-width: 220px;
+  min-width: 70px;
+  height: 220px;
+  box-shadow: 0 2px 12px #23233a;
+
+}
+
+/* Main Info Column */
+.detail-main-col {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+  color: #fff;
+
+  min-width: 320px;      /* 🔥 prevents collapse when zooming out */
+  flex-shrink: 0;        /* don’t let it shrink too much */
+}
+
+.detail-anime-title {
+  text-align: left;
+  font-size: clamp(1.8rem, 3vw, 2.8rem); /* scales better */
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+/* Genre */
+.detail-genre-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.detail-genre-badge {
+  background: rgba(0, 102, 204, 0.9);
+  padding: 0.25rem 0.9rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Watch Button */
+.hero-buttons a.watch-now {
+  background: rgba(0, 102, 204, 0.9);
+  padding: 0.6rem 1.3rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.25s;
+}
+.hero-buttons a.watch-now:hover {
+  background: rgba(0, 102, 204, 1);
+}
+
+/* Plot Summary */
+.detail-plot-summary {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #e1e1e1;
+  margin-top: 0.5rem;
+  text-align: left;
+  display: block;
+
+  max-width: 70ch;       /* 🔥 keeps paragraphs readable */
+  padding-right: 0.8rem; /* 🔥 ensures right padding on all screens */
+}
+
+.plot-toggle-link {
+  color: rgba(0, 102, 204, 0.9);
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 0.3rem;
+}
+
+/* Sidebar */
+.detail-sidebar {
+  flex: 0 0 22vw;
+  min-width: 220px;
+  border-left: 1.5px solid #292935;
+  background: #1a1a25;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #f5f8fc;
+}
+.detail-sidebar-title {
+  font-size: 1rem;
+  color: rgba(50, 152, 255, 0.9);
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+.detail-sidebar-item {
+  font-size: 0.95rem;
+}
+@media (max-width: 900px) {
+  .detail-container {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .detail-cover-col {
+    padding: 2rem 0 1rem;
+  }
+  .detail-cover-image {
+    width: 65%;
+    max-width: 260px;
+    height: auto;  /* 🔥 don’t force height on mobile */
+  }
+
+  .detail-main-col {
+    padding: 1.5rem 1.2rem; /* 🔥 added horizontal padding */
+    gap: 1rem;
+  }
+  .detail-anime-title {
+    font-size: 1.6rem;
+  }
+  .detail-genre-badge {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+  }
+  .detail-plot-summary {
+    font-size: 0.95rem;
+    padding-right: 0.5rem; /* 🔥 ensures spacing from edge */
+  }
+
+  .detail-sidebar {
+    border-left: none;
+    border-top: 1.5px solid #363658;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SenpaiWorks</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="search.css">
+  
+</head>
+<body>
+
+  <!-- Marvel-style logo -->
+<div id="header-placeholder"></div>
+<script src="scripts/header.js"></script>
+
+
+<div class="top-bg-strip"></div>
+
+<div id="drawer-container"></div>
+<script src="scripts/drawer.js"></script>
+
+
+
+
+
+
+  <div class="search-hero">
+    <h1>Search results</h1>
+    <form class="search-form" onsubmit="return searchContent(event)">
+      <input class="search-input" type="text" id="searchInput" placeholder="What are you looking for?" autocomplete="off" autofocus>
+      <button class="search-btn" type="submit">
+        <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="white" stroke-width="2"/>
+        </svg>
+        <span style="display:none;">Search</span>
+      </button>
+    </form>
+  </div>
+
+  <section class="results-section">
+    <div class="results-header" id="resultsHeader">Type to search your favorite art or character…</div>
+    <div class="results-grid" id="resultsGrid">
+      <!-- Search results appear here -->
+    </div>
+  </section>
+
+  <script>
+    // Placeholder search dataset (sample gallery)
+    const items = [
+      { title: "Kaori", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/black_kaori_copy_csr9qi.webp", link: "#" },
+      { title: "Miku Nakano", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/miku_full_copy_vdritm.webp", link: "#" },
+      { title: "Mikasa", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/Mikasa_copy_jcwuga.webp", link: "#" },
+      { title: "Li Shiya", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/li_shiya_copy_jyopqy.webp", link: "#" },
+      { title: "Nico Robin", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/nico_robin_copy_eoj6o4.webp", link: "#" },
+      { title: "Zoro", category: "Insane Artwork", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/zoro_copy_bki4to.webp", link: "#" },
+      { title: "Itachi", category: "Insane Artwork", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp", link: "#" },
+      { title: "Kaneki", category: "Insane Artwork", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp", link: "#" },
+      { title: "Rose", category: "Color Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rose_copy_hqkhss.webp", link: "#" },
+      { title: "IU", category: "Color Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/iu_copy_cdbits.webp", link: "#" },
+      { title: "Lisa", category: "Color Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/lisa_copy_zsrdfj.webp", link: "#" },
+      { title: "Jhope", category: "Charcoal Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jhope_copy_sregrz.webp", link: "#" },
+      { title: "Jungkook", category: "Charcoal Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp", link: "#" },
+      { title: "Zero 2 Infinity", category: "Digital Logo", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/zero_2_infinity_aipeww.webp", link: "#" },
+      { title: "Chronos Play", category: "Digital Logo", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/chronos_plays_fl47xm.webp", link: "#" },
+      // ...add your actual gallery
+    ];
+
+    function searchContent(event){
+      event.preventDefault();
+      updateSearchResults();
+      return false;
+    }
+    function updateSearchResults() {
+      const grid = document.getElementById('resultsGrid');
+      const header = document.getElementById('resultsHeader');
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      let results = [];
+      if (q.length === 0) {
+        header.textContent = "Type to search your favorite art or character…";
+        grid.innerHTML = "";
+        return;
+      }
+      results = items.filter(item =>
+        item.title.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+      );
+      header.textContent = results.length
+        ? `Results for "${q}"`
+        : `No results found for "${q}"`;
+      grid.innerHTML = results.map(item => `
+        <a class="result-card" href="${item.link}">
+          <img src="${item.img}" alt="${item.title}">
+          <div class="result-card-title">${item.title}</div>
+          <div class="result-card-meta">${item.category}</div>
+        </a>
+      `).join('');
+    }
+    document.getElementById('searchInput').addEventListener('input', updateSearchResults);
+  </script>
+
+
+
+
+  
+<div id="contact-container"></div>
+<script src="scripts/contact.js"></script>
+<script>
+  // Set different image per page
+  loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630820/to_love_ru_copy_sthzsw.webp");
+  // e.g. another page:
+  // loadContactSection("assets/3dworld assets/ironman.png");
+</script>
+
+
+
+<div id="footer-container"></div>
+<script src="scripts/footer.js"></script>
+
+<script src="scripts/2dworld.js"></script>
+
+</body>
+</html>

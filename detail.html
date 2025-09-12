@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SenpaiWorks</title>
+  <link rel="stylesheet" href="2dworld.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="detail.css">
+
+</head>
+<body>
+
+  <!-- Marvel-style logo -->
+<div id="header-placeholder"></div>
+<script src="scripts/header.js"></script>
+
+
+<div class="top-bg-strip"></div>
+
+<div id="drawer-container"></div>
+<script src="scripts/drawer.js"></script>
+
+
+  <!-- Anime Detail Section -->
+  <section class="detail-container">
+    <!-- Cover image column -->
+    <div class="detail-cover-col">
+      <img src="" alt="Anime Cover" class="detail-cover-image" />
+    </div>
+
+    <!-- Main info column -->
+    <div class="detail-main-col">
+      <div class="detail-anime-title"></div>
+
+      <div class="detail-genre-list">
+        <span class="detail-sidebar-title">Genre:</span>
+        <!-- JS will insert genres -->
+      </div>
+
+      <div class="hero-buttons">
+        <a href="#" class="watch-now" target="_blank" rel="noopener"></a>
+      </div>
+
+      <div class="detail-plot-summary" id="plot-summary">
+        <span id="plot-text"></span>
+        <a href="javascript:void(0)" class="plot-toggle-link" id="plot-toggle-link" style="display:none;">more</a>
+      </div>
+
+      <div class="detail-plot-summary" id="plot-summary-2"></div>
+    </div>
+
+    <!-- Sidebar column -->
+    <div class="detail-sidebar">
+      <!-- JS will inject synonyms, aired, premiered, etc. -->
+    </div>
+  </section>
+
+
+  
+<div id="contact-container"></div>
+<script src="scripts/contact.js"></script>
+<script>
+  // Set different image per page
+  loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rem_copy_rkjlfo.webp");
+
+</script>
+
+
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Detail Page Script -->
+  <script src="scripts/detail.js"></script>
+
+
+
+
+
+
+
+
+
+
+  
+</body>
+</html>
+
+
+
+
