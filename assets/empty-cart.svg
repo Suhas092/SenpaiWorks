@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="120" height="120">
+  <!-- Top Rays -->
+  <rect x="244" y="8" width="24" height="60" rx="12" fill="#000000"/>
+  <rect x="170" y="24" width="24" height="56" rx="12" fill="#000000" transform="rotate(-35 182 52)"/>
+  <rect x="318" y="24" width="24" height="56" rx="12" fill="#000000" transform="rotate(35 330 52)"/>
+
+  <!-- Cart Outline -->
+  <path d="M 10 95 C 10 80 25 70 42 70 L 78 70 C 98 70 114 84 118 104 L 164 340 L 440 340 L 496 130 C 500 115 488 100 472 100 L 122 100" fill="none" stroke="#000000" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Cart Bottom Frame -->
+  <path d="M 120 375 C 120 350 140 340 165 340 L 435 340 C 460 340 480 350 480 375 C 480 405 450 415 420 415 L 170 415 C 135 415 120 400 120 375 Z" fill="#000000"/>
+
+  <!-- Wheels -->
+  <circle cx="200" cy="445" r="32" fill="#ffffff" stroke="#000000" stroke-width="24"/>
+  <circle cx="380" cy="445" r="32" fill="#ffffff" stroke="#000000" stroke-width="24"/>
+</svg>

@@ -1,0 +1,71 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  animeId   String
+  username  String
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model Like {
+  id      Int    @id @default(autoincrement())
+  animeId String @unique
+  count   Int    @default(0)
+}
+
+model MerchVote {
+  id     Int    @id @default(autoincrement())
+  itemId String @unique
+  count  Int    @default(0)
+}
+
+model Product {
+  id                  String   @id
+  name                String
+  category            String
+  subCategory         String
+  price               Float
+  rating              Float    @default(5.0)
+  ratingCount         Int      @default(0)
+  description         String
+  img                 String
+  additionalImages    String   @default("")
+  badge               String   @default("")
+  software            String   @default("")
+  format              String   @default("")
+  isNew               Boolean  @default(true)
+  type                String   @default("digital")
+  creator             String   @default("SenpaiWorks")
+  whatsIncluded       String   @default("")
+  aboutItem           String   @default("")
+  sizes               String   @default("N/A")
+  colors              String   @default("N/A")
+  material            String   @default("N/A")
+  fabricType          String   @default("N/A")
+  printingMethod      String   @default("N/A")
+  washingInstructions String   @default("N/A")
+  shippingWeight      String   @default("N/A")
+  packageDimensions   String   @default("N/A")
+  createdAt           DateTime @default(now())
+}
+
+model Artwork {
+  id          Int      @id @default(autoincrement())
+  category    String
+  charname    String
+  source      String
+  sex         String   @default("Female")
+  artstyle    String   @default("Digital Art")
+  software    String   @default("Photoshop")
+  description String
+  img         String
+  createdAt   DateTime @default(now())
+}

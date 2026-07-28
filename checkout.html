@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="header.css?v=97">
+  <link rel="stylesheet" href="checkout.css?v=104">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body class="checkout-body">
+
+  <!-- ELEGANT DEDICATED CHECKOUT HEADER BAR -->
+  <header class="chk-dedicated-header">
+    <div class="chk-header-inner">
+      <a href="index.html" class="chk-header-logo-brand" title="Return to Home Page">
+        <img src="assets/Videos/SenpaiWorks logo.png" alt="SenpaiWorks Logo Icon" class="chk-header-logo-icon">
+        <img src="assets/Videos/senpaiworks name logo no bg.png" alt="SenpaiWorks Brand Name" class="chk-header-logo-name">
+      </a>
+
+      <!-- INTERACTIVE SECURE CHECKOUT TOOLTIP POPOVER -->
+      <div class="chk-header-center-wrap">
+        <div class="chk-header-center-title" onclick="toggleSecureCheckoutTooltip(event)">
+          <i class="fa-solid fa-lock" style="color: #38bdf8;"></i> <span class="chk-secure-txt">Secure checkout</span> <i class="fa-solid fa-chevron-down"></i>
+        </div>
+
+        <div id="secure-checkout-tooltip" class="secure-checkout-tooltip">
+          <button type="button" class="tooltip-close-btn" onclick="closeSecureCheckoutTooltip(event)">&times;</button>
+          We secure your payment and personal information when you share or save it with us. We don't share payment details with third-party sellers. We don't sell your information to others. <a href="faq.html" target="_blank">Learn more</a>
+        </div>
+      </div>
+
+      <a href="cart.html" class="chk-header-cart-link" title="View Shopping Cart">
+        <i class="fa-solid fa-cart-shopping"></i> <span class="chk-cart-txt">Cart</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CHECKOUT CONTAINER -->
+  <main class="checkout-page-container">
+
+    <div class="chk-layout-grid">
+
+      <!-- LEFT COLUMN: FORM SECTIONS -->
+      <div class="chk-left-card-group">
+        <form id="checkout-main-form" onsubmit="handleCheckoutSubmit(event)">
+
+          <!-- 1. Contact Information -->
+          <div class="chk-card-box">
+            <div class="chk-sec-head">
+              <h2 class="chk-sec-title"><i class="fa-regular fa-user" style="color: #0f172a;"></i> Contact Information</h2>
+              <div id="chk-auth-status-wrap">
+                <a href="#" id="chk-signin-trigger" class="chk-sign-in-link">Sign in to your account</a>
+                <span id="chk-logged-in-badge" class="chk-user-badge" style="display: none;">✓ Signed in</span>
+              </div>
+            </div>
+
+            <div class="chk-field-group">
+              <label for="chk-email" class="chk-field-label">Email address for Order Confirmation</label>
+              <input type="email" id="chk-email" class="chk-input-elem" placeholder="name@example.com" required>
+            </div>
+
+            <label class="chk-checkbox-wrap">
+              <input type="checkbox" id="chk-news-optin" checked>
+              <span>Email me with exclusive merch drops, release news and offer codes</span>
+            </label>
+          </div>
+
+          <!-- 2. Delivery Address -->
+          <div class="chk-card-box" style="margin-top: 20px;">
+            <div class="chk-sec-head">
+              <h2 class="chk-sec-title"><i class="fa-solid fa-truck-fast" style="color: #0f172a;"></i> Delivery Address</h2>
+            </div>
+
+            <!-- SAVED ADDRESS QUICK SELECTOR CARD -->
+            <div id="saved-address-container"></div>
+
+            <!-- MANUAL ADDRESS FORM FIELDS (HIDDEN WHEN USING SAVED ADDRESS) -->
+            <div id="manual-address-form-group">
+              <div class="chk-field-group">
+                <label for="chk-country" class="chk-field-label">Country / Region</label>
+                <select id="chk-country" class="chk-select-elem" onchange="onCountryChange()">
+                  <option value="IN" selected>India 🇮🇳</option>
+                  <option value="US">United States 🇺🇸</option>
+                  <option value="GB">United Kingdom 🇬🇧</option>
+                  <option value="CA">Canada 🇨🇦</option>
+                  <option value="AU">Australia 🇦🇺</option>
+                  <option value="JP">Japan 🇯🇵</option>
+                  <option value="DE">Germany 🇩🇪</option>
+                  <option value="AE">United Arab Emirates 🇦🇪</option>
+                  <option value="SG">Singapore 🇸🇬</option>
+                </select>
+              </div>
+
+              <div class="chk-2col">
+                <div class="chk-field-group">
+                  <label for="chk-first-name" class="chk-field-label">First Name</label>
+                  <input type="text" id="chk-first-name" class="chk-input-elem" placeholder="First name">
+                </div>
+                <div class="chk-field-group">
+                  <label for="chk-last-name" class="chk-field-label">Last Name</label>
+                  <input type="text" id="chk-last-name" class="chk-input-elem" placeholder="Last name">
+                </div>
+              </div>
+
+              <div class="chk-field-group">
+                <label for="chk-address" class="chk-field-label">Street Address</label>
+                <input type="text" id="chk-address" class="chk-input-elem" placeholder="House / Flat No, Street Name, Area">
+              </div>
+
+              <div class="chk-field-group">
+                <label for="chk-apartment" class="chk-field-label">Apartment, Suite, Unit (Optional)</label>
+                <input type="text" id="chk-apartment" class="chk-input-elem" placeholder="Apartment, suite, unit, etc.">
+              </div>
+
+              <div class="chk-3col">
+                <div class="chk-field-group">
+                  <label for="chk-city" class="chk-field-label">City</label>
+                  <input type="text" id="chk-city" class="chk-input-elem" placeholder="City">
+                </div>
+
+                <div class="chk-field-group">
+                  <label for="chk-state" class="chk-field-label">State / Province</label>
+                  <select id="chk-state" class="chk-select-elem">
+                    <!-- Dynamically populated based on selected country -->
+                  </select>
+                </div>
+
+                <div class="chk-field-group">
+                  <label for="chk-pincode" class="chk-field-label">PIN / Postal Code</label>
+                  <input type="text" id="chk-pincode" class="chk-input-elem" placeholder="560001">
+                </div>
+              </div>
+
+              <div class="chk-field-group">
+                <label for="chk-phone" class="chk-field-label">Phone Number for Delivery Updates</label>
+                <input type="tel" id="chk-phone" class="chk-input-elem" placeholder="+91 98765 43210">
+              </div>
+
+              <label class="chk-checkbox-wrap">
+                <input type="checkbox" id="chk-save-info" checked>
+                <span>Save this address for future 1-click checkout</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 3. Separate Payment Methods -->
+          <div class="chk-card-box" style="margin-top: 20px;">
+            <div class="chk-sec-head">
+              <h2 class="chk-sec-title"><i class="fa-solid fa-lock" style="color: #0f172a;"></i> Payment Method</h2>
+              <span class="chk-payment-security-txt"><i class="fa-solid fa-shield-halved" style="color: #059669;"></i> 256-Bit Encrypted</span>
+            </div>
+
+            <!-- DISTINCT PAYMENT OPTIONS STACK -->
+            <div class="chk-payment-methods-stack">
+
+              <!-- FEATURED OPTION 1: OFFICIAL RAZORPAY GATEWAY -->
+              <div class="payment-method-card active" id="pay-card-razorpay" onclick="selectPayOption('razorpay')">
+                <div class="pay-card-header">
+                  <div class="pay-radio-col">
+                    <input type="radio" name="payment_method" value="razorpay" checked>
+                  </div>
+                  <div class="pay-title-col">
+                    <div class="pay-method-name">Razorpay Official Gateway <span class="pay-badge-tag"><i class="fa-solid fa-bolt"></i> FASTEST & SECURE</span></div>
+                    <div class="pay-method-sub">UPI (Google Pay, PhonePe, Paytm), All Credit & Debit Cards, NetBanking, EMI & Wallets</div>
+                  </div>
+                  <div class="pay-badges-col">
+                    <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" style="height: 24px;">
+                  </div>
+                </div>
+                <div class="pay-card-body">
+                  <p class="pay-info-txt"><i class="fa-solid fa-shield-halved" style="color:#2563eb"></i> Instant 256-bit SSL encrypted checkout powered by Razorpay. 100% Buyer Protection guaranteed.</p>
+                </div>
+              </div>
+
+              <!-- OPTION 2: UPI & QR -->
+              <div class="payment-method-card" id="pay-card-upi" onclick="selectPayOption('upi')">
+                <div class="pay-card-header">
+                  <div class="pay-radio-col">
+                    <input type="radio" name="payment_method" value="upi">
+                  </div>
+                  <div class="pay-title-col">
+                    <div class="pay-method-name">UPI / QR Code (Google Pay, PhonePe, Paytm, BHIM)</div>
+                    <div class="pay-method-sub">Instant zero-fee payment using any UPI App</div>
+                  </div>
+                  <div class="pay-badges-col">
+                    <img src="https://img.icons8.com/color/48/000000/google-pay.png" alt="GPay" style="height: 22px;">
+                  </div>
+                </div>
+                <div class="pay-card-body">
+                  <p class="pay-info-txt">Scan QR code or enter your UPI ID for instant approval.</p>
+                </div>
+              </div>
+
+              <!-- OPTION 2: CREDIT & DEBIT CARDS -->
+              <div class="payment-method-card" id="pay-card-cards" onclick="selectPayOption('cards')">
+                <div class="pay-card-header">
+                  <div class="pay-radio-col">
+                    <input type="radio" name="payment_method" value="cards">
+                  </div>
+                  <div class="pay-title-col">
+                    <div class="pay-method-name">Credit & Debit Cards</div>
+                    <div class="pay-method-sub">Visa, Mastercard, RuPay, Maestro & American Express</div>
+                  </div>
+                  <div class="pay-badges-col">
+                    <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa" style="height: 22px;">
+                    <img src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard" style="height: 22px;">
+                  </div>
+                </div>
+                <div class="pay-card-body">
+                  <p class="pay-info-txt">Pay securely via 3D-Secure 256-Bit SSL Encrypted Card gateway.</p>
+                </div>
+              </div>
+
+              <!-- OPTION 3: NET BANKING -->
+              <div class="payment-method-card" id="pay-card-netbanking" onclick="selectPayOption('netbanking')">
+                <div class="pay-card-header">
+                  <div class="pay-radio-col">
+                    <input type="radio" name="payment_method" value="netbanking">
+                  </div>
+                  <div class="pay-title-col">
+                    <div class="pay-method-name">Net Banking</div>
+                    <div class="pay-method-sub">SBI, HDFC, ICICI, Axis, Kotak & 50+ Indian Banks</div>
+                  </div>
+                  <div class="pay-badges-col">
+                    <i class="fa-solid fa-building-columns" style="color: #0284c7; font-size: 1.1rem;"></i>
+                  </div>
+                </div>
+                <div class="pay-card-body">
+                  <p class="pay-info-txt">Direct bank transfer authorization via your bank's secure portal.</p>
+                </div>
+              </div>
+
+              <!-- OPTION 4: CASH ON DELIVERY -->
+              <div class="payment-method-card" id="pay-card-cod" onclick="selectPayOption('cod')">
+                <div class="pay-card-header">
+                  <div class="pay-radio-col">
+                    <input type="radio" name="payment_method" value="cod">
+                  </div>
+                  <div class="pay-title-col">
+                    <div class="pay-method-name">Cash on Delivery (COD)</div>
+                    <div class="pay-method-sub">Pay in cash when package arrives at your doorstep</div>
+                  </div>
+                  <div class="pay-badges-col">
+                    <i class="fa-solid fa-money-bill-wave" style="color: #059669; font-size: 1.2rem;"></i>
+                  </div>
+                </div>
+                <div class="pay-card-body">
+                  <p class="pay-info-txt">Please keep exact change ready. A small ₹49 handling fee applies for Cash on Delivery shipments.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SUBMIT CTA BUTTON -->
+          <div class="chk-submit-wrap" style="margin-top: 24px;">
+            <button type="submit" class="chk-place-order-btn" id="chk-submit-btn">
+              <i class="fa-solid fa-lock"></i> Complete Order & Pay
+            </button>
+            <p class="chk-legal-disclaimer">By placing your order, you agree to SenpaiWorks <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</p>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- RIGHT COLUMN: ORDER SUMMARY SIDEBAR -->
+      <div class="chk-right-summary-col">
+        <div class="chk-summary-card">
+          <div class="chk-summary-head-wrap" onclick="toggleMobileSummaryList()">
+            <h3 class="chk-summary-title">Order Summary</h3>
+            <span class="chk-summary-toggle-btn" id="chk-summary-toggle-icon"><i class="fa-solid fa-chevron-up"></i></span>
+          </div>
+
+          <!-- Items List -->
+          <div id="summary-items-list" class="chk-sidebar-items-list">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Promo Code Box -->
+          <div class="chk-discount-box">
+            <input type="text" id="chk-promo-input" class="chk-input-elem" placeholder="Discount code (e.g. SENPAI100)">
+            <button type="button" class="chk-promo-btn" onclick="applyPromoCode()">Apply</button>
+          </div>
+          <div id="promo-message" class="chk-promo-msg"></div>
+
+          <hr class="chk-divider">
+
+          <!-- Totals Table -->
+          <div class="chk-totals-table">
+            <div class="chk-total-line">
+              <span>Subtotal</span>
+              <span id="chk-subtotal-val">₹0.00</span>
+            </div>
+            <div class="chk-total-line">
+              <span>Shipping</span>
+              <span id="chk-shipping-val">FREE</span>
+            </div>
+            <div class="chk-total-line" id="chk-discount-row">
+              <span>Discount</span>
+              <span id="chk-discount-val" style="color: #059669;">-₹0.00</span>
+            </div>
+            <hr class="chk-divider" style="margin: 10px 0;">
+            <div class="chk-total-line grand-total">
+              <span>Total due</span>
+              <span id="chk-grand-total-val">₹0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- RAZORPAY MOCK CHECKOUT MODAL OVERLAY -->
+  <div id="razorpay-checkout-modal" class="rzp-modal-overlay">
+    <div class="rzp-modal-content">
+      <button class="rzp-modal-close" onclick="closeRazorpayModal()">&times;</button>
+      <div class="rzp-header-bar">
+        <img src="assets/Videos/SenpaiWorks logo.png" alt="SenpaiWorks" class="rzp-brand-logo">
+        <div>
+          <div class="rzp-brand-title">SenpaiWorks Store</div>
+          <div class="rzp-pay-amount">Paying <strong id="rzp-modal-amount">₹0.00</strong></div>
+        </div>
+      </div>
+
+      <div class="rzp-body-content">
+        <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 12px; color: #0f172a;">Select Payment Gateway:</p>
+        <button type="button" class="rzp-pay-option-btn" onclick="processTestPayment('UPI - Google Pay')">
+          <img src="https://img.icons8.com/color/48/000000/google-pay.png" alt="GPay" style="height: 24px;"> Google Pay UPI
+        </button>
+        <button type="button" class="rzp-pay-option-btn" onclick="processTestPayment('UPI - PhonePe')">
+          <i class="fa-solid fa-mobile-screen-button" style="color: #5f259f; font-size: 1.2rem;"></i> PhonePe / Paytm UPI
+        </button>
+        <button type="button" class="rzp-pay-option-btn" onclick="processTestPayment('Credit / Debit Card')">
+          <i class="fa-solid fa-credit-card" style="color: #2563eb; font-size: 1.2rem;"></i> Credit or Debit Card
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/checkout.js?v=98"></script>
+</body>
+
+</html>

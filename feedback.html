@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Feedback - SenpaiWorks</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="feedback.css">
+</head>
+<body>
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function() {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- Feedback Banner -->
+  <section class="feedback-hero">
+    <div class="feedback-hero-bg" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp');"></div>
+    <div class="feedback-hero-overlay">
+      <div class="feedback-hero-content">
+        <span class="category-badge">SHARE YOUR THOUGHTS</span>
+        <h1 class="hero-title">FEEDBACK & REVIEWS</h1>
+        <p class="hero-description">Let us know about your order, model rigs, or general website issues. Your feedback helps us build a better creative ecosystem.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Content Container -->
+  <main class="feedback-layout-container">
+    <div class="feedback-card">
+      
+      <!-- Success State Overlay (Hidden by Default) -->
+      <div class="success-overlay" id="feedback-success-state" style="display: none;">
+        <div class="success-content">
+          <div class="success-icon-wrap">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h2>Thank You!</h2>
+          <p>Your feedback has been successfully submitted. We appreciate your valuable suggestions.</p>
+          <div class="redirect-choices">
+            <a href="community.html" class="redirect-btn primary">Go to Community Hub</a>
+            <a href="orders.html" class="redirect-btn">Back to Orders</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Input Form -->
+      <form class="feedback-form" id="feedback-edit-form">
+        <div class="form-row">
+          <div class="form-group-item">
+            <label for="feedback-name">Your Name</label>
+            <div class="input-wrapper">
+              <i class="fa-regular fa-user input-icon"></i>
+              <input type="text" id="feedback-name" placeholder="Anonymous Creator" required>
+            </div>
+          </div>
+          <div class="form-group-item">
+            <label for="feedback-email">Email Address</label>
+            <div class="input-wrapper">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="feedback-email" placeholder="creator@example.com" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group-item">
+            <label for="feedback-category">What are you reviewing?</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-layer-group input-icon"></i>
+              <select id="feedback-category" class="feedback-select" required>
+                <option value="Order Issue">Order Issue</option>
+                <option value="Digital Course">Digital Course</option>
+                <option value="3D Character Rig">3D Character Rig</option>
+                <option value="Brushes & Textures">Brushes & Textures</option>
+                <option value="General Website">General Website</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group-item">
+            <label for="feedback-order-id">Order ID (Optional)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-barcode input-icon"></i>
+              <input type="text" id="feedback-order-id" placeholder="SW-12345678">
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Rating Stars -->
+        <div class="form-group-item full-width">
+          <label>Overall Rating</label>
+          <div class="stars-selector-wrap">
+            <div class="stars-row" id="stars-row">
+              <i class="fa-regular fa-star rating-star" data-rating="1"></i>
+              <i class="fa-regular fa-star rating-star" data-rating="2"></i>
+              <i class="fa-regular fa-star rating-star" data-rating="3"></i>
+              <i class="fa-regular fa-star rating-star" data-rating="4"></i>
+              <i class="fa-regular fa-star rating-star" data-rating="5"></i>
+            </div>
+            <span class="rating-descriptor" id="rating-label">Select a rating</span>
+          </div>
+        </div>
+
+        <div class="form-group-item full-width">
+          <label for="feedback-title">Review Title</label>
+          <div class="input-wrapper">
+            <i class="fa-regular fa-bookmark input-icon"></i>
+            <input type="text" id="feedback-title" placeholder="Summarize your review in a few words" required>
+          </div>
+        </div>
+
+        <div class="form-group-item full-width">
+          <label for="feedback-comment">Review Description / Issues</label>
+          <div class="input-wrapper">
+            <textarea id="feedback-comment" rows="5" placeholder="Share your experience here... What went well? What issues did you face?" required></textarea>
+          </div>
+        </div>
+
+        <!-- Visibility Checkbox -->
+        <div class="form-group-item full-width">
+          <label class="checkbox-container">
+            <input type="checkbox" id="feedback-public-checkbox" checked>
+            <span class="checkbox-checkmark"></span>
+            <span class="checkbox-text">
+              <strong>Make this review public on Community Hub</strong>
+              <p>Other community members will be able to see your review, name, rating, and category below.</p>
+            </span>
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <div class="feedback-error-msg" id="feedback-error" style="display: none;"></div>
+          <button type="submit" class="feedback-submit-btn">
+            <i class="fa-solid fa-paper-plane"></i> Submit Feedback
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Contact Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  </script>
+
+  <!-- Footer Section -->
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Script logic -->
+  <script src="scripts/feedback.js"></script>
+</body>
+</html>

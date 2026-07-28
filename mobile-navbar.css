@@ -1,0 +1,113 @@
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION BAR
+   Visible only on tablets (≤1024px) and phones (≤768px)
+   ========================================================================== */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #0a0a0a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 9990;
+  padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+  justify-content: space-around;
+  align-items: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Show on tablet and mobile */
+@media (max-width: 1024px) {
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  /* Add bottom padding to body so content isn't hidden behind the nav */
+  body {
+    padding-bottom: 70px;
+  }
+}
+
+.mobile-bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  position: relative;
+  min-width: 52px;
+}
+
+.mobile-bottom-nav .nav-item i {
+  font-size: 1.15rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.mobile-bottom-nav .nav-item:hover,
+.mobile-bottom-nav .nav-item.active {
+  color: #ffffff;
+}
+
+.mobile-bottom-nav .nav-item.active {
+  color: #4d9dff;
+}
+
+.mobile-bottom-nav .nav-item.active i {
+  transform: scale(1.15);
+  color: #4d9dff;
+}
+
+/* No circle indicator dot below nav item - just blue text & icon highlight */
+.mobile-bottom-nav .nav-item.active::after {
+  display: none !important;
+}
+
+/* Cart Badge Positioned ABOVE Cart Icon */
+.mobile-bottom-nav .cart-badge {
+  position: absolute;
+  top: -2px;
+  right: 50%;
+  transform: translateX(12px);
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Avatar styling for logged-in user in mobile bottom nav */
+.mobile-bottom-nav .header-user-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #4d9dff;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+/* Tap feedback */
+.mobile-bottom-nav .nav-item:active {
+  transform: scale(0.92);
+}

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store & Assets - SenpaiWorks</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="store.css?v=12">
+</head>
+
+<body>
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+
+
+  <!-- ===== Modern Split Hero Section ===== -->
+  <section class="sh-section">
+    <!-- ===== Store Search Section (Overlay) ===== -->
+    <div class="store-search-section" id="store-products-anchor">
+      <div class="store-search-container">
+        <div class="search-bar-wrapper">
+          <input type="text" id="search-bar-input" placeholder="Search products, courses, 3D assets...">
+          <button id="search-bar-btn" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Slides Wrapper -->
+    <div class="sh-slides-wrapper">
+      <!-- Slide 1: Itachi T-Shirt -->
+      <div class="sh-slide active" data-index="0" style="background-color: #f8ddda;">
+        <div class="sh-slide-bg" style="background-image: url('assets/Store/itachi duo.png');"></div>
+        <div class="sh-container">
+          <div class="sh-content-left">
+            <span class="sh-preorder" style="color: #b24b43;">PRE-ORDER NOW</span>
+            <h1 class="sh-main-title" style="color: #111111;">
+              Itachi Uchiha<br>
+              Oversized T-Shirt
+            </h1>
+            <p class="sh-sub-desc" style="color: #444444;">
+              Experience ultimate comfort with our heavyweight organic cotton Itachi duo graphic streetwear T-shirt.
+            </p>
+            <a href="#store-catalog-section" class="sh-btn-black" style="background: #111111; color: #ffffff;">Shop Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Zoro T-Shirt -->
+      <div class="sh-slide" data-index="1" style="background-color: #eaf4ef;">
+        <div class="sh-slide-bg" style="background-image: url('assets/Store/zoro man.png');"></div>
+        <div class="sh-container">
+          <div class="sh-content-left">
+            <span class="sh-preorder" style="color: #157a53;">NEW ARRIVAL</span>
+            <h1 class="sh-main-title" style="color: #111111;">
+              Roronoa Zoro<br>
+              Graphic Oversized Tee
+            </h1>
+            <p class="sh-sub-desc" style="color: #444444;">
+              Master the Three-Sword Style. Ultra-soft organic cotton with high-fidelity anime prints.
+            </p>
+            <a href="#store-catalog-section" class="sh-btn-black" style="background: #111111; color: #ffffff;">Shop Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Kaneki T-Shirt -->
+      <div class="sh-slide" data-index="2" style="background-color: #f3eaf4;">
+        <div class="sh-slide-bg" style="background-image: url('assets/Store/kaneki duo.png');"></div>
+        <div class="sh-container">
+          <div class="sh-content-left">
+            <span class="sh-preorder" style="color: #7b2cbf;">LIMITED EDITION</span>
+            <h1 class="sh-main-title" style="color: #111111;">
+              Kaneki Ken<br>
+              Tokyo Ghoul Tee
+            </h1>
+            <p class="sh-sub-desc" style="color: #444444;">
+              Embrace the dark aesthetic with our high-fidelity Kaneki awakened state streetwear T-shirt.
+            </p>
+            <a href="#store-catalog-section" class="sh-btn-black" style="background: #111111; color: #ffffff;">Shop Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Suzens Band -->
+      <div class="sh-slide" data-index="3" style="background-color: #0a0a0c;">
+        <div class="sh-slide-bg" style="background-image: url('assets/Store/suzens store.png');"></div>
+        <div class="sh-container">
+          <div class="sh-content-left">
+            <span class="sh-preorder" style="color: #ffb703; opacity: 0.9;">OFFICIAL MERCH</span>
+            <h1 class="sh-main-title" style="color: #ffffff;">
+              Suzens Band<br>
+              Official Streetwear
+            </h1>
+            <p class="sh-sub-desc" style="color: #cccccc;">
+              Vibrant high-density screen prints of the Suzens band lineup. Premium heavyweight organic cotton.
+            </p>
+            <a href="#store-catalog-section" class="sh-btn-black" style="background: #ffffff; color: #111111;">Shop Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button class="sh-arrow sh-arrow-left" aria-label="Previous Slide">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="sh-arrow sh-arrow-right" aria-label="Next Slide">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Indicators (Dots) -->
+    <div class="sh-dots-container">
+      <span class="sh-dot active" data-slide="0"></span>
+      <span class="sh-dot" data-slide="1"></span>
+      <span class="sh-dot" data-slide="2"></span>
+      <span class="sh-dot" data-slide="3"></span>
+    </div>
+  </section>
+
+
+
+  <!-- ===== How It Works Section ===== -->
+  <section class="how-it-works-section">
+    <div class="how-it-works-container">
+      <h2 class="section-title-premium">How It Works</h2>
+      <p class="section-subtitle-premium">Your seamless journey from order to delivery in 4 simple steps</p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="step-number">01</span>
+          </div>
+          <h3>1. Order</h3>
+          <p>Place your order securely. Digital assets are delivered instantly; physical items are processed within 24
+            hours.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-box-open"></i>
+            <span class="step-number">02</span>
+          </div>
+          <h3>2. Ship</h3>
+          <p>Our team packs your merch with care, generates tracking, and hands it over to our premium courier partners.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-truck-fast"></i>
+            <span class="step-number">03</span>
+          </div>
+          <h3>3. 7 Days Transit</h3>
+          <p>For physical merchandise, transit takes roughly 7 business days. You can track its journey in real-time.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-house-chimney-user"></i>
+            <span class="step-number">04</span>
+          </div>
+          <h3>4. Delivery</h3>
+          <p>Your product safely reaches your doorstep! Inspect your items and start leveling up your streetwear or
+            digital art.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Browse Categories Section ===== -->
+  <section class="browse-categories-section">
+    <div class="browse-categories-container">
+      <!-- Large Landscape Banner -->
+      <div class="bc-large-banner">
+        <div class="bc-banner-content">
+          <h3>BROWSE<br>CATEGORIES</h3>
+          <p>Our curated collections are tailored to elevate your aesthetic style.</p>
+          <div class="bc-dropdown-wrap">
+            <div class="bc-select-custom-box">
+              <select id="bc-category-dropdown" class="bc-select-dropdown" onchange="selectBrowseCategory(this.value)">
+                <option value="" disabled selected>Select Category</option>
+                <option value="all" id="bc-option-all" style="display: none;">All Categories</option>
+                <option value="Merchandise">Merchandise</option>
+                <option value="3D Assets">3D Models</option>
+                <option value="Digital Courses">Courses</option>
+              </select>
+              <i class="fa-solid fa-chevron-down bc-select-arrow"></i>
+            </div>
+          </div>
+        </div>
+        <div class="bc-banner-img" style="background-image: url('assets/Suzens new/suzens new.png');"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Sale Is On Section ===== -->
+  <section class="sale-is-on-section">
+    <div class="sale-is-on-container">
+      <h2 class="promo-section-title">SALE IS ON!</h2>
+      <div class="promo-grid-2">
+        <!-- Promo 1: Itachi Section -->
+        <div class="promo-banner-card card-cream">
+          <div class="promo-info">
+            <span class="promo-badge-text">FLAT 48% OFF • ITACHI COLLECTION</span>
+            <h3>ITACHI UCHIHA<br>GRAPHIC TEES</h3>
+            <a href="#store-catalog-section" onclick="filterByStoreCategory('Merchandise')" class="promo-btn-dark">SHOP ITACHI</a>
+          </div>
+          <div class="promo-img" id="sale-promo-img-1" style="background-image: url('assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg');"></div>
+          <span class="promo-date-stamp">LIMITED STOCK</span>
+        </div>
+        <!-- Promo 2: Kaneki Section -->
+        <div class="promo-banner-card card-grey">
+          <div class="promo-info">
+            <span class="promo-badge-text">FLAT 48% OFF • KANEKI COLLECTION</span>
+            <h3>KANEKI KEN<br>GRAPHIC TEES</h3>
+            <a href="#store-catalog-section" onclick="filterByStoreCategory('Merchandise')" class="promo-btn-dark">SHOP KANEKI</a>
+          </div>
+          <div class="promo-img" id="sale-promo-img-2" style="background-image: url('assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg');"></div>
+          <span class="promo-date-stamp">FLAT 48% OFF</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="store-layout-container" id="store-catalog-section">
+
+    <!-- Right Side: Product Area -->
+    <section class="store-products-main">
+
+      <!-- Sorting & Results Controls -->
+      <div class="store-sort-header">
+        <span class="results-count" id="results-count">Loading products...</span>
+        <div class="sort-selector-wrap">
+          <label for="store-sort-select">Sort by:</label>
+          <select id="store-sort-select" class="store-sort-dropdown">
+            <option value="featured">Featured</option>
+            <option value="newest">Newest</option>
+            <option value="bestselling">Best Selling</option>
+            <option value="rating">Highest Rated</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid">
+        <!-- Filled dynamically by JavaScript -->
+      </div>
+
+      <!-- Load More Products Container -->
+      <div class="load-more-wrap" id="load-more-wrap" style="display: none;">
+        <button type="button" id="load-more-btn" class="load-more-btn">
+          <span>Load More Products</span> <i class="fa-solid fa-arrow-down"></i>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Craftsmanship & Printing Video Section ===== -->
+  <section class="craftsmanship-video-section">
+    <div class="craftsmanship-video-container">
+      <!-- 1. Section Title & Badge First -->
+      <div class="video-header-col">
+        <span class="video-badge-tag"><i class="fa-solid fa-certificate"></i> OUR QUALITY GUARANTEE</span>
+        <h2 class="video-section-title">BEHIND THE CRAFT: HOW OUR TEES ARE PRINTED</h2>
+      </div>
+
+      <!-- 2. YouTube Video Link Embed Second -->
+      <div class="video-embed-col">
+        <div class="video-wrapper">
+          <iframe 
+            src="https://www.youtube.com/embed/fq8f9ZxLaC8?rel=0&modestbranding=1" 
+            title="How T-Shirts Are Screen Printed - Quality & Craftsmanship" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+      <!-- 3. Quality Information & Features Third -->
+      <div class="video-text-col">
+        <p class="video-section-desc">
+          Rest assured knowing every SenpaiWorks graphic T-shirt is crafted from 100% 240GSM combed organic cotton. 
+          Watch our screen printing process highlighting high-density color layering, eco-friendly inks, and wash-resistant durability testing.
+        </p>
+        <div class="video-feature-list">
+          <div class="vf-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+              <strong>100% Wash-Proof Prints</strong>
+              <span>Fade-resistant high-density screen printing that lasts 100+ washes.</span>
+            </div>
+          </div>
+          <div class="vf-item">
+            <i class="fa-solid fa-shirt"></i>
+            <div>
+              <strong>240GSM Organic Combed Cotton</strong>
+              <span>Ultra-soft, breathable heavyweight fabric tailored for comfortable oversized fit.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== End of Season Sale Banner ===== -->
+  <section class="end-season-banner-section">
+    <div class="end-season-banner-wrap">
+      <div class="esb-model-left" style="background-image: url('assets/Suzens new/remi new.png');"></div>
+      <div class="esb-content">
+        <span class="esb-badge">LAST CHANCE</span>
+        <h2>END OF SEASON SALE<br>UP TO 50% OFF</h2>
+        <a href="#store-catalog-section" class="esb-btn-white">CHECK IT NOW</a>
+      </div>
+      <div class="esb-model-right" style="background-image: url('assets/Suzens new/suzana new.png');"></div>
+    </div>
+  </section>
+
+  <!-- ===== Design Preference Poll Section ===== -->
+  <section class="design-poll-section">
+    <div class="design-poll-split-container">
+      
+      <!-- Left Column: Poll & Search Form (Left-Aligned) -->
+      <div class="dp-left-col">
+        <div class="dp-header">
+          <span class="dp-badge-tag"><i class="fa-solid fa-sparkles"></i> COMMUNITY POLL</span>
+          <h2 class="dp-title">WHICH ANIME OR CHARACTER DESIGN SHOULD WE CRAFT NEXT?</h2>
+          <p class="dp-subtitle">Your suggestions drive our next release. Pick a trending request or type your custom idea below.</p>
+        </div>
+
+        <!-- Quick Suggestion Tag Pills (No Emojis) -->
+        <div class="dp-quick-tags-wrap">
+          <span class="dp-quick-tags-label">Trending Requests:</span>
+          <div class="dp-tags-list">
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Gojo Satoru')">Gojo Satoru</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Luffy Gear 5')">Luffy Gear 5</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Sung Jinwoo')">Sung Jinwoo</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Guts Berserk')">Guts Berserk</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Sukuna')">Sukuna</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Chainsaw Man')">Chainsaw Man</button>
+          </div>
+        </div>
+
+        <!-- Capsule Search & Submit Bar -->
+        <form id="design-poll-form" onsubmit="handleDesignPollSubmit(event)" class="dp-form">
+          <div class="dp-capsule-bar">
+            <i class="fa-solid fa-magnifying-glass dp-search-icon"></i>
+            <input type="text" id="dp-custom-character" placeholder="Type any anime, character, or design concept..." class="dp-capsule-input" required>
+            <button type="submit" class="dp-capsule-submit-btn" title="Submit Request">
+              <span>Submit</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Column: Auto-Rotating Current Store T-Shirt Showcase -->
+      <div class="dp-right-col">
+        <div class="dp-ad-card">
+          <div class="dp-ad-img-frame">
+            <div class="dp-ad-img" id="poll-ad-tshirt-img" style="background-image: url('assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg');"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  </script>
+
+  <!-- Footer Section -->
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Hero micro-interactions -->
+  <script src="scripts/store-hero.js?v=1"></script>
+
+  <script src="scripts/products-data.js?v=5"></script>
+  <script src="scripts/store-products.js?v=11"></script>
+
+</body>
+
+</html>

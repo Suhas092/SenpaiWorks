@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Announcements - SenpaiWorks Studio</title>
+  <meta name="description" content="Stay updated with the latest SenpaiWorks news, project announcements, behind-the-scenes, and animation workflows.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="news.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="news-body-container">
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function() {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- ============================================================
+       SECTION 1: FULL-WIDTH HERO — Edge-to-edge like art library
+       ============================================================ -->
+  <section class="nw-hero">
+    <div class="nw-hero-bg" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/all_characters_yvk9ik.webp');"></div>
+    <div class="nw-hero-gradient"></div>
+    <div class="nw-hero-inner">
+      <div class="nw-hero-badges">
+        <span class="nw-pill nw-pill--glass"><i class="fa-solid fa-star"></i> Editor's Choice</span>
+        <span class="nw-pill nw-pill--glass">Platform Update</span>
+      </div>
+      <h1 class="nw-hero-title">Announcing<br>SenpaiWorks 2.0<br>Platform Launch</h1>
+      <div class="nw-hero-bottom">
+        <a href="article.html?id=senpaiworks-2-release" class="nw-hero-cta" id="news-trigger-read">
+          <span class="nw-hero-play"><i class="fa-solid fa-play"></i></span>
+          Read Story
+        </a>
+        <button class="nw-hero-cta nw-open-video-btn" data-video-id="SsoV6Mdjr6A" data-video-title="SenpaiWorks 2.0 Official Video Proof & Feature Walkthrough" style="background:none;border:none;cursor:pointer;font-family:inherit;">
+          <span class="nw-hero-play" style="background:#ff0000;color:#fff;"><i class="fa-brands fa-youtube"></i></span>
+          Watch Video Proof
+        </button>
+        <span class="nw-hero-time">· 5 mins read</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 2: INFO STRIP — Numbered items
+       ============================================================ -->
+  <section class="nw-strip">
+    <div class="nw-strip-inner">
+      <div class="nw-strip-item">
+        <span class="nw-strip-num">1</span>
+        <p>Original Animations & Fan-Made Visual Stories</p>
+      </div>
+      <div class="nw-strip-item">
+        <span class="nw-strip-num">2</span>
+        <p>Premium Merchandise & Streetwear Collections</p>
+      </div>
+      <div class="nw-strip-item">
+        <span class="nw-strip-num">3</span>
+        <p>Behind-the-Scenes Workflows & Artist Spotlights</p>
+      </div>
+      <div class="nw-strip-item">
+        <span class="nw-strip-num">4</span>
+        <p>Platform Updates & New Feature Releases</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 3: FEATURED STORIES — Horizontal card row
+       ============================================================ -->
+  <section class="nw-section nw-featured-section">
+    <div class="nw-section-head">
+      <h2 class="nw-heading">Featured Stories</h2>
+      <div class="nw-head-controls">
+        <span class="nw-dot active"></span>
+        <span class="nw-dot"></span>
+        <span class="nw-dot"></span>
+        <button class="nw-arrow-btn"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+    <div class="nw-card-row">
+      <a href="article.html?id=deadpool-animation" class="nw-story-card">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="Deadpool Animation">
+        <div class="nw-story-overlay"></div>
+        <span class="nw-cat-pill">3D Animation</span>
+        <div class="nw-story-text"><h3>Deadpool & Wolverine Fan Animation Released</h3></div>
+      </a>
+      <a href="article.html?id=suzens-idol-debut" class="nw-story-card">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp" alt="Suzens">
+        <div class="nw-story-overlay"></div>
+        <span class="nw-cat-pill">Idol Group</span>
+        <div class="nw-story-text"><h3>Suzens: The First Bloom Visual Debut</h3></div>
+      </a>
+      <a href="article.html?id=senpaiworks-2-release" class="nw-story-card">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp" alt="Web Dev">
+        <div class="nw-story-overlay"></div>
+        <span class="nw-cat-pill">Web Dev</span>
+        <div class="nw-story-text"><h3>SenpaiWorks v2 Website Architecture</h3></div>
+      </a>
+      <a href="article.html?id=senpaiworks-2-release" class="nw-story-card">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630825/rem_and_ram_copy_zigezp.webp" alt="Illustration">
+        <div class="nw-story-overlay"></div>
+        <span class="nw-cat-pill">Illustration</span>
+        <div class="nw-story-text"><h3>Art Library Expansion — 200+ New Works</h3></div>
+      </a>
+      <a href="article.html?id=senpaiworks-2-release" class="nw-story-card">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rem_copy_rkjlfo.webp" alt="Shaders">
+        <div class="nw-story-overlay"></div>
+        <span class="nw-cat-pill">Platform</span>
+        <div class="nw-story-text"><h3>Procedural Shaders Pack Now Available</h3></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 3.4: BEHIND THE CRAFT (EXACT SCREENSHOT LAYOUT)
+       ============================================================ -->
+  <section class="nw-craft-section">
+    <div class="nw-craft-badge-wrap">
+      <span class="nw-craft-badge"><i class="fa-solid fa-certificate"></i> OUR QUALITY GUARANTEE</span>
+    </div>
+    <h2 class="nw-craft-title">BEHIND THE CRAFT: HOW OUR TEES & SENPAIWORKS 2.0 ARE CREATED</h2>
+    
+    <div class="nw-craft-video-card">
+      <div class="nw-craft-video-responsive">
+        <iframe src="https://www.youtube.com/embed/SsoV6Mdjr6A?rel=0&modestbranding=1" title="Behind the Craft: How Our Tees Are Printed" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <p class="nw-craft-desc">
+      Rest assured knowing every SenpaiWorks graphic T-shirt is crafted from 100% 240GSM combed organic cotton, and our platform is built on 60FPS 3D CSS rendering pipelines. Watch our screen printing process highlighting high-density color layering, eco-friendly inks, and wash-resistant durability testing alongside real platform benchmarks.
+    </p>
+
+    <div class="nw-craft-feature-grid">
+      <div class="nw-craft-feature-card">
+        <div class="nw-craft-feature-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="nw-craft-feature-text">
+          <h4>100% Wash-Proof Prints</h4>
+          <p>Fade-resistant high-density screen printing that lasts 100+ washes paired with hardware-accelerated UI stability.</p>
+        </div>
+      </div>
+
+      <div class="nw-craft-feature-card">
+        <div class="nw-craft-feature-icon">
+          <i class="fa-solid fa-shirt"></i>
+        </div>
+        <div class="nw-craft-feature-text">
+          <h4>240GSM Organic Combed Cotton</h4>
+          <p>Ultra-soft, breathable heavyweight fabric tailored for comfortable oversized fit and premium anime streetwear drops.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 3.5: SENPAIWORKS VIDEO PROOF & BROADCASTS
+       ============================================================ -->
+  <section class="nw-section nw-video-section">
+    <div class="nw-section-head">
+      <div>
+        <h2 class="nw-heading">SenpaiWorks Video Reports & Proof <span class="nw-video-badge"><i class="fa-brands fa-youtube"></i> HD BROADCAST</span></h2>
+      </div>
+      <a href="https://www.youtube.com/@senpaiworks.official" target="_blank" rel="noopener" class="nw-link-btn"><i class="fa-brands fa-youtube" style="color:#ff0000;"></i> Visit YouTube Channel</a>
+    </div>
+    <div class="nw-video-grid">
+      <!-- Video Card 1 -->
+      <div class="nw-video-card nw-open-video-btn" data-video-id="SsoV6Mdjr6A" data-video-title="SenpaiWorks 2.0 Official Platform Showcase & Video Proof">
+        <div class="nw-video-thumb-container">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/all_characters_yvk9ik.webp" alt="SenpaiWorks 2.0 Proof">
+          <div class="nw-play-overlay">
+            <div class="nw-play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <span class="nw-duration-badge">08:42</span>
+        </div>
+        <div class="nw-video-card-body">
+          <div class="nw-video-card-meta">
+            <span class="nw-video-badge"><i class="fa-brands fa-youtube"></i> VIDEO PROOF</span>
+            <span style="font-size: 0.72rem; color: var(--nw-grey-400);">142K views</span>
+          </div>
+          <h3>SenpaiWorks 2.0 Platform Launch — Official Feature & Performance Video Proof</h3>
+          <p>Watch live footage of the updated 3D CSS rendering engine, character spotlights, and smooth high-fps carousel transitions.</p>
+          <div class="nw-video-card-foot">
+            <span><i class="fa-regular fa-clock"></i> 2 days ago</span>
+            <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" rel="noopener" class="nw-yt-direct-link" onclick="event.stopPropagation();">
+              Watch on YouTube <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Card 2 -->
+      <div class="nw-video-card nw-open-video-btn" data-video-id="SsoV6Mdjr6A" data-video-title="Deadpool & Wolverine Animation - 4K Visual Proof & VFX Breakdown">
+        <div class="nw-video-thumb-container">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="Deadpool Animation Proof">
+          <div class="nw-play-overlay">
+            <div class="nw-play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <span class="nw-duration-badge">14:20</span>
+        </div>
+        <div class="nw-video-card-body">
+          <div class="nw-video-card-meta">
+            <span class="nw-video-badge"><i class="fa-brands fa-youtube"></i> VFX BREAKDOWN</span>
+            <span style="font-size: 0.72rem; color: var(--nw-grey-400);">98K views</span>
+          </div>
+          <h3>Deadpool & Wolverine Fan Animation — Full 4K Render Breakdown & Behind-the-Scenes</h3>
+          <p>Step inside Blender and compositing suites to see how frame-by-frame combat sequences were modeled, lit, and shaded.</p>
+          <div class="nw-video-card-foot">
+            <span><i class="fa-regular fa-clock"></i> 12 hours ago</span>
+            <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" rel="noopener" class="nw-yt-direct-link" onclick="event.stopPropagation();">
+              Watch on YouTube <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Card 3 -->
+      <div class="nw-video-card nw-open-video-btn" data-video-id="SsoV6Mdjr6A" data-video-title="Suzens: Virtual Idol Debut Concert Teaser & Audio Proof">
+        <div class="nw-video-thumb-container">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp" alt="Suzens Virtual Idol Proof">
+          <div class="nw-play-overlay">
+            <div class="nw-play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <span class="nw-duration-badge">03:15</span>
+        </div>
+        <div class="nw-video-card-body">
+          <div class="nw-video-card-meta">
+            <span class="nw-video-badge"><i class="fa-brands fa-youtube"></i> TEASER</span>
+            <span style="font-size: 0.72rem; color: var(--nw-grey-400);">65K views</span>
+          </div>
+          <h3>Suzens Virtual Idol Debut — Live Motion Capture & Concert Teaser Video</h3>
+          <p>Exclusive sneak peek of real-time motion capture and stage choreography for the upcoming Virtual Debut concert.</p>
+          <div class="nw-video-card-foot">
+            <span><i class="fa-regular fa-clock"></i> 1 day ago</span>
+            <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" rel="noopener" class="nw-yt-direct-link" onclick="event.stopPropagation();">
+              Watch on YouTube <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 4: THE LATEST + ON TRENDING — Two columns
+       ============================================================ -->
+  <section class="nw-section nw-split-section">
+    <div class="nw-split-grid">
+      <!-- Left: The Latest -->
+      <div class="nw-latest-col">
+        <h2 class="nw-heading">The Latest</h2>
+        <a href="article.html?id=deadpool-animation" class="nw-article-card">
+          <div class="nw-article-thumb"><img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="Deadpool"></div>
+          <div class="nw-article-info">
+            <h3>Deadpool & Wolverine Fan Animation — Behind the Scenes & Full Breakdown</h3>
+            <p>Experience the chaos, comedy, and combat in this high-octane, fan-made Deadpool animation — crafted from scratch.</p>
+            <div class="nw-article-meta"><span class="nw-tag-pill">3D Animation</span><span>· 13 min read</span><span>· 3 hrs ago</span></div>
+          </div>
+        </a>
+        <a href="article.html?id=senpaiworks-2-release" class="nw-article-card">
+          <div class="nw-article-thumb"><img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp" alt="Web Architecture"></div>
+          <div class="nw-article-info">
+            <h3>SenpaiWorks v2 Website Architecture — Custom 3D Carousel CSS Matrix Engine</h3>
+            <p>We built a custom CSS 3D rendering pipeline implementing matrix inversions for our parallax card carousel.</p>
+            <div class="nw-article-meta"><span class="nw-tag-pill">Web Dev</span><span>· 8 min read</span><span>· 4 hrs ago</span></div>
+          </div>
+        </a>
+        <a href="article.html?id=senpaiworks-2-release" class="nw-article-card">
+          <div class="nw-article-thumb"><img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630825/rem_and_ram_copy_zigezp.webp" alt="Art Library"></div>
+          <div class="nw-article-info">
+            <h3>Art Library Expansion — 200+ New Illustrations Added to the SenpaiWorks Collection</h3>
+            <p>Explore the expanded art library featuring new charcoal portraits, digital paintings, and anime studies.</p>
+            <div class="nw-article-meta"><span class="nw-tag-pill">Illustration</span><span>· 5 min read</span><span>· 6 hrs ago</span></div>
+          </div>
+        </a>
+      </div>
+      <!-- Right: On Trending -->
+      <div class="nw-trending-col">
+        <h2 class="nw-heading">On Trending <i class="fa-solid fa-fire" style="color:#e040fb;"></i></h2>
+        <a href="article.html?id=senpaiworks-2-release" class="nw-trend-item">
+          <span class="nw-trend-rank">#1</span>
+          <div><h4>"SenpaiWorks 2.0 Platform Now Live"</h4><span class="nw-trend-meta">2 days ago · 6 mins read</span></div>
+        </a>
+        <a href="article.html?id=deadpool-animation" class="nw-trend-item">
+          <span class="nw-trend-rank">#2</span>
+          <div><h4>Deadpool & Wolverine Fan Animation Hits 100K Views</h4><span class="nw-trend-meta">12 hours ago · 3 mins read</span></div>
+        </a>
+        <a href="article.html?id=suzens-idol-debut" class="nw-trend-item">
+          <span class="nw-trend-rank">#3</span>
+          <div><h4>Suzens Idol Group Visual Redesign Revealed</h4><span class="nw-trend-meta">1 day ago · 5 mins read</span></div>
+        </a>
+        <a href="article.html?id=senpaiworks-2-release" class="nw-trend-item">
+          <span class="nw-trend-rank">#4</span>
+          <div><h4>New 3D Carousel CSS Matrix Engine Published</h4><span class="nw-trend-meta">1 hour ago · 5 mins read</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 5: CATEGORY BROWSE — Colored tag cards
+       ============================================================ -->
+  <section class="nw-section nw-categories-section">
+    <div class="nw-section-head">
+      <h2 class="nw-heading">Browse by Category</h2>
+      <button class="nw-link-btn">Load More</button>
+    </div>
+    <div class="nw-cat-grid">
+      <a href="#" class="nw-cat-card" style="--cat-color:#4a90ff;">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="3D Animation">
+        <div class="nw-cat-card-overlay"></div>
+        <span>3D Animation</span>
+      </a>
+      <a href="#" class="nw-cat-card" style="--cat-color:#22c55e;">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp" alt="Idol Group">
+        <div class="nw-cat-card-overlay"></div>
+        <span>Idol Group</span>
+      </a>
+      <a href="#" class="nw-cat-card" style="--cat-color:#e040fb;">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp" alt="Web Dev">
+        <div class="nw-cat-card-overlay"></div>
+        <span>Web Dev</span>
+      </a>
+      <a href="#" class="nw-cat-card" style="--cat-color:#f59e0b;">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630825/rem_and_ram_copy_zigezp.webp" alt="Illustration">
+        <div class="nw-cat-card-overlay"></div>
+        <span>Illustration</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 6: HIGHLIGHT BANNER — Full-width promo card
+       ============================================================ -->
+  <section class="nw-highlight">
+    <div class="nw-highlight-inner">
+      <div class="nw-highlight-bg" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_godrays_jggu36.webp');"></div>
+      <div class="nw-highlight-overlay"></div>
+      <div class="nw-highlight-content">
+        <span class="nw-pill nw-pill--solid">Upcoming Event</span>
+        <h2 class="nw-highlight-title">Suzens: The First Bloom<br>Virtual Debut Concert</h2>
+        <p class="nw-highlight-desc">Experience the world's first virtual K-pop idol concert powered by real-time 3D rendering. Four original characters, live choreography, and an all-new original soundtrack.</p>
+        <a href="#" class="nw-btn nw-btn--primary"><i class="fa-solid fa-bell"></i> Remind Me</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 7: EDITORIAL PICKS — Cards with large images
+       ============================================================ -->
+  <section class="nw-section nw-editorial-section">
+    <div class="nw-section-head">
+      <h2 class="nw-heading">Editor's Picks</h2>
+      <button class="nw-link-btn">View all →</button>
+    </div>
+    <div class="nw-editorial-grid">
+      <a href="article.html?id=deadpool-animation" class="nw-edit-card nw-edit-card--large">
+        <div class="nw-edit-img"><img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="Deadpool"></div>
+        <div class="nw-edit-body">
+          <span class="nw-tag-pill">Featured</span>
+          <h3>The Making of Deadpool: A Complete Visual Effects Breakdown</h3>
+          <p>How we recreated one of Marvel's most iconic characters using Blender, compositing, and custom shaders.</p>
+          <div class="nw-edit-foot"><span>Team SenpaiWorks</span><span>· 15 min read</span></div>
+        </div>
+      </a>
+      <div class="nw-edit-stack">
+        <a href="article.html?id=suzens-idol-debut" class="nw-edit-card nw-edit-card--small">
+          <div class="nw-edit-img"><img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp" alt="Suzens"></div>
+          <div class="nw-edit-body">
+            <span class="nw-tag-pill">Design</span>
+            <h3>Designing Virtual Idols: Suzens Character Art Pipeline</h3>
+            <div class="nw-edit-foot"><span>Art Team</span><span>· 8 min read</span></div>
+          </div>
+        </a>
+        <a href="article.html?id=senpaiworks-2-release" class="nw-edit-card nw-edit-card--small">
+          <div class="nw-edit-img"><img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rem_copy_rkjlfo.webp" alt="Shaders"></div>
+          <div class="nw-edit-body">
+            <span class="nw-tag-pill">Tutorial</span>
+            <h3>Procedural Materials in Blender: Node Setup Guide</h3>
+            <div class="nw-edit-foot"><span>Dev Team</span><span>· 10 min read</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ============================================================
+       SECTION: OFFICIAL YOUTUBE CHANNEL BANNER
+       ============================================================ -->
+  <section class="nw-youtube-banner">
+    <div class="nw-yt-banner-inner">
+      <div class="nw-yt-banner-info">
+        <div class="nw-yt-logo-box">
+          <i class="fa-brands fa-youtube"></i>
+        </div>
+        <div class="nw-yt-banner-text">
+          <h3>SenpaiWorks Official Broadcast Channel <i class="fa-solid fa-circle-check" style="color:#4a90ff;font-size:0.9rem;"></i></h3>
+          <p>Subscribe for exclusive 4K animation premieres, SenpaiWorks 2.0 devlogs, and video proof releases.</p>
+          <div class="nw-yt-stats">
+            <span class="nw-yt-stat-chip"><i class="fa-solid fa-users"></i> 150K+ Subscribers</span>
+            <span class="nw-yt-stat-chip"><i class="fa-solid fa-video"></i> Weekly Uploads</span>
+            <span class="nw-yt-stat-chip"><i class="fa-solid fa-shield-halved"></i> Verified Channel</span>
+          </div>
+        </div>
+      </div>
+      <a href="https://www.youtube.com/@senpaiworks.official" target="_blank" rel="noopener" class="nw-yt-sub-btn">
+        <i class="fa-brands fa-youtube"></i> Subscribe on YouTube
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 9: DETAILED ARTICLE (revealed on click)
+       ============================================================ -->
+  <section class="nw-detail" id="v2-detailed-post">
+    <div class="nw-detail-inner">
+      <div class="nw-detail-meta">
+        <span class="nw-detail-badge">System Architecture & Changelog</span>
+        <span>Published July 2026</span>
+        <span>·</span>
+        <span>By Team SenpaiWorks</span>
+      </div>
+      <h2 class="nw-detail-heading">SenpaiWorks 2.0 Architectural Overhaul & System Changelog</h2>
+      <div class="nw-detail-banner" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/all_characters_yvk9ik.webp');"></div>
+      <div class="nw-detail-body">
+        <p>We are incredibly proud to release <strong>SenpaiWorks 2.0</strong>! This major release represents a complete ground-up engineering transformation of our digital marketplace, creator hub, and anime apparel store. What began as a static prototype catalog has evolved into a fully functional, high-performance web platform built with dynamic catalog rendering, interactive product detailing, responsive cart and dedicated checkout flows, user authentication, customer review engines, and a creator administration portal.</p>
+
+        <!-- Before vs After Comparison Cards -->
+        <h3>1. The Evolution: Before (v1.x) vs. After (SenpaiWorks 2.0)</h3>
+        <p>Below is an architectural summary contrasting our legacy prototype with the complete SenpaiWorks 2.0 platform:</p>
+        <div class="nw-compare-grid">
+          <div class="nw-compare-card nw-compare--before">
+            <h4>SenpaiWorks 1.x (Before Update)</h4>
+            <ul>
+              <li><strong>Static Listings:</strong> Products were hardcoded directly in HTML with static links.</li>
+              <li><strong>Unclickable Previews:</strong> Product images in recommendation sections were non-clickable.</li>
+              <li><strong>Non-Functional Reviews:</strong> Review section was static text with no submission form or rating calculation.</li>
+              <li><strong>No Authentication State:</strong> Guest users had no persistent sessions or auth guards.</li>
+              <li><strong>Static Fallback Cart:</strong> Shopping cart relied on basic popups without subtotal/shipping calculations.</li>
+              <li><strong>No Admin Portal:</strong> Catalog changes required editing raw code files manually.</li>
+            </ul>
+          </div>
+          <div class="nw-compare-card nw-compare--after">
+            <h4>SenpaiWorks 2.0 (Current Release)</h4>
+            <ul>
+              <li><strong>Dynamic Catalog Engine:</strong> Centralized data model in <code>products-data.js</code> supporting live search and category filtering.</li>
+              <li><strong>Clickable Product Cards:</strong> 4-column responsive grid with floating badge overlays and direct routing.</li>
+              <li><strong>Interactive 5-Star Reviews:</strong> Glassmorphic review modal composer with live aggregate calculations and <code>localStorage</code> persistence.</li>
+              <li><strong>Unified Auth System:</strong> <code>window.checkAuthOrPrompt</code> guard with Email/Password & Mobile OTP verification.</li>
+              <li><strong>Dedicated Checkout & Drawer:</strong> Full checkout flow (<code>checkout.html</code>), slide-out cart drawer, and ₹ INR / $ USD currency formats.</li>
+              <li><strong>Creator Admin Portal:</strong> Built-in admin dashboard (<code>admin.html</code>) for stock, badge, and catalog management.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Embedded Video Proof Box -->
+        <div class="nw-video-embed-box">
+          <div class="nw-video-embed-header">
+            <span class="nw-video-badge"><i class="fa-brands fa-youtube"></i> SENPAIWORKS 2.0 VIDEO PROOF</span>
+            <h4>Official Platform Feature Demonstration & Benchmark Walkthrough</h4>
+          </div>
+          <div class="nw-video-responsive">
+            <iframe src="https://www.youtube.com/embed/SsoV6Mdjr6A?rel=0&modestbranding=1" title="SenpaiWorks 2.0 Video Proof" allowfullscreen></iframe>
+          </div>
+          <div class="nw-video-embed-footer">
+            <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" rel="noopener" class="nw-yt-link-btn">
+              <i class="fa-brands fa-youtube"></i> Open Video Proof on YouTube
+            </a>
+            <a href="https://www.youtube.com/@senpaiworks.official" target="_blank" rel="noopener" class="nw-yt-channel-btn">
+              <i class="fa-solid fa-globe"></i> Visit @senpaiworks.official
+            </a>
+          </div>
+        </div>
+
+        <!-- Comprehensive Version Matrix Table -->
+        <h3>2. Feature Matrix Comparison</h3>
+        <p>A detailed breakdown of feature capabilities introduced across SenpaiWorks 2.0:</p>
+        <div class="nw-article-table-wrap">
+          <table class="nw-article-table">
+            <thead>
+              <tr>
+                <th>Feature / Area</th>
+                <th>Legacy SenpaiWorks (v1.x)</th>
+                <th>SenpaiWorks 2.0 Architecture</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Catalog System</strong></td>
+                <td>Static HTML markup</td>
+                <td>Centralized data model in <code>products-data.js</code> with live search & instant category routing</td>
+              </tr>
+              <tr>
+                <td><strong>Store Detail Page</strong></td>
+                <td>Static text & non-clickable images</td>
+                <td>Full <code>store-detail.html</code> with thumbnail swatches, color/size selection, size guide modal & 4-column recommendations</td>
+              </tr>
+              <tr>
+                <td><strong>Customer Reviews</strong></td>
+                <td>Static text placeholders</td>
+                <td>Interactive 5-star rating modal, aggregate stats calculator, and <code>localStorage</code> persistence</td>
+              </tr>
+              <tr>
+                <td><strong>Cart & Checkout</strong></td>
+                <td>Static alert modals</td>
+                <td>Dedicated checkout flow (<code>checkout.html</code>), slide-out cart drawer (<code>drawer.html</code>), free shipping thresholds & dual INR (₹) / USD ($) formatting</td>
+              </tr>
+              <tr>
+                <td><strong>User Authentication</strong></td>
+                <td>No session state</td>
+                <td>Unified <code>checkAuthOrPrompt()</code> with Mobile OTP, Email login, and persistent profile state</td>
+              </tr>
+              <tr>
+                <td><strong>Creator Admin Dashboard</strong></td>
+                <td>Direct code edits required</td>
+                <td>Integrated Admin Portal (<code>admin.html</code>) for live product editing, stock toggles, and badge controls</td>
+              </tr>
+              <tr>
+                <td><strong>Design System</strong></td>
+                <td>Basic layout styling</td>
+                <td>Modern dark theme, glassmorphism overlays, Plus Jakarta Sans typography, and fluid micro-animations</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Deep Dive Sections -->
+        <h3>3. Key Engineering Upgrades in 2.0</h3>
+
+        <h4>3.1. Store Detail & Interactive Recommendations Engine</h4>
+        <p>The product details view (<code>store-detail.html</code> and <code>store-detail.js</code>) has been rebuilt to deliver an e-commerce experience comparable to leading streetwear & asset platforms:</p>
+        <ul>
+          <li><strong>Clickable Image Galleries:</strong> Thumbnail swatches with smooth opacity transitions.</li>
+          <li><strong>Color & Size Variant Selectors:</strong> Dynamic swatch switching for merchandise colors (Black, White, Purple, Red) and apparel sizing (S, M, L, XL, XXL).</li>
+          <li><strong>Size Guide Modal:</strong> Interactive unit toggles (Imperial vs Metric) complete with an SVG shirt dimension diagram.</li>
+          <li><strong>4-Column "You May Also Like" Grid:</strong> Fully responsive product grid rendering clickable cards with floating badges (*Pre-Order, New Arrival, Best Seller*).</li>
+        </ul>
+
+        <h4>3.2. Customer Review Engine & Rating Analytics</h4>
+        <p>Customer feedback is now fully functional and persistent:</p>
+        <ul>
+          <li><strong>Write a Review Modal:</strong> Triggered via the "Write a Review" button with an interactive 5-star rating selector (*Poor, Fair, Good, Very Good, Excellent*).</li>
+          <li><strong>Live Aggregate Recalculation:</strong> Automatically recalculates product star averages and updates rating distribution charts (5-star down to 1-star) in real time.</li>
+          <li><strong>LocalStorage Sync:</strong> Saved reviews are stored per product ID (<code>user_reviews_[product_id]</code>) and prepended instantly to the review feed.</li>
+        </ul>
+
+        <h4>3.3. Shopping Cart & Dedicated Checkout Experience</h4>
+        <p>Purchasing items on SenpaiWorks is now seamless:</p>
+        <ul>
+          <li><strong>Slide-Out Cart Drawer (<code>drawer.html</code> / <code>drawer.js</code>):</strong> Accessible globally across the navigation header with live quantity management.</li>
+          <li><strong>Dedicated Checkout Page (<code>checkout.html</code> / <code>checkout.js</code>):</strong> Includes contact info validation, address confirmation, shipping speed selectors, and dual payment support (UPI/Cards for India 🇮🇳, Credit Cards/PayPal for International 🌐).</li>
+          <li><strong>Multi-Currency Smart Formatter:</strong> Automatically displays Indian Rupee (₹) prices for physical merchandise and USD ($) for global digital assets.</li>
+        </ul>
+
+        <h4>3.4. Unified Auth Guard & User State Management</h4>
+        <p>A global authentication guard (<code>window.checkAuthOrPrompt</code>) intercepts protected actions—such as submitting reviews, instant buy, or accessing community feedback—prompting guest users to log in via Email or SMS Mobile OTP before proceeding.</p>
+
+        <h4>3.5. Creator Admin Portal (<code>admin.html</code>)</h4>
+        <p>SenpaiWorks creators can manage catalog offerings in real time without touching source code. Features include stock availability toggles, badge modifications, price updates, and platform metric dashboards.</p>
+
+        <h3>4. Modular File Architecture Overview</h3>
+        <p>The codebase is organized into clean, decoupled modules:</p>
+        <ul>
+          <li><code>index.html / home.html</code> — Main landing page & hero showcases</li>
+          <li><code>store.html & scripts/store-products.js</code> — Dynamic product catalog with instant search & filter</li>
+          <li><code>store-detail.html & scripts/store-detail.js</code> — Interactive product detail view, review modal & recommendations</li>
+          <li><code>checkout.html & scripts/checkout.js</code> — Dedicated checkout flow & payment handler</li>
+          <li><code>news.html & scripts/news.js</code> — News magazine portal & detailed release changelogs</li>
+          <li><code>admin.html & scripts/admin.js</code> — Creator catalog admin dashboard</li>
+        </ul>
+
+        <div style="margin-top: 40px; padding: 24px; background: rgba(74,144,255,0.06); border-radius: 12px; border: 1px solid rgba(74,144,255,0.2);">
+          <p style="margin: 0; font-weight: 700; color: var(--nw-blue);">✨ SenpaiWorks 2.0 is live! Explore the store catalog, test customer reviews, or check out our latest digital asset releases.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive YouTube Video Modal -->
+  <div id="nw-video-modal" class="nw-modal">
+    <div class="nw-modal-overlay" id="nw-modal-overlay"></div>
+    <div class="nw-modal-container">
+      <button class="nw-modal-close" id="nw-modal-close-btn">&times;</button>
+      <div class="nw-modal-body">
+        <iframe id="nw-modal-iframe" src="" title="SenpaiWorks YouTube Video Player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="nw-modal-footer">
+        <span id="nw-modal-title">SenpaiWorks Official Video Proof</span>
+        <a id="nw-modal-yt-link" href="https://www.youtube.com/@senpaiworks.official" target="_blank" rel="noopener" class="nw-btn-yt-direct">
+          <i class="fa-brands fa-youtube"></i> Watch on YouTube
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const articleSection = document.getElementById('v2-detailed-post');
+      
+      const activatePost = () => {
+        if (articleSection) {
+          articleSection.classList.add('active');
+          articleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      if (window.location.hash === '#v2-detailed-post') {
+        setTimeout(activatePost, 150);
+      }
+
+      document.querySelectorAll('a[href="#v2-detailed-post"], a[href="news.html#v2-detailed-post"], #news-trigger-read').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          activatePost();
+        });
+      });
+
+      // YouTube Video Modal Handler
+      const videoModal = document.getElementById('nw-video-modal');
+      const modalIframe = document.getElementById('nw-modal-iframe');
+      const modalTitle = document.getElementById('nw-modal-title');
+      const modalYtLink = document.getElementById('nw-modal-yt-link');
+      const closeBtn = document.getElementById('nw-modal-close-btn');
+      const modalOverlay = document.getElementById('nw-modal-overlay');
+
+      function openVideoModal(videoId, title) {
+        if (!videoId) return;
+        modalIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+        modalTitle.textContent = title || 'SenpaiWorks Official Video Proof';
+        modalYtLink.href = `https://www.youtube.com/watch?v=${videoId}`;
+        videoModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeVideoModal() {
+        videoModal.classList.remove('active');
+        modalIframe.src = '';
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.nw-open-video-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          if (e.target.closest('.nw-yt-direct-link')) return;
+          e.preventDefault();
+          const videoId = btn.getAttribute('data-video-id');
+          const videoTitle = btn.getAttribute('data-video-title');
+          openVideoModal(videoId, videoTitle);
+        });
+      });
+
+      if (closeBtn) closeBtn.addEventListener('click', closeVideoModal);
+      if (modalOverlay) modalOverlay.addEventListener('click', closeVideoModal);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+          closeVideoModal();
+        }
+      });
+    });
+  </script>
+
+  <!-- Contact Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  </script>
+
+  <!-- Footer Section -->
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+</body>
+</html>

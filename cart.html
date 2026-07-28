@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="store.css?v=15">
+  <link rel="stylesheet" href="cart.css?v=101">
+  <link rel="stylesheet" href="mobile-navbar.css">
+</head>
+
+<body class="cart-page-body">
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function() {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=97"></script>
+  <script src="scripts/drawer.js?v=7"></script>
+
+
+  <!-- CART PAGE HERO HEADER -->
+  <header class="cart-page-header-strip">
+    <div class="cart-page-header-inner">
+      <h1 class="cart-page-title"><i class="fa-solid fa-bag-shopping" style="color: #38bdf8;"></i> Your Shopping Cart</h1>
+      <span class="cart-page-subtitle" id="cart-item-count-label">0 Items</span>
+    </div>
+  </header>
+
+  <!-- DYNAMIC FULL-PAGE CART CONTAINER -->
+  <main class="cart-main-container" id="cart-main-container">
+    <!-- Rendered dynamically via scripts/cart.js -->
+  </main>
+
+  <!-- Contact & Footer Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <script src="scripts/cart.js?v=100"></script>
+</body>
+
+</html>

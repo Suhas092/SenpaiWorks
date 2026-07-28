@@ -1,0 +1,790 @@
+/* ============================================
+   SENPAIWORKS WORLD CODEX — GOT REALM & MULTIVERSE
+   Font Style: Plus Jakarta Sans (Unified with Site)
+   Layout Order: 1. Map Intro -> 2. Houses -> 3. Kings & Queens -> 4. Others -> 5. Royal Oath
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap');
+
+:root {
+  --aes-bg: #06070a;
+  --aes-surface: #0b0d14;
+  --aes-card-bg: rgba(14, 17, 26, 0.75);
+  --aes-border: rgba(212, 175, 55, 0.25);
+  --aes-border-hover: rgba(212, 175, 55, 0.6);
+
+  --aes-gold: #d4af37;
+  --aes-gold-bright: #ffd700;
+  --aes-gold-soft: #e2d197;
+  
+  --aes-text: #f0ede6;
+  --aes-subtext: #9ca3af;
+
+  --font-family: 'Plus Jakarta Sans', sans-serif;
+  --font-title: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  background-color: var(--aes-bg);
+  color: var(--aes-text);
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  padding-top: 76px;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 46px;
+  }
+}
+
+/* ============================================
+   HERO PROLOGUE BANNER
+   ============================================ */
+
+.aes-hero-section {
+  position: relative;
+  height: 70vh;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+}
+
+.aes-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center 25%;
+  filter: brightness(0.3) contrast(1.2);
+  transform: scale(1.02);
+  animation: heroKenBurns 30s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes heroKenBurns {
+  from { transform: scale(1) translateY(0); }
+  to { transform: scale(1.06) translateY(-2%); }
+}
+
+.aes-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(circle at center, rgba(6, 7, 10, 0.3) 0%, rgba(6, 7, 10, 0.85) 70%, rgba(6, 7, 10, 1) 100%),
+              linear-gradient(to bottom, rgba(6, 7, 10, 0.4) 0%, rgba(6, 7, 10, 0.98) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aes-hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 24px;
+}
+
+.aes-tag {
+  font-family: var(--font-family);
+  color: var(--aes-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  background: rgba(212, 175, 55, 0.08);
+  padding: 6px 16px;
+  border: 1px solid var(--aes-gold);
+  border-radius: 4px;
+}
+
+.aes-hero-title {
+  font-family: var(--font-title);
+  font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 2px;
+  margin: 0 0 20px 0;
+  line-height: 1.15;
+  background: linear-gradient(180deg, #ffffff 0%, #e2d197 60%, var(--aes-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.aes-hero-desc {
+  font-family: var(--font-family);
+  font-size: clamp(0.98rem, 1.6vw, 1.15rem);
+  line-height: 1.8;
+  color: #cbd5e0;
+  margin: 0 auto 36px auto;
+  max-width: 780px;
+  font-weight: 400;
+}
+
+.aes-btn-wrap {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.aes-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  font-family: var(--font-family);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.aes-btn-gold {
+  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
+  color: #06070a;
+  border: 1px solid var(--aes-gold-bright);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+}
+
+.aes-btn-gold:hover {
+  background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.6);
+}
+
+.aes-btn-outline {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.aes-btn-outline:hover {
+  border-color: var(--aes-gold);
+  color: var(--aes-gold-bright);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+/* ============================================
+   SECTION 1: MAP INTRODUCTION (FIRST SECTION)
+   ============================================ */
+
+.aes-map-section {
+  padding: 90px 24px;
+  background: radial-gradient(circle at center, #101420 0%, #050608 100%);
+  border-top: 1px solid var(--aes-border);
+  border-bottom: 1px solid var(--aes-border);
+}
+
+.aes-section-header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 40px auto;
+}
+
+.aes-section-title {
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 12px 0 14px 0;
+  letter-spacing: 1px;
+}
+
+.aes-section-subtitle {
+  font-family: var(--font-family);
+  font-size: 1rem;
+  color: var(--aes-subtext);
+  line-height: 1.7;
+}
+
+.aes-map-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+@media (max-width: 992px) {
+  .aes-map-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.aes-map-viewport {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  background: #14110f url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp') center/cover no-repeat;
+  border-radius: 16px;
+  border: 2px solid var(--aes-gold);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), inset 0 0 80px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+}
+
+.aes-map-overlay-layer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(14, 17, 26, 0.3) 0%, rgba(5, 6, 8, 0.85) 100%);
+  pointer-events: none;
+}
+
+.aes-map-node {
+  position: absolute;
+  z-index: 10;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.aes-map-node:hover, .aes-map-node.active {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.aes-node-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(5, 6, 8, 0.9);
+  border: 2px solid var(--aes-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--aes-gold-bright);
+  font-size: 1.1rem;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.aes-map-node.active .aes-node-icon {
+  background: var(--aes-gold);
+  color: #06070a;
+  box-shadow: 0 0 30px var(--aes-gold-bright);
+}
+
+.aes-node-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  white-space: nowrap;
+  background: rgba(6, 7, 10, 0.95);
+  border: 1px solid var(--aes-gold);
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.node-dragonstone { top: 38%; left: 72%; }
+.node-winterfell { top: 22%; left: 32%; }
+.node-casterly { top: 58%; left: 24%; }
+.node-eyrie { top: 42%; left: 52%; }
+.node-stormsend { top: 72%; left: 64%; }
+
+/* Map Info Panel */
+.aes-map-info-panel {
+  background: var(--aes-card-bg);
+  border: 2px solid var(--aes-gold);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.aes-info-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding-bottom: 16px;
+}
+
+.aes-info-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--aes-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--aes-gold-bright);
+}
+
+.aes-info-title {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.aes-info-motto {
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--aes-gold);
+  font-style: italic;
+  margin: 0;
+}
+
+.aes-info-lore {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #cbd5e0;
+  margin-bottom: 24px;
+}
+
+.aes-info-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.aes-stat-box {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.aes-stat-lbl {
+  font-size: 0.7rem;
+  color: var(--aes-subtext);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.aes-stat-val {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--aes-gold-soft);
+}
+
+/* ============================================
+   SECTION 2: THE GREAT HOUSES
+   ============================================ */
+
+.aes-houses-section {
+  padding: 90px 24px;
+  background: #050608;
+}
+
+.aes-houses-grid {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.aes-house-card {
+  background: var(--aes-surface);
+  border: 2px solid var(--house-border, var(--aes-gold));
+  border-radius: 16px;
+  padding: 30px 24px;
+  text-align: left;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.aes-house-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 45px var(--house-glow, rgba(212, 175, 55, 0.4));
+}
+
+.aes-house-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--house-border, var(--aes-gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: var(--house-border, var(--aes-gold));
+  margin-bottom: 18px;
+}
+
+.aes-house-name {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.aes-house-motto {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--aes-gold);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.aes-house-desc {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #cbd5e0;
+  margin-bottom: 20px;
+}
+
+.aes-house-specs {
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  padding-top: 14px;
+  font-size: 0.82rem;
+  color: var(--aes-subtext);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aes-house-specs span strong {
+  color: #ffffff;
+}
+
+/* ============================================
+   SECTION 3: KINGS, QUEENS & RULERS
+   ============================================ */
+
+.aes-royalty-section {
+  padding: 90px 24px;
+  background: radial-gradient(circle at center, #0e111a 0%, #06070a 100%);
+  border-top: 1px solid var(--aes-border);
+  border-bottom: 1px solid var(--aes-border);
+}
+
+.aes-royalty-grid {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.aes-ruler-full-card {
+  background: var(--aes-card-bg);
+  border: 2px solid var(--ruler-border, var(--aes-gold));
+  border-radius: 20px;
+  padding: 36px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 36px;
+  align-items: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+@media (max-width: 868px) {
+  .aes-ruler-full-card {
+    grid-template-columns: 1fr;
+    padding: 24px;
+    gap: 20px;
+  }
+}
+
+.aes-ruler-img-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid var(--ruler-border, var(--aes-gold));
+  height: 340px;
+}
+
+.aes-ruler-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.4s ease;
+}
+
+.aes-ruler-full-card:hover .aes-ruler-img-wrap img {
+  transform: scale(1.05);
+}
+
+.aes-ruler-title-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ruler-border, var(--aes-gold));
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.aes-ruler-name {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+.aes-ruler-lore {
+  font-size: 0.98rem;
+  line-height: 1.8;
+  color: #cbd5e0;
+  margin-bottom: 24px;
+}
+
+.aes-ruler-specs-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+/* ============================================
+   SECTION 4: OTHER CHAMPIONS & MULTIVERSE LEGENDS
+   ============================================ */
+
+.aes-others-section {
+  padding: 90px 24px;
+  background: #050608;
+}
+
+.aes-champions-grid {
+  max-width: 1300px;
+  margin: 0 auto 50px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.aes-champ-card {
+  background: var(--aes-surface);
+  border: 1px solid var(--champ-border, var(--aes-border));
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  transition: transform 0.35s ease;
+  text-align: left;
+}
+
+.aes-champ-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--champ-color, var(--aes-gold));
+}
+
+.aes-champ-img-wrap {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+}
+
+.aes-champ-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.4s ease;
+}
+
+.aes-champ-card:hover .aes-champ-img-wrap img {
+  transform: scale(1.06);
+}
+
+.aes-champ-body {
+  padding: 24px;
+}
+
+.aes-champ-role {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--champ-color, var(--aes-gold));
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.aes-champ-name {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+}
+
+.aes-champ-lore {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #cbd5e0;
+}
+
+/* Dungeon Hero Class Strips */
+.aes-dungeon-strips {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.aes-dungeon-strip {
+  background: var(--aes-surface);
+  border: 1px solid var(--aes-border);
+  border-radius: 14px;
+  padding: 20px 28px;
+  display: grid;
+  grid-template-columns: 80px 1.5fr 1fr;
+  gap: 28px;
+  align-items: center;
+  text-align: left;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+@media (max-width: 868px) {
+  .aes-dungeon-strip {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.aes-dungeon-strip:hover {
+  border-color: var(--strip-color, var(--aes-gold));
+  transform: translateX(6px);
+}
+
+.aes-dungeon-img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--strip-color, var(--aes-gold));
+}
+
+.aes-dungeon-title {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.aes-dungeon-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #cbd5e0;
+  margin: 0;
+}
+
+.aes-dungeon-stats {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 868px) {
+  .aes-dungeon-stats {
+    justify-content: flex-start;
+  }
+}
+
+/* ============================================
+   SECTION 5: ROYAL OATH OF ALLEGIANCE
+   ============================================ */
+
+.aes-oath-section {
+  padding: 90px 24px;
+  background: radial-gradient(circle at center, #101420 0%, #050608 100%);
+  border-top: 1px solid var(--aes-border);
+  text-align: center;
+}
+
+.aes-oath-grid {
+  max-width: 1300px;
+  margin: 40px auto 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
+}
+
+.aes-fealty-card {
+  background: var(--aes-surface);
+  border: 2px solid var(--fealty-color, var(--aes-gold));
+  border-radius: 14px;
+  padding: 24px 16px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.aes-fealty-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px var(--fealty-glow, rgba(212, 175, 55, 0.4));
+}
+
+.aes-fealty-icon {
+  font-size: 1.6rem;
+  color: var(--fealty-color, var(--aes-gold));
+  margin-bottom: 12px;
+}
+
+.aes-fealty-name {
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.aes-fealty-motto {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--aes-gold);
+  margin-bottom: 16px;
+}
+
+.aes-fealty-btn {
+  background: transparent;
+  border: 1px solid var(--fealty-color, var(--aes-gold));
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
+
+.aes-fealty-card:hover .aes-fealty-btn {
+  background: var(--fealty-color, var(--aes-gold));
+  color: #06070a;
+}

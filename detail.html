@@ -1,95 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
 
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SenpaiWorks</title>
-  <link rel="stylesheet" href="2dworld.css">
-  <link rel="stylesheet" href="header.css">
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="detail.css">
+  <title>SenpaiWorks - Studio Production Pipeline</title>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
 
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="detail.css">
 </head>
+
 <body>
 
-  <!-- Marvel-style logo -->
-<div id="header-placeholder"></div>
-<script src="scripts/header.js"></script>
+  <!-- Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
 
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
 
-<div class="top-bg-strip"></div>
+  <!-- Main Container -->
+  <div class="detail-page-wrapper">
 
-<div id="drawer-container"></div>
-<script src="scripts/drawer.js"></script>
-
-
-  <!-- Anime Detail Section -->
-  <section class="detail-container">
-    <!-- Cover image column -->
-    <div class="detail-cover-col">
-      <img src="" alt="Anime Cover" class="detail-cover-image" />
+    <!-- Breadcrumbs -->
+    <div class="detail-breadcrumbs">
+      <a href="home.html"><i class="fa-solid fa-house"></i> Home</a>
+      <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+      <a href="home.html">Animations</a>
+      <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+      <span id="breadcrumb-title" class="breadcrumb-active">Production Pipeline</span>
     </div>
 
-    <!-- Main info column -->
-    <div class="detail-main-col">
-      <div class="detail-anime-title"></div>
+    <!-- Anime Detail Section -->
+    <section class="detail-container">
 
-      <div class="detail-genre-list">
-        <span class="detail-sidebar-title">Genre:</span>
-        <!-- JS will insert genres -->
+      <!-- Top Hero Card (Cover + Main Info + Studio Stats) -->
+      <div class="detail-hero-card">
+        <!-- Cover image column -->
+        <div class="detail-cover-col">
+          <div class="cover-image-wrapper">
+            <img src="" alt="Anime Cover" class="detail-cover-image" />
+          </div>
+        </div>
+
+        <!-- Main info column -->
+        <div class="detail-hero-info">
+          <div class="studio-badge"><i class="fa-solid fa-clapperboard"></i> SENPAIWORKS STUDIO PIPELINE</div>
+          <h1 class="detail-anime-title">Loading title...</h1>
+
+          <div class="detail-genre-list">
+            <span class="detail-sidebar-title">Genre:</span>
+            <!-- JS inserts genres -->
+          </div>
+
+          <p class="hero-pipeline-subtitle">
+            Every world begins as an idea. From the earliest concept sketches to the final rendered frame, each stage
+            builds upon the last to create characters, environments, stories, and cinematic experiences.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#" class="watch-now" target="_blank" rel="noopener">
+              <i class="fa-solid fa-play"></i> Watch Now
+            </a>
+            <button id="like-btn" class="like-btn">
+              <i class="fa-regular fa-heart" id="like-icon"></i>
+              <span>Like</span>
+              <span id="like-count" class="like-count">0</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="hero-buttons">
-        <a href="#" class="watch-now" target="_blank" rel="noopener"></a>
+      <!-- Studio Metrics & Statistics Dashboard -->
+      <div class="studio-stats-dashboard">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Characters</span>
+            <span class="stat-value" id="stat-total-characters">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-shapes"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total 3D Assets</span>
+            <span class="stat-value" id="stat-total-assets">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-bars-staggered"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Completed Stages</span>
+            <span class="stat-value" id="stat-completed-stages">0/16</span>
+          </div>
+        </div>
+
+        <div class="stat-card progress-stat-card">
+          <div class="stat-info-row">
+            <span class="stat-label">Overall Production Progress</span>
+            <span class="stat-value" id="stat-progress-val">0%</span>
+          </div>
+          <div class="dashboard-progress-bar">
+            <div class="dashboard-progress-fill" id="stat-progress-bar-inner" style="width: 0%;"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="detail-plot-summary" id="plot-summary">
-        <span id="plot-text"></span>
-        <a href="javascript:void(0)" class="plot-toggle-link" id="plot-toggle-link" style="display:none;">more</a>
+      <!-- Horizontal 16-Stage Pipeline Timeline -->
+      <div class="pipeline-timeline-wrapper">
+        <div class="timeline-header">
+          <h3><i class="fa-solid fa-timeline"></i> Pipeline Overview</h3>
+          <span class="timeline-hint"><i class="fa-solid fa-hand-pointer"></i> Click any stage to inspect details</span>
+        </div>
+        <div class="pipeline-timeline-track" id="pipeline-timeline-track">
+          <!-- JS injects 16 nodes -->
+        </div>
       </div>
 
-      <div class="detail-plot-summary" id="plot-summary-2"></div>
-    </div>
+      <!-- Ensemble Cast & Character Breakdown -->
+      <div class="detail-card characters-cast-section">
+        <h2 class="card-title"><i class="fa-solid fa-users"></i> Character & Asset Ensemble</h2>
+        <div class="characters-cast-grid" id="characters-cast-grid">
+          <!-- JS injects character cards -->
+        </div>
+      </div>
 
-    <!-- Sidebar column -->
-    <div class="detail-sidebar">
-      <!-- JS will inject synonyms, aired, premiered, etc. -->
-    </div>
-  </section>
+      <!-- Main Content Grid (16 Stages vs Sidebar Tracker & Arsenal) -->
+      <div class="detail-content-grid">
 
+        <!-- Left Column: Story Synopsis & 16 Pipeline Stages -->
+        <div class="detail-main-col">
 
-  
-<div id="contact-container"></div>
-<script src="scripts/contact.js"></script>
-<script>
-  // Set different image per page
-  loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rem_copy_rkjlfo.webp");
+          <!-- Synopsis Card -->
+          <div class="detail-card plot-card">
+            <h2 class="card-title"><i class="fa-solid fa-book-open"></i> Story Synopsis & Concept</h2>
+            <div class="detail-plot-summary" id="plot-summary">
+              <span id="plot-text"></span>
+            </div>
+          </div>
 
-</script>
+          <!-- 16 Pipeline Stage Cards Container -->
+          <div id="pipeline-stages-container" class="pipeline-stages-container">
+            <!-- JS injects 16 detailed stage cards -->
+          </div>
+        </div>
 
+        <!-- Right Column: Sidebar Tracker & Software Arsenal -->
+        <div class="detail-sidebar-col">
 
+          <!-- Progress Tracker Matrix Card -->
+          <div class="detail-card sidebar-card">
+            <h3 class="sidebar-header"><i class="fa-solid fa-list-check"></i> Progress Tracker</h3>
+            <div class="sidebar-progress-tracker" id="sidebar-progress-tracker">
+              <!-- JS injects 16-stage status rows -->
+            </div>
+          </div>
+
+          <!-- Software Tools Arsenal Card -->
+          <div class="detail-card sidebar-card">
+            <h3 class="sidebar-header"><i class="fa-solid fa-laptop-code"></i> Software Arsenal</h3>
+            <div class="sidebar-software-arsenal" id="sidebar-software-arsenal">
+              <!-- JS injects software chips -->
+            </div>
+          </div>
+
+          <!-- Project Specs Card -->
+          <div class="detail-card sidebar-card">
+            <h3 class="sidebar-header"><i class="fa-solid fa-circle-info"></i> Project Specs</h3>
+            <div class="detail-sidebar">
+              <!-- JS injects metadata -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- Contact & Footer -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rem_copy_rkjlfo.webp");
+  </script>
 
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 
   <!-- Detail Page Script -->
   <script src="scripts/detail.js"></script>
-
-
-
-
-
-
-
-
-
-
-  
 </body>
+
 </html>
-
-
-
-

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - SenpaiWorks</title>
+  <link rel="stylesheet" href="art-library.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="store.css">
+  <link rel="stylesheet" href="store-detail.css?v=18">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Dynamic Header -->
+  <div id="header-placeholder">
+  <script>
+    (function() {
+      var cached = sessionStorage.getItem('cached_header');
+      if (cached) {
+        document.getElementById('header-placeholder').innerHTML = cached;
+      }
+    })();
+  </script>
+</div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Dynamic Cart/Menu Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- Top Spacer Clearance for Fixed Header -->
+  <div class="store-header-spacer"></div>
+
+  <!-- Product Detail Section -->
+  <main class="store-detail-container">
+    <!-- Main Hero Block (Gallery Left, Purchase Panel Right) -->
+    <section class="detail-hero-section">
+      <!-- Left Side: Interactive Gallery -->
+      <div class="detail-gallery-col">
+        <div class="main-preview-box">
+          <img id="main-preview-img" src="" alt="Product Preview">
+        </div>
+        <div class="thumbnail-gallery" id="thumbnail-gallery">
+          <!-- Thumbnail images dynamically generated -->
+        </div>
+      </div>
+
+      <!-- Right Side: Details and Actions -->
+      <div class="detail-info-col">
+        <!-- Breadcrumbs (Moved to right column above title) -->
+        <nav class="detail-breadcrumbs" id="detail-breadcrumbs">
+          <a href="home.html">Home</a> &gt; <a href="store.html">Store</a> &gt; <span id="breadcrumb-current">Product Name</span>
+        </nav>
+
+        <div class="product-title-row">
+          <h1 class="product-title" id="product-title">Loading Product...</h1>
+          <div class="title-action-buttons">
+            <button class="title-action-btn" id="action-share" title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+            <button class="title-action-btn" id="action-wishlist" title="Add to Wishlist"><i class="fa-regular fa-heart"></i></button>
+          </div>
+        </div>
+
+        <div class="reviews-summary-row">
+          <span class="star-rating-stars" id="rating-stars-preview">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </span>
+          <span class="avg-rating-val" id="avg-rating-preview">0.0</span>
+          <a href="#reviews-section" class="reviews-count-link" id="reviews-count-preview">(0 reviews)</a>
+        </div>
+
+        <!-- Pricing Panel -->
+        <div class="price-display-panel">
+          <div class="price-row">
+            <span class="price-amount" id="product-price">₹0.00</span>
+            <span class="original-price" id="original-price">₹0.00</span>
+            <span class="discount-badge" id="discount-badge">-0%</span>
+            <span class="stock-status" id="stock-status">In Stock</span>
+          </div>
+        </div>
+
+        <!-- Description Panel (with toggle) -->
+        <div class="description-panel">
+          <div class="description-text" id="product-description">
+            <!-- description goes here -->
+          </div>
+          <button class="desc-toggle-btn" id="desc-toggle-btn">Show More</button>
+        </div>
+
+        <!-- Color Selection -->
+        <div class="color-selection-group" id="color-selection-group" style="display: none;">
+          <span class="selection-label">Color</span>
+          <div class="color-swatches" id="color-swatches">
+            <!-- color swatches generated dynamically -->
+          </div>
+        </div>
+
+        <!-- Size Selection -->
+        <div class="size-selection-group" id="size-selection-group">
+          <div class="size-label-row">
+            <span class="selection-label">Size <span class="oversized-tag">(All Shirts are Oversized fit 👕)</span></span>
+            <a href="#" class="view-size-guide-btn" id="view-size-guide-btn">View Size Guide</a>
+          </div>
+          <div class="size-buttons-grid" id="size-buttons-grid">
+            <!-- size buttons generated dynamically -->
+          </div>
+        </div>
+
+        <!-- Primary Action Buttons -->
+        <div class="purchase-actions-box">
+          <button class="pill-btn view-store-action" id="action-buy-now">
+            BUY NOW
+          </button>
+          <button class="pill-btn add-to-cart-action" id="action-add-cart">
+            ADD TO CART
+          </button>
+        </div>
+
+        <!-- Other Color Options Section -->
+        <div class="pair-it-with-section" id="pair-it-with-section">
+          <div class="piw-header">
+            <h3>Other Color Options</h3>
+            <div class="piw-nav-arrows">
+              <button class="piw-arrow piw-arrow-left" id="piw-arrow-left"><i class="fa-solid fa-chevron-left"></i></button>
+              <button class="piw-arrow piw-arrow-right" id="piw-arrow-right"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="piw-slider-container">
+            <div class="piw-slider" id="piw-slider">
+              <!-- Color variants generated dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Feature Badges Section -->
+    <section class="feature-badges-section">
+      <div class="feature-badge-card">
+        <div class="feature-badge-icon"><i class="fa-solid fa-truck"></i></div>
+        <div class="feature-badge-info">
+          <h4>Free shipping</h4>
+          <p>Enjoy free shipping on all your orders</p>
+        </div>
+      </div>
+      <div class="feature-badge-card">
+        <div class="feature-badge-icon"><i class="fa-solid fa-dollar-sign"></i></div>
+        <div class="feature-badge-info">
+          <h4>30-day money-back</h4>
+          <p>Enjoy peace of mind with our guarantee.</p>
+        </div>
+      </div>
+      <div class="feature-badge-card">
+        <div class="feature-badge-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="feature-badge-info">
+          <h4>Secure checkout</h4>
+          <p>Complete your purchase safely</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Closeup Details Section (Image 2) -->
+    <section class="closeup-details-section">
+      <div class="closeup-grid">
+        <div class="closeup-card card-weather" style="background-image: url('assets/closeup_weather.png');">
+          <div class="closeup-overlay">
+            <h3>Weather-Ready Performance</h3>
+            <p>Designed to handle light rain and changing conditions with water-resistant finishes and durable construction.</p>
+          </div>
+        </div>
+        <div class="closeup-card card-functional" style="background-image: url('assets/closeup_functional.png');">
+          <div class="closeup-overlay">
+            <h3>Functional Design</h3>
+            <p>Smart pocket systems and practical details keep your essentials organized wherever you go.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Materials Breakdown Banner -->
+    <section class="materials-breakdown-section">
+      <div class="materials-container">
+        <div class="material-text-left">
+          <div class="material-point">
+            <h4>Recycled Polyester</h4>
+            <p>Recycled plastic turns strong, light, and resilient fabric.</p>
+          </div>
+          <div class="material-point">
+            <h4>Organic Cotton</h4>
+            <p>Naturally grown, soft, and eco-friendly fabric for comfort.</p>
+          </div>
+        </div>
+        <div class="material-center-img">
+          <img id="material-center-image" src="assets/material_vest.png" alt="Material Breakdown">
+        </div>
+        <div class="material-text-right">
+          <div class="material-point">
+            <h4>TENCEL™ Lyocell</h4>
+            <p>Sustainably sourced, soft, moisture-controlling, biodegradable.</p>
+          </div>
+          <div class="material-point">
+            <h4>Hemp Fabric</h4>
+            <p>Eco-friendly fiber that uses less water and is tough-wearing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Software & Specs Section (Collapsible details standard) -->
+    <section class="detail-description-grid">
+      <div class="desc-panel">
+        <h2 class="section-title">Technical Description</h2>
+        <div class="rich-text-content" id="product-long-description">
+          <!-- Description text -->
+        </div>
+      </div>
+      <div class="whats-included-panel" id="whats-included-container">
+        <h2 class="section-title">What's Included</h2>
+        <ul class="included-list" id="whats-included-list">
+          <!-- What's included points -->
+        </ul>
+      </div>
+    </section>
+
+    <section class="detail-specs-section">
+      <h2 class="section-title">Product Specifications</h2>
+      <div class="specs-table-wrapper">
+        <table class="specs-table" id="specs-table">
+          <!-- Dynamically populated based on category -->
+        </table>
+      </div>
+    </section>
+
+    <!-- You May Also Like / Recommendations Tab Section -->
+    <section class="detail-related-section">
+      <div class="related-section-header">
+        <h2 class="section-title-tabs active">You May Also Like</h2>
+      </div>
+
+      <div class="related-carousel-container">
+        <button type="button" class="related-side-btn related-side-left" id="related-scroll-left" onclick="scrollRelatedGrid(-1)" title="Scroll Left">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="product-grid related-grid" id="related-products-grid">
+          <!-- Products in same category -->
+        </div>
+
+        <button type="button" class="related-side-btn related-side-right" id="related-scroll-right" onclick="scrollRelatedGrid(1)" title="Scroll Right">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Customer Reviews Redesign -->
+    <section class="detail-reviews-section" id="reviews-section">
+      <h2 class="reviews-section-title">Customer Review</h2>
+      <p class="reviews-section-subtitle">Honest feedback from people who have embraced it as a staple in their daily wardrobe, sharing their genuine experiences and how it fits seamlessly into their everyday life.</p>
+      
+      <div class="reviews-split-layout">
+        <!-- Left: Aggregates & Chart -->
+        <div class="reviews-summary-left">
+          <div class="avg-stars-val-huge">
+            <span class="huge-rating-number" id="reviews-huge-rating">0.0</span>
+            <span class="huge-rating-label">out of 5</span>
+          </div>
+          <div class="huge-stars-row" id="reviews-huge-stars">
+            <!-- stars loaded dynamically -->
+          </div>
+          <div class="reviews-huge-count-text" id="reviews-huge-count">based on 0 reviews</div>
+          
+          <div class="rating-distribution-chart" id="rating-distribution-chart">
+            <!-- 5, 4, 3, 2, 1 star bars loaded dynamically -->
+          </div>
+          <button class="write-review-btn" id="write-review-btn">Write a Review</button>
+        </div>
+
+        <!-- Right: Individual Comments and User Images -->
+        <div class="reviews-comments-right">
+          
+          <!-- SORTING & COUNT HEADER BAR -->
+          <div class="reviews-sort-bar">
+            <span class="reviews-count-header" id="reviews-header-count-text">Showing reviews</span>
+            <div class="reviews-sort-group">
+              <label for="reviews-sort-select" class="reviews-sort-label"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort by:</label>
+              <select id="reviews-sort-select" class="reviews-sort-select" onchange="handleReviewSortChange(this.value)">
+                <option value="recent">Most Recent</option>
+                <option value="highest">Highest Rating</option>
+                <option value="lowest">Lowest Rating</option>
+                <option value="helpful">Most Helpful</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- COMMENTS LIST -->
+          <div class="reviews-comments-list" id="reviews-comments-list">
+            <!-- Comments rendered dynamically -->
+          </div>
+
+          <!-- LOAD MORE REVIEWS BUTTON -->
+          <div class="reviews-load-more-wrap" id="reviews-load-more-wrap" style="display: none;">
+            <button type="button" class="load-more-reviews-btn" id="load-more-reviews-btn" onclick="handleLoadMoreReviews()">
+              <span>Load More Reviews</span> <i class="fa-solid fa-chevron-down"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contact & Footer Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rem_copy_rkjlfo.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Size Guide Modal -->
+  <div class="size-guide-modal-overlay" id="size-guide-modal">
+    <div class="size-guide-modal-content">
+      <button class="modal-close-btn" id="size-guide-close" title="Close"><i class="fa-solid fa-xmark"></i></button>
+      <h2 class="sg-modal-title">Size Guide</h2>
+      
+      <!-- Unit Toggle -->
+      <div class="sg-unit-toggle">
+        <button type="button" class="sg-unit-btn active" id="unit-imperial" onclick="toggleSizeUnits('imperial')">Imperial</button>
+        <button type="button" class="sg-unit-btn" id="unit-metric" onclick="toggleSizeUnits('metric')">Metric</button>
+      </div>
+
+      <!-- T-Shirt Measurement Diagram -->
+      <div class="sg-diagram-wrap">
+        <svg class="sg-tshirt-svg" viewBox="0 0 400 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- T-shirt Outline -->
+          <path d="M 130 40 Q 200 65 270 40 L 340 95 L 300 150 L 275 130 L 275 320 L 125 320 L 125 130 L 100 150 L 60 95 Z" fill="#18181b" stroke="#3f3f46" stroke-width="2"/>
+          <!-- Collar -->
+          <path d="M 130 40 Q 200 70 270 40 Q 200 50 130 40 Z" fill="#27272a" stroke="#52525b" stroke-width="1.5"/>
+          
+          <!-- Length Arrow (Vertical) -->
+          <line x1="200" y1="55" x2="200" y2="310" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <polygon points="200,50 195,60 205,60" fill="#ffffff"/>
+          <polygon points="200,315 195,305 205,305" fill="#ffffff"/>
+          <text x="180" y="180" fill="#ffffff" font-size="12" font-weight="700" transform="rotate(-90 180,180)">Length</text>
+
+          <!-- Width Arrow (Horizontal) -->
+          <line x1="135" y1="200" x2="265" y2="200" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <polygon points="130,200 140,195 140,205" fill="#ffffff"/>
+          <polygon points="270,200 260,195 260,205" fill="#ffffff"/>
+          <text x="185" y="193" fill="#ffffff" font-size="12" font-weight="700">Width</text>
+
+          <!-- Sleeve Arrow (Diagonal Right) -->
+          <line x1="265" y1="50" x2="330" y2="100" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <text x="285" y="65" fill="#ffffff" font-size="11" font-weight="700" transform="rotate(35 285,65)">Sleeve</text>
+        </svg>
+      </div>
+
+      <!-- Size Table -->
+      <div class="sg-table-responsive">
+        <table class="sg-table" id="sg-table-imperial">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Height (feet)</th>
+              <th>Weight (lbs)</th>
+              <th>Width (in)</th>
+              <th>Length (in)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>4'9.09" - 5'1.02"</td><td>88 - 110</td><td>17.99</td><td>28.00</td></tr>
+            <tr><td>M</td><td>5'1.02" - 5'4.96"</td><td>110 - 143</td><td>20.00</td><td>29.00</td></tr>
+            <tr><td>L</td><td>5'4.96" - 5'7.72"</td><td>143 - 187</td><td>21.97</td><td>30.00</td></tr>
+            <tr><td>XL</td><td>5'7.72" - 5'10.87"</td><td>187 - 220</td><td>23.98</td><td>31.00</td></tr>
+            <tr><td>2XL</td><td>5'10.87" - 6'2.02"</td><td>220 - 264</td><td>25.98</td><td>32.00</td></tr>
+          </tbody>
+        </table>
+
+        <table class="sg-table" id="sg-table-metric" style="display: none;">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Height (cm)</th>
+              <th>Weight (kg)</th>
+              <th>Width (cm)</th>
+              <th>Length (cm)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>145 - 155 cm</td><td>40 - 50 kg</td><td>45.7 cm</td><td>71.1 cm</td></tr>
+            <tr><td>M</td><td>155 - 165 cm</td><td>50 - 65 kg</td><td>50.8 cm</td><td>73.7 cm</td></tr>
+            <tr><td>L</td><td>165 - 172 cm</td><td>65 - 85 kg</td><td>55.8 cm</td><td>76.2 cm</td></tr>
+            <tr><td>XL</td><td>172 - 180 cm</td><td>85 - 100 kg</td><td>60.9 cm</td><td>78.7 cm</td></tr>
+            <tr><td>2XL</td><td>180 - 188 cm</td><td>100 - 120 kg</td><td>66.0 cm</td><td>81.3 cm</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Notes Footer -->
+      <div class="sg-modal-footer">
+        <p class="sg-note-asterisk">* Note: People who are chubby with a belly or taller and thinner should choose 1 size up or down. Shirt measurements may have an error of about &plusmn; 5%</p>
+        <p class="sg-note-guarantee">Exchanges are free and easy.<br>Because you need to be happy. We all do.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Write a Review Modal -->
+  <div class="review-modal-overlay" id="write-review-modal">
+    <div class="review-modal-content">
+      <button class="modal-close-btn" id="review-modal-close" title="Close"><i class="fa-solid fa-xmark"></i></button>
+
+      <!-- Item Image & Prompt Header -->
+      <div class="review-product-header">
+        <div class="review-product-img-box">
+          <img id="review-modal-product-img" src="" alt="Product Thumbnail">
+        </div>
+        <div class="review-product-meta">
+          <span class="review-prompt-question">How was the item?</span>
+          <h3 class="review-product-name" id="review-modal-product-name">Product Name</h3>
+        </div>
+      </div>
+      
+      <form id="write-review-form" onsubmit="return false;">
+        <!-- Rating selector -->
+        <div class="review-form-group">
+          <label class="review-form-label">Overall Rating</label>
+          <div class="star-rating-input" id="star-rating-input">
+            <i class="fa-regular fa-star" data-rating="1"></i>
+            <i class="fa-regular fa-star" data-rating="2"></i>
+            <i class="fa-regular fa-star" data-rating="3"></i>
+            <i class="fa-regular fa-star" data-rating="4"></i>
+            <i class="fa-regular fa-star" data-rating="5"></i>
+          </div>
+          <span class="rating-text-hint" id="rating-text-hint">Select a rating</span>
+          <input type="hidden" id="review-rating-value" value="0">
+        </div>
+
+        <!-- Review Title -->
+        <div class="review-form-group">
+          <label for="review-title-input" class="review-form-label">Title of the Review</label>
+          <input type="text" id="review-title-input" class="review-form-input" placeholder="Give your review a title..." required>
+        </div>
+
+        <!-- Write a Review Body -->
+        <div class="review-form-group">
+          <label for="review-text-input" class="review-form-label">Write a Review</label>
+          <textarea id="review-text-input" class="review-form-textarea" rows="4" placeholder="Tell us what you liked or disliked about this item..." required></textarea>
+        </div>
+
+        <div class="review-modal-actions">
+          <button type="button" class="review-cancel-btn" id="review-cancel-btn">Cancel</button>
+          <button type="submit" class="review-submit-btn" id="review-submit-btn">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Page Logic Scripts -->
+  <script src="scripts/products-data.js?v=5"></script>
+  <script src="scripts/store-detail.js?v=18"></script>
+
+</body>
+</html>

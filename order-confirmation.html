@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanks for your order! — SenpaiWorks Official Store</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="orders.css?v=76">
+</head>
+
+<body>
+
+  <!-- CLEAN RECEIPT HEADER BAR -->
+  <header class="receipt-header-bar">
+    <div class="receipt-header-inner">
+      <a href="index.html" class="receipt-header-brand" title="Return to Home Page">
+        <img src="assets/Videos/SenpaiWorks logo.png" alt="SenpaiWorks Logo Icon" class="receipt-logo-icon">
+        <img src="assets/Videos/senpaiworks name logo no bg.png" alt="SenpaiWorks Brand Name" class="receipt-logo-name">
+      </a>
+
+      <a href="store.html" class="receipt-cart-link" title="Continue Shopping at Store">
+        <i class="fa-solid fa-store"></i>
+        <span>Store</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN ORDER CONFIRMATION RECEIPT -->
+  <main class="order-receipt-container">
+
+    <!-- SUCCESS BADGE & HERO TITLE -->
+    <div class="confirmation-success-badge">
+      <i class="fa-solid fa-circle-check"></i> Order Confirmed
+    </div>
+    <h1 class="order-hero-title">Thanks for your order!</h1>
+
+    <!-- GREETING BOX -->
+    <div class="order-greeting-box">
+      <h3 id="rcpt-greeting-name">Hi Suhas,</h3>
+      <p>
+        We are delighted that you have found something you like!<br>
+        As soon as your package is on its way, you will receive a delivery confirmation from us by email.
+      </p>
+    </div>
+
+    <!-- 2-COLUMN META GRID: DELIVERY ADDRESS & ORDER DETAILS -->
+    <div class="order-meta-grid">
+      <div class="order-delivery-address-col">
+        <strong>Delivery address</strong>
+        <div id="rcpt-address-text">
+          Suhas Senpai<br>
+          SenpaiWorks Studio, High Street<br>
+          Indiranagar, MG Road<br>
+          Bengaluru, KARNATAKA 560038<br>
+          India
+        </div>
+      </div>
+
+      <div class="order-number-col">
+        <div style="margin-bottom: 12px;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: #555555;">Order nº</div>
+          <div class="order-number-val" id="rcpt-order-id">ORD-105010</div>
+        </div>
+        <div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #555555;">Order Date</div>
+          <div style="font-weight: 800; color: #111111;" id="rcpt-order-date">Mon, 27 Jul 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YOUR SENPAIWORKS ITEMS -->
+    <section class="order-items-section">
+      <h2 class="order-items-head-title">Your SenpaiWorks Items</h2>
+      <div class="order-delivery-timeline" id="rcpt-delivery-dates">
+        Standard Delivery: Thu, 30 Jul 2026 - Mon, 3 Aug 2026
+      </div>
+
+      <!-- Items List -->
+      <div id="rcpt-items-list">
+        <!-- Loaded dynamically from scripts/order-confirmation.js -->
+      </div>
+    </section>
+
+    <!-- PAYMENT METHOD & TOTALS BREAKDOWN -->
+    <section class="order-totals-section">
+      <div class="order-total-line-item">
+        <span>Payment method</span>
+        <span style="font-weight: 800;" id="rcpt-payment-method">Razorpay Gateway / Credit Card</span>
+      </div>
+
+      <div class="order-total-line-item">
+        <span>Sub-Total</span>
+        <span style="font-weight: 700;" id="rcpt-subtotal-val">₹2,998.00</span>
+      </div>
+
+      <div class="order-total-line-item">
+        <span>Shipping Fee</span>
+        <span style="font-weight: 700;" id="rcpt-shipping-val">Free</span>
+      </div>
+
+      <div class="order-total-line-item grand-final">
+        <span>Total</span>
+        <span id="rcpt-grand-total-val">₹2,998.00</span>
+      </div>
+    </section>
+
+    <!-- ACTION BUTTONS: CONTINUE SHOPPING (STORE) & MY ORDERS (ORDERS) -->
+    <div class="confirmation-actions-row">
+      <a href="store.html" class="btn-view-order">
+        <i class="fa-solid fa-bag-shopping"></i> Continue Shopping
+      </a>
+      <a href="orders.html" class="btn-secondary-order">
+        <i class="fa-solid fa-box"></i> View Returns & Orders
+      </a>
+    </div>
+
+  </main>
+
+  <script src="scripts/order-confirmation.js?v=75"></script>
+</body>
+
+</html>

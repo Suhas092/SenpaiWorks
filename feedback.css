@@ -1,0 +1,435 @@
+/* Feedback Form Page Styles */
+
+:root {
+  --fb-accent: #0066cc;
+  --fb-accent-hover: #0052a3;
+  --fb-bg: #f8fafc;
+  --fb-card-bg: #ffffff;
+  --fb-border: rgba(0, 0, 0, 0.08);
+  --fb-text: #1a1a1a;
+  --fb-text-muted: #55555a;
+  --fb-star-gold: #facc15;
+}
+
+body {
+  background-color: var(--fb-bg);
+  color: var(--fb-text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  padding-top: 76px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 46px;
+  }
+}
+
+/* Hero Banner */
+.feedback-hero {
+  position: relative;
+  height: 40vh;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.feedback-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.2) contrast(1.1);
+  z-index: 1;
+}
+
+.feedback-hero-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1300px;
+  padding: 0 40px;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+/* Layout Container */
+.feedback-layout-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.feedback-card {
+  position: relative;
+  background: var(--fb-card-bg);
+  border: 1px solid var(--fb-border);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Styles */
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+@media (max-width: 576px) {
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+.form-group-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.form-group-item.full-width {
+  flex: none;
+  width: 100%;
+}
+
+.form-group-item label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--fb-text-muted);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input,
+.input-wrapper select {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid var(--fb-border);
+  border-radius: 12px;
+  padding: 14px 16px 14px 44px;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+/* Select specific styling */
+.feedback-select {
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Textarea styling */
+.input-wrapper textarea {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid var(--fb-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.25s ease;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.input-wrapper input:focus,
+.input-wrapper select:focus,
+.input-wrapper textarea:focus {
+  background: #ffffff;
+  border-color: var(--fb-accent);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--fb-text-muted);
+  font-size: 1.1rem;
+}
+
+/* Stars Rating Selector */
+.stars-selector-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+  border: 1px solid var(--fb-border);
+  padding: 14px 20px;
+  border-radius: 12px;
+}
+
+.stars-row {
+  display: flex;
+  gap: 8px;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.rating-star {
+  color: var(--fb-text-muted);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease;
+}
+
+.rating-star:hover {
+  transform: scale(1.2);
+}
+
+.rating-star.active,
+.rating-star.selected {
+  color: var(--fb-star-gold);
+}
+
+.rating-descriptor {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--fb-text-muted);
+}
+
+/* Checkbox Styling */
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-checkmark {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--fb-border);
+  background: #ffffff;
+  border-radius: 6px;
+  display: inline-block;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.25s ease;
+  margin-top: 2px;
+}
+
+.checkbox-container:hover input ~ .checkbox-checkmark {
+  border-color: var(--fb-accent);
+}
+
+.checkbox-container input:checked ~ .checkbox-checkmark {
+  background: var(--fb-accent);
+  border-color: var(--fb-accent);
+}
+
+.checkbox-checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6.5px;
+  top: 3px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkbox-checkmark::after {
+  display: block;
+}
+
+.checkbox-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkbox-text strong {
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+
+.checkbox-text p {
+  font-size: 0.8rem;
+  color: var(--fb-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Submit Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--fb-border);
+  padding-top: 24px;
+  margin-top: 10px;
+}
+
+.feedback-submit-btn {
+  background: var(--fb-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 30px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+  font-family: inherit;
+}
+
+.feedback-submit-btn:hover {
+  background: var(--fb-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 102, 204, 0.3);
+}
+
+.feedback-submit-btn:active {
+  transform: translateY(0);
+}
+
+.feedback-error-msg {
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Success Overlay State */
+.success-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.3s ease;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.success-content {
+  text-align: center;
+  padding: 40px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon-wrap {
+  width: 70px;
+  height: 70px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+  box-shadow: 0 5px 15px rgba(16, 185, 129, 0.15);
+}
+
+.success-content h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+}
+
+.success-content p {
+  font-size: 1rem;
+  color: var(--fb-text-muted);
+  line-height: 1.6;
+  margin: 0 0 30px 0;
+}
+
+.redirect-choices {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.redirect-btn {
+  flex: 1;
+  background: #f8fafc;
+  border: 1px solid var(--fb-border);
+  color: #1a1a1a;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+
+.redirect-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.redirect-btn.primary {
+  background: var(--fb-accent);
+  border-color: transparent;
+}
+
+.redirect-btn.primary:hover {
+  background: var(--fb-accent-hover);
+}

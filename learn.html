@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn & Tutorials - SenpaiWorks</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="learn.css">
+</head>
+
+<body>
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- Learn Hero Section -->
+  <section class="learn-hero">
+    <div class="learn-hero-bg"
+      style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630849/code_copy_jq3ic6.webp');">
+    </div>
+    <div class="learn-hero-overlay">
+      <div class="learn-hero-content">
+        <span class="category-badge">KNOWLEDGE SHARING</span>
+        <h1 class="hero-title">LEARN & TUTORIALS</h1>
+        <p class="hero-description">Master the art of 3D character creation, digital sculpting, garment simulation, and modern web development. Learn directly from SenpaiWorks creators with upcoming step-by-step masterclasses, downloadable source files, and production walkthroughs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="learn-container">
+
+    <!-- Upcoming Courses Section (Modern UI Kit Style) -->
+    <section class="upcoming-courses-section">
+      <div class="section-header-wrap">
+        <span class="section-badge-tag">Upcoming Modules</span>
+        <h2 class="section-title-bold">Courses Will Be Added Soon</h2>
+        <p class="section-sub-title">
+          We are actively preparing brand new step-by-step masterclasses, project source files, and breakdown guides across digital art, 3D software pipelines, VFX, and web development.
+        </p>
+      </div>
+
+      <div class="teaser-grid">
+        <!-- Course 1: ZBrush Character Sculpting -->
+        <a href="course-detail.html?id=zbrush" class="teaser-card">
+          <div class="teaser-thumb-wrapper">
+            <img src="assets/courses/zbrush-course.png" alt="ZBrush Character Sculpting Masterclass" class="teaser-thumb">
+          </div>
+          <div class="teaser-card-body">
+            <span class="teaser-tag">3D Digital Sculpting</span>
+            <h3 class="teaser-title">ZBrush Character Sculpting: Sculpt Anime Characters from Scratch</h3>
+            <p class="teaser-desc">Master ZBrush digital clay tools, high-poly facial anatomy, stylized anime hair sculpting, and secondary detail pass.</p>
+            <div class="teaser-card-footer">
+              <div class="author-meta">
+                <img src="assets/SenpaiWorks logo bg.png" alt="SenpaiWorks Studio" class="author-avatar">
+                <div class="author-info">
+                  <span class="author-name">SenpaiWorks Studio</span>
+                  <span class="author-date">Release 2026</span>
+                </div>
+              </div>
+              <span class="status-pill in-production"><i class="fa-solid fa-fire"></i> In Production</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Course 2: Blender 3D Complete Pipeline -->
+        <a href="course-detail.html?id=blender" class="teaser-card">
+          <div class="teaser-thumb-wrapper">
+            <img src="assets/courses/blender-course.png" alt="Blender 3D Complete Pipeline" class="teaser-thumb">
+          </div>
+          <div class="teaser-card-body">
+            <span class="teaser-tag">3D Modeling & Rigging</span>
+            <h3 class="teaser-title">Blender 3D Complete Pipeline: Modeling, Topology & Texturing</h3>
+            <p class="teaser-desc">Comprehensive guide to anime character modeling, clean low-poly retopology, weight painting, UV unwrapping, and stylized shading.</p>
+            <div class="teaser-card-footer">
+              <div class="author-meta">
+                <img src="assets/SenpaiWorks logo bg.png" alt="SenpaiWorks Studio" class="author-avatar">
+                <div class="author-info">
+                  <span class="author-name">SenpaiWorks Studio</span>
+                  <span class="author-date">Release 2026</span>
+                </div>
+              </div>
+              <span class="status-pill in-production"><i class="fa-solid fa-fire"></i> In Production</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Course 3: Marvelous Designer Garments -->
+        <a href="course-detail.html?id=marvelous-designer" class="teaser-card">
+          <div class="teaser-thumb-wrapper">
+            <img src="assets/courses/marvelous-designer-course.png" alt="Marvelous Designer 3D Clothing" class="teaser-thumb">
+          </div>
+          <div class="teaser-card-body">
+            <span class="teaser-tag">3D Clothing & Simulation</span>
+            <h3 class="teaser-title">Marvelous Designer: 3D Clothing & Anime Garment Creation</h3>
+            <p class="teaser-desc">Learn pattern creation, sewing workflows, realistic anime streetwear draping, and exporting clean garment meshes to Blender & ZBrush.</p>
+            <div class="teaser-card-footer">
+              <div class="author-meta">
+                <img src="assets/SenpaiWorks logo bg.png" alt="SenpaiWorks Studio" class="author-avatar">
+                <div class="author-info">
+                  <span class="author-name">SenpaiWorks Studio</span>
+                  <span class="author-date">In Planning</span>
+                </div>
+              </div>
+              <span class="status-pill in-planning"><i class="fa-solid fa-clock"></i> In Planning</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Course 4: Creating Website & Portfolios -->
+        <a href="course-detail.html?id=web-dev" class="teaser-card">
+          <div class="teaser-thumb-wrapper">
+            <img src="assets/courses/web-dev-course.png" alt="Creating Modern Web Portfolios" class="teaser-thumb">
+          </div>
+          <div class="teaser-card-body">
+            <span class="teaser-tag">Web Development</span>
+            <h3 class="teaser-title">Creating Modern Web Portfolios & Creative Websites</h3>
+            <p class="teaser-desc">Step-by-step masterclass on building responsive artist portfolio websites, glassmorphism layouts, interactive Web3D showcases, and custom JavaScript.</p>
+            <div class="teaser-card-footer">
+              <div class="author-meta">
+                <img src="assets/SenpaiWorks logo bg.png" alt="SenpaiWorks Studio" class="author-avatar">
+                <div class="author-info">
+                  <span class="author-name">SenpaiWorks Studio</span>
+                  <span class="author-date">In Planning</span>
+                </div>
+              </div>
+              <span class="status-pill in-planning"><i class="fa-solid fa-clock"></i> In Planning</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Course 5: Unreal Engine 5 Environments -->
+        <a href="course-detail.html?id=unreal-engine" class="teaser-card">
+          <div class="teaser-thumb-wrapper">
+            <img src="assets/courses/unreal-engine-course.png" alt="Unreal Engine 5 Anime Environments" class="teaser-thumb">
+          </div>
+          <div class="teaser-card-body">
+            <span class="teaser-tag">Real-Time & Environments</span>
+            <h3 class="teaser-title">Unreal Engine 5: Anime Environment Art & Cinematic Rendering</h3>
+            <p class="teaser-desc">Master environment building in Unreal Engine 5, Lumen dynamic lighting, stylized anime shaders, camera sequencers, and real-time cinematic rendering.</p>
+            <div class="teaser-card-footer">
+              <div class="author-meta">
+                <img src="assets/SenpaiWorks logo bg.png" alt="SenpaiWorks Studio" class="author-avatar">
+                <div class="author-info">
+                  <span class="author-name">SenpaiWorks Studio</span>
+                  <span class="author-date">In Planning</span>
+                </div>
+              </div>
+              <span class="status-pill in-planning"><i class="fa-solid fa-clock"></i> In Planning</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Course Interest & Suggestion Section -->
+    <section class="request-course-section" id="request-course-section">
+      <div class="request-course-card">
+        <div class="request-header">
+          <span class="request-badge"><i class="fa-regular fa-comments"></i> COMMUNITY FEEDBACK</span>
+          <h2>Which Courses Are You Guys Interested In?</h2>
+          <p>Tell us what topics, software tools, or creative skills you want us to teach next! We build our upcoming courses based on community interest.</p>
+        </div>
+
+        <form id="course-request-form" class="request-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="request-topic"><i class="fa-solid fa-book"></i> What course or topic are you interested in? *</label>
+              <input type="text" id="request-topic" placeholder="e.g. Unreal Engine 5 Anime Environments, Shader Art, etc." required>
+            </div>
+            <div class="form-group">
+              <label for="request-category"><i class="fa-solid fa-layer-group"></i> Category of Interest *</label>
+              <select id="request-category" required>
+                <option value="" disabled selected>Select category...</option>
+                <option value="2D Art">2D Art & Illustration</option>
+                <option value="3D & Animation">3D & Character Animation</option>
+                <option value="VFX & Simulation">VFX & Physics Simulation</option>
+                <option value="Programming">Programming & Web3D</option>
+                <option value="Other">Other / Workflows</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="request-details"><i class="fa-solid fa-align-left"></i> What specific techniques would you like to learn? *</label>
+            <textarea id="request-details" rows="4" placeholder="Describe the specific techniques, tools, or skills you are eager to learn..." required></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="request-name"><i class="fa-regular fa-user"></i> Your Name / Alias (Optional)</label>
+              <input type="text" id="request-name" placeholder="e.g. SenpaiFan">
+            </div>
+            <div class="form-group">
+              <label for="request-email"><i class="fa-regular fa-envelope"></i> Email (Optional for updates)</label>
+              <input type="email" id="request-email" placeholder="yourname@example.com">
+            </div>
+          </div>
+
+          <button type="submit" class="submit-request-btn">
+            <span>Submit Your Interest</span>
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+
+        <div id="request-success-alert" class="request-success-alert" style="display: none;">
+          <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="success-text">
+            <h4>Thank You for Your Feedback!</h4>
+            <p>Your response has been logged! We are prioritizing our upcoming course releases based on your suggestions.</p>
+          </div>
+          <button type="button" class="reset-request-btn" id="reset-request-btn">Submit Another Course Idea</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Contact Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  </script>
+
+  <!-- Footer Section -->
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Script for course interest form handling -->
+  <script>
+    const requestForm = document.getElementById('course-request-form');
+    const successAlert = document.getElementById('request-success-alert');
+    const resetBtn = document.getElementById('reset-request-btn');
+
+    if (requestForm) {
+      requestForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        requestForm.style.display = 'none';
+        successAlert.style.display = 'flex';
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        requestForm.reset();
+        successAlert.style.display = 'none';
+        requestForm.style.display = 'flex';
+      });
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,14 +1,30 @@
 <!-- Fixed Header Container -->
 <div class="header-container">
-  <div class="top-bg-strip"></div>
   <div id="drawer-container"></div>
   <script src="scripts/drawer.js"></script>
-  <script src="scripts/2dworld.js"></script>
 
-  <!-- Marvel-style logo -->
+  <!-- Main Header Row with Background Announcement Ticker -->
   <div class="header-row">
-    <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Logo" class="left-logo" id="logo-button" title="Drawer" />
+    <!-- Announcement Ticker running BEHIND the logo -->
+    <div class="header-ticker-container">
+      <div class="header-ticker-track">
+        <span class="ticker-item">FLASH SALE: 20% OFF ALL 3D CHARACTER RIGS!</span>
+        <span class="ticker-item">NEW BLENDER ANIMATION COURSE RELEASING THIS FRIDAY!</span>
+        <span class="ticker-item">JOIN OUR DISCORD TO ACCESS FREE PROJECT SOURCE FILES!</span>
+        <span class="ticker-item">NEW STORE DROPS: ULTRA-HIGH RES ANIME POSTERS NOW AVAILABLE!</span>
+        <!-- Duplicate for seamless looping -->
+        <span class="ticker-item">FLASH SALE: 20% OFF ALL 3D CHARACTER RIGS!</span>
+        <span class="ticker-item">NEW BLENDER ANIMATION COURSE RELEASING THIS FRIDAY!</span>
+        <span class="ticker-item">JOIN OUR DISCORD TO ACCESS FREE PROJECT SOURCE FILES!</span>
+        <span class="ticker-item">NEW STORE DROPS: ULTRA-HIGH RES ANIME POSTERS NOW AVAILABLE!</span>
+      </div>
+    </div>
 
+    <!-- Left Logo (SenpaiWorks logo from assets folder) -->
+    <img src="assets/SenpaiWorks logo.png" 
+         alt="SenpaiWorks Logo" class="left-logo" id="logo-button" title="Open Drawer" />
+
+    <!-- Centered Marvel-Style Logo (Links to index.html) -->
     <div class="logo-wrapper">
       <a href="index.html" class="logo-link">
         <h2 class="logo-text">
@@ -17,22 +33,183 @@
       </a>
     </div>
 
-    <div class="search-container">
-      <button class="nav-search-btn" onclick="window.location.href='search.html'" title="Search">
-        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2" fill="none"/>
-          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="white" stroke-width="2" />
-        </svg>
+    <!-- Right Header Controls -->
+    <div class="header-controls">
+      <!-- Search Button -->
+      <button class="header-control-btn" id="nav-search-btn" onclick="window.location.href='search.html'" title="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
       </button>
+      
+      <!-- Cart Button -->
+      <button class="header-control-btn" id="nav-cart-btn" onclick="window.location.href='cart.html'" title="Shopping Cart">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+      </button>
+      
+      <!-- Profile Button (Toggles Profile Card Dropdown) -->
+      <button class="header-control-btn sign-in-btn" id="nav-auth-btn" title="Account / Profile">
+        <i class="fa-regular fa-user" id="nav-auth-icon"></i>
+      </button>
+
+      <!-- Profile Dropdown Card -->
+      <div class="profile-dropdown-card" id="profile-dropdown-card">
+        <div class="profile-dropdown-header">
+          <div class="dropdown-avatar-wrap">
+            <img id="dropdown-user-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Avatar" class="dropdown-avatar">
+          </div>
+          <div class="dropdown-user-details">
+            <div class="dropdown-username" id="dropdown-username">senpai</div>
+            <div class="dropdown-email" id="dropdown-email">suhassenpai@gmail.com</div>
+            <div class="dropdown-joined">
+              <i class="fa-regular fa-calendar" style="color: #4d9dff; margin-right: 4px;"></i>
+              <span>Joined 21 days ago</span>
+            </div>
+          </div>
+        </div>
+        
+        <hr class="dropdown-divider">
+        
+        <nav class="dropdown-menu">
+          <a href="profile.html#profile" class="dropdown-item" id="dropdown-profile-btn">
+            <i class="fa-regular fa-user" style="font-size: 1rem; width: 20px;"></i>
+            <span>Profile</span>
+          </a>
+          <a href="profile.html#orders" class="dropdown-item" id="dropdown-orders-btn">
+            <i class="fa-solid fa-box" style="font-size: 0.95rem; width: 20px;"></i>
+            <span>Returns & Orders</span>
+          </a>
+          <a href="profile.html#feedback" class="dropdown-item" id="dropdown-feedback-btn">
+            <i class="fa-regular fa-comment-dots" style="font-size: 0.95rem; width: 20px;"></i>
+            <span>Feedback</span>
+          </a>
+          <a href="profile.html#notifications" class="dropdown-item" id="dropdown-notifications-btn">
+            <i class="fa-regular fa-bell" style="font-size: 0.95rem; width: 20px;"></i>
+            <span>Notifications</span>
+          </a>
+        </nav>
+        
+        <hr class="dropdown-divider">
+        
+        <button class="dropdown-signout-btn" id="dropdown-signout-btn">
+          <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Navigation -->
-  <nav>
+  <!-- Desktop Navigation Bar -->
+  <nav class="header-nav">
     <a href="home.html" class="nav-link">HOME</a>
-    <a href="2dworld.html" class="nav-link">2D WORLD</a>
-    <a href="3dworld.html" class="nav-link">3D WORLD</a>
-    <a href="techworld.html" class="nav-link">TECH WORLD</a>
+    <a href="news.html" class="nav-link">NEWS</a>
+    <a href="art-library.html" class="nav-link">ART LIBRARY</a>
+    <a href="motion.html" class="nav-link">MOTION</a>
+    <a href="franchise.html" class="nav-link">FRANCHISE</a>
+    <a href="community.html" class="nav-link">COMMUNITY</a>
+    <a href="learn.html" class="nav-link">LEARN</a>
+    <a href="store.html" class="nav-link">STORE</a>
     <a href="about.html" class="nav-link">ABOUT</a>
+    <a href="faq.html" class="nav-link">FAQ</a>
   </nav>
 </div>
+
+<!-- Reusable Authentication Modal -->
+<div id="auth-modal" class="auth-modal-overlay">
+  <div class="auth-modal-container">
+    <button class="auth-modal-close" id="auth-close-btn">&times;</button>
+    
+    <!-- Sign In Wrapper -->
+    <div class="auth-form-container" id="signin-form-wrapper">
+      <h2>Sign In to SenpaiWorks</h2>
+      <p class="auth-subtitle">Existing Member? Sign in below. New to SenpaiWorks? <a href="#" id="show-signup-link-top" style="color:#4d9dff; font-weight:700;">Create an account</a></p>
+      
+      <!-- Social Sign-In Options -->
+      <div class="social-auth-options" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+        <button type="button" class="social-auth-btn google-btn" id="btn-google-login" style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <i class="fa-brands fa-google" style="color: #ea4335; font-size: 1.1rem;"></i> <span>Continue with Google</span>
+        </button>
+        <button type="button" class="social-auth-btn fb-btn" id="btn-fb-login" style="padding: 12px; border-radius: 8px; border: none; background: #1877f2; color: #ffffff; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <i class="fa-brands fa-facebook" style="font-size: 1.1rem;"></i> <span>Continue with Facebook</span>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; margin: 20px 0; color: #94a3b8; font-size: 0.85rem; font-weight: 700;">
+        <div style="flex: 1; height: 1px; background: #334155;"></div>
+        <span style="padding: 0 12px; text-transform: uppercase;">OR EMAIL LOGIN</span>
+        <div style="flex: 1; height: 1px; background: #334155;"></div>
+      </div>
+
+      <div id="signin-error" class="auth-error-msg" style="display: none;"></div>
+      
+      <form id="signin-form">
+        <div class="form-group">
+          <label for="signin-email">Email or Username</label>
+          <input type="text" id="signin-email" placeholder="e.g. senpai@gmail.com" required>
+        </div>
+        <div class="form-group">
+          <label for="signin-password">Password</label>
+          <input type="password" id="signin-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="auth-submit-btn">Sign In</button>
+      </form>
+      
+      <div class="auth-footer-text">
+        Don't have an account? <a href="#" id="show-signup-link">Create Account</a>
+      </div>
+    </div>
+    
+    <!-- Sign Up Wrapper -->
+    <div class="auth-form-container" id="signup-form-wrapper" style="display: none;">
+      <h2>Create Account</h2>
+      <p class="auth-subtitle">Join SenpaiWorks to purchase digital & physical products.</p>
+      
+      <div id="signup-error" class="auth-error-msg" style="display: none;"></div>
+      
+      <form id="signup-form">
+        <div class="form-group">
+          <label for="signup-username">Username</label>
+          <input type="text" id="signup-username" placeholder="e.g. senpai_fan" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email Address</label>
+          <input type="email" id="signup-email" placeholder="name@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="At least 6 characters" required minlength="6">
+        </div>
+        <button type="submit" class="auth-submit-btn">Create Account</button>
+      </form>
+      
+      <div class="auth-footer-text">
+        Already have an account? <a href="#" id="show-signin-link">Sign In</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile/Tablet Bottom Navigation Bar -->
+<link rel="stylesheet" href="mobile-navbar.css">
+<nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+  <a href="home.html" class="nav-item mobile-nav-item">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+  </a>
+  <a href="search.html" class="nav-item mobile-nav-item">
+    <i class="fas fa-magnifying-glass"></i>
+    <span>Search</span>
+  </a>
+  <a href="store.html" class="nav-item mobile-nav-item">
+    <i class="fas fa-bag-shopping"></i>
+    <span>Store</span>
+  </a>
+  <a href="cart.html" class="nav-item mobile-nav-item" id="mobile-nav-cart">
+    <i class="fas fa-cart-shopping"></i>
+    <span>Cart</span>
+    <span class="cart-badge" id="mobile-cart-badge" style="display: none;">0</span>
+  </a>
+  <a href="profile.html" class="nav-item mobile-nav-item" id="mobile-nav-auth">
+    <i class="fas fa-user" id="mobile-auth-icon"></i>
+    <span>Account</span>
+  </a>
+</nav>

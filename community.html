@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Hub - SenpaiWorks</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="community.css">
+</head>
+
+<body>
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+  <script>
+    (function() {
+      var cached = sessionStorage.getItem('cached_header');
+      if (cached) {
+        document.getElementById('header-placeholder').innerHTML = cached;
+      }
+    })();
+  </script>
+</div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- Community Hero Section -->
+  <section class="comm-hero">
+    <div class="comm-hero-bg"
+      style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp');">
+    </div>
+    <div class="comm-hero-overlay">
+      <div class="comm-hero-content">
+        <span class="category-badge">CONNECT & COLLABORATE</span>
+        <h1 class="hero-title">COMMUNITY HUB</h1>
+        <p class="hero-description">Join the creative ecosystem. Connect with creators, share animations, discuss dev
+          pipelines, or stay updated on new visual drops.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community Grid and Form -->
+  <main class="comm-container">
+
+    <div class="comm-layout">
+      <!-- Left side: Social Channels -->
+      <div class="comm-left">
+        <h2 class="section-title">Join Our Spaces</h2>
+
+        <div class="channel-grid">
+          <!-- Discord Card -->
+          <div class="channel-card discord">
+            <div class="channel-header">
+              <i class="fab fa-discord channel-icon"></i>
+              <span class="channel-accent">RECOMMENDED</span>
+            </div>
+            <h3>Discord Server</h3>
+            <p>Share your animation work, post sketches, discuss coding libraries, get critiques, and chat directly with
+              other artists.</p>
+            <a href="https://discord.gg/b7wrAdA2X" target="_blank" rel="noopener" class="channel-btn">Join Server
+              &rarr;</a>
+          </div>
+
+          <!-- Instagram Card -->
+          <div class="channel-card instagram">
+            <div class="channel-header">
+              <i class="fab fa-instagram channel-icon"></i>
+              <span class="channel-accent">RECOMMENDED</span>
+            </div>
+            <h3>Instagram</h3>
+            <p>Follow visual storyboards, color-pencil sketch phases, reels, WIP renders, and daily animation teasers
+              directly on the feed.</p>
+            <a href="https://instagram.com/senpaiworks_" target="_blank" rel="noopener" class="channel-btn">Follow
+              Us &rarr;</a>
+          </div>
+
+          <!-- YouTube Card -->
+          <div class="channel-card youtube">
+            <div class="channel-header">
+              <i class="fab fa-youtube channel-icon"></i>
+              <span class="channel-accent">RECOMMENDED</span>
+            </div>
+            <h3>YouTube Channel</h3>
+            <p>Watch full-length 2D/3D animations, speedpaints, procedural Blender shaders, node setups, and technical
+              portfolio breakdowns.</p>
+            <a href="https://www.youtube.com/@senpaiworks.official" target="_blank" rel="noopener"
+              class="channel-btn">Subscribe &rarr;</a>
+          </div>
+
+          <!-- ArtStation Card -->
+          <div class="channel-card artstation">
+            <div class="channel-header">
+              <i class="fab fa-artstation channel-icon"></i>
+            </div>
+            <h3>ArtStation</h3>
+            <p>Explore full resolution 3D scene renders, texturing setups, high-fidelity modeling portfolios, and professional production concepts.</p>
+            <a href="#" class="channel-btn">View Portfolio &rarr;</a>
+          </div>
+
+          <!-- Patreon Card -->
+          <div class="channel-card patreon">
+            <div class="channel-header">
+              <i class="fab fa-patreon channel-icon"></i>
+            </div>
+            <h3>Patreon</h3>
+            <p>Support the creator, gain access to exclusive project source files, early script releases, private Discord roles, and premium visual toolkits.</p>
+            <a href="https://www.patreon.com/cw/SenpaiWorks" target="_blank" rel="noopener" class="channel-btn">Become a Patron &rarr;</a>
+          </div>
+
+          <!-- GitHub Card -->
+          <div class="channel-card github">
+            <div class="channel-header">
+              <i class="fab fa-github channel-icon"></i>
+            </div>
+            <h3>GitHub</h3>
+            <p>Check out the developer repositories, open-source web experiments, animation helper scripts, shaders, and visual web systems.</p>
+            <a href="https://github.com/Suhas092" target="_blank" rel="noopener" class="channel-btn">Code Vault &rarr;</a>
+          </div>
+
+          <!-- LinkedIn Card -->
+          <div class="channel-card linkedin">
+            <div class="channel-header">
+              <i class="fab fa-linkedin-in channel-icon"></i>
+            </div>
+            <h3>LinkedIn</h3>
+            <p>Connect professionally, collaborate on enterprise creative design solutions, discuss production opportunities, and network.</p>
+            <a href="https://www.linkedin.com/in/suhas-h-b245a3236/" target="_blank" rel="noopener" class="channel-btn">Connect &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Support & Donation Box -->
+      <div class="comm-right">
+        <div class="donation-box" id="donation-container">
+          <!-- Main Form Container -->
+          <div class="donation-form-wrapper" id="donation-form-wrapper">
+            <h2>Support SenpaiWorks</h2>
+            <p class="donation-tagline">Your contributions help us build open-source tools, release free animation rigs, and expand our rendering resources!</p>
+
+            <!-- Goal Section -->
+            <div class="goal-container">
+              <div class="goal-meta">
+                <span class="goal-title"><i class="fa-solid fa-server"></i> Render Farm Goal</span>
+                <span class="goal-numbers" id="goal-progress-text">$1,150 / $1,500</span>
+              </div>
+              <div class="goal-progress-bar">
+                <div class="goal-progress-fill" id="goal-progress-fill" style="width: 76.6%"></div>
+              </div>
+            </div>
+
+            <!-- Currency Selector -->
+            <div class="form-group currency-selector-wrapper">
+              <label for="currency-select">Select Currency</label>
+              <select id="currency-select" class="currency-select">
+                <option value="USD">USD ($) - US Dollars</option>
+                <option value="INR">INR (₹) - Indian Rupees</option>
+              </select>
+            </div>
+
+            <form class="donation-form" id="donation-form" onsubmit="event.preventDefault();">
+              <!-- STEP 1: Amount & Donor Details -->
+              <div class="donation-step" id="donation-step-details">
+                <!-- Tier Selector -->
+                <div class="form-group">
+                  <label>Select Support Amount</label>
+                  <div class="donation-tiers" id="donation-tiers-grid">
+                    <button type="button" class="tier-btn active-tier" data-amount="1">$1</button>
+                    <button type="button" class="tier-btn" data-amount="5">$5</button>
+                    <button type="button" class="tier-btn" data-amount="10">$10</button>
+                    <button type="button" class="tier-btn" data-amount="25">$25</button>
+                    <button type="button" class="tier-btn" id="custom-tier-btn" data-amount="custom">Custom</button>
+                  </div>
+                </div>
+
+                <!-- Custom Amount (Starts hidden) -->
+                <div class="form-group custom-amount-wrapper" id="custom-amount-wrapper" style="display: none;">
+                  <label for="custom-amount">Custom Amount</label>
+                  <div class="custom-amount-input-group">
+                    <span class="currency-symbol" id="input-currency-symbol">$</span>
+                    <input type="number" id="custom-amount" min="1" placeholder="Enter amount" value="1">
+                  </div>
+                </div>
+
+                <!-- Name & Email -->
+                <div class="form-group">
+                  <label for="donor-name">Your Name (or Anonymous)</label>
+                  <input type="text" id="donor-name" placeholder="Sora / Anonymous" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="donor-email">Email Address</label>
+                  <input type="email" id="donor-email" placeholder="sora@example.com" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="donor-message">Support Message (Optional)</label>
+                  <textarea id="donor-message" rows="2" placeholder="Love your animation scripts! Keep it up!"></textarea>
+                </div>
+
+                <button type="button" class="submit-btn" id="btn-proceed-to-payment">
+                  <div class="btn-hearts-container">
+                    <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  </div>
+                  <span class="btn-text">Donate</span>
+                </button>
+              </div>
+
+              <!-- STEP 2: Payment Details (Hidden by default) -->
+              <div class="donation-step" id="donation-step-payment" style="display: none;">
+                <!-- Payment Method Selector -->
+                <div class="form-group">
+                  <label>Select Payment Method</label>
+                  <div class="payment-methods">
+                    <button type="button" class="payment-method-btn active-payment" data-method="card">
+                      <i class="fa-solid fa-credit-card"></i> Card
+                    </button>
+                    <button type="button" class="payment-method-btn" data-method="paypal">
+                      <i class="fa-brands fa-paypal"></i> PayPal
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Dynamic Form: Card Inputs -->
+                <div id="payment-fields-card" class="payment-fields-group">
+                  <div class="form-group">
+                    <label for="card-num">Card Number</label>
+                    <input type="text" id="card-num" placeholder="1234 5678 1234 5678" maxlength="19" required>
+                  </div>
+                  <div style="display: flex; gap: 12px;">
+                    <div class="form-group" style="flex: 1;">
+                      <label for="card-expiry">Expiry Date</label>
+                      <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                      <label for="card-cvv">CVV</label>
+                      <input type="password" id="card-cvv" placeholder="123" maxlength="3" required>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dynamic Form: PayPal Notice -->
+                <div id="payment-fields-paypal" class="payment-fields-group" style="display: none;">
+                  <div class="paypal-info-box">
+                    <i class="fa-brands fa-paypal paypal-icon-large"></i>
+                    <p>Click below to open secure simulated PayPal authorization pop-up. Funds will be deducted from your PayPal account.</p>
+                  </div>
+                </div>
+
+                <div class="step-navigation" style="display: flex; gap: 12px; margin-top: 20px;">
+                  <button type="button" class="reset-donation-btn" id="btn-back-to-details" style="flex: 1; background: #e2e8f0; color: #4a5568;">Back</button>
+                  <button type="submit" class="submit-btn" id="donation-submit-btn" style="flex: 2; margin-top: 0;">
+                    <div class="btn-hearts-container">
+                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <span class="btn-text">Complete Support</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Success State Container (hidden by default) -->
+          <div class="donation-success-state" id="donation-success-state" style="display: none;">
+            <div class="success-icon">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h2>Thank You, <span id="success-donor-name">Supporter</span>!</h2>
+            <p>Your generous contribution of <strong id="success-donation-amount">$1.00</strong> was received successfully.</p>
+            <div class="success-card">
+              <i class="fa-solid fa-quote-left quote-icon"></i>
+              <p class="success-message" id="success-donor-message">"Love your animation scripts!"</p>
+            </div>
+            <p class="success-footnote">A receipt and access to your donor benefits have been sent to <span id="success-donor-email">email</span>.</p>
+            <button type="button" class="reset-donation-btn" id="reset-donation-btn">Donate Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Reviews Section -->
+    <section class="community-reviews-section">
+      <div class="reviews-header-row">
+        <h2 class="section-title">Community Reviews</h2>
+        <div class="reviews-actions">
+          <div class="reviews-sort-wrapper">
+            <label for="reviews-sort-select">Sort by:</label>
+            <select id="reviews-sort-select" class="sort-select">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="best">Most Liked (Best)</option>
+            </select>
+          </div>
+          <a href="feedback.html" onclick="if(window.checkAuthOrPrompt && !window.isUserLoggedIn()){ event.preventDefault(); window.checkAuthOrPrompt('write a review', function(){ window.location.href='feedback.html'; }); }" class="leave-review-btn"><i class="fa-solid fa-pen-to-square"></i> Write a Review</a>
+        </div>
+      </div>
+      <div class="reviews-grid" id="community-reviews-grid">
+        <!-- Dynamically loaded -->
+      </div>
+      <div class="load-more-container" id="load-more-container" style="display: none;">
+        <button id="btn-load-more" class="load-more-btn">
+          Load More Reviews <i class="fa-solid fa-chevron-down"></i>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contact Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  </script>
+
+  <!-- Footer Section -->
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Community reviews logic -->
+  <script src="scripts/community.js"></script>
+
+</body>
+
+</html>

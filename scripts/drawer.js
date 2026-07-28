@@ -1,71 +1,190 @@
-document.addEventListener('DOMContentLoaded', function() {
-  fetch('drawer.html')
+function initDrawer() {
+  const container = document.getElementById('drawer-container');
+  if (!container) return false;
+
+  if (container.hasAttribute('data-drawer-initialized')) return true;
+  container.setAttribute('data-drawer-initialized', 'true');
+
+  fetch('drawer.html?v=' + new Date().getTime())
     .then(res => res.text())
     .then(html => {
-      document.getElementById('drawer-container').innerHTML = html;
+      container.innerHTML = html;
 
       const drawer = document.getElementById('top-drawer');
+      const overlay = document.getElementById('drawer-overlay');
       const closeBtn = document.getElementById('drawer-close-btn');
-      const items = drawer.querySelectorAll('.drawer-item');
-      const previewImg = drawer.querySelector('#drawer-img-preview');
-      const logoBtn = document.getElementById('logo-button'); // Your logo <img>
 
-      // IMPORTANT: Store the original image source on first script load
-      const originalLogoSrc = logoBtn.src;
-      const altLogoSrc = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/chronos_plays_fl47xm.webp';
+      // Showcase Card Elements
+      const img1 = document.getElementById('drawer-img-1');
+      const title1 = document.getElementById('drawer-title-1');
+      const desc1 = document.getElementById('drawer-desc-1');
 
-      // Drawer open/close logic with logo image swap
-      function openDrawer() {
-        drawer.classList.add('show');
+      const img2 = document.getElementById('drawer-img-2');
+      const title2 = document.getElementById('drawer-title-2');
+      const desc2 = document.getElementById('drawer-desc-2');
+
+      // Drawer open/close logic with dark backdrop overlay
+      window.openDrawer = function() {
+        const d = document.getElementById('top-drawer');
+        const o = document.getElementById('drawer-overlay');
+        if (d) d.classList.add('open');
+        if (o) o.classList.add('open');
         document.body.style.overflow = 'hidden';
-        logoBtn.src = altLogoSrc;
-      }
-      function closeDrawer() {
-        drawer.classList.remove('show');
+        var hc = document.querySelector('.header-container');
+        if (hc) hc.classList.add('drawer-open');
+      };
+
+      window.closeDrawer = function() {
+        const d = document.getElementById('top-drawer');
+        const o = document.getElementById('drawer-overlay');
+        if (d) d.classList.remove('open');
+        if (o) o.classList.remove('open');
         document.body.style.overflow = '';
-        logoBtn.src = originalLogoSrc;
-      }
+        var hc = document.querySelector('.header-container');
+        if (hc) hc.classList.remove('drawer-open');
+      };
 
-      // Toggle drawer on logo click
-      if (logoBtn) {
-        logoBtn.addEventListener('click', () => {
-          if (drawer.classList.contains('show')) {
-            closeDrawer();
-          } else {
-            openDrawer();
-          }
-        });
-      }
+      window.toggleDrawer = function() {
+        const d = document.getElementById('top-drawer');
+        if (d && d.classList.contains('open')) {
+          window.closeDrawer();
+        } else {
+          window.openDrawer();
+        }
+      };
 
-      // Close logic (button, esc, click outside)
+      // Close logic: Close button, Escape key, and clicking outside on overlay
       if (closeBtn) {
-        closeBtn.addEventListener('click', closeDrawer);
+        closeBtn.addEventListener('click', window.closeDrawer);
+      }
+      if (overlay) {
+        overlay.addEventListener('click', window.closeDrawer);
       }
       document.addEventListener('keydown', (e) => {
-        if (drawer.classList.contains('show') && e.key === 'Escape') {
-          closeDrawer();
-        }
-      });
-      drawer.addEventListener('click', (e) => {
-        if (e.target === drawer) {
-          closeDrawer();
+        const d = document.getElementById('top-drawer');
+        if (d && d.classList.contains('open') && e.key === 'Escape') {
+          window.closeDrawer();
         }
       });
 
-      // Drawer hover preview (if used)
-      if (items && previewImg) {
-        items.forEach(item => {
-          item.addEventListener('mouseenter', () => {
-            const imgUrl = item.getAttribute('data-img');
-            if (imgUrl) {
-              previewImg.classList.remove('active');
-              setTimeout(() => {
-                previewImg.src = imgUrl;
-                previewImg.classList.add('active');
-              }, 12);
+      // Dynamic Image Swap on Sub-Options (.drawer-item) and Single Links
+      function swapImages(elem) {
+        if (!elem) return;
+        const newImg1 = elem.getAttribute('data-img1');
+        const newTitle1 = elem.getAttribute('data-title1');
+        const newDesc1 = elem.getAttribute('data-desc1');
+
+        let newImg2 = elem.getAttribute('data-img2');
+        let newTitle2 = elem.getAttribute('data-title2');
+        let newDesc2 = elem.getAttribute('data-desc2');
+
+        // Dynamic fallback for Card 2 if not explicitly specified on item
+        if (!newImg2 && newImg1) {
+          if (newImg1.includes('deadpool')) {
+            newImg2 = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp';
+            newTitle2 = 'Character Rig Assets';
+            newDesc2 = 'Download production-ready 3D character rigs with facial blendshapes.';
+          } else if (newImg1.includes('rem_happy')) {
+            newImg2 = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/chronos_plays_fl47xm.webp';
+            newTitle2 = 'VFX Action Sequence';
+            newDesc2 = '6 months of animation work, cloth simulations, and particle FX.';
+          } else {
+            newImg2 = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp';
+            newTitle2 = 'Deadpool VFX Breakdown';
+            newDesc2 = 'Blender EEVEE toon shader node setup and fight scene choreography.';
+          }
+        }
+
+        if (img1 && newImg1) {
+          img1.style.opacity = '0.3';
+          setTimeout(() => {
+            img1.src = newImg1;
+            if (title1) title1.textContent = newTitle1;
+            if (desc1) desc1.textContent = newDesc1;
+            img1.style.opacity = '1';
+          }, 100);
+        }
+
+        if (img2 && newImg2) {
+          img2.style.opacity = '0.3';
+          setTimeout(() => {
+            img2.src = newImg2;
+            if (title2) title2.textContent = newTitle2;
+            if (desc2) desc2.textContent = newDesc2;
+            img2.style.opacity = '1';
+          }, 100);
+        }
+      }
+
+      const drawerItems = drawer ? drawer.querySelectorAll('.drawer-item, .drawer-group-title.single-link') : [];
+      drawerItems.forEach(item => {
+        item.addEventListener('mouseenter', () => swapImages(item));
+        item.addEventListener('click', () => {
+          window.closeDrawer();
+        });
+      });
+
+      // Accordion dropdown functionality for mobile & tablet viewports
+      const drawerGroups = drawer ? drawer.querySelectorAll('.drawer-group') : [];
+      drawerGroups.forEach(group => {
+        const groupHeader = group.querySelector('.drawer-group-header');
+
+        if (groupHeader) {
+          groupHeader.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024) {
+              const targetLink = e.target.closest('.drawer-group-title');
+              if (targetLink && group.classList.contains('active')) {
+                // If already open and title link clicked, allow direct navigation
+                window.closeDrawer();
+                return;
+              }
+              e.preventDefault();
+              e.stopPropagation();
+
+              const isActive = group.classList.contains('active');
+              drawerGroups.forEach(otherGroup => otherGroup.classList.remove('active'));
+              if (!isActive) {
+                group.classList.add('active');
+              }
             }
           });
-        });
+        }
+      });
+    })
+    .catch(err => console.error('Error loading drawer:', err));
+
+  return true;
+}
+
+// Global Event Delegation for header logo button
+document.addEventListener('click', function(e) {
+  var logo = e.target.closest('#logo-button');
+  if (logo) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const drawer = document.getElementById('top-drawer');
+    if (!drawer) {
+      initDrawer();
+      setTimeout(() => {
+        if (typeof window.openDrawer === 'function') window.openDrawer();
+      }, 250);
+    } else {
+      if (typeof window.toggleDrawer === 'function') {
+        window.toggleDrawer();
       }
-    });
+    }
+  }
+});
+
+// Auto-initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  if (!initDrawer()) {
+    const interval = setInterval(() => {
+      if (initDrawer()) {
+        clearInterval(interval);
+      }
+    }, 100);
+    setTimeout(() => clearInterval(interval), 5000);
+  }
 });

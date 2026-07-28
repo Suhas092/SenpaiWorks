@@ -1,198 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SenpaiWorks</title>
+  <title>SenpaiWorks — Original Anime Art, Animation, MVs & Streetwear</title>
   <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="index.css?v=50">
   <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-
-
-
-
-  <!-- Marvel-style logo -->
-<div id="header-placeholder"></div>
-<script src="scripts/header.js"></script>
-
-
-<div class="top-bg-strip"></div>
-
-<div id="drawer-container"></div>
-<script src="scripts/drawer.js"></script>
-
-
-
-
-
-<!-- VIDEO SECTION -->
-<section class="video-section">
-  <video autoplay muted loop playsinline class="video-background">
-    <source src="https://res.cloudinary.com/dmzchsqms/video/upload/f_auto,q_auto/w_600/v1757630852/intro_2_kl5foz.mp4" type="video/mp4" />
-  </video>
-
-  <div class="video-overlay">
-    <!-- Logo -->
-    <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Rem Logo" class="video-overlay-logo" />
-
-    <!-- SenpaiWorks Text -->
-    <div class="video-logo-wrapper">
-      <h2 class="video-logo-text">
-        <span class="video-big">S</span>ENPAI<span class="video-big">W</span>ORKS
-      </h2>
-    </div>
-
-    <!-- Paragraph -->
-    <p class="video-overlay-description">
-      SENPAIWORKS – WHERE ART, IMAGINATION, AND TECH UNITE TO CREATE
-    </p>
-
-    <a href="home.html" class="video-cta-button">Get Started</a>
+  <!-- Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
   </div>
-</section>
+  <script src="scripts/header.js?v=5"></script>
 
+  <div class="top-bg-strip"></div>
 
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
 
+  <!-- CINEMATIC VIDEO HERO SECTION (UNTOUCHED) -->
+  <section class="video-section">
+    <video autoplay muted loop playsinline class="video-background">
+      <source src="assets/Videos/index video.mp4" type="video/mp4" />
+    </video>
 
+    <div class="video-gradient-overlay"></div>
 
-<section class="why-senpaiworks">
-  <div class="why-container">
-    <h2 class="why-title">Why SenpaiWorks?</h2>
-    <p class="why-intro">
-      SenpaiWorks is a creative platform where 2D and 3D art, animation, and digital storytelling 
-      come together. It showcases a wide range of work — from frame-by-frame animations and 3D modeling
-       to realistic portraits, logo design, and hybrid projects — all crafted with imagination, technical
-        knowledge, and attention to detail. Beyond presenting finished works, it reflects a vision of 
-        exploring new ways to fuse art and technology, while inspiring and sharing creative ideas with others.
-    </p>
-<div class="why-features">
-  <div class="feature-card">
-    <h3>Hybrid Animation</h3>
-    <p>Seamlessly blending 2D and 3D techniques to create visually striking and dynamic sequences.</p>
-  </div>
+    <div class="video-overlay">
+      <!-- Big Studio Logo from Videos folder -->
+      <img src="assets/Videos/SenpaiWorks logo.png" alt="SenpaiWorks Logo" class="video-overlay-logo" />
 
-  <div class="feature-card">
-    <h3>Unique Artistic Vision</h3>
-    <p>From 2D character designs and frame-by-frame animations to 3D modeling, realistic portraits, and logo design, each piece reflects a wide-ranging and creative skill set.</p>
-  </div>
+      <!-- SenpaiWorks Name Logo Image from Videos folder -->
+      <div class="video-logo-wrapper">
+        <img src="assets/Videos/senpaiworks name logo no bg.png" alt="SenpaiWorks" class="video-logo-title-img" />
+      </div>
 
-  <div class="feature-card">
-    <h3>Innovative Storytelling</h3>
-    <p>Animations and visuals are designed to engage and surprise, pushing creative boundaries.</p>
-  </div>
+      <!-- Subtitle Description -->
+      <p class="video-overlay-description">
+        WHERE CREATIVITY FINDS PURPOSE THROUGH PRECISION AND ORDER
+      </p>
 
-  <div class="feature-card">
-    <h3>Broad Technical Skills</h3>
-    <p>Proficient across essential tools like Blender, ZBrush, After Effects, Photoshop, and more, enabling diverse and polished creative work.</p>
-  </div>
-</div>
-
-
-    <div class="cta-button-wrap">
-      <a href="about.html" class="btn-cta">Learn More</a>
-    </div>
-  </div>
-</section>
-
-
-<section class="tools-used">  
-  <div class="tools-container">
-    <h2 class="tools-title">Software & Tools</h2>
-    <p class="tools-subtitle">Here are the tools that power SenpaiWorks—from sketch to final render.</p>
-
-    <div class="tool-category">
-      <h3>🎨 2D & Design Tools</h3>
-      <div class="tool-grid">
-        <div class="tool">
-          <img src="https://static.macupdate.com/products/32454/m/clip-studio-paint-logo.png?v=1701875758" alt="CSP">
-          <span>Clip Studio Paint</span>
-        </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Adobe_Animate_CC_icon_%282020%29.svg/640px-Adobe_Animate_CC_icon_%282020%29.svg.png" alt="Animate">
-          <span>Adobe Animate</span>
-        </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Calligrakrita-base.svg/330px-Calligrakrita-base.svg.png" alt="Krita">
-          <span>Krita</span>
-        </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adobe_Photoshop_CC_icon.svg/768px-Adobe_Photoshop_CC_icon.svg.png?20200616073617" alt="Photoshop">
-          <span>Photoshop</span>
-        </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Adobe_Illustrator_CC_icon.svg/640px-Adobe_Illustrator_CC_icon.svg.png" alt="Illustrator">
-          <span>Illustrator</span>
-        </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/IbisPaint_X_Logo.jpg/640px-IbisPaint_X_Logo.jpg" alt="ibispaint">
-          <span>IbisPaint X</span>
-        </div>
+      <!-- Call to Action Buttons -->
+      <div class="hero-actions-row">
+        <a href="home.html" class="video-cta-button primary-cta">
+          <span>Enter SenpaiWorks</span> <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a href="store.html" class="video-cta-button secondary-cta">
+          <i class="fa-solid fa-bag-shopping"></i> <span>Explore Official Store</span>
+        </a>
       </div>
     </div>
+  </section>
 
-    <div class="tool-category">
-      <h3>🧊 3D & Modeling Tools</h3>
-      <div class="tool-grid">
-        <div class="tool">
-          <img src="https://download.blender.org/branding/blender_logo_socket.png" alt="Blender">
-          <span>Blender</span>
-        </div>
-        <div class="tool">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmyMmUuUyyn2bqtmEfe7Zf7fpr4U2VrEn-Qg&s" alt="ZBrush">
-          <span>ZBrush</span>
-        </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Autodesk_Maya_version_2023_icon.jpg/640px-Autodesk_Maya_version_2023_icon.jpg" alt="Maya">
-          <span>Maya (Basic)</span>
-        </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Houdini3D_icon.png?20120628112045" alt="Houdini">
-          <span>Houdini (Basic)</span>
-        </div>
-        <div class="tool">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeaiq8aqTELNN5pR7eQ5gU5RQvmaSqifNoq_nYfbMplnSjoknvYU1spgzEoiODCd87KKE&usqp=CAU" alt="Substance Painter">
-          <span>Substance Painter</span>
-        </div>
-      </div>
+  <!-- SECTION 1: STUDIO GATEWAY PORTALS (6 ENTRANCES) -->
+  <section class="index-section index-section-dark" id="section-gateways">
+    <div class="index-header-wrap">
+      <span class="index-badge-tag"><i class="fa-solid fa-compass"></i> DISCOVER SENPAIWORKS</span>
+      <h2 class="index-title">EXPLORE OUR STUDIO UNIVERSE</h2>
+      <p class="index-subtitle">
+        Enter the main portals of SenpaiWorks — from original 2D/3D artwork galleries and anime motion reels to Westeros franchise lore and official streetwear.
+      </p>
     </div>
 
-    <div class="tool-category">
-      <h3>🎞️ Tech, Rigging & Post-Production</h3>
-      <div class="tool-grid">
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Adobe_After_Effects_CC_icon.svg/640px-adobe_After_Effects_CC_icon.svg.png" alt="AE">
-          <span>After Effects</span>
+    <div class="gateway-grid-6">
+      <!-- Gateway 1: Main Studio Showcase -->
+      <a href="home.html" class="gateway-portal-card">
+        <img src="assets/suzana.png" alt="Main Studio Showcase" class="portal-bg-img">
+        <div class="portal-overlay"></div>
+        <div class="portal-content">
+          <div class="portal-icon-badge"><i class="fa-solid fa-layer-group"></i></div>
+          <h3 class="portal-title">Main Studio Showcase</h3>
+          <p class="portal-desc">Explore original 3D idol lineups, 2D art collections, and featured release highlights.</p>
+          <span class="portal-link-text">Enter Showcase &rarr;</span>
         </div>
-        <div class="tool">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/DaVinci_Resolve_Studio.png/640px-DaVinci_Resolve_Studio.png" alt="DaVinci">
-          <span>DaVinci Resolve (Basic)</span>
+      </a>
+
+      <!-- Gateway 2: Art Library -->
+      <a href="art-library.html" class="gateway-portal-card">
+        <img src="assets/art-others-1.png" alt="Art & Design Library" class="portal-bg-img">
+        <div class="portal-overlay"></div>
+        <div class="portal-content">
+          <div class="portal-icon-badge"><i class="fa-solid fa-palette"></i></div>
+          <h3 class="portal-title">Art & Design Library</h3>
+          <p class="portal-desc">Browse Pinterest-style artwork masonry, horizontal landscape art, and lightbox zoom/pan.</p>
+          <span class="portal-link-text">Browse Art Library &rarr;</span>
         </div>
-        <div class="tool">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWf1LAZDsTNVCU-pVnVNpfZ2341-BGHnepDA&s" alt="Mixamo">
-          <span>Mixamo</span>
+      </a>
+
+      <!-- Gateway 3: Motion Studio -->
+      <a href="motion.html" class="gateway-portal-card">
+        <img src="assets/Suzens band.png" alt="Motion & VFX Studio" class="portal-bg-img">
+        <div class="portal-overlay"></div>
+        <div class="portal-content">
+          <div class="portal-icon-badge"><i class="fa-solid fa-clapperboard"></i></div>
+          <h3 class="portal-title">Motion & VFX Studio</h3>
+          <p class="portal-desc">Watch official Suzens & Deadpool anime MVs, 2D cel animation keyframes, and 4D VFX reels.</p>
+          <span class="portal-link-text">Watch Motion Reels &rarr;</span>
         </div>
-      </div>
+      </a>
+
+      <!-- Gateway 4: Franchises -->
+      <a href="franchise.html" class="gateway-portal-card">
+        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp" alt="Franchises & Lore" class="portal-bg-img">
+        <div class="portal-overlay"></div>
+        <div class="portal-content">
+          <div class="portal-icon-badge"><i class="fa-solid fa-dragon"></i></div>
+          <h3 class="portal-title">Franchises & Lore</h3>
+          <p class="portal-desc">Explore Game of Thrones Westeros map, Five Great Houses, Kings & Queens, and Multiverse annals.</p>
+          <span class="portal-link-text">Explore RealmLore &rarr;</span>
+        </div>
+      </a>
+
+      <!-- Gateway 5: Official Store -->
+      <a href="store.html" class="gateway-portal-card">
+        <img src="assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg" alt="Official Anime Store" class="portal-bg-img">
+        <div class="portal-overlay"></div>
+        <div class="portal-content">
+          <div class="portal-icon-badge"><i class="fa-solid fa-shirt"></i></div>
+          <h3 class="portal-title">Official Anime Store</h3>
+          <p class="portal-desc">Shop 240GSM heavyweight organic cotton graphic tees, Itachi/Kaneki carousels, & prints.</p>
+          <span class="portal-link-text">Shop Streetwear &rarr;</span>
+        </div>
+      </a>
+
+      <!-- Gateway 6: Community Hub -->
+      <a href="community.html" class="gateway-portal-card">
+        <img src="assets/Ayana.png" alt="Artist Community" class="portal-bg-img">
+        <div class="portal-overlay"></div>
+        <div class="portal-content">
+          <div class="portal-icon-badge"><div class="portal-icon-badge"><i class="fa-solid fa-users"></i></div></div>
+          <h3 class="portal-title">Artist Community</h3>
+          <p class="portal-desc">Connect with creators, post digital artwork, vote in design polls, and share feedback.</p>
+          <span class="portal-link-text">Join Community &rarr;</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- SECTION 2: WHY SENPAIWORKS / CREATIVE PIPELINE -->
+  <section class="index-section index-section-deep" id="section-pipeline">
+    <div class="index-header-wrap">
+      <span class="index-badge-tag"><i class="fa-solid fa-atom"></i> CREATIVE PIPELINE</span>
+      <h2 class="index-title">WHY SENPAIWORKS?</h2>
+      <p class="index-subtitle">
+        A modern creative studio where 2D artwork, 3D animation, digital storytelling, and physical streetwear merge.
+      </p>
     </div>
 
-  </div>
-</section>
+    <div class="pipeline-grid">
+      <!-- Card 1 -->
+      <div class="pipeline-card">
+        <div class="pipeline-icon"><i class="fa-solid fa-cubes"></i></div>
+        <h3 class="pipeline-title">Hybrid 2D & 3D Pipelines</h3>
+        <p class="pipeline-desc">Seamlessly blending frame-by-frame 2D aesthetics with high-performance 3D character rigs.</p>
+      </div>
 
+      <!-- Card 2 -->
+      <div class="pipeline-card">
+        <div class="pipeline-icon"><i class="fa-solid fa-shirt"></i></div>
+        <h3 class="pipeline-title">Heavyweight Apparel & Prints</h3>
+        <p class="pipeline-desc">Crafting 240GSM organic combed cotton tees with 100% wash-proof high-density screen prints.</p>
+      </div>
 
+      <!-- Card 3 -->
+      <div class="pipeline-card">
+        <div class="pipeline-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <h3 class="pipeline-title">Innovative Storytelling</h3>
+        <p class="pipeline-desc">Virtual cyber-pop idol groups, Game of Thrones Westeros lore, and immersive worldbuilding engineered to amaze.</p>
+      </div>
 
+      <!-- Card 4 -->
+      <div class="pipeline-card">
+        <div class="pipeline-icon"><i class="fa-solid fa-laptop-code"></i></div>
+        <h3 class="pipeline-title">Pro Motion & Visual FX</h3>
+        <p class="pipeline-desc">Proficient across Blender, Houdini, ZBrush, After Effects, and Unreal Engine 5 real-time engines.</p>
+      </div>
+    </div>
+  </section>
 
+  <!-- SECTION 3: DIRECT ACTION CTA BANNER -->
+  <section class="index-section index-section-dark">
+    <div class="index-cta-box">
+      <h2 class="index-cta-title">READY TO STEP INTO SENPAIWORKS?</h2>
+      <p class="index-cta-desc">
+        Explore original 2D/3D anime artwork, watch official video motion reels, or shop limited-edition streetwear drops.
+      </p>
+      <div class="hero-actions-row">
+        <a href="home.html" class="video-cta-button primary-cta">
+          <span>Enter Showcase</span> <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a href="store.html" class="video-cta-button secondary-cta">
+          <i class="fa-solid fa-bag-shopping"></i> <span>Visit Official Store</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-
-<div id="footer-container"></div>
-<script src="scripts/footer.js"></script>
-
-
-
-
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
 
 </body>
+
 </html>

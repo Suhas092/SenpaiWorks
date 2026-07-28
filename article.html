@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article — SenpaiWorks Studio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="article.css">
+</head>
+<body class="article-body-container">
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function() {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- Unified Article Master Container (Identical Home Page Alignment) -->
+  <main class="article-page-container">
+
+    <!-- 1. Breadcrumbs & Category Badge -->
+    <div class="article-breadcrumbs">
+      <a href="index.html">Home</a> &gt;
+      <a href="news.html">News & Stories</a> &gt;
+      <span>Article</span>
+    </div>
+
+    <div class="article-badges">
+      <span class="article-badge" id="article-hero-category">System Changelog</span>
+    </div>
+
+    <!-- 2. Hero Title & Author Meta Bar -->
+    <h1 class="article-hero-title" id="article-hero-title">SenpaiWorks 2.0 Architectural Overhaul & Platform Release Notes</h1>
+
+    <div class="article-hero-meta">
+      <div class="article-author-box">
+        <div class="article-author-avatar">S</div>
+        <div>By <strong id="article-hero-author" style="color:#09090b; font-weight: 700;">Team SenpaiWorks</strong></div>
+      </div>
+      <span>·</span>
+      <span><i class="fa-regular fa-calendar" style="color:var(--art-blue);"></i> <span id="article-hero-date">July 2026</span></span>
+      <span>·</span>
+      <span><i class="fa-regular fa-clock" style="color:var(--art-blue);"></i> <span id="article-hero-readtime">7 mins read</span></span>
+    </div>
+
+    <!-- 3. Feature Cover Banner Frame -->
+    <div class="article-cover-frame">
+      <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/all_characters_yvk9ik.webp" alt="Article Cover Image" id="article-cover-img" class="article-cover-img">
+    </div>
+
+    <!-- 4. Quick Table of Contents Bar -->
+    <div class="article-top-nav-bar">
+      <div class="top-nav-title"><i class="fa-solid fa-list-ul" style="color:var(--art-blue);"></i> Quick Navigation</div>
+      <div class="top-nav-pills">
+        <a href="#article-body-content" class="top-nav-pill"><i class="fa-solid fa-bolt"></i> 1. Before vs After</a>
+        <a href="#article-body-content" class="top-nav-pill"><i class="fa-solid fa-table"></i> 2. Feature Matrix</a>
+        <a href="#article-body-content" class="top-nav-pill"><i class="fa-solid fa-microchip"></i> 3. Key Upgrades</a>
+        <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" rel="noopener" class="top-nav-pill top-nav-pill-yt"><i class="fa-brands fa-youtube"></i> Video Proof</a>
+      </div>
+    </div>
+
+    <!-- 5. Full-Width Article Body Content -->
+    <div class="article-body-wrapper">
+      <div class="article-body-content" id="article-body-content">
+        <!-- Dynamically Populated Article Content -->
+      </div>
+    </div>
+
+    <!-- 6. Article Footer Bar -->
+    <div class="article-footer-bar">
+      <a href="news.html" class="article-back-btn"><i class="fa-solid fa-arrow-left"></i> Back to All Stories</a>
+      <button class="article-back-btn" onclick="navigator.clipboard.writeText(window.location.href); alert('Article link copied to clipboard!');"><i class="fa-solid fa-share-nodes"></i> Share Article</button>
+    </div>
+
+    <!-- 7. More Articles Grid -->
+    <div class="more-articles-section">
+      <h3 class="more-articles-title">More Stories from SenpaiWorks</h3>
+      <div class="more-articles-grid" id="more-articles-grid">
+        <!-- Dynamically rendered related articles -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Contact Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  </script>
+
+  <!-- Footer Section -->
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Article Dynamic Logic Script -->
+  <script src="scripts/article.js"></script>
+
+</body>
+</html>

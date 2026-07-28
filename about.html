@@ -1,42 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
+  <!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SenpaiWorks</title>
+  <title>SenpaiWorks</title>
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="about.css">
-  <link rel="stylesheet" href="2dworld.css">
+  <link rel="stylesheet" href="art-library.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
   <!-- Marvel-style logo -->
-<div id="header-placeholder"></div>
-<script src="scripts/header.js"></script>
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
 
 
-<div class="top-bg-strip"></div>
+  <div class="top-bg-strip"></div>
 
-<div id="drawer-container"></div>
-<script src="scripts/drawer.js"></script>
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
 
 
 
 
   <section class="tech-hero-section">
-    <div class="tech-hero-bg" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp');"></div>
+    <div class="tech-hero-bg"
+      style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp');">
+    </div>
     <div class="tech-hero-overlay">
       <div class="tech-hero-content">
-        <h3 class ="tech-about">ABOUT</h3>
+        <h3 class="tech-about">ABOUT</h3>
         <h2 class="tech-title">SENPAIWORKS</h1>
-        <p class="tech-description">SenpaiWorks is a one-man journey exploring all styles of 2D and 3D arts and animation.
-          In the future, it aims to research new ways to fuse technology with art and grow into a space for creative minds to build together.</p>
-        <!-- <div class="hero-buttons">
-          <a href="#digital-art" class="watch-now">Explore 2D World ></a>
+          <p class="tech-description">SenpaiWorks is a one-man journey exploring all styles of 2D and 3D arts and
+            animation.
+            In the future, it aims to research new ways to fuse technology with art and grow into a space for creative
+            minds to build together.</p>
+          <!-- <div class="hero-buttons">
+          <a href="#digital-art" class="watch-now">Explore Art Library ></a>
         </div> -->
       </div>
     </div>
@@ -45,127 +60,157 @@
 
 
 
-<section class="about-section">
+  <section class="about-section">
 
-  <!-- 1. The Man Behind SenpaiWorks -->
-  <div class="about-block">
-    <!-- Title -->
-    <div class="about-title">
-      <h2>The Man Behind SenpaiWorks</h2>
+    <!-- 1. The Man Behind SenpaiWorks -->
+    <div class="about-block">
+      <!-- Title -->
+      <div class="about-title">
+        <h2>The Man Behind SenpaiWorks</h2>
+      </div>
+
+      <!-- Image -->
+      <div class="about-image">
+        <img
+          src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/suhas_main_ae2frc.webp"
+          alt="Artist at work">
+      </div>
+
+      <!-- Paragraph -->
+      <div class="about-text">
+        <p>
+          Hi, I’m the creator of SenpaiWorks — a B.Tech graduate from PES University, Bengaluru, India. I work alone on
+          everything you see under SenpaiWorks. From 2D animation to 3D modeling and editing, I learn each part by
+          myself using the internet and hands-on practice. I love turning my imagination into 2D art, then pushing it
+          into 3D, and making it even more creative using the latest tools and technology.
+          <br><br>
+          Every project is built from scratch — no shortcuts, no team. Just passion, learning, and the drive to create
+          something new.
+          SenpaiWorks is where I turn ideas into real, visual stories.
+        </p>
+      </div>
     </div>
 
-    <!-- Image -->
-    <div class="about-image">
-      <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/suhas_main_ae2frc.webp" alt="Artist at work">
+
+    <!-- 2. How It Started -->
+    <div class="about-block reverse">
+      <!-- Title -->
+      <div class="about-title">
+        <h2>How It Started</h2>
+      </div>
+
+      <!-- Image -->
+      <div class="about-image">
+        <img
+          src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630824/rem_copy_rkjlfo.webp"
+          alt="How it started">
+      </div>
+
+      <!-- Paragraph -->
+      <div class="about-text">
+        <p>
+          I’ve loved cartoons since childhood and always admired how artists bring simple drawings to life. As I grew
+          up, I started sketching, moved into digital art, and began posting on Instagram. With a tech background, I
+          wanted to bring my ideas to bigger screens — inspired by creators like <i>Oda</i> and <i>Kishimoto</i>.
+        </p>
+        <br>
+        <p>
+          After watching the <i>Deadpool and Wolverine</i> movie, I got hooked on the “<i>Bye Bye</i>” song and decided
+          to make my own animation. I started in 2D, then moved to 3D, and mixed both styles. It was tough — I had to
+          borrow a friend’s laptop since my PC couldn’t handle 3D. After six months, I finished it. Seeing how studios
+          showed their logos before videos, I wanted to do the same — and that’s how <b>SenpaiWorks</b> began.
+        </p>
+      </div>
     </div>
 
-    <!-- Paragraph -->
-    <div class="about-text">
-      <p>
-        Hi, I’m Suhas H — a B.Tech graduate from PES University, Bengaluru, India. I work alone on everything you see under SenpaiWorks. From 2D animation to 3D modeling and editing, I learn each part by myself using the internet and hands-on practice. I love turning my imagination into 2D art, then pushing it into 3D, and making it even more creative using the latest tools and technology.
-        <br><br>
-        Every project is built from scratch — no shortcuts, no team. Just passion, learning, and the drive to create something new. 
-        SenpaiWorks is where I turn ideas into real, visual stories.
-      </p>
-    </div>
-  </div>
 
+    <!-- 3. Why the Name "SenpaiWorks" -->
+    <div class="about-block">
+      <!-- Title -->
+      <div class="about-title">
+        <h2>Why the Name “SenpaiWorks”?</h2>
+      </div>
 
-  <!-- 2. How It Started -->
-  <div class="about-block reverse">
-    <!-- Title -->
-    <div class="about-title">
-      <h2>How It Started</h2>
-    </div>
+      <!-- Image -->
+      <div class="about-image">
+        <img
+          src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/all_characters_yvk9ik.webp"
+          alt="SenpaiWorks meaning">
+      </div>
 
-    <!-- Image -->
-    <div class="about-image">
-      <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630824/rem_copy_rkjlfo.webp" alt="How it started">
-    </div>
+      <!-- Paragraph -->
+      <div class="about-text">
+        <p>
+          The name <em>SenpaiWorks</em> comes from my long-time love for anime. Since childhood, I was fascinated by the
+          way characters would call out <em>“Senpai”</em> in a cute, playful way — that word stuck with me and I grew
+          attached to it.<br><br>
 
-    <!-- Paragraph -->
-    <div class="about-text">
-      <p>
-        I’ve loved cartoons since childhood and always admired how artists bring simple drawings to life. As I grew up, I started sketching, moved into digital art, and began posting on Instagram. With a tech background, I wanted to bring my ideas to bigger screens — inspired by creators like <i>Oda</i> and <i>Kishimoto</i>.
-      </p>
-      <br>
-      <p>
-        After watching the <i>Deadpool and Wolverine</i> movie, I got hooked on the “<i>Bye Bye</i>” song and decided to make my own animation. I started in 2D, then moved to 3D, and mixed both styles. It was tough — I had to borrow a friend’s laptop since my PC couldn’t handle 3D. After six months, I finished it. Seeing how studios showed their logos before videos, I wanted to do the same — and that’s how <b>SenpaiWorks</b> began.
-      </p>
-    </div>
-  </div>
+          When I first created an Instagram page, I started with the name <em>Senpai</em>, then changed it to
+          <em>Sketches by Senpai</em> as I began posting drawings. Later, I shifted it to <em>Artworks by Senpai</em> to
+          cover the variety of styles I was exploring.<br><br>
 
-
-  <!-- 3. Why the Name "SenpaiWorks" -->
-<div class="about-block">
-  <!-- Title -->
-  <div class="about-title">
-    <h2>Why the Name “SenpaiWorks”?</h2>
-  </div>
-
-  <!-- Image -->
-  <div class="about-image">
-    <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/all_characters_yvk9ik.webp" alt="SenpaiWorks meaning">
-  </div>
-
-  <!-- Paragraph -->
-  <div class="about-text">
-    <p>
-      The name <em>SenpaiWorks</em> comes from my long-time love for anime. Since childhood, I was fascinated by the way characters would call out <em>“Senpai”</em> in a cute, playful way — that word stuck with me and I grew attached to it.<br><br>
-      
-      When I first created an Instagram page, I started with the name <em>Suhas Senpai</em>, then changed it to <em>Sketches by Senpai</em> as I began posting drawings. Later, I shifted it to <em>Artworks by Senpai</em> to cover the variety of styles I was exploring.<br><br>
-      
-      But my creative journey actually began with coding, before I moved into 2D and 3D animation, digital art, and other media. Since I was working on both technical and artistic projects, I wanted a name that tied everything together. That’s when I decided on <em>SenpaiWorks</em> — a name that represents all the creations I build, from code to art.
-    </p>
-  </div>
-</div>
-
-
-
-  <!-- 4. The Road Ahead -->
-  <div class="about-block reverse">
-    <!-- Title -->
-    <div class="about-title">
-      <h2>The Road Ahead</h2>
+          But my creative journey actually began with coding, before I moved into 2D and 3D animation, digital art, and
+          other media. Since I was working on both technical and artistic projects, I wanted a name that tied everything
+          together. That’s when I decided on <em>SenpaiWorks</em> — a name that represents all the creations I build,
+          from code to art.
+        </p>
+      </div>
     </div>
 
-    <!-- Image -->
-    <div class="about-image">
-      <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/naruto_kurama_copy_um4z3o.webp" alt="The future of SenpaiWorks">
+
+
+    <!-- 4. The Road Ahead -->
+    <div class="about-block reverse">
+      <!-- Title -->
+      <div class="about-title">
+        <h2>The Road Ahead</h2>
+      </div>
+
+      <!-- Image -->
+      <div class="about-image">
+        <img
+          src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/naruto_kurama_copy_um4z3o.webp"
+          alt="The future of SenpaiWorks">
+      </div>
+
+      <!-- Paragraph -->
+      <div class="about-text">
+        <p>
+          SenpaiWorks aims to become a hub for hybrid creators — blending animation, AI, and engineering into bold
+          experiments.<br><br>
+
+          The platform is envisioned as a space where future artworks, animations, and technologies can be shared,
+          explored, and learned through this website.
+          While SenpaiWorks is currently driven by a single creator, the goal is to grow into a team of passionate
+          individuals working together.<br><br>
+
+          The vision is for creative minds to join in, contribute their skills, and build something meaningful with the
+          help of new AI tools and innovations. Beyond art, SenpaiWorks also looks toward research and development,
+          pushing ideas further until they become creations to be truly proud of.
+        </p>
+
+      </div>
     </div>
 
-    <!-- Paragraph -->
-    <div class="about-text">
-    <p>
-      SenpaiWorks aims to become a hub for hybrid creators — blending animation, AI, and engineering into bold experiments.<br><br>
-
-      The platform is envisioned as a space where future artworks, animations, and technologies can be shared, explored, and learned through this website.
-      While SenpaiWorks is currently driven by a single creator, the goal is to grow into a team of passionate individuals working together.<br><br>
-
-      The vision is for creative minds to join in, contribute their skills, and build something meaningful with the help of new AI tools and innovations. Beyond art, SenpaiWorks also looks toward research and development, pushing ideas further until they become creations to be truly proud of.
-    </p>
-
-    </div>
-  </div>
-
-</section>
+  </section>
 
 
 
 
 
 
-<div id="contact-container"></div>
-<script src="scripts/contact.js"></script>
-<script>
-  // Set different image per page
-  loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    // Set different image per page
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
 
-</script>
+  </script>
 
 
 
-<div id="footer-container"></div>
-<script src="scripts/footer.js"></script>
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Center — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="orders.css?v=85">
+  <link rel="stylesheet" href="profile.css?v=85">
+</head>
+
+<body>
+
+  <!-- Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function() {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=10"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- ACCOUNT CENTER HERO BANNER -->
+  <header class="account-hero-banner">
+    <div class="account-hero-inner">
+      <div class="account-user-summary">
+        <div class="account-avatar-wrap">
+          <img id="acc-banner-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="User Avatar">
+        </div>
+        <div class="account-user-meta">
+          <div class="user-meta-name-row">
+            <h1 id="acc-banner-name">Suhas</h1>
+          </div>
+          <p id="acc-banner-email">suhassenpai@gmail.com</p>
+          <div class="account-quick-badges">
+            <span class="badge-item"><i class="fa-solid fa-gift" style="color: #38bdf8;"></i> Welcome Discount: <strong>₹100 OFF</strong> (Code: <code>SENPAI100</code>)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-hero-cta">
+        <a href="store.html" class="acc-btn-store">
+          <i class="fa-solid fa-bag-shopping"></i> Continue Shopping
+        </a>
+        <button type="button" onclick="handleSignOut()" class="acc-btn-signout-hero">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN ACCOUNT HUB LAYOUT -->
+  <main class="account-hub-container">
+    
+    <!-- LEFT NAVIGATION SIDEBAR -->
+    <aside class="account-sidebar">
+      <div class="sidebar-title">ACCOUNT MANAGEMENT</div>
+
+      <nav class="account-nav-menu">
+        <button class="account-nav-btn active" data-tab="profile" onclick="switchAccountTab('profile')">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Profile Settings</span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="orders" onclick="switchAccountTab('orders')">
+          <i class="fa-solid fa-box-archive"></i>
+          <span>Returns & Orders</span>
+          <span class="nav-count-badge" id="nav-orders-count">0</span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="feedback" onclick="switchAccountTab('feedback')">
+          <i class="fa-solid fa-comment-dots"></i>
+          <span>Feedback & Support</span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="notifications" onclick="switchAccountTab('notifications')">
+          <i class="fa-solid fa-bell"></i>
+          <span>Notifications</span>
+          <span class="nav-unread-dot" id="nav-notif-unread"></span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="addresses" onclick="switchAccountTab('addresses')">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>Saved Addresses</span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="wishlist" onclick="switchAccountTab('wishlist')">
+          <i class="fa-solid fa-heart"></i>
+          <span>Wishlist & Saved</span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="payments" onclick="switchAccountTab('payments')">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Payments & Wallet</span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="security" onclick="switchAccountTab('security')">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Security & Privacy</span>
+        </button>
+
+        <button type="button" class="account-nav-btn signout-nav-btn" onclick="handleSignOut()">
+          <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i>
+          <span style="color: #ef4444; font-weight: 800;">Sign Out Account</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer-card">
+        <div class="help-box-icon"><i class="fa-solid fa-headset"></i></div>
+        <div class="help-box-txt">Need assistance with an order or product?</div>
+        <a href="contact.html" class="help-box-link">Contact Support &rarr;</a>
+      </div>
+    </aside>
+
+    <!-- RIGHT DYNAMIC CONTENT PANELS -->
+    <section class="account-content-area">
+
+      <!-- 1. PROFILE SETTINGS TAB -->
+      <div class="account-tab-panel active" id="tab-panel-profile">
+        <div class="panel-header">
+          <h2>Profile & Personal Information</h2>
+          <p>Manage your account handle, contact email, profile picture, and password.</p>
+        </div>
+
+        <div class="panel-card">
+          <div class="profile-avatar-row">
+            <div class="avatar-large-preview">
+              <img id="profile-avatar-preview" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Avatar">
+            </div>
+            <div class="avatar-controls">
+              <button type="button" class="btn-avatar-upload" id="avatar-upload-trigger">
+                <i class="fa-solid fa-camera"></i> Upload Photo
+              </button>
+              <input type="file" id="profile-avatar-file" accept="image/*" style="display: none;">
+              <p class="avatar-hint"><i class="fa-solid fa-circle-info"></i> Max file size: 1MB. Drag mouse to position & scroll wheel to zoom.</p>
+            </div>
+          </div>
+
+          <form id="profile-edit-form" class="account-form-grid">
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label for="profile-username">Username Handle</label>
+                <div class="input-wrapper">
+                  <i class="fa-regular fa-user input-icon"></i>
+                  <input type="text" id="profile-username" placeholder="Choose a username" required>
+                </div>
+              </div>
+              <div class="form-group-item">
+                <label for="profile-fullname">Full Name</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-id-card input-icon"></i>
+                  <input type="text" id="profile-fullname" placeholder="Your full name" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label for="profile-email">Email Address</label>
+                <div class="input-wrapper">
+                  <i class="fa-regular fa-envelope input-icon"></i>
+                  <input type="email" id="profile-email" placeholder="email@example.com" required>
+                </div>
+              </div>
+              <div class="form-group-item">
+                <label for="profile-phone">Mobile Phone Number</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-phone input-icon"></i>
+                  <input type="tel" id="profile-phone" placeholder="+91 9876543210">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row-1">
+              <div class="form-group-item">
+                <label for="profile-bio">Bio</label>
+                <textarea id="profile-bio" rows="3" placeholder="Tell the SenpaiWorks community a bit about yourself..."></textarea>
+              </div>
+            </div>
+
+            <div class="form-row-1">
+              <div class="form-group-item">
+                <label for="profile-new-password">Change Password (Optional)</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-lock input-icon"></i>
+                  <input type="password" id="profile-new-password" placeholder="Enter new password (min 6 characters)">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions-bar">
+              <div class="profile-message" id="profile-form-message"></div>
+              <button type="submit" class="btn-save-profile">
+                <i class="fa-solid fa-floppy-disk"></i> Save Profile Details
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 2. RETURNS & ORDERS TAB -->
+      <div class="account-tab-panel" id="tab-panel-orders">
+        <div class="panel-header">
+          <h2>Returns & Orders Management</h2>
+          <p>View past order receipts, live shipment tracking, or initiate returns & replacements.</p>
+        </div>
+
+        <div class="orders-filter-bar">
+          <div class="orders-tabs">
+            <button class="order-tab-btn active" data-tab="all" onclick="filterOrders('all')">All Orders</button>
+            <button class="order-tab-btn" data-tab="processing" onclick="filterOrders('processing')">Processing & Shipped</button>
+            <button class="order-tab-btn" data-tab="delivered" onclick="filterOrders('delivered')">Delivered</button>
+            <button class="order-tab-btn" data-tab="returned" onclick="filterOrders('returned')">Returns & Refunds</button>
+          </div>
+          <div class="orders-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="order-search-input" placeholder="Search orders..." onkeyup="searchOrders()">
+          </div>
+        </div>
+
+        <div id="orders-history-list" class="orders-list-wrap">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- 3. FEEDBACK & SUPPORT TAB -->
+      <div class="account-tab-panel" id="tab-panel-feedback">
+        <div class="panel-header">
+          <h2>Feedback & Reviews</h2>
+          <p>Share your suggestions, rate your store experience, or view support responses.</p>
+        </div>
+
+        <div class="panel-card">
+          <h3>Submit New Feedback or Review</h3>
+          <form id="feedback-form" onsubmit="handleAccountFeedbackSubmit(event)">
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label>Feedback Category</label>
+                <select id="feedback-category-select" required class="acc-select-input">
+                  <option value="apparel">Apparel & Merch Quality</option>
+                  <option value="art">Art & Motion Content</option>
+                  <option value="delivery">Delivery & Shipping Experience</option>
+                  <option value="website">Website UI & Navigation</option>
+                  <option value="general">General Suggestion</option>
+                </select>
+              </div>
+              <div class="form-group-item">
+                <label>Your Rating</label>
+                <div class="rating-star-picker" id="star-picker">
+                  <i class="fa-solid fa-star star-btn active" data-val="1"></i>
+                  <i class="fa-solid fa-star star-btn active" data-val="2"></i>
+                  <i class="fa-solid fa-star star-btn active" data-val="3"></i>
+                  <i class="fa-solid fa-star star-btn active" data-val="4"></i>
+                  <i class="fa-solid fa-star star-btn active" data-val="5"></i>
+                  <span id="star-rating-val" style="margin-left: 8px; font-weight: 800; color: #f59e0b;">5 / 5</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row-1" style="margin-top: 14px;">
+              <div class="form-group-item">
+                <label>Message / Review</label>
+                <textarea id="feedback-msg-input" rows="4" placeholder="Tell us what you love or how we can improve your SenpaiWorks experience..." required></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-save-profile" style="margin-top: 14px;">
+              <i class="fa-solid fa-paper-plane"></i> Submit Feedback
+            </button>
+          </form>
+
+          <hr class="panel-divider">
+
+          <h3 style="margin-top: 24px;">Your Past Feedback & Reviews</h3>
+          <div id="feedback-history-list">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. NOTIFICATIONS & INBOX TAB -->
+      <div class="account-tab-panel" id="tab-panel-notifications">
+        <div class="panel-header">
+          <h2>Notifications & Alert Preferences</h2>
+          <p>Stay updated on order dispatches, new drops, and community announcements.</p>
+        </div>
+
+        <div class="panel-card">
+          <div class="notif-header-row">
+            <h3>Notifications Inbox</h3>
+            <button type="button" class="btn-mark-read" onclick="markAllNotificationsRead()">Mark All as Read</button>
+          </div>
+
+          <div id="notifications-inbox-list" class="notif-inbox-list">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <hr class="panel-divider">
+
+          <h3 style="margin-top: 24px;">Notification Preferences</h3>
+          <div class="toggle-setting-row">
+            <div>
+              <div class="toggle-title">Order Status SMS Updates</div>
+              <div class="toggle-desc">Receive instant SMS alerts when your package is dispatched or out for delivery.</div>
+            </div>
+            <input type="checkbox" class="acc-toggle-switch" checked>
+          </div>
+
+          <div class="toggle-setting-row">
+            <div>
+              <div class="toggle-title">Email Newsletter & Merch Drops</div>
+              <div class="toggle-desc">Be the first to hear about tee restocks and discount coupons.</div>
+            </div>
+            <input type="checkbox" class="acc-toggle-switch" checked>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. SAVED ADDRESSES TAB -->
+      <div class="account-tab-panel" id="tab-panel-addresses">
+        <div class="panel-header">
+          <h2>Saved Shipping Addresses</h2>
+          <p>Manage your delivery addresses for quick checkout.</p>
+        </div>
+
+        <div class="addresses-grid-wrap">
+          <div class="address-card default-address">
+            <span class="default-badge"><i class="fa-solid fa-star"></i> Default Address</span>
+            <h4 class="address-name">Suhas</h4>
+            <p class="address-details">
+              SenpaiWorks Studio, High Street<br>
+              Indiranagar, MG Road<br>
+              Bengaluru, KARNATAKA 560038<br>
+              India<br>
+              Phone: +91 98765 43210
+            </p>
+            <div class="address-card-actions">
+              <button class="btn-address-action"><i class="fa-solid fa-pen"></i> Edit</button>
+            </div>
+          </div>
+
+          <div class="add-address-card" onclick="openAddAddressModal()">
+            <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+            <div class="add-txt">Add New Delivery Address</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. WISHLIST TAB -->
+      <div class="account-tab-panel" id="tab-panel-wishlist">
+        <div class="panel-header">
+          <h2>Wishlist & Saved Items</h2>
+          <p>Your saved anime hoodies, character posters, and digital art assets.</p>
+        </div>
+
+        <div class="wishlist-grid" id="wishlist-items-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- 7. PAYMENTS & WALLET TAB -->
+      <div class="account-tab-panel" id="tab-panel-payments">
+        <div class="panel-header">
+          <h2>Payments & Registration Discount</h2>
+          <p>Check your ₹100 1-Time New Account Registration Discount coupon code.</p>
+        </div>
+
+        <div class="wallet-balance-card">
+          <div class="wallet-icon"><i class="fa-solid fa-gift"></i></div>
+          <div>
+            <div class="wallet-label">NEW ACCOUNT REGISTRATION DISCOUNT</div>
+            <div class="wallet-val">₹100.00 OFF</div>
+            <div class="wallet-sub">Use Promo Code: <strong style="color: #38bdf8; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 4px;">SENPAI100</strong> at checkout (1-time use per account).</div>
+          </div>
+        </div>
+
+        <div class="panel-card" style="margin-top: 24px;">
+          <h3>Saved Payment Handles</h3>
+          <div class="saved-payment-item">
+            <div class="payment-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div>
+              <div class="payment-title">Google Pay / UPI</div>
+              <div class="payment-sub">suhas@okaxis</div>
+            </div>
+            <span class="verified-tag">Verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. SECURITY & PRIVACY TAB -->
+      <div class="account-tab-panel" id="tab-panel-security">
+        <div class="panel-header">
+          <h2>Security Controls</h2>
+          <p>Manage account sessions and authentication settings.</p>
+        </div>
+
+        <div class="panel-card">
+          <h3>Active Logged-In Sessions</h3>
+          <div class="session-item">
+            <div class="session-icon"><i class="fa-solid fa-laptop"></i></div>
+            <div class="session-info">
+              <div class="session-title">Chrome on Windows (Current Device)</div>
+              <div class="session-sub">Active Now</div>
+            </div>
+            <span class="session-badge">This Device</span>
+          </div>
+
+          <hr class="panel-divider">
+
+          <h3 style="margin-top: 24px; color: #dc2626;">Account Sign Out</h3>
+          <button type="button" class="btn-order-action outline" style="color: #dc2626; border-color: #fca5a5;" onclick="handleSignOut()">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out Account
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- INTERACTIVE IMAGE CROP MODAL -->
+  <div id="crop-avatar-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content" style="max-width: 420px; padding: 24px;">
+      <button class="orders-modal-close" onclick="closeCropModal()">&times;</button>
+      <h3 style="margin: 0 0 14px 0; font-size: 1.2rem; font-weight: 800; color: #0f172a;">Position & Zoom</h3>
+
+      <div class="crop-canvas-container" style="width: 100%; height: 260px; background: #0f172a; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; user-select: none;">
+        <canvas id="crop-canvas" style="cursor: grab; touch-action: none;"></canvas>
+      </div>
+
+      <div style="margin: 16px 0 20px 0; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-magnifying-glass-minus" style="color: #64748b; font-size: 0.9rem;"></i>
+        <input type="range" id="crop-zoom-range" min="1" max="3" step="0.05" value="1" style="flex: 1; accent-color: #0f172a;">
+        <i class="fa-solid fa-magnifying-glass-plus" style="color: #64748b; font-size: 0.9rem;"></i>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button type="button" class="btn-secondary-order" onclick="closeCropModal()" style="flex: 1; justify-content: center; padding: 10px;">Cancel</button>
+        <button type="button" class="btn-view-order" onclick="saveCroppedAvatar()" style="flex: 1; justify-content: center; padding: 10px;">Save Photo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Track Package Modal -->
+  <div id="track-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content">
+      <button class="orders-modal-close" onclick="closeTrackModal()">&times;</button>
+      <div class="modal-header-tag"><i class="fa-solid fa-truck-fast"></i> Live Shipment Tracking</div>
+      <h3 id="track-order-id-title">Tracking Order #ORD-105010</h3>
+      
+      <div class="track-info-box">
+        <div><strong>Carrier:</strong> <span id="track-carrier-name">Blue Dart Express</span></div>
+        <div><strong>AWB Tracking ID:</strong> <span id="track-awb-val" style="text-decoration: underline;">BD-884920194</span></div>
+        <div><strong>Est. Delivery:</strong> <span id="track-est-date" style="color: #059669; font-weight: 800;">Thu, 30 Jul 2026</span></div>
+      </div>
+
+      <div class="track-timeline-stepper">
+        <div class="track-step completed">
+          <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+          <div class="step-label">Order Placed</div>
+        </div>
+        <div class="track-step active">
+          <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
+          <div class="step-label">Processing</div>
+        </div>
+        <div class="track-step">
+          <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
+          <div class="step-label">In Transit</div>
+        </div>
+        <div class="track-step">
+          <div class="step-icon"><i class="fa-solid fa-house-chimney-crack"></i></div>
+          <div class="step-label">Delivered</div>
+        </div>
+      </div>
+
+      <button class="btn-view-order" onclick="closeTrackModal()" style="width: 100%; margin-top: 20px;">Done</button>
+    </div>
+  </div>
+
+  <!-- Shared Return Request Modal -->
+  <div id="return-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content">
+      <button class="orders-modal-close" onclick="closeReturnModal()">&times;</button>
+      <div class="modal-header-tag"><i class="fa-solid fa-rotate-left"></i> Return / Replacement Request</div>
+      <h3>Initiate Return for Order <span id="return-order-id-txt">#ORD-105010</span></h3>
+
+      <form id="return-request-form" onsubmit="handleReturnSubmit(event)">
+        <div class="form-group-item" style="margin-bottom: 14px;">
+          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Reason for Return</label>
+          <select id="return-reason-select" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
+            <option value="">Select a reason...</option>
+            <option value="size">Size / Fit issue</option>
+            <option value="damaged">Item damaged or print defect</option>
+            <option value="wrong_item">Received wrong item</option>
+            <option value="quality">Quality not as expected</option>
+          </select>
+        </div>
+
+        <div class="form-group-item" style="margin-bottom: 14px;">
+          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Preferred Resolution</label>
+          <select id="return-resolution-select" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
+            <option value="refund">Refund to Original Payment Method</option>
+            <option value="replacement">Free Replacement / Exchange</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-view-order" style="width: 100%;">Submit Return Request</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contact & Footer Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <script src="scripts/orders.js?v=85"></script>
+  <script src="scripts/profile.js?v=85"></script>
+</body>
+
+</html>

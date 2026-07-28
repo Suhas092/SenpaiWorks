@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Control Center - SenpaiWorks</title>
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Dynamic Header (Hidden in Admin Console but kept to prevent header.js crashes) -->
+  <div id="header-placeholder" style="display: none;"></div>
+  <div class="top-bg-strip" style="display: none;"></div>
+
+  <!-- Dynamic Cart/Menu Drawer (Hidden in Admin Console but kept for drawer.js compatibility) -->
+  <div id="drawer-container" style="display: none;"></div>
+  <script src="scripts/drawer.js?v=6"></script>
+
+  <!-- Admin Layout Wrapper -->
+  <div class="admin-layout-wrapper">
+    
+    <!-- LEFT SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <a href="index.html" class="brand-link">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="SenpaiWorks Admin" class="sidebar-logo">
+          <div class="brand-text">
+            <h2>SenpaiWorks</h2>
+            <span>Admin Control Center</span>
+          </div>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-tab="tab-dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-store">
+          <i class="fa-solid fa-store"></i>
+          <span>Store / Products</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-orders">
+          <i class="fa-solid fa-cart-flatbed"></i>
+          <span>Customer Orders</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-art">
+          <i class="fa-solid fa-palette"></i>
+          <span>Art Library</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-motion">
+          <i class="fa-solid fa-film"></i>
+          <span>Motion & 3D Rigs</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-news">
+          <i class="fa-solid fa-newspaper"></i>
+          <span>News & Articles</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-coupons">
+          <i class="fa-solid fa-ticket"></i>
+          <span>Discounts & Coupons</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-community">
+          <i class="fa-solid fa-comments"></i>
+          <span>Community Reviews</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-account">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Account Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img id="sidebar-user-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Admin Avatar" class="profile-avatar">
+          <div class="avatar-status-dot"></div>
+        </div>
+        <div class="profile-info">
+          <span class="profile-name" id="sidebar-user-name">Suhas H</span>
+          <span class="profile-role">Super Administrator</span>
+        </div>
+        <div class="profile-actions">
+          <button id="sidebar-btn-settings" title="Profile Settings"><i class="fa-solid fa-cog"></i></button>
+          <button id="sidebar-btn-logout" title="Sign Out"><i class="fa-solid fa-sign-out-alt"></i></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT PANEL -->
+    <main class="admin-main-pane">
+      
+      <!-- Horizontal Header Bar -->
+      <header class="main-header">
+        <div class="header-left">
+          <button id="sidebar-toggle" class="header-action-btn"><i class="fa-solid fa-bars"></i></button>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        
+        <div class="header-right">
+          <!-- Theme Toggle Button -->
+          <button id="theme-toggle-btn" class="header-action-btn" title="Toggle Theme" style="display: flex;">
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
+          </button>
+
+          <!-- Live Status Indicator -->
+          <div class="status-indicator">
+            <div class="status-pulse-green"></div>
+            <span>Studio Engine Online</span>
+          </div>
+          
+          <a href="index.html" class="view-site-btn" target="_blank" title="Go to Website">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>View Site</span>
+          </a>
+        </div>
+      </header>
+      
+      <!-- Sub-pages View Container -->
+      <div class="pane-content-wrapper">
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 1: DASHBOARD                       -->
+        <!-- ========================================== -->
+        <section class="admin-subpage active" id="tab-dashboard">
+          
+          <!-- KPI Stats Grid -->
+          <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-blue">
+                <i class="fa-solid fa-palette"></i>
+              </div>
+              <div class="stat-body">
+                <span class="stat-value" id="stat-artworks">48</span>
+                <span class="stat-label">Total Artworks</span>
+              </div>
+              <span class="stat-trend trend-up" id="stat-artworks-trend">
+                <i class="fa-solid fa-arrow-trend-up"></i> +12%
+              </span>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-green">
+                <i class="fa-solid fa-box-open"></i>
+              </div>
+              <div class="stat-body">
+                <span class="stat-value" id="stat-products">24</span>
+                <span class="stat-label">Store Products</span>
+              </div>
+              <span class="stat-trend trend-up" id="stat-products-trend">
+                <i class="fa-solid fa-arrow-trend-up"></i> +8%
+              </span>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-purple">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+              </div>
+              <div class="stat-body">
+                <span class="stat-value" id="stat-revenue">₹1,48,900</span>
+                <span class="stat-label">Total Sales Revenue</span>
+              </div>
+              <span class="stat-trend trend-up" id="stat-revenue-trend">
+                <i class="fa-solid fa-arrow-trend-up"></i> +24%
+              </span>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-amber">
+                <i class="fa-solid fa-eye"></i>
+              </div>
+              <div class="stat-body">
+                <span class="stat-value" id="stat-views">18,420</span>
+                <span class="stat-label">Monthly Page Views</span>
+              </div>
+              <span class="stat-trend trend-neutral" id="stat-views-trend">
+                <i class="fa-solid fa-arrow-trend-up"></i> +15%
+              </span>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="charts-grid">
+            <div class="admin-card chart-card">
+              <h2><i class="fa-solid fa-chart-line"></i> Store Sales & Analytics Overview</h2>
+              <div class="chart-canvas-wrap">
+                <canvas id="chart-timeline"></canvas>
+              </div>
+            </div>
+            <div class="admin-card chart-card">
+              <h2><i class="fa-solid fa-chart-pie"></i> Catalog Breakdown by Category</h2>
+              <div class="chart-canvas-wrap chart-canvas-doughnut">
+                <canvas id="chart-categories"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Grid: Recent Activity & Admin Tasks -->
+          <div class="dashboard-bottom-grid">
+            
+            <!-- Recent Database Activity Table -->
+            <div class="admin-card recent-items-card">
+              <h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Studio Activity</h2>
+              <div class="table-responsive">
+                <table class="admin-table" id="recent-activity-table">
+                  <thead>
+                    <tr>
+                      <th>Thumbnail</th>
+                      <th>Item Name</th>
+                      <th>Type</th>
+                      <th>Category</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-activity-body">
+                    <!-- Populated dynamically via admin.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Admin Tasks Checklist Widget -->
+            <div class="admin-card tasks-card">
+              <div class="tasks-card-header">
+                <h2><i class="fa-solid fa-square-check"></i> Studio Tasks</h2>
+                <button class="task-add-btn" id="task-add-trigger"><i class="fa-solid fa-plus"></i> Add</button>
+              </div>
+              <div class="task-input-container" id="task-input-wrapper" style="display: none;">
+                <input type="text" id="task-new-title" placeholder="Enter task objective...">
+                <button id="task-new-submit">Add Task</button>
+              </div>
+              <div class="tasks-list" id="dashboard-tasks-list">
+                <!-- Checkable task items populated dynamically -->
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 2: STORE PRODUCTS                  -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-store">
+          
+          <div class="subpage-controls">
+            <div class="inner-tabs">
+              <button class="inner-tab-btn active" data-subtab="store-list">
+                <i class="fa-solid fa-list-ul"></i> Product Catalog
+              </button>
+              <button class="inner-tab-btn" data-subtab="store-add">
+                <i class="fa-solid fa-plus-circle"></i> Add Store Product
+              </button>
+            </div>
+          </div>
+
+          <!-- Subtab 1: Product List -->
+          <div class="inner-tab-content active" id="store-list">
+            <div class="admin-card list-card">
+              <h2><i class="fa-solid fa-list"></i> Store Products Database</h2>
+              <div class="table-toolbar">
+                <div class="table-search-wrap">
+                  <i class="fa-solid fa-search"></i>
+                  <input type="text" id="product-search" class="table-search-input" placeholder="Search product name or category...">
+                </div>
+                <span class="table-count" id="product-table-count">Showing items...</span>
+              </div>
+              <div class="table-responsive">
+                <table class="admin-table" id="products-table">
+                  <thead>
+                    <tr>
+                      <th>Thumbnail</th>
+                      <th>Product Name</th>
+                      <th>ID</th>
+                      <th>Price</th>
+                      <th>Category</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="products-list-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination" id="products-pagination"></div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Add Product Form -->
+          <div class="inner-tab-content" id="store-add">
+            <div class="admin-card form-card">
+              <h2><i class="fa-solid fa-plus-circle"></i> Add Store Product</h2>
+              <form id="form-add-product" class="admin-form">
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="prod-id">Product ID * (Unique slug)</label>
+                    <input type="text" id="prod-id" required placeholder="e.g. itachi-black-colored">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-name">Product Name *</label>
+                    <input type="text" id="prod-name" required placeholder="e.g. Itachi Crow Genjutsu Graphic Tee">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-price">Price (₹) *</label>
+                    <input type="number" id="prod-price" min="0" step="1" required placeholder="e.g. 999">
+                  </div>
+                </div>
+
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="prod-category">Category *</label>
+                    <select id="prod-category" required>
+                      <option value="Merchandise">Merchandise</option>
+                      <option value="Digital Courses">Digital Courses</option>
+                      <option value="3D Assets">3D Assets</option>
+                      <option value="Materials & Textures">Materials & Textures</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-subcategory">Subcategory</label>
+                    <input type="text" id="prod-subcategory" placeholder="e.g. Oversized Tees, Rigs, Shaders">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-type">Product Type</label>
+                    <select id="prod-type">
+                      <option value="physical">Physical (Shipped)</option>
+                      <option value="digital">Digital (Instant Download)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="prod-badge">Product Badge</label>
+                    <input type="text" id="prod-badge" placeholder="e.g. 50% OFF, Best Seller">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-img">Image URL *</label>
+                    <input type="url" id="prod-img" required placeholder="https://res.cloudinary.com/...">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="prod-description">Description *</label>
+                  <textarea id="prod-description" rows="3" required placeholder="Provide a detailed description of the product..."></textarea>
+                </div>
+
+                <button type="submit" class="admin-submit-btn">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Store Product
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 3: CUSTOMER ORDERS                 -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-orders">
+          <div class="admin-card list-card">
+            <h2><i class="fa-solid fa-cart-flatbed"></i> Customer Orders & Fulfillment</h2>
+            <div class="table-toolbar">
+              <div class="table-search-wrap">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="orders-search" class="table-search-input" placeholder="Search order ID, customer name, email...">
+              </div>
+              <span class="table-count" id="orders-table-count">Showing orders...</span>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table" id="orders-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Fulfillment Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-list-body">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 4: ART LIBRARY                     -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-art">
+          
+          <div class="subpage-controls">
+            <div class="inner-tabs">
+              <button class="inner-tab-btn active" data-subtab="art-list">
+                <i class="fa-solid fa-palette"></i> Art Gallery Database
+              </button>
+              <button class="inner-tab-btn" data-subtab="art-add">
+                <i class="fa-solid fa-plus-circle"></i> Add Artwork Asset
+              </button>
+            </div>
+          </div>
+
+          <!-- Subtab 1: Artwork Database List -->
+          <div class="inner-tab-content active" id="art-list">
+            <div class="admin-card list-card">
+              <h2><i class="fa-solid fa-list"></i> Gallery Artworks</h2>
+              <div class="table-toolbar">
+                <div class="table-search-wrap">
+                  <i class="fa-solid fa-search"></i>
+                  <input type="text" id="artwork-search" class="table-search-input" placeholder="Search character or anime title...">
+                </div>
+                <span class="table-count" id="artwork-table-count"></span>
+              </div>
+              <div class="table-responsive">
+                <table class="admin-table" id="artworks-table">
+                  <thead>
+                    <tr>
+                      <th>Thumbnail</th>
+                      <th>Character</th>
+                      <th>Source Anime</th>
+                      <th>Category</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="artworks-list-body">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination" id="artworks-pagination"></div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Add Artwork Form -->
+          <div class="inner-tab-content" id="art-add">
+            <div class="admin-card form-card">
+              <h2><i class="fa-solid fa-plus-circle"></i> Add New Artwork</h2>
+              <form id="form-add-artwork" class="admin-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="art-charname">Character Name *</label>
+                    <input type="text" id="art-charname" required placeholder="e.g. Kaori Miyazono">
+                  </div>
+                  <div class="form-group">
+                    <label for="art-source">Source Anime *</label>
+                    <input type="text" id="art-source" required placeholder="e.g. Your Lie in April">
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="art-category">Category *</label>
+                    <select id="art-category" required>
+                      <option value="digital-portrait">Digital Portrait</option>
+                      <option value="insane-artwork">Insane Artwork</option>
+                      <option value="color-pencil">Color Pencil</option>
+                      <option value="charcoal-pencil">Charcoal & Pencil</option>
+                      <option value="others">Others</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="art-sex">Gender</label>
+                    <select id="art-sex">
+                      <option value="Female">Female</option>
+                      <option value="Male">Male</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="art-img">Image URL *</label>
+                  <input type="url" id="art-img" required placeholder="https://res.cloudinary.com/...">
+                </div>
+
+                <div class="form-group">
+                  <label for="art-description">Description *</label>
+                  <textarea id="art-description" rows="3" required placeholder="Describe the illustration style, lighting, and theme..."></textarea>
+                </div>
+
+                <button type="submit" class="admin-submit-btn">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Artwork Asset
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 5: MOTION & 3D ASSETS              -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-motion">
+          <div class="admin-card list-card">
+            <h2><i class="fa-solid fa-film"></i> Motion & 3D Character Rigs Catalog</h2>
+            <div class="table-responsive">
+              <table class="admin-table" id="motion-table">
+                <thead>
+                  <tr>
+                    <th>Thumbnail</th>
+                    <th>Asset Title</th>
+                    <th>Type</th>
+                    <th>Format</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="motion-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 6: NEWS & ARTICLES                 -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-news">
+          <div class="admin-card list-card">
+            <h2><i class="fa-solid fa-newspaper"></i> Studio News & Release Articles</h2>
+            <div class="table-responsive">
+              <table class="admin-table" id="news-table">
+                <thead>
+                  <tr>
+                    <th>Article ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Author</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="news-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 7: DISCOUNTS & COUPONS             -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-coupons">
+          <div class="admin-card list-card">
+            <h2><i class="fa-solid fa-ticket"></i> Active Discount Coupons & Promos</h2>
+            <div class="table-responsive">
+              <table class="admin-table" id="coupons-table">
+                <thead>
+                  <tr>
+                    <th>Coupon Code</th>
+                    <th>Discount</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="coupons-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 8: COMMUNITY REVIEWS & SUGGESTIONS -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-community">
+          
+          <!-- 1. Customer Reviews Card -->
+          <div class="admin-card list-card" style="margin-bottom: 28px;">
+            <h2><i class="fa-solid fa-comments"></i> Customer Product Reviews Log</h2>
+            <div class="table-responsive">
+              <table class="admin-table" id="community-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Rating</th>
+                    <th>Review Content</th>
+                    <th>Product Name</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="community-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 2. Community Design Poll Suggestions Card -->
+          <div class="admin-card list-card">
+            <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Community Anime & Character Design Requests</h2>
+            <div class="table-responsive">
+              <table class="admin-table" id="poll-suggestions-table">
+                <thead>
+                  <tr>
+                    <th>Requested Anime / Character</th>
+                    <th>Date Submitted</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="poll-suggestions-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 9: ACCOUNT SETTINGS                -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-account">
+          <div class="admin-grid-layout">
+            
+            <!-- Edit Profile Form Card -->
+            <div class="admin-card form-card">
+              <h2><i class="fa-solid fa-user-pen"></i> Admin Account Credentials</h2>
+              <form id="form-edit-profile" class="admin-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="profile-username-input">Admin Name</label>
+                    <input type="text" id="profile-username-input" required value="Suhas H">
+                  </div>
+                  <div class="form-group">
+                    <label for="profile-email-input">Admin Email</label>
+                    <input type="email" id="profile-email-input" required value="admin@senpaiworks.com">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="profile-avatar-input">Avatar Image URL</label>
+                  <input type="url" id="profile-avatar-input" value="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp">
+                </div>
+                
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="profile-password-input">New Password</label>
+                    <input type="password" id="profile-password-input" placeholder="Keep blank to retain current password">
+                  </div>
+                  <div class="form-group">
+                    <label for="profile-role-display">Access Privileges</label>
+                    <input type="text" id="profile-role-display" readonly value="Super Administrator" style="opacity: 0.75; cursor: not-allowed;">
+                  </div>
+                </div>
+                
+                <button type="submit" class="admin-submit-btn">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Admin Credentials
+                </button>
+              </form>
+            </div>
+
+            <!-- Profile Info Card -->
+            <div class="admin-card list-card profile-details-card">
+              <div class="profile-details-hero">
+                <div class="profile-detail-avatar-wrap">
+                  <img id="detail-profile-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Avatar">
+                </div>
+                <h2 id="detail-profile-name">Suhas H</h2>
+                <p id="detail-profile-email">admin@senpaiworks.com</p>
+                <span class="role-badge">Super Admin</span>
+              </div>
+              
+              <div class="profile-meta-list">
+                <div class="meta-item">
+                  <span class="meta-label">System Rights</span>
+                  <span class="meta-value text-green">Full Studio Read/Write/Delete</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Session Status</span>
+                  <span class="meta-value text-blue"><i class="fa-solid fa-circle-check"></i> Encrypted Active Session</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Ecosystem Platform</span>
+                  <span class="meta-value font-mono">SenpaiWorks 2.0 Core</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div class="edit-modal-overlay" id="edit-modal-overlay">
+    <div class="edit-modal">
+      <div class="edit-modal-header">
+        <h2 id="edit-modal-title">Edit Item</h2>
+        <button class="edit-modal-close" id="edit-modal-close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="edit-modal-form" class="admin-form">
+        <div id="edit-modal-fields"></div>
+        <div class="edit-modal-actions">
+          <button type="button" class="btn-cancel" id="edit-modal-cancel">Cancel</button>
+          <button type="submit" class="admin-submit-btn">
+            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="scripts/admin.js?v=2"></script>
+
+</body>
+</html>

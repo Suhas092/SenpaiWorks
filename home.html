@@ -1,560 +1,1068 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SenpaiWorks</title>
-    <link rel="stylesheet" href="2dworld.css">
-    <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="home.css">
+  <title>SenpaiWorks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="art-library.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css?v=3">
+  <link rel="stylesheet" href="mobile-navbar.css">
+  <link rel="stylesheet" href="showcase.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="scripts/showcase.js" defer></script>
 </head>
+
 <body>
 
 
 
-
   <!-- Marvel-style logo -->
-<div id="header-placeholder"></div>
-<script src="scripts/header.js"></script>
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=7"></script>
+  <script src="scripts/drawer.js?v=7"></script>
 
 
-<div class="top-bg-strip"></div>
-
-<div id="drawer-container"></div>
-<script src="scripts/drawer.js"></script>
-
-
-
-
-<section class="slideshow-container">
-  <button class="slide_scroll-btn left" aria-label="Scroll left">&#8249;</button>
-  <div class="slide-wrapper">
-    <!-- Slide 1 - Deadpool -->
-    <div class="slide">
-      <div class="slide-bg">
-        <video autoplay muted loop playsinline>
-          <source src="https://res.cloudinary.com/dmzchsqms/video/upload/f_auto,q_auto/w_600/v1757630852/slide_3_c0xcfe.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+  <section class="slideshow-container" id="slides">
+    <button class="slide_scroll-btn left" aria-label="Scroll left">&#8249;</button>
+    <div class="slide-wrapper">
+      <!-- Slide 1 - SenpaiWorks 2.0 -->
+      <div class="slide">
+        <div class="slide-bg" style="background-image: url('assets/Home page images/senpaiworks 2.0 new.png');">
+        </div>
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <p class="Spotlight">#1 Spotlight</p>
+            <h1 class="anime-title">SenpaiWorks 2.0</h1>
+            <p class="anime-description">Welcome to the next generation of our creator platform—featuring immersive
+              Web3D showcases, updated asset stores, and premium aesthetics.</p>
+            <div class="hero-buttons">
+              <a href="news.html" class="watch-now"><i class="fa-brands fa-youtube"
+                  style="font-size: 1.25em; margin-right: 8px; vertical-align: -1px;"></i>Watch Video</a>
+              <a href="about.html" class="details">Read News</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="hero-overlay">
-        <div class="hero-content">
-          <p class="Spotlight">#1 Spotlight</p>
-          <h1 class="anime-title">Deadpool Animation</h1>
-          <p class="anime-description">Experience the chaos, comedy, and combat in this high-octane, fan-made Deadpool animation—crafted from scratch with a unique style and full of surprises.</p>
-         <div class="hero-buttons">
-            <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" class="watch-now" target="_blank" rel="noopener">▶ Watch Now</a>
-            <a href="detail.html?id=deadpool" class="details">Details <b>></b></a>
+
+      <!-- Slide 2 - Suzens -->
+      <div class="slide">
+        <div class="slide-bg" style="background-image: url('assets/suzens new/suzens new.png');">
+        </div>
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <p class="Spotlight">#2 Spotlight</p>
+            <h1 class="anime-title">Suzens</h1>
+            <p class="anime-description">Suzens is an original digital girl group inspired by K-pop culture, anime
+              aesthetics, and idol storytelling.</p>
+            <div class="hero-buttons">
+              <a href="#" class="watch-now">Coming Soon</a>
+              <a href="detail.html?id=suzens" class="details">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 - Anime Graphic Streetwear -->
+      <div class="slide">
+        <div class="slide-bg" style="background-image: url('assets/Home page images/tee shirts slide.png');">
+        </div>
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <p class="Spotlight">#3 Spotlight</p>
+            <h1 class="anime-title">Anime Graphic Streetwear</h1>
+            <p class="anime-description">Premium 240 GSM heavyweight oversized cotton tees featuring high-density
+              graphic prints of Itachi Uchiha, Kaneki Ken, Roronoa Zoro, and the Suzens band.</p>
+            <div class="hero-buttons">
+              <a href="store.html" class="watch-now">Shop Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4 - 2D Art Library -->
+      <div class="slide">
+        <div class="slide-bg" style="background-image: url('assets/Home page images/2d library.png');">
+        </div>
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <p class="Spotlight">#4 Spotlight</p>
+            <h1 class="anime-title">Art Library</h1>
+            <p class="anime-description">Explore our rich collection of 2D anime illustrations, concept art, character
+              turnarounds, and visual development assets.</p>
+            <div class="hero-buttons">
+              <a href="art-library.html" class="watch-now">Explore Library</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5 - Deadpool Animation -->
+      <div class="slide">
+        <div class="slide-bg">
+          <video autoplay muted loop playsinline>
+            <source
+              src="https://res.cloudinary.com/dmzchsqms/video/upload/f_auto,q_auto/w_600/v1757630852/slide_3_c0xcfe.mp4"
+              type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <p class="Spotlight">#5 Spotlight</p>
+            <h1 class="anime-title">Deadpool Animation</h1>
+            <p class="anime-description">Experience the chaos, comedy, and combat in this high-octane, fan-made Deadpool
+              animation—crafted from scratch with a unique style and full of surprises.</p>
+            <div class="hero-buttons">
+              <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" class="watch-now" target="_blank" rel="noopener"><i
+                  class="fa-brands fa-youtube"
+                  style="font-size: 1.25em; margin-right: 8px; vertical-align: -1px;"></i>Watch Now</a>
+              <a href="detail.html?id=deadpool" class="details">Details</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-<!-- Slide 2 - Suzanz -->
-    <div class="slide">
-      <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_godrays_jggu36.webp');"></div>
-      <div class="hero-overlay">
-        <div class="hero-content">
-          <p class="Spotlight">#2 Spotlight</p>
-          <h1 class="anime-title">Suzans</h1>
-          <p class="anime-description">Suzanz is an original digital girl group inspired by K-pop culture, anime aesthetics, and idol storytelling. </p>
-          <div class="hero-buttons">
-            <a href="#" class="watch-now">Coming soon</a>
-            <a href="detail.html?id=suzanz" class="details">Details <b>></b></a>
-          </div>
-        </div>
-      </div>
+    <div class="slide-indicators">
+      <span class="indicator-tab active" data-slide="0">SENPAIWORKS 2.0</span>
+      <span class="indicator-tab" data-slide="1">SUZENS</span>
+      <span class="indicator-tab" data-slide="2">OFFICIAL STREETWEAR</span>
+      <span class="indicator-tab" data-slide="3">ART LIBRARY</span>
+      <span class="indicator-tab" data-slide="4">DEADPOOL ANIMATION</span>
     </div>
 
-        <!-- Slide 3 - Itachi -->
-    <div class="slide">
-      <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/zoro_green_poster_unzusa.webp');"></div>
-      <div class="hero-overlay">
-        <div class="hero-content">
-          <p class="Spotlight">#3 Spotlight</p>
-          <h1 class="anime-title">Roronoa Zoro</h1>
-          <p class="anime-description">Dive into the tragic and powerful story of Itachi—filled with mystery, love, and sacrifice—in this cinematic animation.</p>
-          <div class="hero-buttons">
-            <a href="https://www.instagram.com/reel/Cvt4tO7h0eg/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" class="watch-now" target="_blank" rel="noopener">▶ Watch Now</a>
-            <a href="detail.html?id=zoro" class="details">Details <b>></b></a>
+    <button class="slide_scroll-btn right" aria-label="Scroll right">&#8250;</button>
+
+    <!-- Play/Pause Button -->
+    <button class="slideshow-play-pause-btn" aria-label="Pause slideshow" title="Pause slideshow">
+      <i class="fa-solid fa-pause"></i>
+    </button>
+
+  </section>
+
+  <!-- end of the slideshow -->
+
+  <!-- ===== SUZENS 3D SHOWCASE SECTION ===== -->
+  <section class="suzens-showcase-section">
+    <div class="showcase-bg-glow"></div>
+
+    <!-- Section Headline -->
+    <div class="showcase-header">
+      <h2 class="section-title">MAIN EVENT</h2>
+    </div>
+
+    <div class="showcase-container">
+
+      <!-- Left Column: Member Details (40% split) -->
+      <div class="showcase-details">
+        <div class="showcase-meta">CYBER POP · IDOL GROUP</div>
+        <h2 class="showcase-title" id="showcase-member-name">AYANA</h2>
+        <div class="showcase-subtitle">of <span class="group-name">SUZENS</span></div>
+        <div class="showcase-role" id="showcase-member-role">VISUAL · SUB VOCALIST</div>
+        <p class="showcase-desc" id="showcase-member-desc">
+          Ethereal and magnetic. Ayana is the visual centrepiece of SUZENS — her striking presence and soft harmonic
+          layers add depth and mystery to the group's signature sound.
+        </p>
+        <div class="showcase-counter" id="showcase-member-counter">04 / 04</div>
+        <a href="detail.html?id=suzens" class="explore-suzens-btn">
+          EXPLORE SUZENS <span class="arrow-icon">→</span>
+        </a>
+      </div>
+
+      <!-- Right Column: 3D Stack of Cards (60% split) -->
+      <div class="showcase-cards-wrapper">
+        <div class="showcase-cards-container">
+          <!-- Card 1: Suzana -->
+          <div class="showcase-card" data-index="0">
+            <div class="card-bg-overlay"></div>
+            <img src="assets/suzana all out.png" alt="Suzana">
+            <div class="card-name-overlay">SUZANA</div>
+          </div>
+          <!-- Card 2: Tiara -->
+          <div class="showcase-card" data-index="1">
+            <div class="card-bg-overlay"></div>
+            <img src="assets/tiara all out.png" alt="Tiara">
+            <div class="card-name-overlay">TIARA</div>
+          </div>
+          <!-- Card 4: Ayana -->
+          <div class="showcase-card" data-index="3">
+            <div class="card-bg-overlay"></div>
+            <img src="assets/ayana all out.png" alt="Ayana">
+            <div class="card-name-overlay">AYANA</div>
+          </div>
+          <!-- Card 3: Remi -->
+          <div class="showcase-card" data-index="2">
+            <div class="card-bg-overlay"></div>
+            <img src="assets/remi all out.png" alt="Remi">
+            <div class="card-name-overlay">REMI</div>
           </div>
         </div>
       </div>
-    </div> 
 
-  <button class="slide_scroll-btn right" aria-label="Scroll right">&#8250;</button>
-  
-</section>
+    </div>
+  </section>
 
 
 
-<!-- end of the slideshow -->
 
-<!-- Outer Wrapper with Fullscreen BG -->
-<section class="whats-happening-wrapper">
-  <div class="overlay"></div>
 
-  <!-- Inner Transparent Content -->
-  <section class="whats-happening">
-    <div class="container">
-      <div class="heading-row">
-        <h2 class="section-title">What’s happening?</h2>
-        <a href="detail.html?id=suzanz" class="see-more">See More</a>
-      </div>
 
-      <div class="content-row">
-        <!-- Left Big Feature -->
-        <div class="feature">
-          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp" alt="Main Progress">
-          <div class="feature-info">
-            <h3>SUZANS: THE FIRST BLOOM</h3>
-            <span class="tag">IN PROGRESS</span>
+  <section class="whats-happening-wrapper" id="featured-news">
+
+
+    <div class="overlay"></div>
+
+    <!-- Inner Transparent Content -->
+    <section class="whats-happening" style="max-width: 1240px; margin: 0 auto; padding: 0 20px;">
+      <h2 class="section-main-heading">Featured News</h2>
+      <div class="whats-happening-container">
+
+        <!-- Left Big Feature Card -->
+        <a href="article.html?id=senpaiworks-2-release" class="whats-happening-feature">
+          <div class="feature-left-content">
+            <span class="feature-badge">Best of the Week</span>
+            <div class="feature-meta">Platform Core &middot; 4 hours ago</div>
+            <h2 class="feature-title">SENPAIWORKS 2.0</h2>
+            <div class="feature-hashtags">
+              <span>#PlatformUpdate</span>
+              <span>#Web3D</span>
+              <span>#LuxuryAesthetics</span>
+            </div>
+            <div class="read-article-btn">
+              Read Article &rarr;
+            </div>
+          </div>
+
+          <!-- Glossy 3D Orb Asset wrapper -->
+          <div class="orb-container">
+            <div class="dashed-ring ring-1"></div>
+            <div class="dashed-ring ring-2"></div>
+            <div class="dashed-ring ring-3"></div>
+            <div class="glossy-orb"></div>
+          </div>
+        </a>
+
+        <!-- Right RECOMMENDED Column -->
+        <div class="recommended-column">
+          <div class="column-label">Recommended</div>
+
+          <!-- Top Wide Card -->
+          <a href="news.html" class="recommended-card">
+            <div class="recommended-card-content">
+              <span class="recommended-badge">Art Library</span>
+              <h3 class="recommended-title">US-Approved Spot Bitcoin ETFs Could Surpass Entire $50 Billion Crypto ETP
+                Market: BitMEX</h3>
+            </div>
+          </a>
+
+          <!-- List items -->
+          <div class="rec-list">
+
+            <!-- Item 1: Deadpool -->
+            <a href="detail.html?id=deadpool" class="rec-list-item">
+              <div class="rec-item-text">
+                <div class="rec-item-meta">3D Animation &middot; 4 hours ago</div>
+                <h4 class="rec-item-title">Deadpool & Wolverine Fan Animation Released!</h4>
+              </div>
+              <img
+                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/deadpool_logo_wv09fw.webp"
+                alt="Deadpool" class="rec-item-img">
+            </a>
+
+            <!-- Item 2: Web Dev -->
+            <a href="news.html" class="rec-list-item">
+              <div class="rec-item-text">
+                <div class="rec-item-meta">Web Dev &middot; 4 hours ago</div>
+                <h4 class="rec-item-title">Introducing SenpaiWorks v2 Website Architecture</h4>
+              </div>
+              <img
+                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630849/code_copy_jq3ic6.webp"
+                alt="Web Dev" class="rec-item-img">
+            </a>
+
+            <!-- Item 3: Design -->
+            <a href="detail.html?id=suzens" class="rec-list-item">
+              <div class="rec-item-text">
+                <div class="rec-item-meta">Design &middot; 4 hours ago</div>
+                <h4 class="rec-item-title">Developing the "Suzens" Original Idol Visuals</h4>
+              </div>
+              <img
+                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_400/v1757630847/suzan_main_bg_zrmgwb.webp"
+                alt="Design" class="rec-item-img">
+            </a>
+
           </div>
         </div>
 
-        <!-- Right Side List -->
-        <div class="side-list">
-            <div class="list-item">
-            <div class="item-info">
-              <h4>Charcter Designing</h4>
-              <span class="tag">IN PROGRESS</span>
-            </div>
-            <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_400/v1757630847/suzan_main_bg_zrmgwb.webp" alt="3D Modeling">
+      </div>
+    </section>
+  </section>
+
+  <!-- ===== FEATURED HIGHLIGHTS SLIDER SECTION ===== -->
+  <div class="things-you-might-like-wrapper">
+
+    <section class="merch-review" id="things-you-might-like">
+      <div class="slider-header-row">
+        <h2 class="section-main-heading" style="margin-bottom: 0;">Things You Might Like</h2>
+      </div>
+
+      <div class="merch-container" id="featured-slider-box">
+        <!-- Manual Navigation Arrows -->
+        <button class="slider-nav-btn prev-btn" id="slider-prev-btn" aria-label="Previous Slide">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="slider-nav-btn next-btn" id="slider-next-btn" aria-label="Next Slide">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- Decorative Background Waves (SVG) -->
+        <div class="merch-bg-waves">
+          <svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,150 C100,120 200,180 300,140 C350,120 380,130 400,110 L400,200 L0,200 Z"
+              fill="rgba(255, 255, 255, 0.03)" />
+            <path d="M0,170 C120,150 180,200 320,165 C360,150 380,160 400,145 L400,200 L0,200 Z"
+              fill="rgba(255, 255, 255, 0.05)" />
+          </svg>
+        </div>
+
+        <!-- Left Column: Details -->
+        <div class="merch-details">
+          <div class="slide-badge-wrapper" id="slide-badge-wrapper">
+            <span class="slide-badge" id="slide-badge">
+              <i class="fa-solid fa-graduation-cap"></i> COURSES & LEARNING
+            </span>
           </div>
-          <div class="list-item">
-            <div class="item-info">
-              <h4>3D Modeling Ongoing</h4>
-              <span class="tag">IN PROGRESS</span>
-            </div>
-            <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_400/v1757630847/suzan_main_bg_zrmgwb.webp" alt="3D Modeling">
+          <h2 class="merch-title" id="merch-item-name">Master 2D & 3D Creative Tech</h2>
+          <p class="merch-desc" id="merch-item-desc">
+            SenpaiWorks offers structured courses in 2D character animation, 3D modeling, and creative workflows. Check
+            out our Learn page to start your journey!
+          </p>
+
+          <!-- Dynamic Action Buttons -->
+          <div class="slide-actions" id="slide-actions">
+            <a href="learn.html" class="explore-btn">
+              <i class="fa-solid fa-graduation-cap"></i> Explore Courses
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Image & Decorations -->
+        <div class="merch-image-wrapper">
+          <div class="dots-grid dots-top-left"></div>
+
+          <div class="merch-image-card">
+            <img id="main-merch"
+              src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp"
+              alt="SenpaiWorks Courses">
           </div>
 
-          <div class="list-item">
-            <div class="item-info">
-              <h4>Vocal Recruiting</h4>
-              <span class="tag">IN PROGRESS</span>
-            </div>
-            <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_400/v1757630847/suzan_main_bg_zrmgwb.webp" alt="Vocal Recruiting">
+          <div class="dots-grid dots-bottom-right"></div>
+        </div>
+
+        <!-- Bottom Pagination Dots -->
+        <div class="slider-dots" id="slider-dots"></div>
+      </div>
+    </section>
+  </div>
+
+
+
+
+
+
+
+
+  <section class="movies-section" id="shorts">
+    <h2 class="movies-title">Shorts & Entertainment</h2>
+    <div class="movies-carousel">
+
+      <!-- Left Arrow -->
+      <button class="carousel-btn left">&#10094;</button>
+
+      <div class="movies-container">
+        <!-- Movie 1 -->
+        <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" class="movie-card"
+          data-label="Start Watching">
+          <img
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp"
+            alt="Deadpool Poster">
+          <div class="movie-info">
+            <h3>Deadpool Animation</h3>
+            <p>Experience Deadpool in Action</p>
+          </div>
+        </a>
+
+        <!-- Movie 2 -->
+        <a href="detail.html?id=suzens" class="movie-card" data-label="See Details">
+          <img
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp"
+            alt="Suzens Poster">
+          <div class="movie-info">
+            <h3>Suzens: The First Bloom</h3>
+            <p>Suzen’s first virtual debut song arriving soon</p>
+          </div>
+        </a>
+
+        <!-- Movie 3 -->
+        <a href="https://www.instagram.com/p/Cvt4tO7h0eg/" target="_blank" class="movie-card"
+          data-label="Start Watching">
+          <img
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp"
+            alt="Zoro Poster">
+          <div class="movie-info">
+            <h3>Zoro: Forged from Legends</h3>
+            <p>An artwork sailing One Piece’s legend</p>
+          </div>
+        </a>
+
+        <!-- Movie 4 -->
+        <a href="https://www.instagram.com/reel/CgB_WXDJjmv/" target="_blank" class="movie-card"
+          data-label="Start Watching">
+          <img
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp"
+            alt="Jungkook Charcoal Art">
+          <div class="movie-info">
+            <h3>Jungkook: Charcoal Art</h3>
+            <p>Watch the quick creation of Jungkook in charcoal</p>
+          </div>
+        </a>
+
+
+        <!-- Movie 5 -->
+        <a href="https://www.instagram.com/reel/CZu5cnLhF67/" target="_blank" class="movie-card"
+          data-label="Start Watching">
+          <img
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp"
+            alt="Itachi Artwork">
+          <div class="movie-info">
+            <h3>The Legend of Itachi</h3>
+            <p>An epic Itachi story built from countless little Naruto characters</p>
+          </div>
+        </a>
+
+        <!-- Movie 6 -->
+        <a href="https://www.instagram.com/reel/CmyffHTj3qW/" target="_blank" class="movie-card"
+          data-label="Start Watching">
+          <img
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/taeyung_copy_sne0b3.webp"
+            alt="Zoro Poster">
+          <div class="movie-info">
+            <h3>V: the Word Art</h3>
+            <p>Exclusive release – October 2025</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Right Arrow -->
+      <button class="carousel-btn right">&#10095;</button>
+    </div>
+  </section>
+
+
+  <script>
+    const container = document.querySelector(".movies-container");
+    const leftBtn = document.querySelector(".carousel-btn.left");
+    const rightBtn = document.querySelector(".carousel-btn.right");
+
+    const cardWidth = container.querySelector(".movie-card").offsetWidth + 5; // card + gap
+    const scrollAmount = cardWidth * 3; // move 3 at once
+
+    rightBtn.addEventListener("click", () => {
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    });
+
+    leftBtn.addEventListener("click", () => {
+      container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    });
+  </script>
+
+  <!-- ===== NEW MERCHANDISE SECTION ===== -->
+  <div class="merchandise-section-wrapper" id="new-merch">
+    <section class="merch-section">
+      <h2 class="merch-section-heading">New Merch on Store</h2>
+      <div class="merch-grid-container">
+
+        <!-- Left Feature Card (Image TOP, Info BOTTOM) -->
+        <a href="store.html" class="merch-feature-card">
+          <div class="feature-card-img-wrap">
+            <span class="trending-badge">Trending Now</span>
+            <img src="assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg"
+              alt="Itachi Crow Genjutsu Graphic Tee" class="feature-card-image">
           </div>
 
-          <div class="list-item">
-            <div class="item-info">
-              <h4>Animation Tests</h4>
-              <span class="tag">EXPERIMENTING</span>
-            </div>
-            <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_400/v1757630847/suzan_main_bg_zrmgwb.webp" alt="Animation">
-          </div>
+          <div class="merch-feature-card-content">
+            <div class="feature-card-meta">T-Shirts &middot; <span class="home-discount-badge">50% OFF</span></div>
+            <h2 class="feature-card-title">Itachi Crow Genjutsu Graphic Tee</h2>
 
+            <div class="feature-card-tags">
+              <span>#ItachiUchiha</span>
+              <span>#240GSMOrganicCotton</span>
+              <span>#AnimeStreetwear</span>
+            </div>
+
+            <div class="explore-btn">Explore Store &rarr;</div>
+          </div>
+        </a>
+
+        <!-- Right Grid and Controls -->
+        <div class="merch-grid-wrapper" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="merch-grid">
+
+            <!-- Card 1: Zoro Green T-Shirt -->
+            <a href="store.html" class="grid-card">
+              <img src="assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg"
+                alt="Zoro Three-Sword Style Tee" class="grid-card-image">
+              <div class="grid-card-content">
+                <div class="grid-card-badge">T-Shirts &middot; 35% OFF</div>
+                <h3 class="grid-card-title">Roronoa Zoro Three-Sword Style Tee</h3>
+                <div class="grid-card-tags">
+                  <span>#Zoro</span>
+                  <span>#240GSM</span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 2: Kaneki Black T-Shirt -->
+            <a href="store.html" class="grid-card">
+              <img src="assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg"
+                alt="Kaneki Tokyo Ghoul Tee" class="grid-card-image">
+              <div class="grid-card-content">
+                <div class="grid-card-badge">T-Shirts &middot; 40% OFF</div>
+                <h3 class="grid-card-title">Kaneki Ken Tokyo Ghoul Anime Tee</h3>
+                <div class="grid-card-tags">
+                  <span>#Kaneki</span>
+                  <span>#TokyoGhoul</span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 3: Itachi Purple T-Shirt -->
+            <a href="store.html" class="grid-card">
+              <img src="assets/Store/Tshirts/Colored itachi tshirts/itachi_purple_tshirt_colored.jpg"
+                alt="Itachi Purple Tee" class="grid-card-image">
+              <div class="grid-card-content">
+                <div class="grid-card-badge">T-Shirts &middot; 25% OFF</div>
+                <h3 class="grid-card-title">Itachi Tsukuyomi Vintage Purple Tee</h3>
+                <div class="grid-card-tags">
+                  <span>#Itachi</span>
+                  <span>#LimitedDrop</span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 4: Zoro Black T-Shirt -->
+            <a href="store.html" class="grid-card">
+              <img src="assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_black_tshirt.jpg" alt="Zoro Ashura Tee"
+                class="grid-card-image">
+              <div class="grid-card-content">
+                <div class="grid-card-badge">T-Shirts &middot; 45% OFF</div>
+                <h3 class="grid-card-title">Zoro Ashura Demon Slash Black Tee</h3>
+                <div class="grid-card-tags">
+                  <span>#OnePiece</span>
+                  <span>#WashProof</span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 5: Kaneki White T-Shirt -->
+            <a href="store.html" class="grid-card">
+              <img src="assets/Store/Tshirts/Colored kaneki tshirts/kaneki_white_tshirt_colored.jpg"
+                alt="Kaneki Dragon Tee" class="grid-card-image">
+              <div class="grid-card-content">
+                <div class="grid-card-badge">T-Shirts &middot; 30% OFF</div>
+                <h3 class="grid-card-title">Kaneki One-Eyed Dragon White Tee</h3>
+                <div class="grid-card-tags">
+                  <span>#KanekiWhite</span>
+                  <span>#AnimeApparel</span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 6: Itachi Red T-Shirt -->
+            <a href="store.html" class="grid-card">
+              <img src="assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg"
+                alt="Itachi Crimson Tee" class="grid-card-image">
+              <div class="grid-card-content">
+                <div class="grid-card-badge">T-Shirts &middot; 50% OFF</div>
+                <h3 class="grid-card-title">Itachi Akatsuki Crimson Edition Tee</h3>
+                <div class="grid-card-tags">
+                  <span>#Akatsuki</span>
+                  <span>#SpecialDrop</span>
+                </div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== COMMUNITY INTRODUCTION SECTION ===== -->
+  <section class="home-community-section">
+
+
+    <h2 class="section-main-heading">Community</h2>
+
+    <div class="community-intro-card">
+      <!-- Left Column: Text & CTA -->
+      <div class="community-intro-left">
+        <span class="community-badge">CONNECT & COLLABORATE</span>
+        <h3 class="community-intro-title">Join the SenpaiWorks Creative Hub</h3>
+        <p class="community-intro-desc">
+          Connect with digital artists, 3D animators, and anime enthusiasts. Share your latest renders, get direct
+          feedback, discover WIP storyboards, and participate in creative discussions.
+        </p>
+
+        <div class="community-stats-row">
+          <div class="community-chip">
+            <i class="fa-brands fa-discord"></i> Discord Space
+          </div>
+          <div class="community-chip">
+            <i class="fa-brands fa-instagram"></i> Artwork Feed
+          </div>
+          <div class="community-chip">
+            <i class="fa-solid fa-users"></i> Live Feedback
+          </div>
+        </div>
+
+        <a href="community.html" class="explore-more-store-btn">
+          Visit Community Hub &rarr;
+        </a>
+      </div>
+
+      <!-- Right Column: Highlight Cards -->
+      <div class="community-intro-right">
+        <div class="community-mini-card">
+          <div class="community-mini-icon">
+            <i class="fa-brands fa-discord"></i>
+          </div>
+          <div class="community-mini-info">
+            <h4>Discord Server</h4>
+            <p>Chat directly with creators, post animation clips, and get critiques.</p>
+          </div>
+        </div>
+
+        <div class="community-mini-card">
+          <div class="community-mini-icon">
+            <i class="fa-solid fa-paintbrush"></i>
+          </div>
+          <div class="community-mini-info">
+            <h4>Artwork Showcases</h4>
+            <p>Explore fan art drops, traditional charcoal sketches, and 2D concepts.</p>
+          </div>
+        </div>
+
+        <div class="community-mini-card">
+          <div class="community-mini-icon">
+            <i class="fa-solid fa-comments"></i>
+          </div>
+          <div class="community-mini-info">
+            <h4>Discussion & Updates</h4>
+            <p>Stay informed on new platform releases, tutorial guides, and news.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
-</section>
 
 
-
-<!-- ===== MERCHANDISE REVIEW SECTION ===== -->
-<section class="merch-review">
-  <h3 class="trending-title">Things you might like!</h3>
-  <div class="merch-container">
-    <!-- Left: Merchandise Image -->
-    <div class="merch-image">
-      <img id="main-merch" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/itachi_black_t_shirt_copy_w1rb6l.webp" alt="Merch Preview">
-      <!-- <div class="release-info">Potential Release: 2025</div> -->
-    </div>
-
-    <!-- Right: Merchandise Info -->
-    <div class="merch-details">
-      <h2 class="merch-title">SenpaiWorks Merchandise</h2>
-      <p class="merch-desc">
-        A limited edition t-shirt featuring original Senpai artwork.  
-        Vote if you’d like to see this become official merchandise!
-      </p>
-
-      <!-- Interest Counter -->
-      <div class="interest-box">
-        <span class="interest-count" id="interestCount">0</span> are interested
-      </div>
-
-      <!-- Interest Button -->
-      <button class="interest-btn" id="interestBtn">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/thumb_kntmdd.png" alt="Like" class="thumb-img">
-        I'm Interested
-      </button>
-
-      <!-- Tags -->
-      <div class="merch-tags">
-        <span>Category: Apparel</span>
-        <span>Type: T-Shirt</span>
-        <span>Unisex</span>
-      </div>
-
-      <!-- Thumbnails -->
-      <div class="thumbnail-row">
-        <img class="thumbnail active" 
-          src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/itachi_black_t_shirt_copy_w1rb6l.webp" 
-          alt="thumb1" onclick="changeImage(this)">
-
-        <img class="thumbnail" 
-          src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/itachi_white_shirt_rwluvr.webp" 
-          alt="thumb2" onclick="changeImage(this)">
-
-        <p class="merch-desc">
-          For now, a few merchandise items are available. In the future, more designs will be released!
-        </p>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-
-<section class="how-section" id="how">
-  <div class="how-container">
-
-    <h3 class="trending-title">Get Yourself a Portrait</h3>
-    <h2>HOW IT WORKS</h2>
-    <p class="how-subtitle">This is a prototype demo — not released yet.</p>
-
-    <div class="how-steps">
-
-      <!-- Step 1 -->
-      <div class="how-step">
-        <div class="how-icon">
-          <span class="how-badge">1</span>
-          <img src="https://img.icons8.com/material-outlined/96/000000/paint-palette.png" alt="Select a character style" />
-        </div>
-        <h3>1. SELECT A CHARACTER STYLE</h3>
-        <p>Take a look around and find the style you want.</p>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="how-step">
-        <div class="how-icon">
-          <span class="how-badge">2</span>
-          <img src="https://img.icons8.com/material-outlined/96/000000/edit.png" alt="Customize your portrait" />
-        </div>
-        <h3>2. ADD YOUR DETAILS</h3>
-        <p>Upload a photo or leave a note with your request.</p>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="how-step">
-        <div class="how-icon">
-          <span class="how-badge">3</span>
-          <img src="https://img.icons8.com/ios/100/000000/art-prices.png" alt="We create for you" />
-        </div>
-        <h3>3. WE CREATE IT FOR YOU</h3>
-        <p>Our team transforms it into your chosen style.</p>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="how-step">
-        <div class="how-icon">
-          <span class="how-badge">4</span>
-          <img src="https://img.icons8.com/ios/100/000000/send-mass-email.png" alt="Get your portrait" />
-        </div>
-        <h3>4. RECEIVE YOUR PORTRAIT</h3>
-        <p>Download your personalized artwork and show it off!</p>
-      </div>
-
-    </div>
-
-    <!-- Closing CTA -->
-    <div class="how-extra">
-      <p>Interested?</p>
-      <a href="#gallery" class="cta-btn">Turn yourself into art!</a>
-    </div>
-
-  </div>
-</section>
-
-
-
-<section class="movies-section">
-  <h2 class="movies-title">Shorts & Entertainment</h2>
-  <div class="movies-carousel">
-    
-    <!-- Left Arrow -->
-    <button class="carousel-btn left">&#10094;</button>
-    
-    <div class="movies-container">
-      <!-- Movie 1 -->
-      <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" 
-         class="movie-card" data-label="Start Watching">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="Deadpool Poster">
-        <div class="movie-info">
-          <h3>Deadpool Animation</h3>
-          <p>Experience Deadpool in Action</p>
-        </div>
-      </a>
-
-      <!-- Movie 2 -->
-      <a href="detail.html?id=suzanz" 
-        class="movie-card" data-label="See Details">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp" alt="Suzans Poster">
-        <div class="movie-info">
-          <h3>Suzans: The First Bloom</h3>
-          <p>Suzan’s first virtual debut song arriving soon</p>
-        </div>
-      </a>
-
-      <!-- Movie 3 -->
-      <a href="https://www.instagram.com/p/Cvt4tO7h0eg/" target="_blank" 
-         class="movie-card" data-label="Start Watching">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp" alt="Zoro Poster">
-        <div class="movie-info">
-          <h3>Zoro: Forged from Legends</h3>
-          <p>An artwork sailing One Piece’s legend</p>
-        </div>
-      </a>
-
-      <!-- Movie 4 -->
-    <a href="https://www.instagram.com/reel/CgB_WXDJjmv/" target="_blank" 
-      class="movie-card" data-label="Start Watching">
-      <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp" alt="Jungkook Charcoal Art">
-      <div class="movie-info">
-        <h3>Jungkook: Charcoal Art</h3>
-        <p>Watch the quick creation of Jungkook in charcoal</p>
-      </div>
-    </a>
-
-
-      <!-- Movie 5 -->
-    <a href="https://www.instagram.com/reel/CZu5cnLhF67/" target="_blank" 
-      class="movie-card" data-label="Start Watching">
-      <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp" alt="Itachi Artwork">
-      <div class="movie-info">
-        <h3>The Legend of Itachi</h3>
-        <p>An epic Itachi story built from countless little Naruto characters</p>
-      </div>
-    </a>
-
-      <!-- Movie 6 -->
-      <a href="https://www.instagram.com/reel/CmyffHTj3qW/" target="_blank" 
-         class="movie-card" data-label="Start Watching">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/taeyung_copy_sne0b3.webp" alt="Zoro Poster">
-        <div class="movie-info">
-          <h3>V: the Word Art</h3>
-          <p>Exclusive release – October 2025</p>
-        </div>
-      </a>
-    </div>
-
-    <!-- Right Arrow -->
-    <button class="carousel-btn right">&#10095;</button>
-  </div>
-</section>
-
-
-<script>
-  const container = document.querySelector(".movies-container");
-  const leftBtn = document.querySelector(".carousel-btn.left");
-  const rightBtn = document.querySelector(".carousel-btn.right");
-
-  const cardWidth = container.querySelector(".movie-card").offsetWidth + 5; // card + gap
-  const scrollAmount = cardWidth * 3; // move 3 at once
-
-  rightBtn.addEventListener("click", () => {
-    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-  });
-
-  leftBtn.addEventListener("click", () => {
-    container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-  });
-</script>
-
-<section class="news-section">
-  <div class="news-header">
-    <h2>Featured News</h2>
-    <div class="news-controls">
-      <button class="news-btn news-left">&#10094;</button>
-      <div class="divider"></div>
-      <button class="news-btn news-right">&#10095;</button>
-    </div>
-  </div>
-
-  <div class="news-carousel">
-    <!-- Card 1 -->
-    <div class="news-card">
-      <div class="news-image">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_main_bg_zrmgwb.webp" alt="Suzans Release">
-      </div>
-      <div class="news-meta"><span>ALBUM</span></div>
-      <h3>New Suzans Album Cover</h3>
-      <p>The new Suzans album cover page will be released soon. Keep an eye out for the launch!</p>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="news-card">
-      <div class="news-image">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/itachi_white_shirt_rwluvr.webp" alt="SenpaiWorks Merchandise">
-      </div>
-      <div class="news-meta"><span>MERCH</span></div>
-      <h3>SenpaiWorks Merchandise</h3>
-      <p>Vote on your favorite merchandise ideas! Depending on your interest, the merch will be released soon.</p>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="news-card">
-      <div class="news-image">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/itachi_color_version_release_fyftaa.webp" alt="Itachi Uchiha Art">
-      </div>
-      <div class="news-meta"><span>ART</span></div>
-      <h3>Itachi Uchiha Insane Art</h3>
-      <p>The Itachi Uchiha artwork was published in black & white. The full-color version will be released soon!</p>
-    </div>
-
-    <!-- Card 4 -->
-    <div class="news-card">
-      <div class="news-image">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/code_copy_jq3ic6.webp" alt="Tech World">
-      </div>
-      <div class="news-meta"><span>UPCOMING</span></div>
-      <h3>Tech World Section</h3>
-      <p>The Tech World part of the project is still in progress. Updates will be shared once it’s ready!</p>
-    </div>
-
-    <!-- Card 5 -->
-    <div class="news-card">
-      <div class="news-image">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757671950/bts_love_youself_skfdju.webp" alt="New BTS Member Art">
-      </div>
-      <div class="news-meta"><span>ART</span></div>
-      <h3>New BTS Member Art</h3>
-      <p>An exciting artwork of a new BTS member will be released soon. Fans, get ready!</p>
-    </div>
-
-
-
-    <!-- Card 6 -->
-    <div class="news-card">
-      <div class="news-image">
-        <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/deadpool_logo_wv09fw.webp" alt="Deadpool Animation BTS">
-      </div>
-      <div class="news-meta"><span>UPCOMING</span></div>
-      <h3>Deadpool Animation: Behind the Scenes</h3>
-      <p>An upcoming behind-the-scenes look at how the Deadpool animation was created!</p>
-    </div>
-
-  </div>
-</section>
-
-
-
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-  const newsCarousel = document.querySelector(".news-carousel");
-  const leftNewsBtn = document.querySelector(".news-btn.news-left");
-  const rightNewsBtn = document.querySelector(".news-btn.news-right");
-
-  function getScrollAmount() {
-    const card = document.querySelector(".news-card");
-    const cardStyle = window.getComputedStyle(card);
-    const cardWidth = card.offsetWidth + parseInt(cardStyle.marginRight);
-
-    // If small screen → 1 card, else → 3 cards
-    return window.innerWidth <= 768 ? cardWidth : cardWidth * 3;
-  }
-
-  rightNewsBtn.addEventListener("click", () => {
-    newsCarousel.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
-  });
-
-  leftNewsBtn.addEventListener("click", () => {
-    newsCarousel.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
-  });
-
-  // Handle resize (e.g. rotating phone)
-  window.addEventListener("resize", () => {
-    // No need to recalc immediately, getScrollAmount() always checks window.innerWidth
-  });
-});
-
-</script>
-
-
-<script>
-  // Thumbnail image switching
-  const mainMerch = document.getElementById("main-merch");
-  const thumbnails = document.querySelectorAll(".thumbnail");
-
-  thumbnails.forEach(thumb => {
-    thumb.addEventListener("click", () => {
-      // Change main image src to clicked thumbnail
-      mainMerch.src = thumb.src;
-
-      // Update active class
-      thumbnails.forEach(t => t.classList.remove("active"));
-      thumb.classList.add("active");
-    });
-  });
-</script>
-
-
-
-<script>
-
-document.addEventListener('DOMContentLoaded', function() {
-  const slides = document.querySelectorAll('.slide');
-  const slideWrapper = document.querySelector('.slide-wrapper');
-  const scrollButtons = document.querySelectorAll('.slide_scroll-btn');
-  let currentIndex = 0;
-  let slideInterval;
-  
-  // Initialize first slide
-  slides[currentIndex].classList.add('active');
-  
-  // Auto-advance every 5 seconds (keep this)
-  function startSlideShow() {
-    slideInterval = setInterval(() => {
-      goToSlide((currentIndex + 1) % slides.length, true); // true = auto transition
-    }, 5000);
-  }
-  
-  // Transition handler
-  function goToSlide(index, isAutoTransition = false) {
-    // Only animate for auto transitions
-    const transitionTime = isAutoTransition ? '0.5s' : '0s';
-    
-    // Apply instant transition for manual clicks
-    document.documentElement.style.setProperty('--transition-time', transitionTime);
-    
-    slides[currentIndex].classList.remove('active');
-    currentIndex = index;
-    slides[currentIndex].classList.add('active');
-    
-    // Scroll behavior
-    slideWrapper.scrollTo({
-      left: currentIndex * slideWrapper.clientWidth,
-      behavior: isAutoTransition ? 'smooth' : 'auto'
-    });
-    
-    // Reset timer on manual click
-    if (!isAutoTransition) {
-      clearInterval(slideInterval);
-      startSlideShow();
+  <script>
+    // Featured Highlights Slides Data
+    const featuredSlides = [
+      {
+        badge: "COURSES & LEARNING",
+        badgeIcon: "fa-graduation-cap",
+        title: "Master 2D & 3D Creative Tech",
+        desc: "SenpaiWorks offers structured courses in 2D character animation, 3D modeling, and creative workflows. Check out our Learn page to start your journey!",
+        buttons: [
+          { text: "Explore Courses", href: "learn.html", icon: "fa-graduation-cap", primary: true }
+        ],
+        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp",
+        alt: "SenpaiWorks Courses"
+      },
+      {
+        badge: "OFFICIAL MERCHANDISE",
+        badgeIcon: "fa-bag-shopping",
+        title: "Explore Premium Apparel & Fine Art",
+        desc: "Looking for high-quality anime streetwear, custom organic cotton tees, hoodies, or signed artwork? Check out our official Store for exclusive merch!",
+        buttons: [
+          { text: "Visit Store", href: "store.html", icon: "fa-bag-shopping", primary: true }
+        ],
+        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/itachi_black_t_shirt_copy_w1rb6l.webp",
+        alt: "SenpaiWorks Merchandise"
+      },
+      {
+        badge: "ABOUT SENPAIWORKS",
+        badgeIcon: "fa-circle-info",
+        title: "Who We Are & Our Creative Vision",
+        desc: "Curious about how SenpaiWorks brings ideas to life? Learn about our studio mission, creative pipeline, and virtual cyber-pop idols on our About page.",
+        buttons: [
+          { text: "Discover About Us", href: "about.html", icon: "fa-arrow-right", primary: true }
+        ],
+        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_main_bg_zrmgwb.webp",
+        alt: "About SenpaiWorks"
+      },
+      {
+        badge: "2D ART LIBRARY",
+        badgeIcon: "fa-palette",
+        title: "Explore 2D Art Library",
+        desc: "Immerse yourself in our vibrant 2D World artwork showcase, featuring traditional charcoal portraits, digital illustrations, and original character designs.",
+        buttons: [
+          { text: "Explore 2D Library", href: "art-library.html", icon: "fa-palette", primary: true }
+        ],
+        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp",
+        alt: "2D Art Library"
+      }
+    ];
+
+    let currentSlideIndex = 0;
+    let slideAutoTimer = null;
+
+    const mainMerchImg = document.getElementById("main-merch");
+    const itemNameEl = document.getElementById("merch-item-name");
+    const itemDescEl = document.getElementById("merch-item-desc");
+    const slideBadgeEl = document.getElementById("slide-badge");
+    const slideActionsEl = document.getElementById("slide-actions");
+    const sliderDotsContainer = document.getElementById("slider-dots");
+    const currentSlideNumEl = document.getElementById("current-slide-num");
+    const totalSlideNumEl = document.getElementById("total-slide-num");
+    const prevBtn = document.getElementById("slider-prev-btn");
+    const nextBtn = document.getElementById("slider-next-btn");
+    const sliderBox = document.getElementById("featured-slider-box");
+
+    // Generate Pagination Dots
+    function initSliderDots() {
+      if (!sliderDotsContainer) return;
+      sliderDotsContainer.innerHTML = "";
+      featuredSlides.forEach((_, idx) => {
+        const dot = document.createElement("button");
+        dot.className = `slider-dot ${idx === 0 ? 'active' : ''}`;
+        dot.setAttribute("aria-label", `Go to slide ${idx + 1}`);
+        dot.addEventListener("click", () => {
+          goToSlide(idx);
+          restartAutoTimer();
+        });
+        sliderDotsContainer.appendChild(dot);
+      });
+      if (totalSlideNumEl) {
+        totalSlideNumEl.textContent = String(featuredSlides.length).padStart(2, '0');
+      }
     }
-  }
-  
-  // Button controls
-  scrollButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const direction = button.classList.contains('left') ? -1 : 1;
-      goToSlide((currentIndex + direction + slides.length) % slides.length);
+
+    function renderSlide(index) {
+      const slide = featuredSlides[index];
+      if (!slide) return;
+
+      // Animate out elements
+      const elementsToAnimate = [mainMerchImg, itemNameEl, itemDescEl, slideBadgeEl, slideActionsEl];
+      elementsToAnimate.forEach(el => {
+        if (el) el.style.opacity = '0.15';
+      });
+
+      setTimeout(() => {
+        // Update Content
+        if (slideBadgeEl) {
+          slideBadgeEl.innerHTML = `<i class="fa-solid ${slide.badgeIcon}"></i> ${slide.badge}`;
+        }
+        if (itemNameEl) itemNameEl.textContent = slide.title;
+        if (itemDescEl) itemDescEl.textContent = slide.desc;
+        if (mainMerchImg) {
+          mainMerchImg.src = slide.img;
+          mainMerchImg.alt = slide.alt;
+        }
+
+        // Render Action Buttons
+        if (slideActionsEl) {
+          slideActionsEl.innerHTML = slide.buttons.map(btn => `
+            <a href="${btn.href}" class="${btn.primary ? 'explore-btn' : 'secondary-slide-btn'}">
+              <i class="fa-solid ${btn.icon}"></i> ${btn.text}
+            </a>
+          `).join('');
+        }
+
+        // Update Slide Counter
+        if (currentSlideNumEl) {
+          currentSlideNumEl.textContent = String(index + 1).padStart(2, '0');
+        }
+
+        // Update Dots
+        if (sliderDotsContainer) {
+          const dots = sliderDotsContainer.querySelectorAll(".slider-dot");
+          dots.forEach((dot, dIdx) => {
+            dot.classList.toggle("active", dIdx === index);
+          });
+        }
+
+        // Animate in elements
+        elementsToAnimate.forEach(el => {
+          if (el) el.style.opacity = '1';
+        });
+      }, 200);
+    }
+
+    function goToSlide(index) {
+      currentSlideIndex = (index + featuredSlides.length) % featuredSlides.length;
+      renderSlide(currentSlideIndex);
+    }
+
+    function nextSlide() {
+      goToSlide(currentSlideIndex + 1);
+    }
+
+    function prevSlide() {
+      goToSlide(currentSlideIndex - 1);
+    }
+
+    function startAutoTimer() {
+      stopAutoTimer();
+      slideAutoTimer = setInterval(nextSlide, 5000);
+    }
+
+    function stopAutoTimer() {
+      if (slideAutoTimer) clearInterval(slideAutoTimer);
+    }
+
+    function restartAutoTimer() {
+      startAutoTimer();
+    }
+
+    // Event Listeners
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        prevSlide();
+        restartAutoTimer();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        nextSlide();
+        restartAutoTimer();
+      });
+    }
+
+    if (sliderBox) {
+      sliderBox.addEventListener("mouseenter", stopAutoTimer);
+      sliderBox.addEventListener("mouseleave", startAutoTimer);
+    }
+
+    // Initialize
+    initSliderDots();
+    startAutoTimer();
+  </script>
+
+
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const slides = document.querySelectorAll('.slide');
+      const slideWrapper = document.querySelector('.slide-wrapper');
+      const scrollButtons = document.querySelectorAll('.slide_scroll-btn');
+      const tabs = document.querySelectorAll('.indicator-tab');
+      let currentIndex = 0;
+      let slideInterval;
+      let isPaused = false;
+
+      // Update active, prev, and next classes
+      function updateSlideClasses(index) {
+        slides.forEach((slide, idx) => {
+          slide.classList.remove('active', 'prev', 'next');
+          if (idx === index) {
+            slide.classList.add('active');
+          } else if (idx === (index + 1) % slides.length) {
+            slide.classList.add('next');
+          } else if (idx === (index - 1 + slides.length) % slides.length) {
+            slide.classList.add('prev');
+          }
+        });
+      }
+
+      // Initialize slide positions
+      updateSlideClasses(currentIndex);
+
+      // Auto-advance every 5 seconds (keep this)
+      function startSlideShow() {
+        if (isPaused) return;
+        slideInterval = setInterval(() => {
+          goToSlide((currentIndex + 1) % slides.length, true); // true = auto transition
+        }, 5000);
+      }
+
+      // Transition handler
+      function goToSlide(index, isAutoTransition = false) {
+        // Only animate for auto transitions
+        const transitionTime = isAutoTransition ? '0.5s' : '0s';
+
+        // Apply instant transition for manual clicks
+        document.documentElement.style.setProperty('--transition-time', transitionTime);
+
+        currentIndex = index;
+        updateSlideClasses(currentIndex);
+
+        // Update indicators
+        tabs.forEach((tab, idx) => {
+          if (idx === index) {
+            tab.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+          }
+        });
+
+        // Reset timer on manual click
+        if (!isAutoTransition) {
+          clearInterval(slideInterval);
+          startSlideShow();
+        }
+      }
+
+      // Button controls
+      scrollButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const direction = button.classList.contains('left') ? -1 : 1;
+          goToSlide((currentIndex + direction + slides.length) % slides.length);
+        });
+      });
+
+      // Side slide click controls
+      slides.forEach((slide, idx) => {
+        slide.addEventListener('click', (e) => {
+          // Ignore clicks on links or button controls
+          if (e.target.closest('.hero-buttons') || e.target.closest('a') || e.target.closest('.slide_scroll-btn')) {
+            return;
+          }
+          if (slide.classList.contains('prev') || slide.classList.contains('next')) {
+            goToSlide(idx);
+          }
+        });
+      });
+
+      // Indicator controls
+      tabs.forEach((tab, idx) => {
+        tab.addEventListener('click', () => {
+          goToSlide(idx);
+        });
+      });
+
+      // Play/Pause button control
+      const playPauseBtn = document.querySelector('.slideshow-play-pause-btn');
+      const slideshowContainer = document.querySelector('.slideshow-container');
+
+      if (playPauseBtn && slideshowContainer) {
+        playPauseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          isPaused = !isPaused;
+          if (isPaused) {
+            clearInterval(slideInterval);
+            slideshowContainer.classList.add('paused');
+            playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            playPauseBtn.setAttribute('aria-label', 'Play slideshow');
+            playPauseBtn.setAttribute('title', 'Play slideshow');
+          } else {
+            slideshowContainer.classList.remove('paused');
+            playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            playPauseBtn.setAttribute('aria-label', 'Pause slideshow');
+            playPauseBtn.setAttribute('title', 'Pause slideshow');
+            startSlideShow();
+          }
+        });
+      }
+
+      // Drag & Touch Swipe side scroll functionality
+      if (slideshowContainer) {
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+        let hasMoved = false;
+
+        function getClientX(e) {
+          return e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+        }
+
+        function handleDragStart(e) {
+          if (e.target.closest('.slide_scroll-btn') || e.target.closest('.indicator-tab') || e.target.closest('.slideshow-play-pause-btn')) {
+            return;
+          }
+          isDragging = true;
+          hasMoved = false;
+          startX = getClientX(e);
+          currentX = startX;
+          slideshowContainer.classList.add('is-dragging');
+        }
+
+        function handleDragMove(e) {
+          if (!isDragging) return;
+          currentX = getClientX(e);
+          const deltaX = currentX - startX;
+          if (Math.abs(deltaX) > 10) {
+            hasMoved = true;
+          }
+        }
+
+        function handleDragEnd() {
+          if (!isDragging) return;
+          slideshowContainer.classList.remove('is-dragging');
+          const deltaX = currentX - startX;
+
+          if (hasMoved && Math.abs(deltaX) > 40) {
+            if (deltaX < 0) {
+              goToSlide((currentIndex + 1) % slides.length);
+            } else {
+              goToSlide((currentIndex - 1 + slides.length) % slides.length);
+            }
+          }
+
+          isDragging = false;
+          setTimeout(() => {
+            hasMoved = false;
+          }, 50);
+        }
+
+        slideshowContainer.addEventListener('click', (e) => {
+          if (hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, true);
+
+        slideshowContainer.addEventListener('mousedown', handleDragStart);
+        slideshowContainer.addEventListener('mousemove', handleDragMove);
+        slideshowContainer.addEventListener('mouseup', handleDragEnd);
+        slideshowContainer.addEventListener('mouseleave', handleDragEnd);
+
+        slideshowContainer.addEventListener('touchstart', handleDragStart, { passive: true });
+        slideshowContainer.addEventListener('touchmove', handleDragMove, { passive: true });
+        slideshowContainer.addEventListener('touchend', handleDragEnd);
+        slideshowContainer.addEventListener('touchcancel', handleDragEnd);
+      }
+
+      // Start the slideshow
+      startSlideShow();
     });
-  });
-  
-  // Start the slideshow
-  startSlideShow();
-});
 
-
-</script>
+  </script>
 
 
 
@@ -562,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<!-- ===== CONTACT & FOOTER ===== -->
+  <!-- ===== CONTACT & FOOTER ===== -->
   <div id="contact-container"></div>
   <script src="scripts/contact.js"></script>
   <script>loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630824/rem_copy_rkjlfo.webp");</script>
@@ -570,71 +1078,8 @@ document.addEventListener('DOMContentLoaded', function() {
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 
-  <!-- ===== SCRIPTS ===== -->
-<script type="module">
-  // -------- FIREBASE INIT & MERCH VOTING --------
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyACyTjLF6Ctfo1F4f10OoSAk8W3brPd9iY",
-    authDomain: "senpaiworks-fbc74.firebaseapp.com",
-    databaseURL: "https://senpaiworks-fbc74-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "senpaiworks-fbc74",
-    storageBucket: "senpaiworks-fbc74.firebasestorage.app",
-    messagingSenderId: "260723513570",
-    appId: "1:260723513570:web:ad472774b52ef7411066bb",
-    measurementId: "G-4NCVL25C2H"
-  };
 
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-  const voteRef = ref(database, 'votes/merch1');
-
-  const interestBtn = document.getElementById("interestBtn");
-  const interestCount = document.getElementById("interestCount");
-  const votedKey = 'votedMerch1'; // LocalStorage key
-
-  // Load votes on page load
-  get(voteRef).then(snapshot => {
-    interestCount.textContent = snapshot.val() || 0;
-
-    // Disable button if already voted
-    if (localStorage.getItem(votedKey)) {
-      interestBtn.disabled = true;
-      interestBtn.innerHTML = `<img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/thumb_kntmdd.png" class="thumb-img"> You already voted!`;
-    }
-  });
-
-  interestBtn.addEventListener('click', () => {
-    if (localStorage.getItem(votedKey)) {
-      alert("You already voted!");
-      return;
-    }
-
-    // Thumb animation
-    const thumb = interestBtn.querySelector(".thumb-img");
-    const clone = thumb.cloneNode(true);
-    const rect = thumb.getBoundingClientRect();
-    clone.classList.add("thumb-fly");
-    clone.style.left = rect.left + "px";
-    clone.style.top = rect.top + "px";
-    clone.style.width = thumb.offsetWidth + "px";
-    document.body.appendChild(clone);
-    setTimeout(() => clone.remove(), 800);
-
-    // Increment vote in Firebase
-    get(voteRef).then(snapshot => {
-      let currentVotes = snapshot.val() || 0;
-      set(voteRef, currentVotes + 1);
-      interestCount.textContent = currentVotes + 1;
-    });
-
-    interestBtn.innerHTML = `<img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/thumb_kntmdd.png" class="thumb-img"> Thanks for the vote!`;
-    interestBtn.disabled = true;
-    localStorage.setItem(votedKey, 'true'); // mark as voted
-  });
-</script>
 
 
 </body>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Five Realms & Great Houses — SenpaiWorks GOT Franchise</title>
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="franchise.css?v=60">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- HERO PROLOGUE BANNER -->
+  <section class="aes-hero-section">
+    <div class="aes-hero-bg"
+      style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp');">
+    </div>
+    <div class="aes-hero-overlay">
+      <div class="aes-hero-content">
+        <span class="aes-tag"><i class="fa-solid fa-crown"></i> SENPAIWORKS CHRONICLES</span>
+        <h1 class="aes-hero-title">THE REALMS OF FIRE & ICE</h1>
+        <p class="aes-hero-desc">
+          "When the dragons soar over the Frostpeaks and Valyrian steel catches golden light, five Great Houses duel for honor, kingdom, and the eternal crown."
+        </p>
+        <div class="aes-btn-wrap">
+          <a href="#section-map-intro" class="aes-btn aes-btn-gold">
+            <i class="fa-solid fa-map-location-dot"></i> EXPLORE REALM MAP
+          </a>
+          <a href="#section-royalty" class="aes-btn aes-btn-outline">
+            <i class="fa-solid fa-crown"></i> KINGS & QUEENS
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 1: MAP INTRODUCTION (FIRST SECTION) -->
+  <section class="aes-map-section" id="section-map-intro">
+    <div class="aes-section-header">
+      <span class="aes-tag"><i class="fa-solid fa-compass"></i> SECTION I · REALM ATLAS</span>
+      <h2 class="aes-section-title">MAP OF WESTEROS & THE FIVE STRONGHOLDS</h2>
+      <p class="aes-section-subtitle">
+        Click any stronghold pin node on the ancient map below to reveal its ruling House, ancestral weapon, and regional lore.
+      </p>
+    </div>
+
+    <div class="aes-map-container">
+      <!-- Medieval Map Viewport -->
+      <div class="aes-map-viewport">
+        <div class="aes-map-overlay-layer"></div>
+
+        <!-- Pin 1: Dragonstone -->
+        <div class="aes-map-node node-dragonstone active" data-house="targaryen" onclick="selectMapPin('targaryen')">
+          <div class="aes-node-icon"><i class="fa-solid fa-dragon"></i></div>
+          <span class="aes-node-label">Dragonstone</span>
+        </div>
+
+        <!-- Pin 2: Winterfell -->
+        <div class="aes-map-node node-winterfell" data-house="stark" onclick="selectMapPin('stark')">
+          <div class="aes-node-icon"><i class="fa-solid fa-shield-cat"></i></div>
+          <span class="aes-node-label">Winterfell</span>
+        </div>
+
+        <!-- Pin 3: Casterly Rock -->
+        <div class="aes-map-node node-casterly" data-house="lannister" onclick="selectMapPin('lannister')">
+          <div class="aes-node-icon"><i class="fa-solid fa-coins"></i></div>
+          <span class="aes-node-label">Casterly Rock</span>
+        </div>
+
+        <!-- Pin 4: The Eyrie -->
+        <div class="aes-map-node node-eyrie" data-house="arryn" onclick="selectMapPin('arryn')">
+          <div class="aes-node-icon"><i class="fa-solid fa-feather-pointed"></i></div>
+          <span class="aes-node-label">The Eyrie</span>
+        </div>
+
+        <!-- Pin 5: Storm's End -->
+        <div class="aes-map-node node-stormsend" data-house="baratheon" onclick="selectMapPin('baratheon')">
+          <div class="aes-node-icon"><i class="fa-solid fa-bolt"></i></div>
+          <span class="aes-node-label">Storm's End</span>
+        </div>
+      </div>
+
+      <!-- Live Details Panel -->
+      <div class="aes-map-info-panel" id="map-house-info-panel">
+        <div class="aes-info-header">
+          <div class="aes-info-icon" id="map-house-icon">
+            <i class="fa-solid fa-dragon"></i>
+          </div>
+          <div>
+            <h3 class="aes-info-title" id="map-house-title">Dragonstone Spire</h3>
+            <p class="aes-info-motto" id="map-house-motto">House Suzana Targaryen · "FIRE AND BLOOD"</p>
+          </div>
+        </div>
+
+        <p class="aes-info-lore" id="map-house-lore">
+          Carved into the dark volcanic rock of Dragonmont island. Contains ancient Valyrian dragonglass mines, obsidian chambers, and the Great Hatchery where crimson drakes nest over lava fissures.
+        </p>
+
+        <div class="aes-info-stats">
+          <div class="aes-stat-box">
+            <span class="aes-stat-lbl">Ruling Monarch</span>
+            <span class="aes-stat-val" id="map-stat-ruler">Queen Suzana Targaryen</span>
+          </div>
+          <div class="aes-stat-box">
+            <span class="aes-stat-lbl">Valyrian Weapon</span>
+            <span class="aes-stat-val" id="map-stat-weapon">Sunfire Sword</span>
+          </div>
+          <div class="aes-stat-box">
+            <span class="aes-stat-lbl">Realm Legions</span>
+            <span class="aes-stat-val" id="map-stat-army">10,000 Dragon Vanguard</span>
+          </div>
+          <div class="aes-stat-box">
+            <span class="aes-stat-lbl">Sigil Element</span>
+            <span class="aes-stat-val" id="map-stat-element">Dragonfire</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: THE GREAT HOUSES OF THE REALM -->
+  <section class="aes-houses-section" id="section-houses">
+    <div class="aes-section-header">
+      <span class="aes-tag"><i class="fa-solid fa-shield-halved"></i> SECTION II · HERALDRY</span>
+      <h2 class="aes-section-title">THE FIVE GREAT HOUSES</h2>
+      <p class="aes-section-subtitle">
+        "The ancient noble dynasties ruling the strongholds of Westeros."
+      </p>
+    </div>
+
+    <div class="aes-houses-grid">
+      <!-- House 1 -->
+      <div class="aes-house-card" style="--house-border: #cc0000; --house-glow: rgba(204,0,0,0.4);">
+        <div class="aes-house-icon"><i class="fa-solid fa-dragon"></i></div>
+        <h3 class="aes-house-name">House Targaryen</h3>
+        <div class="aes-house-motto">"FIRE AND BLOOD"</div>
+        <p class="aes-house-desc">
+          High dragonlord dynasty of Dragonstone Citadel. Commands crimson drakes and dragonfire alchemy.
+        </p>
+        <div class="aes-house-specs">
+          <span>Ruler: <strong>Queen Suzana Targaryen</strong></span>
+          <span>Seat: <strong>Dragonstone Citadel</strong></span>
+          <span>Weapon: <strong>Sunfire Blade</strong></span>
+        </div>
+      </div>
+
+      <!-- House 2 -->
+      <div class="aes-house-card" style="--house-border: #2b6cb0; --house-glow: rgba(43,108,176,0.4);">
+        <div class="aes-house-icon"><i class="fa-solid fa-shield-cat"></i></div>
+        <h3 class="aes-house-name">House Stark</h3>
+        <div class="aes-house-motto" style="color: #2b6cb0;">"WINTER IS COMING"</div>
+        <p class="aes-house-desc">
+          Kings of Winter and Wardens of the Northern Frostpeaks. Masters of direwolf skinchanger warging.
+        </p>
+        <div class="aes-house-specs">
+          <span>Ruler: <strong>King Remi Stark</strong></span>
+          <span>Seat: <strong>Winterfell Keep</strong></span>
+          <span>Weapon: <strong>Icebringer</strong></span>
+        </div>
+      </div>
+
+      <!-- House 3 -->
+      <div class="aes-house-card" style="--house-border: #d69e2e; --house-glow: rgba(214,158,46,0.4);">
+        <div class="aes-house-icon"><i class="fa-solid fa-crown"></i></div>
+        <h3 class="aes-house-name">House Lannister</h3>
+        <div class="aes-house-motto" style="color: #d69e2e;">"HEAR ME ROAR"</div>
+        <p class="aes-house-desc">
+          Golden sovereigns of Casterly Rock holding the kingdom's richest gold reserves and golden lancers.
+        </p>
+        <div class="aes-house-specs">
+          <span>Ruler: <strong>Queen Ayana Lannister</strong></span>
+          <span>Seat: <strong>Casterly Rock</strong></span>
+          <span>Weapon: <strong>Lionclaw Rapier</strong></span>
+        </div>
+      </div>
+
+      <!-- House 4 -->
+      <div class="aes-house-card" style="--house-border: #319795; --house-glow: rgba(49,151,149,0.4);">
+        <div class="aes-house-icon"><i class="fa-solid fa-feather-pointed"></i></div>
+        <h3 class="aes-house-name">House Arryn</h3>
+        <div class="aes-house-motto" style="color: #319795;">"AS HIGH AS HONOR"</div>
+        <p class="aes-house-desc">
+          Valkyrie rulers of The Eyrie Sky Sanctuary, commanding airborne falcon knights in mountain gales.
+        </p>
+        <div class="aes-house-specs">
+          <span>Ruler: <strong>Queen Tiara Arryn</strong></span>
+          <span>Seat: <strong>The Eyrie Sanctuary</strong></span>
+          <span>Weapon: <strong>Sky-Falcon Spear</strong></span>
+        </div>
+      </div>
+
+      <!-- House 5 -->
+      <div class="aes-house-card" style="--house-border: #dd6b20; --house-glow: rgba(221,107,32,0.4);">
+        <div class="aes-house-icon"><i class="fa-solid fa-bolt"></i></div>
+        <h3 class="aes-house-name">House Baratheon</h3>
+        <div class="aes-house-motto" style="color: #dd6b20;">"OURS IS THE FURY"</div>
+        <p class="aes-house-desc">
+          Storm Lords of Tempest Crag wielding three-blade lightning styles across Shipbreaker Bay.
+        </p>
+        <div class="aes-house-specs">
+          <span>Ruler: <strong>King Zoro Baratheon</strong></span>
+          <span>Seat: <strong>Storm's End Keep</strong></span>
+          <span>Weapon: <strong>Thunder-Blade Trio</strong></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: KINGS, QUEENS & RULERS -->
+  <section class="aes-royalty-section" id="section-royalty">
+    <div class="aes-section-header">
+      <span class="aes-tag"><i class="fa-solid fa-crown"></i> SECTION III · ROYALTY</span>
+      <h2 class="aes-section-title">KINGS, QUEENS & RULERS OF THE REALM</h2>
+      <p class="aes-section-subtitle">
+        "The monarch leaders who command the armies, dragonfire, and Valyrian steel of Westeros."
+      </p>
+    </div>
+
+    <div class="aes-royalty-grid">
+
+      <!-- Ruler 1: Suzana Targaryen -->
+      <div class="aes-ruler-full-card" style="--ruler-border: #cc0000;">
+        <div class="aes-ruler-img-wrap" style="--ruler-border: #cc0000;">
+          <img src="assets/suzana.png" alt="Suzana Targaryen">
+        </div>
+        <div>
+          <span class="aes-ruler-title-tag">QUEEN OF DRAGONS & SUNFIRE SOVEREIGN</span>
+          <h3 class="aes-ruler-name">Queen Suzana Targaryen</h3>
+          <p class="aes-ruler-lore">
+            Descended from old Valyria dragonlords, Queen Suzana Targaryen commands three crimson drakes and wields the ancestral Valyrian steel greatsword <em>Sunfire</em>. Her bloodline carries dragon-dreaming and fire immunity, anchoring her divine right to the Iron Throne.
+          </p>
+          <div class="aes-ruler-specs-row">
+            <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Targaryen</span></div>
+            <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Dragonstone</span></div>
+            <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Sunfire Blade</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">10,000 Vanguard</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ruler 2: Remi Stark -->
+      <div class="aes-ruler-full-card" style="--ruler-border: #2b6cb0;">
+        <div class="aes-ruler-img-wrap" style="--ruler-border: #2b6cb0;">
+          <img src="assets/Remi.png" alt="Remi Stark">
+        </div>
+        <div>
+          <span class="aes-ruler-title-tag" style="color: #2b6cb0;">WARDEN OF THE NORTH & DIREWOLF BLADE</span>
+          <h3 class="aes-ruler-name">King Remi Stark</h3>
+          <p class="aes-ruler-lore">
+            Ruler of the Northern Frostpeaks. Remi Stark carries the blood of the First Men, possessing direwolf warging skinchanger abilities. Armed with the ancient Valyrian frost blade <em>Icebringer</em>, King Remi guards the Wall against shadow legions.
+          </p>
+          <div class="aes-ruler-specs-row">
+            <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Stark</span></div>
+            <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Winterfell</span></div>
+            <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Icebringer</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">15,000 Guards</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ruler 3: Ayana Lannister -->
+      <div class="aes-ruler-full-card" style="--ruler-border: #d69e2e;">
+        <div class="aes-ruler-img-wrap" style="--ruler-border: #d69e2e;">
+          <img src="assets/Ayana.png" alt="Ayana Lannister">
+        </div>
+        <div>
+          <span class="aes-ruler-title-tag" style="color: #d69e2e;">HIGH STRATEGIST & GOLDEN EMPRESS</span>
+          <h3 class="aes-ruler-name">Queen Ayana Lannister</h3>
+          <p class="aes-ruler-lore">
+            Sovereign of Casterly Rock and the kingdom's richest gold reserves. Queen Ayana orchestrates kingdom diplomacy with sharp strategic intellect, commanding gold-armored lancers and the Royal Vaults.
+          </p>
+          <div class="aes-ruler-specs-row">
+            <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Lannister</span></div>
+            <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Casterly Rock</span></div>
+            <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Lionclaw Rapier</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">25,000 Lancers</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ruler 4: Tiara Arryn -->
+      <div class="aes-ruler-full-card" style="--ruler-border: #319795;">
+        <div class="aes-ruler-img-wrap" style="--ruler-border: #319795;">
+          <img src="assets/Tiara.png" alt="Tiara Arryn">
+        </div>
+        <div>
+          <span class="aes-ruler-title-tag" style="color: #319795;">VALKYRIE RULER OF THE HIGH EYRIE</span>
+          <h3 class="aes-ruler-name">Queen Tiara Arryn</h3>
+          <p class="aes-ruler-lore">
+            Ruler of the mountain fortress of The Eyrie. Queen Tiara commands airborne Valkyrie Knights who traverse mountain gales using wind gliding rigs, defending the Sky Cells with unshakeable honor.
+          </p>
+          <div class="aes-ruler-specs-row">
+            <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Arryn</span></div>
+            <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">The Eyrie</span></div>
+            <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Sky-Falcon Spear</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">8,000 Knights</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ruler 5: Zoro Baratheon -->
+      <div class="aes-ruler-full-card" style="--ruler-border: #dd6b20;">
+        <div class="aes-ruler-img-wrap" style="--ruler-border: #dd6b20;">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp" alt="Zoro Baratheon">
+        </div>
+        <div>
+          <span class="aes-ruler-title-tag" style="color: #dd6b20;">STORM LORD OF TEMPEST CRAG</span>
+          <h3 class="aes-ruler-name">King Zoro Baratheon</h3>
+          <p class="aes-ruler-lore">
+            Lord of Storm's End. Master of the Three-Blade Valyrian sword style, King Zoro unleashes thunderous lightning slashes across Shipbreaker Bay, crushing enemy formations with sheer warlord fury.
+          </p>
+          <div class="aes-ruler-specs-row">
+            <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Baratheon</span></div>
+            <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Storm's End</span></div>
+            <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Thunder-Blade Trio</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">18,000 Vanguard</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 4: OTHER CHAMPIONS & MULTIVERSE LEGENDS -->
+  <section class="aes-others-section" id="section-others">
+    <div class="aes-section-header">
+      <span class="aes-tag"><i class="fa-solid fa-layer-group"></i> SECTION IV · OTHER CHAMPIONS</span>
+      <h2 class="aes-section-title">MULTIVERSE LEGENDS & DUNGEON HEROES</h2>
+      <p class="aes-section-subtitle">
+        "Shadow shinobi, ghoul sovereigns, pirate lords, and mythic dungeon classes."
+      </p>
+    </div>
+
+    <!-- Anime Champions Grid -->
+    <div class="aes-champions-grid">
+      <!-- Champ 1 -->
+      <div class="aes-champ-card" style="--champ-color: #ef4444;">
+        <div class="aes-champ-img-wrap">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp" alt="Itachi Uchiha">
+        </div>
+        <div class="aes-champ-body">
+          <span class="aes-champ-role">SHADOW SHINOBI</span>
+          <h3 class="aes-champ-name">Itachi Uchiha</h3>
+          <p class="aes-champ-lore">
+            Master of the Crimson Sharingan & Amaterasu flames. Summons the spectral Susanoo avatar to safeguard the shadow realm.
+          </p>
+        </div>
+      </div>
+
+      <!-- Champ 2 -->
+      <div class="aes-champ-card" style="--champ-color: #8b5cf6;">
+        <div class="aes-champ-img-wrap">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="Kaneki Ken">
+        </div>
+        <div class="aes-champ-body">
+          <span class="aes-champ-role">GHOUL SOVEREIGN</span>
+          <h3 class="aes-champ-name">Kaneki Ken</h3>
+          <p class="aes-champ-lore">
+            The Eyepatch Ghoul ruler bridging humans and monsters. Wields the tentacled Rinkaku Kagune Centipede state.
+          </p>
+        </div>
+      </div>
+
+      <!-- Champ 3 -->
+      <div class="aes-champ-card" style="--champ-color: #f59e0b;">
+        <div class="aes-champ-img-wrap">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/luffy_copy_lqrkg0.webp" alt="Luffy">
+        </div>
+        <div class="aes-champ-body">
+          <span class="aes-champ-role">SUN GOD NIKA</span>
+          <h3 class="aes-champ-name">Monkey D. Luffy</h3>
+          <p class="aes-champ-lore">
+            Empowered by Gear 5 awakening. Turns battlefields into elastic freedom and thunderous Bajrang strikes.
+          </p>
+        </div>
+      </div>
+
+      <!-- Champ 4 -->
+      <div class="aes-champ-card" style="--champ-color: #06b6d4;">
+        <div class="aes-champ-img-wrap">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/Mikasa_copy_jcwuga.webp" alt="Mikasa">
+        </div>
+        <div class="aes-champ-body">
+          <span class="aes-champ-role">TITAN SLAYER</span>
+          <h3 class="aes-champ-name">Mikasa Ackerman</h3>
+          <p class="aes-champ-lore">
+            Awakened Ackerman battle instinct. Navigates 3D ODM gear with flawless dual blade slice precision.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dungeon Guild Hero Class Strips -->
+    <div class="aes-dungeon-strips">
+      <!-- Warrior -->
+      <div class="aes-dungeon-strip" style="--strip-color: #e53e3e;">
+        <img src="assets/game/warrior.png" alt="Warrior" class="aes-dungeon-img">
+        <div>
+          <h3 class="aes-dungeon-title">Vanguard Warrior Class</h3>
+          <p class="aes-dungeon-desc">Heavy armored juggernaut equipped with plate mail and two-handed Valyrian greatswords.</p>
+        </div>
+        <div class="aes-dungeon-stats">
+          <div>Weapon: <strong style="color: #e53e3e;">Greatsword</strong></div>
+          <div>Role: <strong>Frontline Tank</strong></div>
+        </div>
+      </div>
+
+      <!-- Mage -->
+      <div class="aes-dungeon-strip" style="--strip-color: #805ad5;">
+        <img src="assets/game/mage.png" alt="Mage" class="aes-dungeon-img">
+        <div>
+          <h3 class="aes-dungeon-title">Elemental Arcana Mage</h3>
+          <p class="aes-dungeon-desc">Master of elemental spellcraft. Channels lightning meteors and arcana explosions from crystal staves.</p>
+        </div>
+        <div class="aes-dungeon-stats">
+          <div>Weapon: <strong style="color: #805ad5;">Crystal Staff</strong></div>
+          <div>Role: <strong>Spellcaster</strong></div>
+        </div>
+      </div>
+
+      <!-- Rogue -->
+      <div class="aes-dungeon-strip" style="--strip-color: #319795;">
+        <img src="assets/game/rogue.png" alt="Rogue" class="aes-dungeon-img">
+        <div>
+          <h3 class="aes-dungeon-title">Shadowstep Rogue Assassin</h3>
+          <p class="aes-dungeon-desc">Silent shadowstep assassin using stealth cloaks and envenomed daggers for critical strikes.</p>
+        </div>
+        <div class="aes-dungeon-stats">
+          <div>Weapon: <strong style="color: #319795;">Poison Daggers</strong></div>
+          <div>Role: <strong>Burst DPS</strong></div>
+        </div>
+      </div>
+
+      <!-- Healer -->
+      <div class="aes-dungeon-strip" style="--strip-color: #d69e2e;">
+        <img src="assets/game/healer.png" alt="Healer" class="aes-dungeon-img">
+        <div>
+          <h3 class="aes-dungeon-title">Radiant Life Priest Healer</h3>
+          <p class="aes-dungeon-desc">Sovereign priest of holy restoration channeling aura shields and divine light beam cleansing.</p>
+        </div>
+        <div class="aes-dungeon-stats">
+          <div>Weapon: <strong style="color: #d69e2e;">Holy Scepter</strong></div>
+          <div>Role: <strong>Party Support</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: ROYAL OATH OF ALLEGIANCE -->
+  <section class="aes-oath-section" id="section-oath">
+    <div class="aes-section-header">
+      <span class="aes-tag"><i class="fa-solid fa-flag"></i> SECTION V · ROYAL OATH</span>
+      <h2 class="aes-section-title">SWEAR YOUR ALLEGIANCE</h2>
+      <p class="aes-section-subtitle">Pledge your sword to a Great House of the realm.</p>
+    </div>
+
+    <div class="aes-oath-grid">
+      <!-- House 1 -->
+      <div class="aes-fealty-card" style="--fealty-color: #cc0000; --fealty-glow: rgba(204,0,0,0.5);">
+        <div class="aes-fealty-icon"><i class="fa-solid fa-dragon"></i></div>
+        <h3 class="aes-fealty-name">House Suzana</h3>
+        <p class="aes-fealty-motto">"FIRE AND BLOOD"</p>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Suzana Targaryen', 'Fire & Blood')">Swear Fealty</button>
+      </div>
+
+      <!-- House 2 -->
+      <div class="aes-fealty-card" style="--fealty-color: #2b6cb0; --fealty-glow: rgba(43,108,176,0.5);">
+        <div class="aes-fealty-icon"><i class="fa-solid fa-shield-cat"></i></div>
+        <h3 class="aes-fealty-name">House Remi</h3>
+        <p class="aes-fealty-motto">"WINTER IS COMING"</p>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Remi Stark', 'Winter Is Coming')">Swear Fealty</button>
+      </div>
+
+      <!-- House 3 -->
+      <div class="aes-fealty-card" style="--fealty-color: #d69e2e; --fealty-glow: rgba(214,158,46,0.5);">
+        <div class="aes-fealty-icon"><i class="fa-solid fa-crown"></i></div>
+        <h3 class="aes-fealty-name">House Ayana</h3>
+        <p class="aes-fealty-motto">"HEAR ME ROAR"</p>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Ayana Lannister', 'Hear Me Roar')">Swear Fealty</button>
+      </div>
+
+      <!-- House 4 -->
+      <div class="aes-fealty-card" style="--fealty-color: #319795; --fealty-glow: rgba(49,151,149,0.5);">
+        <div class="aes-fealty-icon"><i class="fa-solid fa-feather-pointed"></i></div>
+        <h3 class="aes-fealty-name">House Tiara</h3>
+        <p class="aes-fealty-motto">"AS HIGH AS HONOR"</p>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Tiara Arryn', 'As High as Honor')">Swear Fealty</button>
+      </div>
+
+      <!-- House 5 -->
+      <div class="aes-fealty-card" style="--fealty-color: #dd6b20; --fealty-glow: rgba(221,107,32,0.5);">
+        <div class="aes-fealty-icon"><i class="fa-solid fa-bolt"></i></div>
+        <h3 class="aes-fealty-name">House Zoro</h3>
+        <p class="aes-fealty-motto">"OURS IS THE FURY"</p>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Zoro Baratheon', 'Ours is the Fury')">Swear Fealty</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Map & Fealty JavaScript -->
+  <script>
+    const HOUSE_MAP_DATA = {
+      targaryen: {
+        icon: 'fa-dragon',
+        title: 'Dragonstone Spire',
+        motto: 'House Suzana Targaryen · "FIRE AND BLOOD"',
+        lore: 'Carved into the dark volcanic rock of Dragonmont island. Contains ancient Valyrian dragonglass mines, obsidian chambers, and the Great Hatchery where crimson drakes nest over lava fissures.',
+        ruler: 'Queen Suzana Targaryen',
+        weapon: 'Sunfire Sword',
+        army: '10,000 Dragon Vanguard',
+        element: 'Dragonfire'
+      },
+      stark: {
+        icon: 'fa-shield-cat',
+        title: 'Winterfell Keep & Crypts',
+        motto: 'House Remi Stark · "WINTER IS COMING"',
+        lore: 'Heated by natural underground thermal springs. Beneath the keep lie ancient crypts housing statues of Kings of Winter guarding secret passages leading to the Great Wall.',
+        ruler: 'King Remi Stark',
+        weapon: 'Icebringer Blade',
+        army: '15,000 Winter Guards',
+        element: 'Frost & Ice'
+      },
+      lannister: {
+        icon: 'fa-crown',
+        title: 'Casterly Rock Gold Vaults',
+        motto: 'House Ayana Lannister · "HEAR ME ROAR"',
+        lore: 'Carved out of a massive sea-facing cliff higher than the Wall. Holds deep golden veins and subterranean docks protecting royal treasury reserves.',
+        ruler: 'Queen Ayana Lannister',
+        weapon: 'Lionclaw Rapier',
+        army: '25,000 Golden Lancers',
+        element: 'Golden Steel'
+      },
+      arryn: {
+        icon: 'fa-feather-pointed',
+        title: 'The Eyrie Sky Sanctuary',
+        motto: 'House Tiara Arryn · "AS HIGH AS HONOR"',
+        lore: 'Perched atop Giant\'s Lance mountain. Accessible via narrow stone steps and winch lifts. Features open-air Sky Cells hanging over thousand-foot abysses.',
+        ruler: 'Queen Tiara Arryn',
+        weapon: 'Sky-Falcon Spear',
+        army: '8,000 Cloud Knights',
+        element: 'Gale Winds'
+      },
+      baratheon: {
+        icon: 'fa-bolt',
+        title: 'Storm\'s End Tempest Keep',
+        motto: 'House Zoro Baratheon · "OURS IS THE FURY"',
+        lore: 'Protected by eighty-foot-thick curtain walls infused with ancient protective runes. Resists heavy sea storms and hurricane tides from Shipbreaker Bay.',
+        ruler: 'King Zoro Baratheon',
+        weapon: 'Thunder-Blade Trio',
+        army: '18,000 Storm Vanguard',
+        element: 'Thunderbolts'
+      }
+    };
+
+    function selectMapPin(houseKey) {
+      const data = HOUSE_MAP_DATA[houseKey];
+      if (!data) return;
+
+      document.querySelectorAll('.aes-map-node').forEach(node => {
+        if (node.dataset.house === houseKey) node.classList.add('active');
+        else node.classList.remove('active');
+      });
+
+      const iconEl = document.getElementById('map-house-icon');
+      if (iconEl) iconEl.innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+
+      document.getElementById('map-house-title').textContent = data.title;
+      document.getElementById('map-house-motto').textContent = data.motto;
+      document.getElementById('map-house-lore').textContent = data.lore;
+      document.getElementById('map-stat-ruler').textContent = data.ruler;
+      document.getElementById('map-stat-weapon').textContent = data.weapon;
+      document.getElementById('map-stat-army').textContent = data.army;
+      document.getElementById('map-stat-element').textContent = data.element;
+    }
+
+    function pledgeHouse(houseName, motto) {
+      let toast = document.getElementById('aes-toast-notice');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'aes-toast-notice';
+        toast.className = 'got-toast-notification';
+        document.body.appendChild(toast);
+      }
+
+      toast.innerHTML = `<i class="fa-solid fa-shield-halved" style="color: #ffd700; font-size: 1.2rem;"></i> <span>You have sworn fealty to <strong>${houseName}</strong>! <em>"${motto}"</em></span>`;
+      toast.classList.add('active');
+
+      if (window.aesToastTimeout) clearTimeout(window.aesToastTimeout);
+      window.aesToastTimeout = setTimeout(() => {
+        toast.classList.remove('active');
+      }, 4000);
+    }
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+</body>
+
+</html>

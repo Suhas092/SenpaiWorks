@@ -1,19 +1,17 @@
-
-
 .contact-section {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 60px auto;
   padding: 20px;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 .contact-container {
-
   display: flex;
-  align-items: stretch;   /* <-- ensures both sides same height */
+  align-items: stretch;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 20px;
-
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 .contact-text {
@@ -21,6 +19,7 @@
   max-width: 700px;
   text-align: left;
   color: rgba(0, 102, 204, 0.9);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 .contact-text h2 {
@@ -28,13 +27,16 @@
   font-weight: 800;
   margin-bottom: 20px;
   color: rgba(0, 102, 204, 0.9);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: -0.5px;
 }
 
 .contact-text p {
-  font-size: 1.2rem;
-  line-height: 1.5;
+  font-size: 1.05rem;
+  line-height: 1.6;
   margin-bottom: 30px;
-  color: rgba(0, 0, 0, 0.9);
+  color: #334155;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 .contact-text label {
@@ -49,22 +51,24 @@
 .email-box {
   display: flex;
   align-items: center;
-  gap: 8px; /* spacing between icon and text */
+  gap: 8px;
   padding: 12px 18px;
   border: 2px solid rgba(0, 102, 204, 0.9);
   border-radius: 6px;
   background: #f8f9ff;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: rgba(0, 102, 204, 0.9);
   width: fit-content;
-  text-decoration: none; /* removes underline */
-  transition: background-color 0.3s ease, color 0.3s ease; /* smooth color change */
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 .email-box:hover {
   background: rgba(0, 102, 204, 0.9);
-  color: #ffffff; /* text turns white */
+  color: #ffffff;
+  /* text turns white */
 }
 
 
@@ -81,8 +85,10 @@
 
 .contact-image img {
   width: 100%;
-  height: 300px; /* reduced height */
-  object-fit: cover; /* crop if needed */
+  height: 300px;
+  /* reduced height */
+  object-fit: cover;
+  /* crop if needed */
 
 }
 
@@ -91,30 +97,32 @@
 
 
 @media (max-width: 900px) {
-  .contact-block, .contact-block.reverse {
+
+  .contact-block,
+  .contact-block.reverse {
     flex-direction: column;
   }
-  .contact-image, .contact-text {
+
+  .contact-image,
+  .contact-text {
     max-width: 100%;
     flex: 1 1 100%;
   }
+
   .contact-text h2 {
     font-size: 1.6rem;
   }
+
   /* More vertical height for the image on mobile */
   .contact-image {
-    min-height: 350px;   /* Or 400px */
+    min-height: 350px;
+    /* Or 400px */
   }
+
   .contact-image img {
     height: 100%;
-    min-height: 350px;   /* Ensures the image fills the container */
+    min-height: 350px;
+    /* Ensures the image fills the container */
     object-fit: cover;
   }
 }
-
-
-
-
-
-
-

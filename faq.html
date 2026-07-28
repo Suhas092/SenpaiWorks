@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - SenpaiWorks</title>
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="art-library.css">
+  <link rel="stylesheet" href="faq.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Dynamic Header -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=6"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Dynamic Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=6"></script>
+
+  <!-- FAQ Hero Section -->
+  <section class="faq-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-tag">QUESTIONS &amp; ANSWERS</span>
+      <h1>FREQUENTLY ASKED</h1>
+      <p>Find answers to common questions about our creative processes, models, and community guidelines.</p>
+    </div>
+  </section>
+
+  <!-- FAQ Content Section -->
+  <main class="faq-section" id="faq-section">
+    <div class="faq-header">
+      <h2>Frequently Asked Questions</h2>
+      <p class="faq-sub">Select a category below to filter questions</p>
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="faq-categories">
+      <button class="faq-category-btn active" data-category="all">All Questions</button>
+      <button class="faq-category-btn" data-category="general">General</button>
+      <button class="faq-category-btn" data-category="creation">Art &amp; Animation</button>
+      <button class="faq-category-btn" data-category="store">Store &amp; Services</button>
+    </div>
+
+    <!-- FAQ Accordion -->
+    <div class="faq-accordion">
+      
+      <!-- FAQ Item 1 (General) -->
+      <div class="faq-item" data-category="general">
+        <div class="faq-question">
+          <h3>What is SenpaiWorks?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p><strong>SenpaiWorks</strong> is a creative project showcase and digital storefront run entirely by a single creator. It represents an ongoing creative journey exploring 2D digital art, charcoal drawing, 3D modeling, character rigging, VFX, and software engineering. It is the place where artistic expression meets programming and technology.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 2 (General) -->
+      <div class="faq-item" data-category="general">
+        <div class="faq-question">
+          <h3>Who runs SenpaiWorks?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Hi! I am Suhas, a B.Tech graduate from PES University in Bengaluru, India. I am the sole creator, artist, and developer behind everything you see on this site. From drawing and 3D modeling to designing and coding this web platform, I build everything from scratch.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 3 (General) -->
+      <div class="faq-item" data-category="general">
+        <div class="faq-question">
+          <h3>Why the name "SenpaiWorks"?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>The name is inspired by my childhood love for anime. "Senpai" is an honorific used in Japanese culture to refer to a senior mentor or guide. I initially started my art page on Instagram under <em>Sketches by Senpai</em> and later <em>Artworks by Senpai</em>.</p>
+            <p>Since my interests span both creative animation and technical software engineering, I wanted a single name that represents all of my technical and artistic projects. "SenpaiWorks" ties them all together into one cohesive portfolio.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 3.5 (General) -->
+      <div class="faq-item" data-category="general">
+        <div class="faq-question">
+          <h3>Is SenpaiWorks an official animation studio?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>No, SenpaiWorks is not an official company or large animation studio. It is a personal one-man portfolio run entirely by Suhas. Everything from coding the site to drawing, 3D modeling, and visual composition is a solo self-taught project.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 4 (Creation) -->
+      <div class="faq-item" data-category="creation">
+        <div class="faq-question">
+          <h3>What software and tools do you use?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>I select software depending on the project style:</p>
+            <ul>
+              <li><strong>2D Digital Art &amp; Graphic Design</strong>: Adobe Photoshop and Clip Studio Paint.</li>
+              <li><strong>3D Character Models, Rigging, &amp; VFX</strong>: Blender.</li>
+              <li><strong>Video Editing &amp; Composition</strong>: Adobe Premiere Pro.</li>
+              <li><strong>Traditional Art</strong>: Charcoal pencils, graphite, and toned paper.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 5 (Creation) -->
+      <div class="faq-item" data-category="creation">
+        <div class="faq-question">
+          <h3>How long does it take to complete an animation?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Because I handle every single step of the pipeline myself—including concept modeling, character rigging, lighting, animation, rendering, and compositing—timelines vary significantly.</p>
+            <p>A short loop or stylized character concept may take a week or two. In contrast, complex projects (like the <em>Deadpool and Wolverine</em> Mixed-Media Animation) can take up to 6 months of dedicated learning and rendering.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 5.5 (Creation) -->
+      <div class="faq-item" data-category="creation">
+        <div class="faq-question">
+          <h3>Can I download or use the art for my personal wallpapers or profile pictures?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Yes, absolutely! You are free to download and use the illustrations and character renders for personal wallpapers, device backgrounds, and social media profile icons. However, commercial use, modification, redistribution, or selling them is not allowed. If you share them online, a credit/tag to @senpaiworks_ on Instagram is highly appreciated!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 6 (Store) -->
+      <div class="faq-item" data-category="store">
+        <div class="faq-question">
+          <h3>Can I use the store assets in my own animations?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Yes, absolutely! The 3D character rigs, brushes, and blender shaders available in the <a href="store.html">Store</a> are specifically designed for fellow animators and creators to explore, practice, and build their portfolios. Be sure to check the specific licensing info on each product page before starting commercial projects.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 7 (Store) -->
+      <div class="faq-item" data-category="store">
+        <div class="faq-question">
+          <h3>Do you accept custom commissions?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Yes! I take a limited number of custom commissions for 3D modeling, rigging, and character artwork. If you have a project or collaborative idea, feel free to reach out via our <a href="feedback.html">Feedback Page</a> or email me directly at <a href="mailto:suhassenpai@gmail.com">suhassenpai@gmail.com</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Item 8 (Store) -->
+      <div class="faq-item" data-category="store">
+        <div class="faq-question">
+          <h3>Are there any free resources or tutorials available here?</h3>
+          <div class="faq-icon-wrap">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Yes! I love giving back to the community. You can find free project files, visual breakdowns, and workflow guides in our <a href="learn.html">Learn Section</a>. I also periodically share free 3D models, presets, and shaders on our community Discord server. Be sure to check the description links under each artwork page!</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Dynamic Contact and Footer -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630827/all_characters_yvk9ik.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js?v=6"></script>
+
+  <!-- Interactive FAQ JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Accordion expansion logic
+      const accordionItems = document.querySelectorAll('.faq-item');
+      accordionItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+        
+        question.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          
+          // Close all other items
+          accordionItems.forEach(otherItem => {
+            if (otherItem !== item) {
+              otherItem.classList.remove('active');
+              otherItem.querySelector('.faq-answer').style.maxHeight = null;
+            }
+          });
+          
+          // Toggle current item
+          if (isActive) {
+            item.classList.remove('active');
+            answer.style.maxHeight = null;
+          } else {
+            item.classList.add('active');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+          }
+        });
+      });
+
+      // 2. Category filtering logic
+      const filterBtns = document.querySelectorAll('.faq-category-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Update active button styling
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          const category = btn.dataset.category || 'all';
+          
+          // Hide/Show items based on category
+          accordionItems.forEach(item => {
+            const matches = category === 'all' || item.dataset.category === category;
+            if (matches) {
+              item.style.display = '';
+            } else {
+              item.style.display = 'none';
+              // Ensure closed if hidden
+              item.classList.remove('active');
+              item.querySelector('.faq-answer').style.maxHeight = null;
+            }
+          });
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

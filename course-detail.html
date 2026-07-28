@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon"
+    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+    type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Details - SenpaiWorks</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="course-detail.css">
+</head>
+
+<body>
+
+  <!-- Fixed Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer Placeholder -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- Dark Hero Banner Header (Udemy Style) -->
+  <header class="course-dark-hero">
+    <div class="course-hero-container">
+      <div class="course-hero-left">
+        <nav class="course-breadcrumbs" id="course-breadcrumbs">
+          <a href="home.html">Home</a> &rsaquo; <a href="learn.html">Learn</a> &rsaquo; <span id="breadcrumb-category">3D Sculpting</span>
+        </nav>
+
+        <h1 class="course-hero-title" id="course-title">Loading Course Title...</h1>
+        <p class="course-hero-subtitle" id="course-subtitle">Learn anatomy and shapes of male and female head for 3D and 2D artists</p>
+
+        <div class="course-hero-badges">
+          <span class="badge-tag bestseller" id="course-badge">Bestseller</span>
+          <span class="badge-tag rating-badge">Highest Rated</span>
+        </div>
+
+        <div class="course-hero-meta">
+          <span class="meta-instructor">Created by <strong id="course-instructor">SenpaiWorks Studio</strong></span>
+          <span class="meta-item"><i class="fa-regular fa-calendar"></i> Last updated <span id="course-updated">2026</span></span>
+          <span class="meta-item"><i class="fa-solid fa-globe"></i> English</span>
+          <span class="meta-item"><i class="fa-regular fa-closed-captioning"></i> English [Auto]</span>
+        </div>
+
+        <!-- Quick Stats Rating Bar -->
+        <div class="course-stats-bar">
+          <div class="stat-box">
+            <span class="stat-score" id="course-rating">4.9</span>
+            <div class="stat-stars">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <span class="stat-label" id="course-rating-count">(1,004 ratings)</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-box">
+            <span class="stat-score" id="course-learners">5,892</span>
+            <span class="stat-label">learners</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Spacer for Desktop Overlay -->
+      <div class="course-hero-right-spacer"></div>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Section -->
+  <main class="course-detail-layout">
+    <div class="course-detail-container">
+
+      <!-- LEFT COLUMN: Content & Curriculum -->
+      <div class="course-main-content">
+
+        <!-- What You'll Learn Box -->
+        <section class="learn-box">
+          <h2>What you'll learn</h2>
+          <div class="learn-grid" id="what-you-will-learn">
+            <div class="learn-item"><i class="fa-solid fa-check"></i> Anatomy and forms of human head and face</div>
+            <div class="learn-item"><i class="fa-solid fa-check"></i> Shapes of human head</div>
+            <div class="learn-item"><i class="fa-solid fa-check"></i> Sculpting human head from sphere tips and tricks</div>
+            <div class="learn-item"><i class="fa-solid fa-check"></i> Head sculpting exercises</div>
+          </div>
+        </section>
+
+        <!-- Related Topics Tags -->
+        <section class="topics-section">
+          <h3>Explore related topics</h3>
+          <div class="topics-pills" id="related-topics">
+            <span class="topic-pill">3D Sculpting</span>
+            <span class="topic-pill">Anatomy</span>
+            <span class="topic-pill">3D & Animation</span>
+            <span class="topic-pill">Character Design</span>
+          </div>
+        </section>
+
+        <!-- Course Includes List -->
+        <section class="includes-section">
+          <h3>This course includes:</h3>
+          <div class="includes-grid" id="course-includes">
+            <div class="inc-item"><i class="fa-solid fa-circle-play"></i> <span id="inc-duration">13.5 hours on-demand video</span></div>
+            <div class="inc-item"><i class="fa-regular fa-file"></i> <span id="inc-resources">1 downloadable resource</span></div>
+            <div class="inc-item"><i class="fa-solid fa-mobile-screen"></i> Access on mobile and TV</div>
+            <div class="inc-item"><i class="fa-regular fa-closed-captioning"></i> Closed captions</div>
+            <div class="inc-item"><i class="fa-solid fa-award"></i> Certificate of completion</div>
+          </div>
+        </section>
+
+        <!-- Course Content Accordion -->
+        <section class="content-section">
+          <div class="content-header">
+            <h3>Course content</h3>
+            <span class="content-meta-summary" id="content-meta-summary">1 section &bull; 10 lectures &bull; 13h 38m total length</span>
+          </div>
+
+          <div class="accordion-container" id="curriculum-accordion">
+            <!-- Accordion sections will be populated dynamically -->
+          </div>
+        </section>
+
+        <!-- Requirements Section -->
+        <section class="requirements-section">
+          <h3>Requirements</h3>
+          <ul class="requirements-list" id="course-requirements">
+            <li>Basic understanding of 3D modeling software interface (Blender or ZBrush).</li>
+            <li>A graphics tablet or pen display is recommended for sculpting.</li>
+            <li>No prior anatomy knowledge required—we start from scratch!</li>
+          </ul>
+        </section>
+
+        <!-- Instructor Profile Section -->
+        <section class="instructor-section">
+          <h3>Instructor</h3>
+          <div class="instructor-card">
+            <img src="assets/SenpaiWorks logo bg.png" alt="SenpaiWorks Studio" class="instructor-avatar">
+            <div class="instructor-info">
+              <h4 id="instructor-name">SenpaiWorks Studio</h4>
+              <p class="instructor-headline">Original Anime Art, 3D Animation & Creator Platform</p>
+              <div class="instructor-stats">
+                <span><i class="fa-solid fa-star"></i> 4.9 Rating</span>
+                <span><i class="fa-solid fa-medal"></i> 15,000+ Students</span>
+                <span><i class="fa-solid fa-play"></i> 8 Courses</span>
+              </div>
+              <p class="instructor-bio">
+                SenpaiWorks is a premier digital studio specializing in original 2D/3D anime artwork, character pipelines, and creative technology. Our courses provide production-proven masterclasses to help artists master industry-standard software from scratch.
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Sticky Purchase / Preview Sidebar -->
+      <aside class="course-sidebar-wrapper">
+        <div class="course-preview-card">
+
+          <!-- Video / Image Preview Header -->
+          <div class="preview-media-box" id="preview-media-box">
+            <img src="assets/courses/zbrush-course.png" alt="Course Preview" id="sidebar-thumb" class="sidebar-thumb">
+            <div class="preview-overlay">
+              <button class="play-preview-btn" id="play-preview-btn" aria-label="Preview course">
+                <i class="fa-solid fa-play"></i>
+              </button>
+              <span class="preview-text">Preview this course</span>
+            </div>
+          </div>
+
+          <!-- Pricing & Subscription Options -->
+          <div class="sidebar-body">
+
+            <!-- Option A: Subscription -->
+            <div class="pricing-option active" id="sub-option">
+              <div class="option-radio">
+                <input type="radio" name="purchase-type" id="radio-sub" checked>
+                <label for="radio-sub">
+                  <strong>Subscribe and save</strong>
+                  <div class="price-row">
+                    <span class="price-monthly">From ₹375.00</span> <span class="price-strike">₹500.00</span><span class="per-month">/month</span>
+                  </div>
+                </label>
+              </div>
+              <p class="option-note">
+                <i class="fa-solid fa-circle-info"></i> Includes access to 8+ courses and source files. Cancel anytime.
+              </p>
+            </div>
+
+            <!-- Option B: Individual Purchase -->
+            <div class="pricing-option" id="one-time-option">
+              <div class="option-radio">
+                <input type="radio" name="purchase-type" id="radio-once">
+                <label for="radio-once">
+                  <strong>Buy individual course</strong>
+                  <div class="price-row">
+                    <span class="price-main" id="course-price">₹489.00</span>
+                    <span class="price-strike" id="course-original-price">₹3,199.00</span>
+                    <span class="discount-badge" id="course-discount">84% off</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Main CTA Button -->
+            <button class="cta-action-btn" id="cta-action-btn">
+              <span>Start Subscription</span>
+            </button>
+            <p class="guarantee-text">30-Day Money-Back Guarantee</p>
+
+            <!-- Coupon Code Section -->
+            <div class="coupon-box">
+              <div class="coupon-input-wrap">
+                <input type="text" id="coupon-input" placeholder="Enter Coupon">
+                <button type="button" id="apply-coupon-btn" class="apply-coupon-btn">Apply</button>
+              </div>
+              <div id="coupon-status-msg" class="coupon-status-msg"></div>
+            </div>
+
+            <!-- Perks Bullet List -->
+            <div class="sidebar-perks">
+              <div class="perk-item"><i class="fa-solid fa-circle-check"></i> Full lifetime access</div>
+              <div class="perk-item"><i class="fa-solid fa-circle-check"></i> Downloadable source assets</div>
+              <div class="perk-item"><i class="fa-solid fa-circle-check"></i> Access on mobile and desktop</div>
+            </div>
+
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Video Preview Modal -->
+  <div class="video-modal-backdrop" id="video-modal" style="display: none;">
+    <div class="video-modal-content">
+      <button class="close-modal-btn" id="close-modal-btn">&times;</button>
+      <h3 id="modal-title">Course Preview</h3>
+      <div class="video-modal-player">
+        <iframe id="modal-iframe" width="100%" height="400" src="" title="Course Video Preview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Section Placeholder -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630825/rem_and_ram_copy_zigezp.webp");
+  </script>
+
+  <!-- Footer Section Placeholder -->
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Course Details Controller JS -->
+  <script src="scripts/course-detail.js"></script>
+
+</body>
+
+</html>
