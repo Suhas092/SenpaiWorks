@@ -43,6 +43,20 @@ function scrollLogos(direction: number): void {
   container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
 
+function formatCompactNumber(num: number | string): string {
+  const n = typeof num === 'number' ? num : parseInt(num, 10);
+  if (isNaN(n) || n <= 0) return '0';
+  if (n >= 1000000) {
+    const val = n / 1000000;
+    return (val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)) + 'M';
+  }
+  if (n >= 1000) {
+    const val = n / 1000;
+    return (val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)) + 'k';
+  }
+  return n.toString();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   try {
     const slides = document.querySelectorAll('.slide');
@@ -429,87 +443,6 @@ function showDetailImageAt(idx: number) {
   currentIndex2D = idx;
   const targetImg = modalImageList[currentIndex2D];
   const targetCard = originalPinterestItems[currentIndex2D];
-  if (targetImg) {
-    openDetailCard(targetImg, targetCard);
-  }
-}
-
-// ── Fetch and render likes + comments ──────────────────────
-async function loadDetailInteractions(artworkId: string) {
-  activeArtworkId = artworkId;
-  const likeBtn   = document.getElementById("detail-like-btn");
-  const likeIcon  = document.getElementById("detail-like-icon");
-  const likeCount = document.getElementById("detail-like-count");
-  const commentsList       = document.getElementById("detail-comments-list");
-  const commentsCountLabel = document.getElementById("detail-comments-count-label");
-
-  if (!likeBtn || !likeIcon || !likeCount || !commentsList || !commentsCountLabel) return;
-
-  // Restore liked state from localStorage
-  const votedKey = `liked_artwork_${artworkId}`;
-  const isLiked  = localStorage.getItem(votedKey) === 'true';
-  if (isLiked) {
-    likeBtn.style.borderColor = "#ff4d4d";
-    likeBtn.style.color = "#ff4d4d";
-    likeIcon.className = "fa-solid fa-heart";
-    likeIcon.style.color = "#ff4d4d";
-  } else {
-    likeBtn.style.borderColor = "rgba(0,0,0,0.1)";
-    likeBtn.style.color = "#333";
-    likeIcon.className = "fa-regular fa-heart";
-    likeIcon.style.color = "#333";
-  }
-
-  // Fetch like count
-  try {
-    const res = await fetch(`http://localhost:5000/api/anime/likes?animeId=${artworkId}`);
-    if (res.ok) {
-      const data = await res.json();
-      likeCount.textContent = data.count.toString();
-      localStorage.setItem(`mock_likes_count_${artworkId}`, data.count.toString());
-    } else {
-      throw new Error("HTTP error");
-    }
-  } catch (err) {
-    console.warn("Backend unavailable, using localStorage fallback for likes:", err);
-    let count = localStorage.getItem(`mock_likes_count_${artworkId}`);
-    if (count === null) {
-      count = getBaseLikesCount(artworkId).toString();
-      localStorage.setItem(`mock_likes_count_${artworkId}`, count);
-    }
-    likeCount.textContent = count;
-  }
-
-  // Fetch comments
-  try {
-    const res = await fetch(`http://localhost:5000/api/anime/comments?animeId=${artworkId}`);
-    if (res.ok) {
-      const comments: any[] = await res.json();
-      commentsCountLabel.textContent = `${comments.length}`;
-      localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
-      renderCommentsList(comments);
-    } else {
-      throw new Error("HTTP error");
-    }
-  } catch (err) {
-    console.warn("Backend unavailable, using localStorage fallback for comments:", err);
-    let commentsRaw = localStorage.getItem(`mock_comments_${artworkId}`);
-    let comments: any[] = [];
-    if (commentsRaw) {
-      try { comments = JSON.parse(commentsRaw); } catch(e) {}
-    } else {
-      comments = getInitialComments(artworkId);
-      localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
-    }
-    commentsCountLabel.textContent = `${comments.length}`;
-    renderCommentsList(comments);
-  }
-}
-
-function renderCommentsList(comments: any[]) {
-  const commentsList = document.getElementById("detail-comments-list");
-  if (!commentsList) return;
-  if (comments.length === 0) {
     commentsList.innerHTML = `<p style="color:#aaa;font-style:italic;font-size:0.8rem;margin:0">No comments yet.</p>`;
   } else {
     commentsList.innerHTML = comments.map(c => {

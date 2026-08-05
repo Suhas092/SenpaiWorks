@@ -2,9 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="icon"
-    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-    type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,7 +81,7 @@
                 </div>
               </div>
 
-              <!-- Right Side: Action Icons (Like, Comment, Download, Share) -->
+              <!-- Right Side: Action Icons (Like, Comment, 3-Dot Options, Share) -->
               <div class="top-bar-right">
                 <button type="button" class="top-bar-icon-btn" id="detail-like-btn" title="Like Artwork">
                   <i class="fa-regular fa-heart" id="detail-like-icon"></i>
@@ -93,441 +91,167 @@
                   <i class="fa-regular fa-comment"></i>
                   <span id="detail-comments-shortcut-count" class="top-bar-count">0</span>
                 </button>
-                <a id="detail-download-btn" class="top-bar-icon-btn" href="#" download="senpaiworks-artwork.jpg"
-                  target="_blank" title="Download Artwork">
-                  <i class="fa-solid fa-download"></i>
-                </a>
                 <button type="button" class="top-bar-icon-btn" id="detail-share-btn" title="Share Artwork">
-                  <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                  <i class="fa-regular fa-paper-plane"></i>
                 </button>
+                <div class="top-bar-dropdown-wrapper">
+                  <button type="button" class="top-bar-icon-btn" id="detail-more-btn" title="More Options" aria-label="More Options">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                  </button>
+                  <div class="art-dropdown-menu" id="detail-more-dropdown">
+                    <button type="button" class="art-dropdown-item" id="option-download-btn">
+                      <i class="fa-solid fa-download"></i>
+                      <span>Download Image</span>
+                    </button>
+                    <button type="button" class="art-dropdown-item" id="option-about-btn">
+                      <i class="fa-solid fa-circle-info"></i>
+                      <span>About This Art</span>
+                    </button>
+                    <button type="button" class="art-dropdown-item" id="option-interested-btn">
+                      <i class="fa-regular fa-star" id="option-interested-icon"></i>
+                      <span id="option-interested-text">Interested</span>
+                    </button>
+                    <button type="button" class="art-dropdown-item" id="option-share-btn">
+                      <i class="fa-solid fa-share-nodes"></i>
+                      <span>Share Artwork</span>
+                    </button>
+                    <button type="button" class="art-dropdown-item" id="option-enlarge-btn">
+                      <i class="fa-solid fa-expand"></i>
+                      <span>View Fullscreen</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
             <!-- Detail Card Body -->
-            <div class="detail-card-body">
+            <div class="detail-card-body" id="detail-card-body">
 
-              <!-- Left: Image Container with Enlarge Button -->
-              <div class="detail-image-container">
-                <div class="detail-image-wrapper">
-                  <img id="detail-main-img" src="" alt="Artwork Preview" />
-
-                  <!-- Translucent Enlarge Fullscreen Button -->
-                  <button type="button" class="enlarge-img-btn" id="enlarge-img-btn" title="Enlarge Artwork">
-                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Right: Information & Collapsible Comments Panel -->
-              <div class="detail-info-panel" id="detail-info-panel">
-                <h2 class="detail-title-text" id="detail-charname">Character Name</h2>
-
-                <p class="detail-description-text" id="detail-description">Artwork description details will appear here
-                  dynamically.</p>
-
-                <div class="detail-metadata-section">
-                  <h3 class="metadata-title">Specifications</h3>
-                  <div class="metadata-badges-container" id="detail-badges-container"></div>
-                </div>
-
-                <!-- Collapsible Comments Section (Hidden by default, shown when comment button is clicked) -->
-                <div class="detail-interactions-section" id="detail-comments-container" style="display: none;">
-                  <div class="comment-header-row">
-                    <span class="comment-header-title">Comments</span>
-                    <span id="detail-comments-count-label" class="comment-count-badge">0</span>
+              <!-- Main Column: Image, Title & Description -->
+              <div class="detail-main-col">
+                <div class="detail-image-container">
+                  <div class="detail-image-wrapper">
+                    <img id="detail-main-img" src="" alt="Artwork Preview" />
+                    <button type="button" class="enlarge-img-btn" id="enlarge-img-btn" title="Enlarge Artwork">
+                      <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                    </button>
                   </div>
 
-                  <form id="detail-comment-form" class="comment-form">
-                    <input type="text" id="detail-comment-text" placeholder="Add a comment to start the conversation..."
-                      required />
-                    <div class="comment-form-actions" style="position: relative;">
-                      <button type="button" class="comment-emoji-btn" id="comment-emoji-btn" title="Add Emoji">
-                        <i class="fa-regular fa-face-smile"></i>
+                  <!-- Mobile Action Bar -->
+                  <div class="mobile-action-bar" id="mobile-action-bar">
+                    <div class="ig-action-left">
+                      <button type="button" class="ig-icon-btn" id="mobile-detail-like-btn" title="Like Artwork">
+                        <i class="fa-regular fa-heart" id="mobile-detail-like-icon"></i>
+                        <span id="mobile-detail-like-count" class="ig-count">0</span>
                       </button>
-                      <button type="submit" class="comment-submit-btn">
-                        <i class="fa-solid fa-arrow-up"></i>
+                      <button type="button" class="ig-icon-btn" id="mobile-detail-comment-shortcut-btn" title="Toggle Comments">
+                        <i class="fa-regular fa-comment"></i>
+                        <span id="mobile-detail-comments-shortcut-count" class="ig-count">0</span>
                       </button>
+                      <button type="button" class="ig-icon-btn" id="mobile-detail-share-btn" title="Share Artwork">
+                        <i class="fa-regular fa-paper-plane"></i>
+                      </button>
+                    </div>
 
-                      <!-- Emoji Picker Popover Box -->
-                      <div class="emoji-picker-box" id="emoji-picker-box" style="display: none;">
-                        <div class="emoji-grid">
-                          <span class="emoji-item">😊</span>
-                          <span class="emoji-item">❤️</span>
-                          <span class="emoji-item">🔥</span>
-                          <span class="emoji-item">👏</span>
-                          <span class="emoji-item">😍</span>
-                          <span class="emoji-item">😂</span>
-                          <span class="emoji-item">✨</span>
-                          <span class="emoji-item">🎉</span>
-                          <span class="emoji-item">🚀</span>
-                          <span class="emoji-item">💯</span>
-                          <span class="emoji-item">👍</span>
-                          <span class="emoji-item">🎨</span>
-                          <span class="emoji-item">🌟</span>
-                          <span class="emoji-item">🙌</span>
-                          <span class="emoji-item">💡</span>
-                          <span class="emoji-item">🤩</span>
+                    <div class="ig-action-right">
+                      <div class="top-bar-dropdown-wrapper">
+                        <button type="button" class="ig-icon-btn" id="mobile-detail-more-btn" title="More Options" aria-label="More Options">
+                          <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <div class="art-dropdown-menu mobile-dropdown-menu" id="mobile-detail-more-dropdown">
+                          <button type="button" class="art-dropdown-item" id="mobile-option-download-btn">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Download Image</span>
+                          </button>
+                          <button type="button" class="art-dropdown-item" id="mobile-option-about-btn">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>About This Art</span>
+                          </button>
+                          <button type="button" class="art-dropdown-item" id="mobile-option-interested-btn">
+                            <i class="fa-regular fa-star" id="mobile-option-interested-icon"></i>
+                            <span id="mobile-option-interested-text">Interested</span>
+                          </button>
+                          <button type="button" class="art-dropdown-item" id="mobile-option-share-btn">
+                            <i class="fa-solid fa-share-nodes"></i>
+                            <span>Share Artwork</span>
+                          </button>
+                          <button type="button" class="art-dropdown-item" id="mobile-option-enlarge-btn">
+                            <i class="fa-solid fa-expand"></i>
+                            <span>View Fullscreen</span>
+                          </button>
                         </div>
                       </div>
                     </div>
-                  </form>
-
-                  <div id="detail-comments-list" class="comments-list"></div>
-
-                  <button type="button" id="load-more-comments-btn" class="load-more-comments-btn"
-                    style="display: none;">
-                    <span>Load More Comments</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                  </button>
+                  </div>
                 </div>
 
-              </div><!-- /.detail-info-panel -->
+                <!-- Info Section Below Image -->
+                <div class="detail-info-section">
+                  <div class="detail-title-wrapper">
+                    <h2 class="detail-title-text" id="detail-charname">Character Name</h2>
+                    <span class="detail-category-badge" id="detail-category-badge">Digital Portrait</span>
+                  </div>
+                  <p class="detail-description-text" id="detail-description">Artwork description details will appear here dynamically.</p>
+                </div>
+              </div>
+
+              <!-- Dedicated Comments Right Column (Opens next to image when comment button is clicked) -->
+              <div class="detail-comments-col detail-interactions-section" id="detail-comments-container">
+                <div class="comment-header-row">
+                  <span class="comment-header-title">Comments</span>
+                  <span id="detail-comments-count-label" class="comment-count-badge">0</span>
+                </div>
+
+                <!-- Middle Comments List Section -->
+                <div id="detail-comments-list" class="comments-list"></div>
+
+                <button type="button" id="load-more-comments-btn" class="load-more-comments-btn" style="display: none;">
+                  <span>Load More Comments</span>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
+
+                <!-- Bottom Anchored Comment Input Form -->
+                <form id="detail-comment-form" class="comment-form">
+                  <button type="button" class="comment-emoji-btn" id="comment-emoji-btn" title="Add Emoji">
+                    <i class="fa-regular fa-face-smile"></i>
+                  </button>
+                  <input type="text" id="detail-comment-text" placeholder="Add a comment to start the conversation..." required />
+                  <button type="submit" class="comment-submit-btn" id="comment-submit-btn" title="Send Comment">
+                    <i class="fa-solid fa-arrow-up"></i>
+                  </button>
+
+                  <!-- Emoji Picker Popover Box -->
+                  <div class="emoji-picker-box" id="emoji-picker-box" style="display: none;">
+                    <div class="emoji-grid">
+                      <span class="emoji-item">😊</span>
+                      <span class="emoji-item">❤️</span>
+                      <span class="emoji-item">🔥</span>
+                      <span class="emoji-item">👏</span>
+                      <span class="emoji-item">😍</span>
+                      <span class="emoji-item">😂</span>
+                      <span class="emoji-item">✨</span>
+                      <span class="emoji-item">🎉</span>
+                      <span class="emoji-item">🚀</span>
+                      <span class="emoji-item">💯</span>
+                      <span class="emoji-item">👍</span>
+                      <span class="emoji-item">🎨</span>
+                      <span class="emoji-item">🌟</span>
+                      <span class="emoji-item">🙌</span>
+                      <span class="emoji-item">💡</span>
+                      <span class="emoji-item">🤩</span>
+                    </div>
+                  </div>
+                </form>
+              </div>
 
             </div><!-- /.detail-card-body -->
 
           </div><!-- /.detail-card-panel -->
-        </div><!-- /.pin-detail-card-wrapper -->
-
-        <!-- DIGITAL PORTRAITS -->
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Kaori Miyazono"
-          data-source="Your Lie in April" data-sex="Female" data-artstyle="Digital Art"
-          data-description="Kaori Miyazono is a free-spirited violinist whose vibrant music reignites Kousei's passion for piano. Behind her radiant smile she hides a heartbreaking truth that shapes the soul of Your Lie in April.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/black_kaori_copy_csr9qi.webp"
-            alt="Kaori" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Kaori</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Miku Nakano"
-          data-source="The Quintessential Quintuplets" data-sex="Female" data-artstyle="Digital Art"
-          data-description="Miku Nakano is the quiet and history-loving third sister of the Nakano quintuplets. Her sincerity and depth of emotion make her unforgettable.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/miku_full_copy_vdritm.webp"
-            alt="Miku" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Miku Nakano</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Mikasa Ackerman"
-          data-source="Attack on Titan" data-sex="Female" data-artstyle="Digital Art"
-          data-description="Mikasa Ackerman is one of humanity's greatest soldiers, driven by an unwavering will to protect the ones she loves no matter the cost.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/Mikasa_copy_jcwuga.webp"
-            alt="Mikasa" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Mikasa Ackerman</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Li Shiya"
-          data-source="The Girl Downstairs" data-sex="Female" data-artstyle="Digital Art"
-          data-description="Li Shiya is a charming upperclassman known for her mature elegance and calm personality in the manhwa The Girl Downstairs.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/li_shiya_copy_jyopqy.webp"
-            alt="Li Shiya" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Li Shiya</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Nico Robin" data-source="One Piece"
-          data-sex="Female" data-artstyle="Digital Art"
-          data-description="Nico Robin is the intelligent archaeologist of the Straw Hat Pirates, possessing powers from the Hana Hana no Mi.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/nico_robin_copy_eoj6o4.webp"
-            alt="Nico Robin" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Nico Robin</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Rem"
-          data-source="Re:Zero − Starting Life in Another World" data-sex="Female" data-artstyle="Digital Art"
-          data-description="Rem is a devoted and fierce oni maid who becomes one of Subaru's most trusted allies.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630819/rem_ipad_copy_b8c4zv.webp"
-            alt="Rem" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Rem</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Boa Hancock" data-source="One Piece"
-          data-sex="Female" data-artstyle="Digital Art"
-          data-description="Boa Hancock is the beautiful and powerful captain of the Kuja Pirates, known as the Pirate Empress.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/boa_aot_copy_ro68fu.webp"
-            alt="Boa Hancock" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Boa Hancock</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="digital-portrait" data-charname="Shikimori"
-          data-source="Shikimori’s Not Just a Cutie" data-sex="Female" data-artstyle="Digital Art"
-          data-description="Shikimori is the perfect girlfriend — sweet, stylish, and unexpectedly cool when needed.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630819/shikimori_copy_vc1kcj.webp"
-            alt="Shikimori" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Shikimori</p>
-            <p class="pinterest-category">Digital Portrait</p>
-          </div>
-        </div>
-
-        <!-- INSANE ARTWORK -->
-        <div class="pinterest-item" data-category="insane-artwork" data-charname="Zoro" data-source="One Piece"
-          data-sex="Male" data-artstyle="Hatching & Ink"
-          data-description="Roronoa Zoro is the master swordsman of the Straw Hat Pirates, wielding the legendary Three Sword Style with unmatched determination.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp"
-            alt="Zoro" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Zoro</p>
-            <p class="pinterest-category">Insane Artwork</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="insane-artwork" data-charname="Itachi Uchiha" data-source="Naruto"
-          data-sex="Male" data-artstyle="Hatching & Ink"
-          data-description="Itachi Uchiha is a legendary shinobi from the Uchiha Clan, sacrificing everything to protect his brother Sasuke and Konohagakure.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp"
-            alt="Itachi Uchiha" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Itachi Uchiha</p>
-            <p class="pinterest-category">Insane Artwork</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="insane-artwork" data-charname="Kaneki Ken" data-source="Tokyo Ghoul"
-          data-sex="Male" data-artstyle="Hatching & Ink"
-          data-description="Ken Kaneki transforms from an ordinary student into the Eyepatch Ghoul after a tragic encounter, navigating a dark world between humans and ghouls.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp"
-            alt="Kaneki Ken" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Kaneki Ken</p>
-            <p class="pinterest-category">Insane Artwork</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="insane-artwork" data-charname="Monkey D. Luffy"
-          data-source="One Piece" data-sex="Male" data-artstyle="Digital Art"
-          data-description="Monkey D. Luffy in Gear 5 form unleashing the power of Nika, the Sun God, with joyful liberation.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/luffy_copy_lqrkg0.webp"
-            alt="Luffy" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Monkey D. Luffy</p>
-            <p class="pinterest-category">Insane Artwork</p>
-          </div>
-        </div>
-
-        <!-- COLOR PENCIL -->
-        <div class="pinterest-item" data-category="color-pencil" data-charname="Rosé" data-source="BLACKPINK"
-          data-sex="Female" data-artstyle="Colored Portrait"
-          data-description="Rosé is a member of BLACKPINK known for her soulful voice and graceful presence.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/taeyung_copy_sne0b3.webp"
-            alt="Rose" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Rose</p>
-            <p class="pinterest-category">Color Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="color-pencil" data-charname="IU" data-source="Solo Artist"
-          data-sex="Female" data-artstyle="Colored Portrait"
-          data-description="IU is a South Korean solo artist celebrated for her sweet voice, emotional songwriting, and acting roles.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630819/IU_copy_pm7qus.webp"
-            alt="IU" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">IU</p>
-            <p class="pinterest-category">Color Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="color-pencil" data-charname="Jisoo" data-source="BLACKPINK"
-          data-sex="Female" data-artstyle="Colored Portrait"
-          data-description="Jisoo is BLACKPINK's vocalist and visual, admired for her elegance and stage charm.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/lisa_copy_zsrdfj.webp"
-            alt="Jisoo" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Jisoo</p>
-            <p class="pinterest-category">Color Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="color-pencil" data-charname="Taylor Swift" data-source="Solo Artist"
-          data-sex="Female" data-artstyle="Colored Portrait"
-          data-description="Taylor Swift is a world-renowned pop icon and songwriter famous for her storytelling lyrics.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630825/rem_and_ram_copy_zigezp.webp"
-            alt="Taylor Swift" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Taylor Swift</p>
-            <p class="pinterest-category">Color Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="color-pencil" data-charname="Suga" data-source="BTS" data-sex="Male"
-          data-artstyle="Colored Portrait"
-          data-description="Suga is a rapper, songwriter, and producer from BTS, respected for his raw lyrics and musical talent.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp"
-            alt="Suga" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Suga</p>
-            <p class="pinterest-category">Color Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="color-pencil" data-charname="Lisa" data-source="BLACKPINK"
-          data-sex="Female" data-artstyle="Colored Portrait"
-          data-description="Lisa is BLACKPINK’s main dancer and rapper, known for her charisma and sharp choreography.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/lisa_copy_zsrdfj.webp"
-            alt="Lisa" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Lisa</p>
-            <p class="pinterest-category">Color Pencil</p>
-          </div>
-        </div>
-
-        <!-- CHARCOAL & PENCIL -->
-        <div class="pinterest-item" data-category="charcoal-pencil" data-charname="Jungkook" data-source="BTS"
-          data-sex="Male" data-artstyle="Charcoal Portrait"
-          data-description="Jungkook is the main vocalist and youngest member of BTS, known for his powerful voice and stage presence.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp"
-            alt="Jungkook" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Jungkook</p>
-            <p class="pinterest-category">Charcoal & Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="charcoal-pencil" data-charname="IU" data-source="Solo Artist"
-          data-sex="Female" data-artstyle="Charcoal Portrait"
-          data-description="IU is a South Korean solo artist celebrated for her sweet voice and emotional songwriting.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630819/IU_copy_pm7qus.webp"
-            alt="IU" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">IU (Charcoal)</p>
-            <p class="pinterest-category">Charcoal & Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="charcoal-pencil" data-charname="Jimin" data-source="BTS"
-          data-sex="Male" data-artstyle="Word Art"
-          data-description="Jimin is a lead vocalist and dancer of BTS, known for his expressive performances and stage charisma.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jimin_copy_geleu0.webp"
-            alt="Jimin" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Jimin</p>
-            <p class="pinterest-category">Charcoal & Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="charcoal-pencil" data-charname="J-Hope" data-source="BTS"
-          data-sex="Male" data-artstyle="Charcoal Portrait"
-          data-description="J-Hope is the main dancer and rapper of BTS, admired for his energetic personality.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jhope_copy_sregrz.webp"
-            alt="J-Hope" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">J-Hope</p>
-            <p class="pinterest-category">Charcoal & Pencil</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="charcoal-pencil" data-charname="Taehyung (V)" data-source="BTS"
-          data-sex="Male" data-artstyle="Word Art"
-          data-description="V, also known as Taehyung, is a vocalist in BTS known for his deep voice and striking visuals.">
-          <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/taeyung_copy_sne0b3.webp"
-            alt="Taehyung" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">V (Taehyung)</p>
-            <p class="pinterest-category">Charcoal & Pencil</p>
-          </div>
-        </div>
-
-        <!-- OTHERS / HORIZONTAL ARTWORK -->
-        <div class="pinterest-item" data-category="others" data-charname="Sakura Shrine Sunset"
-          data-source="Original Concept" data-sex="N/A" data-artstyle="Landscape Digital"
-          data-description="A serene widescreen landscape illustration depicting a traditional Japanese shrine enveloped in glowing cherry blossoms under a golden twilight sky.">
-          <img src="assets/art-others-1.png" alt="Sakura Shrine Sunset" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Sakura Shrine Sunset</p>
-            <p class="pinterest-category">Others</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="others" data-charname="Neo-Tokyo Nightline"
-          data-source="Cyberpunk 2099" data-sex="N/A" data-artstyle="Cyberpunk Panorama"
-          data-description="An ultra-wide panoramic artwork showing the dazzling lights, holographic billboards, and towering skyscrapers of futuristic Neo-Tokyo at midnight.">
-          <img src="assets/art-others-2.png" alt="Neo-Tokyo Nightline" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Neo-Tokyo Nightline</p>
-            <p class="pinterest-category">Others</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="others" data-charname="Horizon of Solitude"
-          data-source="Scenic Dreams" data-sex="Female" data-artstyle="Scenic Illustration"
-          data-description="A dramatic horizontal scene featuring a lone traveler atop a coastal cliff overlooking a shimmering crimson ocean as day fades into twilight.">
-          <img src="assets/art-others-3.png" alt="Horizon of Solitude" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Horizon of Solitude</p>
-            <p class="pinterest-category">Others</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="others" data-charname="Dragon of Mist Summit"
-          data-source="Fantasy Realm" data-sex="N/A" data-artstyle="Epic Digital Painting"
-          data-description="A majestic dragon gliding above cloud-wrapped mountain peaks in autumn, painted in a sweeping horizontal wide-canvas format.">
-          <img src="assets/art-others-4.png" alt="Dragon of Mist Summit" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Dragon of Mist Summit</p>
-            <p class="pinterest-category">Others</p>
-          </div>
-        </div>
-
-        <div class="pinterest-item" data-category="others" data-charname="Suzens Band Live"
-          data-source="SenpaiWorks Original" data-sex="Group" data-artstyle="Widescreen Group Art"
-          data-description="The official SenpaiWorks mascot band performing live on stage at a crowded anime festival concert under vibrant spotlights.">
-          <img src="assets/Suzens band.png" alt="Suzens Band Live" />
-          <div class="pinterest-info">
-            <p class="pinterest-title">Suzens Band Live</p>
-            <p class="pinterest-category">Others</p>
-          </div>
+          <!-- Dynamic database artworks load inside this container -->
         </div>
 
       </div><!-- /.pinterest-grid -->
 
-      <!-- Load More Button Container -->
-      <div class="load-more-container" id="load-more-container">
-        <button type="button" class="load-more-btn" id="load-more-btn">
-          <span>Load More Artworks</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-      </div>
 
     </div><!-- /.pin-feed-col -->
 
@@ -542,7 +266,7 @@
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 
-  <script src="scripts/art-library.js?v=38"></script>
+  <script src="scripts/art-library.js?v=44"></script>
 
   <!-- Full-page refresh transition overlay -->
   <div class="page-refresh-overlay" id="page-refresh-overlay"></div>
@@ -570,6 +294,65 @@
     <div class="lightbox-content" id="lightbox-content">
       <img id="lightbox-img" src="" alt="Enlarged Artwork" />
     </div>
+  </div>
+
+  <!-- About This Art Modal -->
+  <div class="art-modal-overlay" id="about-art-modal">
+    <div class="art-modal-card">
+      <button type="button" class="art-modal-close" id="about-art-modal-close" title="Close Modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="art-modal-header">
+        <div class="art-modal-badge"><i class="fa-solid fa-palette"></i> Artwork Details</div>
+        <h3 class="art-modal-title" id="about-art-title">Character Name</h3>
+      </div>
+      <div class="art-modal-body">
+        <div class="art-modal-preview">
+          <img id="about-art-img" src="" alt="Artwork Preview" />
+        </div>
+        <div class="art-modal-info-grid">
+          <div class="info-row">
+            <span class="info-label"><i class="fa-solid fa-user-pen"></i> Artist</span>
+            <span class="info-val">SenpaiWorks Official</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label"><i class="fa-solid fa-tags"></i> Category</span>
+            <span class="info-val" id="about-art-category">Digital Portrait</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label"><i class="fa-solid fa-paint-brush"></i> Art Style</span>
+            <span class="info-val" id="about-art-style">Original Anime</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label"><i class="fa-solid fa-image"></i> Quality</span>
+            <span class="info-val" id="about-art-resolution">High Resolution (HD)</span>
+          </div>
+          <div class="info-row full-width">
+            <span class="info-label"><i class="fa-solid fa-align-left"></i> Description</span>
+            <p class="info-desc" id="about-art-desc">Artwork details will appear here.</p>
+          </div>
+          <div class="info-row full-width license-box">
+            <span class="info-label"><i class="fa-solid fa-shield-halved"></i> Personal License</span>
+            <p class="info-license-text">Free for personal wallpapers, device backgrounds, and profile avatars. Commercial reuse or selling is prohibited.</p>
+          </div>
+        </div>
+      </div>
+      <div class="art-modal-footer">
+        <button type="button" class="art-modal-btn secondary" id="modal-interested-btn">
+          <i class="fa-regular fa-star" id="modal-interested-icon"></i>
+          <span id="modal-interested-text">Interested</span>
+        </button>
+        <button type="button" class="art-modal-btn primary" id="modal-download-btn">
+          <i class="fa-solid fa-download"></i> Download Image
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Art Feedback / Interest Toast Notification -->
+  <div class="art-toast-notification" id="art-toast-notification">
+    <i class="fa-solid fa-circle-check" id="toast-icon"></i>
+    <span id="toast-message">Notification message</span>
   </div>
 
 </body>
