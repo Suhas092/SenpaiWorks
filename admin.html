@@ -312,8 +312,23 @@
                     <input type="text" id="prod-name" required placeholder="e.g. Itachi Crow Genjutsu Graphic Tee">
                   </div>
                   <div class="form-group">
-                    <label for="prod-price">Price (₹) *</label>
+                    <label for="prod-sku">SKU</label>
+                    <input type="text" id="prod-sku" placeholder="e.g. TS-ITA-01">
+                  </div>
+                </div>
+
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="prod-price">Selling Price (₹) *</label>
                     <input type="number" id="prod-price" min="0" step="1" required placeholder="e.g. 999">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-original-price">Original Price (₹)</label>
+                    <input type="number" id="prod-original-price" min="0" step="1" placeholder="e.g. 1499">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-cost-price">Cost Price (₹)</label>
+                    <input type="number" id="prod-cost-price" min="0" step="1" placeholder="e.g. 450">
                   </div>
                 </div>
 
@@ -340,20 +355,111 @@
                   </div>
                 </div>
 
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="prod-stock">Stock Quantity</label>
+                    <input type="number" id="prod-stock" min="0" step="1" value="50">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-available-status">Is Available?</label>
+                    <select id="prod-available-status">
+                      <option value="true">Yes (In Stock)</option>
+                      <option value="false">No (Out of Stock)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-status">Product Status</label>
+                    <select id="prod-status">
+                      <option value="Active">Active</option>
+                      <option value="Draft">Draft</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="prod-rating">Manual Rating</label>
+                    <input type="number" id="prod-rating" step="0.1" min="1" max="5" placeholder="e.g. 4.8">
+                  </div>
+                  <div class="form-group">
+                    <label for="prod-rating-count">Rating Count</label>
+                    <input type="number" id="prod-rating-count" min="0" step="1" placeholder="e.g. 124">
+                  </div>
+                </div>
+
                 <div class="form-row-2">
                   <div class="form-group">
                     <label for="prod-badge">Product Badge</label>
                     <input type="text" id="prod-badge" placeholder="e.g. 50% OFF, Best Seller">
                   </div>
                   <div class="form-group">
-                    <label for="prod-img">Image URL *</label>
+                    <label for="prod-img">Primary Image URL *</label>
                     <input type="url" id="prod-img" required placeholder="https://res.cloudinary.com/...">
                   </div>
+                </div>
+
+                <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
+                  <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    Additional Image URLs
+                    <button type="button" id="btn-add-additional-url" style="background: #3b82f6; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;"><i class="fa-solid fa-plus"></i> Add Image</button>
+                  </label>
+                  <div id="additional-urls-container"></div>
                 </div>
 
                 <div class="form-group">
                   <label for="prod-description">Description *</label>
                   <textarea id="prod-description" rows="3" required placeholder="Provide a detailed description of the product..."></textarea>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
+                    <label>Print Types</label>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;">
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-bw-half"> B&W Half</label>
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-bw-full"> B&W Full</label>
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-col-half"> Col Half</label>
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-col-full"> Col Full</label>
+                    </div>
+                  </div>
+                  <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
+                    <label>Apparel Sizes</label>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;">
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-s"> S</label>
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-m"> M</label>
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-l"> L</label>
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-xl"> XL</label>
+                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-xxl"> XXL</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
+                  <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    Color Variants
+                    <button type="button" id="btn-add-color-variant" style="background: #3b82f6; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;"><i class="fa-solid fa-plus"></i> Add Color</button>
+                  </label>
+                  <div id="color-variants-container"></div>
+                </div>
+
+                <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
+                  <label style="margin-bottom: 12px;">Feature Highlights</label>
+                  <div class="form-row-3">
+                    <div>
+                      <input type="text" id="feat-1-title" placeholder="Feature 1 Title" style="margin-bottom: 8px;">
+                      <textarea id="feat-1-desc" rows="2" placeholder="Feature 1 Desc" style="margin-bottom: 8px;"></textarea>
+                      <input type="url" id="feat-1-img" placeholder="Feature 1 Image URL">
+                    </div>
+                    <div>
+                      <input type="text" id="feat-2-title" placeholder="Feature 2 Title" style="margin-bottom: 8px;">
+                      <textarea id="feat-2-desc" rows="2" placeholder="Feature 2 Desc" style="margin-bottom: 8px;"></textarea>
+                      <input type="url" id="feat-2-img" placeholder="Feature 2 Image URL">
+                    </div>
+                    <div>
+                      <input type="text" id="feat-3-title" placeholder="Feature 3 Title" style="margin-bottom: 8px;">
+                      <textarea id="feat-3-desc" rows="2" placeholder="Feature 3 Desc" style="margin-bottom: 8px;"></textarea>
+                      <input type="url" id="feat-3-img" placeholder="Feature 3 Image URL">
+                    </div>
+                  </div>
                 </div>
 
                 <button type="submit" class="admin-submit-btn">

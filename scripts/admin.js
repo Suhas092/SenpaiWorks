@@ -1421,6 +1421,11 @@ function initProductAddForm() {
     addColorBtn.onclick = () => renderColorVariantInputRow({ name: "Black", hex: "#111111", img: "", available: true });
   }
 
+  const addUrlBtn = document.getElementById("btn-add-additional-url");
+  if (addUrlBtn) {
+    addUrlBtn.onclick = () => addAdditionalUrlInputRow("");
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
