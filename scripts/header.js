@@ -72,7 +72,6 @@ function initHeaderInteractions() {
   const signupWrapper = document.getElementById("signup-form-wrapper");
 
   const showSignupBtn = document.getElementById("show-signup-link");
-  const showSignupBtnTop = document.getElementById("show-signup-link-top");
   const showSigninBtn = document.getElementById("show-signin-link");
 
   const signinForm = document.getElementById("signin-form");
@@ -91,10 +90,6 @@ function initHeaderInteractions() {
   // Cart badges
   const cartBadges = document.querySelectorAll(".cart-badge");
 
-  function getRegisteredUsers() {
-    const users = localStorage.getItem("registeredUsers");
-    return users ? JSON.parse(users) : [];
-  }
 
   function getCurrentUser() {
     if (window.Auth) return window.Auth.getCurrentUser();
@@ -357,14 +352,6 @@ function initHeaderInteractions() {
     if (promptEl) promptEl.remove();
   };
 
-  window.clearCartFromPrompt = function () {
-    localStorage.removeItem("shoppingCart");
-    localStorage.setItem("cart_has_unseen_items", "false");
-    window.updateCartBadge();
-    window.dispatchEvent(new Event("cartUpdated"));
-    window.dismissCartWaitingPrompt();
-  };
-
   window.proceedToCheckoutFromPrompt = function () {
     window.dismissCartWaitingPrompt();
     window.location.href = "checkout.html";
@@ -603,15 +590,6 @@ function initHeaderInteractions() {
 
   if (showSignupBtn) {
     showSignupBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (signinWrapper) signinWrapper.style.display = "none";
-      if (signupWrapper) signupWrapper.style.display = "block";
-      if (signupError) signupError.style.display = "none";
-    });
-  }
-
-  if (showSignupBtnTop) {
-    showSignupBtnTop.addEventListener("click", (e) => {
       e.preventDefault();
       if (signinWrapper) signinWrapper.style.display = "none";
       if (signupWrapper) signupWrapper.style.display = "block";
@@ -1249,12 +1227,10 @@ function initHeaderInteractions() {
 
     // Apply muted state on load
     if (localStorage.getItem('notif-muted') === 'true') {
-      document.addEventListener('DOMContentLoaded', () => {
-        const turnOffBtnEl = document.getElementById('notif-dropdown-turn-off');
-        const turnOnBtnEl = document.getElementById('notif-dropdown-turn-on');
-        if (turnOffBtnEl) turnOffBtnEl.style.display = 'none';
-        if (turnOnBtnEl) turnOnBtnEl.style.display = 'block';
-      });
+      const turnOffBtnEl = document.getElementById('notif-dropdown-turn-off');
+      const turnOnBtnEl = document.getElementById('notif-dropdown-turn-on');
+      if (turnOffBtnEl) turnOffBtnEl.style.display = 'none';
+      if (turnOnBtnEl) turnOnBtnEl.style.display = 'block';
     }
   });
 })();

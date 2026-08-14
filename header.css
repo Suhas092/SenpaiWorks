@@ -745,38 +745,6 @@ body>div:first-of-type,
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.forgot-password-link {
-  color: #64748b;
-  text-decoration: underline;
-  font-weight: 600;
-  transition: color 0.2s ease;
-}
-
-.forgot-password-link:hover {
-  color: #2563eb;
-}
-
-/* Submit Pill Button */
-.auth-submit-pill {
-  width: 100%;
-  padding: 14px;
-  background: #1e1e1e;
-  color: #ffffff;
-  border: none;
-  border-radius: 24px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(30, 30, 30, 0.2);
-}
-
-.auth-submit-pill:hover {
-  background: #000000;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-}
-
 /* Footer Centered Text */
 .auth-footer-center {
   text-align: center;
@@ -796,9 +764,6 @@ body>div:first-of-type,
   text-decoration: underline;
 }
 
-.auth-footer-text a:hover {
-  text-decoration: underline;
-}
 
 /* Sign Out Confirmation Modal Card & Overlay */
 #signout-modal {
