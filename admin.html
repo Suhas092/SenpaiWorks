@@ -656,29 +656,24 @@
                   <option value="Resolved">Resolved</option>
                   <option value="Flagged">Flagged</option>
                 </select>
-                <select id="feedback-sort-select" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="highest_rating">Highest Rating</option>
-                  <option value="lowest_rating">Lowest Rating</option>
-                </select>
               </div>
             </div>
             <div class="table-responsive">
               <div id="feedback-bulk-actions" style="display: none; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; margin-bottom: 16px; align-items: center; gap: 12px;">
                 <span id="feedback-bulk-count" style="font-weight: 600; color: #f8fafc; font-size: 0.9rem;">0 selected</span>
+                <button type="button" onclick="bulkMarkAsReviewedFeedback()" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-check"></i> Mark as Reviewed</button>
                 <button type="button" onclick="bulkDeleteFeedback()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-trash"></i> Bulk Delete</button>
               </div>
               <table class="admin-table" id="feedback-admin-table">
                 <thead>
                   <tr>
                     <th style="width: 40px; text-align: center;"><input type="checkbox" id="feedback-select-all" onchange="toggleAllFeedback(this)"></th>
-                    <th>User</th>
-                    <th>Rating</th>
+                    <th style="cursor: pointer;" onclick="toggleFeedbackSort('author')">User <i class="fa-solid fa-sort" id="sort-icon-author"></i></th>
+                    <th style="cursor: pointer;" onclick="toggleFeedbackSort('rating')">Rating <i class="fa-solid fa-sort" id="sort-icon-rating"></i></th>
                     <th>Review Content</th>
                     <th>Category</th>
                     <th>Status</th>
-                    <th>Date</th>
+                    <th style="cursor: pointer;" onclick="toggleFeedbackSort('date')">Date <i class="fa-solid fa-sort" id="sort-icon-date"></i></th>
                     <th>Actions</th>
                   </tr>
                 </thead>

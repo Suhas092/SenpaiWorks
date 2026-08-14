@@ -78,10 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initFilterBar();
   initTableSearch();
-  
-  const sortSelect = document.getElementById("feedback-sort-select");
-  if (sortSelect) sortSelect.addEventListener("change", () => { feedbackCurrentPage = 1; loadCommunityReviews(); });
-  
   const searchInput = document.getElementById("feedback-search-input");
   if (searchInput) searchInput.addEventListener("input", () => { feedbackCurrentPage = 1; loadCommunityReviews(); });
   
@@ -2610,8 +2606,11 @@ window.deleteAdminPollSuggestion = function (pollId) {
   loadDesignPollSuggestions();
 };
 
-async function loadCommunityReviews() {
-  const tbody = document.getElementById("community-list-body");
+window.feedbackSortCol = 'date';
+window.feedbackSortDir = 'desc';
+
+window.loadCommunityReviews = async function () {
+  const tbody = document.getElementById("community-reviews-list");
   const feedbackTbody = document.getElementById("customer-feedback-list-body");
   const feedbackAdminTbody = document.getElementById("feedback-admin-list-body");
   const countBadge = document.getElementById("admin-comm-reviews-count");
@@ -2676,22 +2675,36 @@ async function loadCommunityReviews() {
     allReviews = allReviews.filter(r => (r.status || 'Pending') === statusFilter.value);
   }
 
-  const sortSelect = document.getElementById("feedback-sort-select");
-  if (sortSelect) {
-    const sortBy = sortSelect.value;
-    allReviews.sort((a, b) => {
-      if (sortBy === "newest") {
-        return new Date(b.date || 0) - new Date(a.date || 0);
-      } else if (sortBy === "oldest") {
-        return new Date(a.date || 0) - new Date(b.date || 0);
-      } else if (sortBy === "highest_rating") {
-        return (b.rating || 0) - (a.rating || 0);
-      } else if (sortBy === "lowest_rating") {
-        return (a.rating || 0) - (b.rating || 0);
+  const cols = ['author', 'rating', 'date'];
+  cols.forEach(col => {
+    const icon = document.getElementById(`sort-icon-${col}`);
+    if (icon) {
+      icon.className = 'fa-solid fa-sort'; // reset all
+      if (col === window.feedbackSortCol) {
+        icon.className = window.feedbackSortDir === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
       }
-      return 0;
-    });
-  }
+    }
+  });
+
+  allReviews.sort((a, b) => {
+    let valA = a[window.feedbackSortCol];
+    let valB = b[window.feedbackSortCol];
+
+    if (window.feedbackSortCol === 'date') {
+      valA = new Date(valA || 0).getTime();
+      valB = new Date(valB || 0).getTime();
+    } else if (window.feedbackSortCol === 'rating') {
+      valA = a.rating || 0;
+      valB = b.rating || 0;
+    } else if (window.feedbackSortCol === 'author') {
+      valA = (a.author || a.user || 'Anonymous').toLowerCase();
+      valB = (b.author || b.user || 'Anonymous').toLowerCase();
+    }
+
+    if (valA < valB) return window.feedbackSortDir === 'asc' ? -1 : 1;
+    if (valA > valB) return window.feedbackSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   if (countBadge) countBadge.textContent = allReviews.length;
   if (feedbackCountBadge) feedbackCountBadge.textContent = allReviews.length;
@@ -2783,6 +2796,16 @@ window.deleteAdminCommunityReview = async function (reviewId) {
   loadCommunityReviews();
 };
 
+window.toggleFeedbackSort = function(col) {
+  if (window.feedbackSortCol === col) {
+    window.feedbackSortDir = window.feedbackSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    window.feedbackSortCol = col;
+    window.feedbackSortDir = 'asc';
+  }
+  loadCommunityReviews();
+};
+
 window.feedbackChangePage = function(delta) {
   window.feedbackCurrentPage = (window.feedbackCurrentPage || 1) + delta;
   loadCommunityReviews();
@@ -2807,6 +2830,30 @@ window.updateBulkActionState = function() {
       bulkBar.style.display = "none";
     }
   }
+};
+
+window.bulkMarkAsReviewedFeedback = function() {
+  const checkboxes = document.querySelectorAll(".feedback-row-checkbox:checked");
+  if (checkboxes.length === 0) return;
+  if (!confirm(`Are you sure you want to mark ${checkboxes.length} selected feedbacks as Reviewed?`)) return;
+
+  const idsToUpdate = Array.from(checkboxes).map(cb => cb.value);
+  try {
+    let reviewsList = JSON.parse(localStorage.getItem("userReviews") || localStorage.getItem("user_reviews") || "[]");
+    reviewsList = reviewsList.map(r => {
+      if (idsToUpdate.includes(r.id)) {
+        r.status = "Reviewed";
+      }
+      return r;
+    });
+    localStorage.setItem("userReviews", JSON.stringify(reviewsList));
+    localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
+  } catch (e) {}
+
+  if (typeof showAdminToast === 'function') showAdminToast(`${checkboxes.length} reviews marked as Reviewed.`, "success");
+  document.getElementById("feedback-select-all").checked = false;
+  updateBulkActionState();
+  loadCommunityReviews();
 };
 
 window.bulkDeleteFeedback = function() {
