@@ -46,6 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function getCart() {
+  const single = sessionStorage.getItem("checkoutSingleItem");
+  if (single) {
+    return [JSON.parse(single)];
+  }
   const cart = localStorage.getItem("shoppingCart");
   return cart ? JSON.parse(cart) : [];
 }
@@ -64,8 +68,70 @@ function initCheckoutPage() {
     return;
   }
 
+  // Check if cart contains donation items (No delivery address required for donations!)
+  const isDonationMode = cartData.some(i => i && i.isDonation);
+  const deliveryCardBox = document.getElementById("delivery-address-card-box");
+  const codOptionCard = document.getElementById("pay-card-cod");
+  const submitBtn = document.getElementById("chk-submit-btn");
+  const rightSummaryCol = document.getElementById("chk-right-summary-col");
+  const donationSummaryBar = document.getElementById("donation-summary-bar");
+  const layoutGrid = document.querySelector(".chk-layout-grid");
+  const promoBox = document.querySelector(".chk-discount-box");
+  const promoMsg = document.getElementById("promo-message");
+  const cartHeaderLink = document.querySelector(".chk-header-cart-link");
+  const newsOptinWrap = document.getElementById("chk-news-optin")?.closest(".chk-checkbox-wrap");
+
+  if (isDonationMode) {
+    // Hide delivery address, COD, order summary sidebar, promo code, cart link
+    if (deliveryCardBox) deliveryCardBox.style.display = "none";
+    if (codOptionCard) codOptionCard.style.display = "none";
+    if (rightSummaryCol) rightSummaryCol.style.display = "none";
+    if (promoBox) promoBox.style.display = "none";
+    if (promoMsg) promoMsg.style.display = "none";
+    if (cartHeaderLink) cartHeaderLink.style.display = "none";
+    if (newsOptinWrap) newsOptinWrap.style.display = "none";
+
+    // Make layout full-width single column
+    if (layoutGrid) layoutGrid.classList.add("donation-mode-layout");
+
+    // Show donation summary bar
+    if (donationSummaryBar) donationSummaryBar.style.display = "block";
+
+    const donationObj = cartData.find(i => i && i.isDonation);
+    if (donationObj) {
+      if (donationObj.donorEmail) {
+        const emailInput = document.getElementById("chk-email");
+        if (emailInput && !emailInput.value) emailInput.value = donationObj.donorEmail;
+      }
+      if (donationObj.donorName) {
+        const donorNameInput = document.getElementById("chk-donor-name");
+        if (donorNameInput && !donorNameInput.value) donorNameInput.value = donationObj.donorName;
+      }
+
+      // Populate donation summary bar with amount and currency conversion
+      populateDonationSummaryBar(donationObj);
+    }
+
+    // Update submit button
+    if (submitBtn) {
+      submitBtn.innerHTML = `<i class="fa-solid fa-heart"></i> Donate`;
+      submitBtn.classList.add("donate-btn");
+    }
+
+    // Update page title
+    document.title = "Donate — SenpaiWorks Community Support";
+    const headerTitle = document.querySelector(".chk-secure-txt");
+    if (headerTitle) headerTitle.textContent = "Secure Donation";
+
+  } else {
+    if (deliveryCardBox) deliveryCardBox.style.display = "block";
+    if (codOptionCard) codOptionCard.style.display = "block";
+    if (rightSummaryCol) rightSummaryCol.style.display = "";
+    if (donationSummaryBar) donationSummaryBar.style.display = "none";
+  }
+
   // Populate State dropdown dynamically for default country
-  onCountryChange();
+  if (!isDonationMode) onCountryChange();
 
   // Check logged-in user state & load saved address
   const currentUser = getCurrentUser();
@@ -74,7 +140,7 @@ function initCheckoutPage() {
 
   if (currentUser) {
     const emailInput = document.getElementById("chk-email");
-    if (emailInput && currentUser.email) emailInput.value = currentUser.email;
+    if (emailInput && currentUser.email && !emailInput.value) emailInput.value = currentUser.email;
 
     if (signinTrigger) signinTrigger.style.display = "none";
     if (loggedInBadge) {
@@ -97,15 +163,82 @@ function initCheckoutPage() {
   }
 
   // Load Saved Address selector if available
-  loadSavedAddressCard();
+  if (!isDonationMode) {
+    loadSavedAddressCard();
+  }
 
-  renderSummaryItems();
-  updateSummaryTotals();
+  if (!isDonationMode) {
+    renderSummaryItems();
+    updateSummaryTotals();
+  }
   initPaymentSelection();
 }
 
+// Donation Summary Bar — Currency Conversion Display
+const USD_TO_INR = 85;
+
+function populateDonationSummaryBar(donationObj) {
+  const amount = donationObj.originalAmount || donationObj.price || 0;
+  const currency = donationObj.currency || "USD";
+
+  let amountInINR, amountInUSD;
+  if (currency === "USD") {
+    amountInUSD = amount;
+    amountInINR = Math.round(amount * USD_TO_INR * 100) / 100;
+  } else {
+    amountInINR = amount;
+    amountInUSD = Math.round((amount / USD_TO_INR) * 100) / 100;
+  }
+
+  const pillINR = document.getElementById("donate-pill-inr-val");
+  const pillUSD = document.getElementById("donate-pill-usd-val");
+  const lineAmount = document.getElementById("donate-line-amount");
+  const conversionRate = document.getElementById("donate-conversion-rate");
+  const pillINRBtn = document.getElementById("donate-pill-inr");
+  const pillUSDBtn = document.getElementById("donate-pill-usd");
+
+  if (pillINR) pillINR.textContent = `₹${amountInINR.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (pillUSD) pillUSD.textContent = `$${amountInUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (conversionRate) conversionRate.textContent = `1 USD = ${USD_TO_INR} INR (includes conversion)`;
+
+  // Set active pill based on original currency
+  if (currency === "INR") {
+    if (pillINRBtn) pillINRBtn.classList.add("active");
+    if (pillUSDBtn) pillUSDBtn.classList.remove("active");
+    if (lineAmount) lineAmount.textContent = `₹${amountInINR.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  } else {
+    if (pillUSDBtn) pillUSDBtn.classList.add("active");
+    if (pillINRBtn) pillINRBtn.classList.remove("active");
+    if (lineAmount) lineAmount.textContent = `$${amountInUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+
+  // Store amounts for switchDonateCurrency
+  window._donateAmountINR = amountInINR;
+  window._donateAmountUSD = amountInUSD;
+}
+
+window.switchDonateCurrency = function (curr) {
+  const pillINRBtn = document.getElementById("donate-pill-inr");
+  const pillUSDBtn = document.getElementById("donate-pill-usd");
+  const lineAmount = document.getElementById("donate-line-amount");
+
+  if (curr === "INR") {
+    if (pillINRBtn) pillINRBtn.classList.add("active");
+    if (pillUSDBtn) pillUSDBtn.classList.remove("active");
+    if (lineAmount && window._donateAmountINR) {
+      lineAmount.textContent = `₹${window._donateAmountINR.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+  } else {
+    if (pillUSDBtn) pillUSDBtn.classList.add("active");
+    if (pillINRBtn) pillINRBtn.classList.remove("active");
+    if (lineAmount && window._donateAmountUSD) {
+      lineAmount.textContent = `$${window._donateAmountUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+  }
+};
+
 // 1. DYNAMIC COUNTRY & STATE DROPDOWN HANDLER
-window.onCountryChange = function() {
+window.onCountryChange = function () {
   const countrySelect = document.getElementById("chk-country");
   const stateSelect = document.getElementById("chk-state");
   if (!countrySelect || !stateSelect) return;
@@ -122,15 +255,14 @@ window.onCountryChange = function() {
 };
 
 // 2. SAVED DELIVERY ADDRESS CARD & CONDITIONAL FORM VISIBILITY
-function getSavedAddress() {
-  const saved = localStorage.getItem("savedUserAddress");
-  if (saved) return JSON.parse(saved);
+let selectedSavedAddressId = null;
 
-  const currentUser = getCurrentUser();
-  if (currentUser && currentUser.address) {
-    return currentUser.address;
-  }
-  return null;
+function getSavedAddressesList() {
+  let addrs = [];
+  try {
+    addrs = JSON.parse(localStorage.getItem("savedUserAddresses")) || [];
+  } catch (e) { addrs = []; }
+  return addrs;
 }
 
 function loadSavedAddressCard() {
@@ -138,69 +270,85 @@ function loadSavedAddressCard() {
   const manualFormGroup = document.getElementById("manual-address-form-group");
   if (!container) return;
 
-  const addr = getSavedAddress();
-  if (!addr) {
+  const addrs = getSavedAddressesList();
+  if (addrs.length === 0) {
     container.innerHTML = "";
     isUsingSavedAddress = false;
     if (manualFormGroup) manualFormGroup.style.display = "block";
     return;
   }
 
-  // By default when saved address exists, use saved address and hide manual form
-  isUsingSavedAddress = true;
-  if (manualFormGroup) manualFormGroup.style.display = "none";
+  // 1. Get ONLY the Default Address (or first saved address if no default is flagged)
+  const defaultAddr = addrs.find(a => a.isDefault) || addrs[0];
+  selectedSavedAddressId = defaultAddr.id;
 
-  container.innerHTML = `
-    <div class="saved-address-selector-card active" id="saved-addr-card-elem">
-      <div class="saved-addr-badge"><i class="fa-solid fa-circle-check" style="color: #059669;"></i> Using Saved Delivery Address</div>
-      <div class="saved-addr-details">
-        <strong>${addr.firstName} ${addr.lastName}</strong><br>
-        <span>${addr.address}${addr.apartment ? ', ' + addr.apartment : ''}, ${addr.city}, ${addr.state} ${addr.pincode}</span><br>
-        <span style="color: #64748b;">Phone: ${addr.phone}</span>
+  if (isUsingSavedAddress) {
+    if (manualFormGroup) manualFormGroup.style.display = "none";
+  } else {
+    if (manualFormGroup) manualFormGroup.style.display = "block";
+  }
+
+  let html = `
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+      <div class="saved-address-selector-card ${isUsingSavedAddress ? 'active' : ''}" id="saved-card-${defaultAddr.id}" onclick="window.useSavedAddressMode('${defaultAddr.id}')" style="border: 2px solid ${isUsingSavedAddress ? '#0284c7' : '#cbd5e1'}; background: ${isUsingSavedAddress ? 'rgba(14, 165, 233, 0.04)' : '#ffffff'}; padding: 14px 16px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+          <div style="display: flex; align-items: flex-start; gap: 10px;">
+            <input type="radio" name="chk_saved_addr_radio" ${isUsingSavedAddress ? 'checked' : ''} style="margin-top: 4px; accent-color: #0284c7; width: 18px; height: 18px; cursor: pointer;">
+            <div>
+              <div style="font-weight: 800; color: #0f172a; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                ${defaultAddr.fullName}
+                <span style="background: #e0f2fe; color: #0284c7; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">Default</span>
+              </div>
+              <div style="font-size: 0.88rem; color: #475569; margin-top: 4px; line-height: 1.4;">
+                ${defaultAddr.flat}, ${defaultAddr.street}${defaultAddr.landmark ? ', ' + defaultAddr.landmark : ''}, ${defaultAddr.city ? defaultAddr.city.toUpperCase() : ''}, ${defaultAddr.state ? defaultAddr.state.toUpperCase() : ''} ${defaultAddr.pincode}, ${defaultAddr.country}
+              </div>
+              <div style="font-size: 0.82rem; color: #64748b; margin-top: 4px; font-weight: 600;">Phone number: ${defaultAddr.phone}</div>
+            </div>
+          </div>
+          ${isUsingSavedAddress ? '<i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 1.2rem;"></i>' : ''}
+        </div>
       </div>
-      <div class="saved-addr-actions">
-        <button type="button" class="btn-use-saved-addr active" id="btn-toggle-saved" onclick="useSavedAddressMode()">
-          <i class="fa-solid fa-check"></i> Delivered to Saved Address
+
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px; flex-wrap: wrap; gap: 8px;">
+        <button type="button" class="btn-clear-addr" onclick="window.useManualAddressMode()" style="background: ${!isUsingSavedAddress ? '#0f172a' : '#ffffff'}; border: 1.5px solid ${!isUsingSavedAddress ? '#0f172a' : '#0284c7'}; color: ${!isUsingSavedAddress ? '#ffffff' : '#0284c7'}; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: all 0.2s ease;">
+          + Deliver to a different address
         </button>
-        <button type="button" class="btn-clear-addr" id="btn-toggle-manual" onclick="useManualAddressMode()">
-          + Enter Different Address
-        </button>
+        <a href="profile.html#addresses" style="font-weight: 700; font-size: 0.85rem; color: #0284c7; text-decoration: underline;">Manage Saved Addresses</a>
       </div>
-    </div>
-  `;
+    </div>`;
+
+  container.innerHTML = html;
 }
 
-window.useSavedAddressMode = function() {
+window.selectCheckoutAddress = function (id) {
+  selectedSavedAddressId = id;
   isUsingSavedAddress = true;
+
   const manualFormGroup = document.getElementById("manual-address-form-group");
   if (manualFormGroup) manualFormGroup.style.display = "none";
 
-  const btnSaved = document.getElementById("btn-toggle-saved");
-  const btnManual = document.getElementById("btn-toggle-manual");
-  if (btnSaved) {
-    btnSaved.className = "btn-use-saved-addr active";
-    btnSaved.innerHTML = `<i class="fa-solid fa-check"></i> Delivered to Saved Address`;
-  }
-  if (btnManual) btnManual.className = "btn-clear-addr";
+  loadSavedAddressCard();
 };
 
-window.useManualAddressMode = function() {
+window.useSavedAddressMode = function (id) {
+  isUsingSavedAddress = true;
+  if (id) selectedSavedAddressId = id;
+  const manualFormGroup = document.getElementById("manual-address-form-group");
+  if (manualFormGroup) manualFormGroup.style.display = "none";
+
+  loadSavedAddressCard();
+};
+
+window.useManualAddressMode = function () {
   isUsingSavedAddress = false;
   const manualFormGroup = document.getElementById("manual-address-form-group");
   if (manualFormGroup) manualFormGroup.style.display = "block";
 
-  const btnSaved = document.getElementById("btn-toggle-saved");
-  const btnManual = document.getElementById("btn-toggle-manual");
-  if (btnSaved) {
-    btnSaved.className = "btn-use-saved-addr outline";
-    btnSaved.innerHTML = `Use Saved Address`;
-  }
-  if (btnManual) btnManual.className = "btn-clear-addr active";
-
+  loadSavedAddressCard();
   clearAddressFields();
 };
 
-window.clearAddressFields = function() {
+window.clearAddressFields = function () {
   const fields = ["chk-first-name", "chk-last-name", "chk-address", "chk-apartment", "chk-city", "chk-pincode", "chk-phone"];
   fields.forEach(id => {
     const el = document.getElementById(id);
@@ -208,8 +356,106 @@ window.clearAddressFields = function() {
   });
 };
 
+window.autofillCheckoutLocation = function (e) {
+  const evt = e || window.event;
+  const btn = evt ? (evt.target ? evt.target.closest("button") : null) : null;
+  const originalHtml = btn ? btn.innerHTML : '<i class="fa-solid fa-crosshairs"></i> Autofill';
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Detecting location...';
+  }
+
+  function applyCheckoutLoc(city, state, pincode, street, countryCode) {
+    const cityEl = document.getElementById("chk-city");
+    const stateEl = document.getElementById("chk-state");
+    const pinEl = document.getElementById("chk-pincode");
+    const addrEl = document.getElementById("chk-address");
+    const countryEl = document.getElementById("chk-country");
+
+    if (cityEl && city) cityEl.value = city;
+    if (pinEl && pincode) pinEl.value = pincode;
+    if (addrEl && street && !addrEl.value) addrEl.value = street;
+
+    if (countryEl && countryCode) {
+      countryEl.value = countryCode;
+      window.onCountryChange();
+    }
+
+    if (stateEl && state) {
+      for (let i = 0; i < stateEl.options.length; i++) {
+        if (stateEl.options[i].value.toLowerCase() === state.toLowerCase()) {
+          stateEl.selectedIndex = i;
+          break;
+        }
+      }
+    }
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Location Autofilled!';
+      setTimeout(() => { btn.innerHTML = originalHtml; }, 2500);
+    }
+  }
+
+  async function fetchCoords(lat, lon) {
+    try {
+      const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+      if (res.ok) {
+        const data = await res.json();
+        const city = data.city || data.locality || data.principalSubdivision || "Mysuru";
+        const state = data.principalSubdivision || "Karnataka";
+        const pincode = data.postcode ? data.postcode.replace(/\D/g, "").slice(0, 6) : "570016";
+        const street = data.localityInfo && data.localityInfo.informative ? data.localityInfo.informative[0].name : "";
+        const countryCode = data.countryCode || "IN";
+
+        applyCheckoutLoc(city, state, pincode, street, countryCode);
+        return true;
+      }
+    } catch (err) {
+      console.warn("BigDataCloud checkout lookup error:", err);
+    }
+    return false;
+  }
+
+  async function fetchIp() {
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      if (res.ok) {
+        const data = await res.json();
+        const city = data.city || "Mysuru";
+        const state = data.region || "Karnataka";
+        const pincode = data.postal ? data.postal.replace(/\D/g, "").slice(0, 6) : "570016";
+        const countryCode = data.country_code || "IN";
+
+        applyCheckoutLoc(city, state, pincode, "", countryCode);
+        return true;
+      }
+    } catch (err) {
+      console.warn("IP lookup error:", err);
+    }
+    return false;
+  }
+
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const ok = await fetchCoords(pos.coords.latitude, pos.coords.longitude);
+        if (!ok) await fetchIp();
+      },
+      async (err) => {
+        const ok = await fetchIp();
+        if (!ok) applyCheckoutLoc("Mysuru", "Karnataka", "570016", "", "IN");
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+  } else {
+    fetchIp();
+  }
+};
+
 // 3. SECURE CHECKOUT TOOLTIP HANDLER
-window.toggleSecureCheckoutTooltip = function(e) {
+window.toggleSecureCheckoutTooltip = function (e) {
   if (e) e.stopPropagation();
   const tooltip = document.getElementById("secure-checkout-tooltip");
   if (tooltip) {
@@ -217,7 +463,7 @@ window.toggleSecureCheckoutTooltip = function(e) {
   }
 };
 
-window.closeSecureCheckoutTooltip = function(e) {
+window.closeSecureCheckoutTooltip = function (e) {
   if (e) e.stopPropagation();
   const tooltip = document.getElementById("secure-checkout-tooltip");
   if (tooltip) {
@@ -225,7 +471,7 @@ window.closeSecureCheckoutTooltip = function(e) {
   }
 };
 
-window.toggleMobileSummaryList = function() {
+window.toggleMobileSummaryList = function () {
   if (window.innerWidth > 900) return;
   const itemsList = document.getElementById("summary-items-list");
   const promoBox = document.querySelector(".chk-discount-box");
@@ -294,7 +540,7 @@ function renderSummaryItems() {
   summaryList.innerHTML = html;
 }
 
-window.removeCheckoutItem = function(index) {
+window.removeCheckoutItem = function (index) {
   cartData.splice(index, 1);
   localStorage.setItem("shoppingCart", JSON.stringify(cartData));
 
@@ -330,7 +576,7 @@ function updateSummaryTotals() {
 }
 
 // 7. APPLY PROMO CODE (SENPAI100 or SENPAI25)
-window.applyPromoCode = function() {
+window.applyPromoCode = function () {
   const input = document.getElementById("chk-promo-input");
   const msgEl = document.getElementById("promo-message");
   if (!input) return;
@@ -388,12 +634,12 @@ function initPaymentSelection() {
   });
 }
 
-window.selectPayOption = function(method) {
+window.selectPayOption = function (method) {
   selectedPaymentMethod = method;
 };
 
 // 9. CHECKOUT FORM SUBMISSION & VALIDATION
-window.handleCheckoutSubmit = function(e) {
+window.handleCheckoutSubmit = function (e) {
   if (e) e.preventDefault();
 
   const email = document.getElementById("chk-email").value.trim();
@@ -404,8 +650,42 @@ window.handleCheckoutSubmit = function(e) {
 
   let finalAddressObj = null;
 
-  if (isUsingSavedAddress) {
-    finalAddressObj = getSavedAddress();
+  const isDonationMode = cartData.some(i => i && i.isDonation);
+
+  if (isDonationMode) {
+    const donorNameInput = document.getElementById("chk-donor-name");
+    const donorNameVal = donorNameInput ? donorNameInput.value.trim() : "";
+    const donationObj = cartData.find(i => i && i.isDonation) || {};
+    const finalName = donorNameVal || donationObj.donorName || "Community Supporter";
+
+    finalAddressObj = {
+      firstName: finalName,
+      lastName: "",
+      address: "Online Community Donation",
+      apartment: "",
+      city: "Digital",
+      country: "IN",
+      state: "Online",
+      pincode: "000000",
+      phone: ""
+    };
+  } else if (isUsingSavedAddress) {
+    const addrs = getSavedAddressesList();
+    const target = addrs.find(a => a.id === selectedSavedAddressId) || addrs[0];
+    if (target) {
+      const nameParts = (target.fullName || "").trim().split(" ");
+      finalAddressObj = {
+        firstName: nameParts[0] || "Collector",
+        lastName: nameParts.slice(1).join(" ") || "",
+        address: `${target.flat}, ${target.street}`,
+        apartment: target.landmark || "",
+        city: target.city,
+        country: target.country,
+        state: target.state,
+        pincode: target.pincode,
+        phone: target.phone
+      };
+    }
   } else {
     const firstName = document.getElementById("chk-first-name").value.trim();
     const lastName = document.getElementById("chk-last-name").value.trim();
@@ -492,7 +772,7 @@ function triggerRazorpaySDKPayment(orderData) {
         name: "SenpaiWorks Studio",
         description: `Order ${orderData.orderId} - Official Merchandise & Assets`,
         image: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
-        handler: function(response) {
+        handler: function (response) {
           processVerifiedOrderSuccess({
             ...orderData,
             paymentId: response.razorpay_payment_id || ("pay_" + Math.random().toString(36).substring(2, 10)),
@@ -529,13 +809,35 @@ function openRazorpayModal() {
   if (rzpModal) rzpModal.classList.add("active");
 }
 
-window.closeRazorpayModal = function() {
+window.closeRazorpayModal = function () {
   const rzpModal = document.getElementById("razorpay-checkout-modal");
   if (rzpModal) rzpModal.classList.remove("active");
 };
 
 function processVerifiedOrderSuccess(orderData) {
   const currentUser = getCurrentUser() || { username: orderData.address ? orderData.address.firstName : "Collector", email: orderData.email };
+
+  // Sync donation records to backend if order contains a donation item
+  if (orderData.items && orderData.items.length > 0) {
+    const donationItem = orderData.items.find(i => i && i.isDonation);
+    if (donationItem) {
+      try {
+        fetch("/api/donate/process", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            donorName: donationItem.donorName || (orderData.address ? orderData.address.firstName : "Community Supporter"),
+            donorEmail: donationItem.donorEmail || orderData.email || "",
+            amount: donationItem.originalAmount || donationItem.price || 1,
+            currency: donationItem.currency || "USD",
+            paymentMethod: orderData.paymentType || "store_checkout",
+            paymentDetails: { paymentId: orderData.paymentId, orderId: orderData.orderId },
+            message: donationItem.donorMessage || ""
+          })
+        }).catch(e => console.warn("Donation API background sync error:", e));
+      } catch (e) { }
+    }
+  }
 
   // Record discount usage if SENPAI100 was applied
   if (flatDiscountAmount === 100) {
@@ -557,14 +859,29 @@ function processVerifiedOrderSuccess(orderData) {
   // Store latest order for receipt display
   localStorage.setItem("latestOrder", JSON.stringify(orderData));
 
-  // Clear shopping cart
-  localStorage.removeItem("shoppingCart");
+  // Clear shopping cart or just the checked out single item
+  const singleStr = sessionStorage.getItem("checkoutSingleItem");
+  if (singleStr) {
+    let singleItem = JSON.parse(singleStr);
+    let fullCart = localStorage.getItem("shoppingCart");
+    if (fullCart) {
+      let cart = JSON.parse(fullCart);
+      const existingIdx = cart.findIndex(c => c.id === singleItem.id && c.variant === singleItem.variant);
+      if (existingIdx > -1) {
+        cart.splice(existingIdx, 1);
+        localStorage.setItem("shoppingCart", JSON.stringify(cart));
+      }
+    }
+    sessionStorage.removeItem("checkoutSingleItem");
+  } else {
+    localStorage.removeItem("shoppingCart");
+  }
 
   // Redirect to Order Confirmation Page
   window.location.href = `order-confirmation.html?orderId=${orderData.orderId}`;
 }
 
-window.processTestPayment = function(paymentType) {
+window.processTestPayment = function (paymentType) {
   const pending = window.pendingRazorpayOrder;
   const email = document.getElementById("chk-email") ? document.getElementById("chk-email").value.trim() : "collector@senpaiworks.com";
   const address = getSavedAddress() || { firstName: "Guest", lastName: "Collector", city: "Bengaluru", state: "Karnataka" };

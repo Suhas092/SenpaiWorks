@@ -2,6 +2,7 @@
 <div class="header-container">
   <div id="drawer-container"></div>
   <script src="scripts/drawer.js"></script>
+  <script src="scripts/lazy-load.js" defer></script>
 
   <!-- Main Header Row with Background Announcement Ticker -->
   <div class="header-row">
@@ -21,8 +22,8 @@
     </div>
 
     <!-- Left Logo (SenpaiWorks logo from assets folder) -->
-    <img src="assets/SenpaiWorks logo.png" 
-         alt="SenpaiWorks Logo" class="left-logo" id="logo-button" title="Open Drawer" />
+    <img src="assets/SenpaiWorks logo.png" alt="SenpaiWorks Logo" class="left-logo" id="logo-button"
+      title="Open Drawer" />
 
     <!-- Centered Marvel-Style Logo (Links to index.html) -->
     <div class="logo-wrapper">
@@ -36,39 +37,87 @@
     <!-- Right Header Controls -->
     <div class="header-controls">
       <!-- Search Button -->
-      <button class="header-control-btn" id="nav-search-btn" onclick="window.location.href='search.html'" title="Search">
+      <button class="header-control-btn" id="nav-search-btn" onclick="window.location.href='search.html'"
+        title="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
-      
+
+      <!-- Notifications Button -->
+      <div style="position: relative; display: inline-block;">
+        <button class="header-control-btn" id="nav-notifications-btn" title="Notifications">
+          <i class="fa-regular fa-bell"></i>
+          <span class="notif-badge" id="notifications-badge" style="display: none;">0</span>
+        </button>
+        <!-- Notifications Dropdown -->
+        <div class="notifications-dropdown" id="notifications-dropdown" style="display: none; position: absolute; right: 0; top: 100%; width: 420px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; z-index: 100; overflow: hidden;">
+          <div style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 700; color: #0f172a; font-size: 1rem;">Notifications</span>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button id="notif-dropdown-mark-all-read" title="Mark all as read" style="background: transparent; border: none; cursor: pointer; color: #64748b; font-size: 1rem; padding: 4px 6px; border-radius: 6px; display: flex; align-items: center; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9';this.style.color='#0f172a'" onmouseout="this.style.background='transparent';this.style.color='#64748b'">
+                  <i class="fa-solid fa-check-double"></i>
+                </button>
+                <div style="position: relative;">
+                  <button id="notif-dropdown-settings-btn" title="Settings" style="background: transparent; border: none; cursor: pointer; color: #64748b; font-size: 1rem; padding: 4px 6px; border-radius: 6px; display: flex; align-items: center; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9';this.style.color='#0f172a'" onmouseout="this.style.background='transparent';this.style.color='#64748b'">
+                    <i class="fa-solid fa-gear"></i>
+                  </button>
+                  <div id="notif-dropdown-settings-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 4px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 180px; z-index: 200; overflow: hidden;">
+                    <button id="notif-dropdown-delete-all" style="width: 100%; text-align: left; padding: 10px 14px; background: transparent; border: none; cursor: pointer; font-size: 0.85rem; color: #ef4444; font-family: inherit; transition: background 0.15s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">
+                      Delete all notifications
+                    </button>
+                    <button id="notif-dropdown-turn-off" style="width: 100%; text-align: left; padding: 10px 14px; background: transparent; border: none; cursor: pointer; font-size: 0.85rem; color: #475569; font-family: inherit; transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                      Turn off notifications
+                    </button>
+                    <button id="notif-dropdown-turn-on" style="display:none; width: 100%; text-align: left; padding: 10px 14px; background: transparent; border: none; cursor: pointer; font-size: 0.85rem; color: #22c55e; font-family: inherit; transition: background 0.15s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='transparent'">
+                      Turn on notifications
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="notif-dropdown-category-counts" style="display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap;"></div>
+          </div>
+          <div id="notifications-dropdown-list">
+             <div style="padding: 20px; text-align: center; color: #64748b; font-size: 0.9rem;">
+               <i class="fa-regular fa-bell-slash" style="font-size: 2rem; margin-bottom: 10px; display: block; color: #cbd5e1;"></i>
+               You're all caught up.
+             </div>
+          </div>
+          <div style="padding: 10px 16px; border-top: 1px solid #e2e8f0; text-align: center;">
+            <a href="profile.html#notifications" style="font-size: 0.85rem; font-weight: 600; color: #3b82f6; text-decoration: none;">View all notifications →</a>
+          </div>
+        </div>
+      </div>
+
       <!-- Cart Button -->
-      <button class="header-control-btn" id="nav-cart-btn" onclick="window.location.href='cart.html'" title="Shopping Cart">
+      <button class="header-control-btn" id="nav-cart-btn" onclick="window.location.href='cart.html'"
+        title="Shopping Cart">
         <i class="fa-solid fa-cart-shopping"></i>
         <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
       </button>
-      
+
       <!-- Profile Button (Toggles Profile Card Dropdown) -->
       <button class="header-control-btn sign-in-btn" id="nav-auth-btn" title="Account / Profile">
         <i class="fa-regular fa-user" id="nav-auth-icon"></i>
+        <span class="auth-text" id="nav-auth-text">Sign In</span>
       </button>
 
       <!-- Profile Dropdown Card -->
       <div class="profile-dropdown-card" id="profile-dropdown-card">
         <div class="profile-dropdown-header">
           <div class="dropdown-avatar-wrap">
-            <img id="dropdown-user-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Avatar" class="dropdown-avatar">
+            <img id="dropdown-user-avatar"
+              src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+              alt="Avatar" class="dropdown-avatar">
           </div>
           <div class="dropdown-user-details">
             <div class="dropdown-username" id="dropdown-username">senpai</div>
             <div class="dropdown-email" id="dropdown-email">suhassenpai@gmail.com</div>
-            <div class="dropdown-joined">
-              <i class="fa-regular fa-calendar" style="color: #4d9dff; margin-right: 4px;"></i>
-              <span>Joined 21 days ago</span>
-            </div>
           </div>
         </div>
-        
+
         <hr class="dropdown-divider">
-        
+
         <nav class="dropdown-menu">
           <a href="profile.html#profile" class="dropdown-item" id="dropdown-profile-btn">
             <i class="fa-regular fa-user" style="font-size: 1rem; width: 20px;"></i>
@@ -76,7 +125,7 @@
           </a>
           <a href="profile.html#orders" class="dropdown-item" id="dropdown-orders-btn">
             <i class="fa-solid fa-box" style="font-size: 0.95rem; width: 20px;"></i>
-            <span>Returns & Orders</span>
+            <span>Replacements & Orders</span>
           </a>
           <a href="profile.html#feedback" class="dropdown-item" id="dropdown-feedback-btn">
             <i class="fa-regular fa-comment-dots" style="font-size: 0.95rem; width: 20px;"></i>
@@ -86,10 +135,26 @@
             <i class="fa-regular fa-bell" style="font-size: 0.95rem; width: 20px;"></i>
             <span>Notifications</span>
           </a>
+          <a href="profile.html#addresses" class="dropdown-item" id="dropdown-addresses-btn">
+            <i class="fa-solid fa-location-dot" style="font-size: 0.95rem; width: 20px;"></i>
+            <span>Saved Addresses</span>
+          </a>
+          <a href="profile.html#wishlist" class="dropdown-item" id="dropdown-wishlist-btn">
+            <i class="fa-solid fa-heart" style="font-size: 0.95rem; width: 20px;"></i>
+            <span>Wishlist & Saved</span>
+          </a>
+          <a href="profile.html#payments" class="dropdown-item" id="dropdown-payments-btn">
+            <i class="fa-solid fa-wallet" style="font-size: 0.95rem; width: 20px;"></i>
+            <span>Payments & Wallet</span>
+          </a>
+          <a href="profile.html#security" class="dropdown-item" id="dropdown-security-btn">
+            <i class="fa-solid fa-shield-halved" style="font-size: 0.95rem; width: 20px;"></i>
+            <span>Security & Privacy</span>
+          </a>
         </nav>
-        
+
         <hr class="dropdown-divider">
-        
+
         <button class="dropdown-signout-btn" id="dropdown-signout-btn">
           <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i>
           <span>Sign Out</span>
@@ -113,80 +178,151 @@
   </nav>
 </div>
 
+<!-- Google & Facebook OAuth SDKs -->
+<script>
+  // Paste your OAuth credentials below:
+  window.GOOGLE_CLIENT_ID = "681420178068-lpf5lcl98dfj560p9od15f7t12k4fcqa.apps.googleusercontent.com";
+  window.FB_APP_ID = "1043452911768475";
+
+  window.fbAsyncInit = function() {
+    if (window.FB_APP_ID) {
+      FB.init({
+        appId      : window.FB_APP_ID,
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v18.0'
+      });
+    }
+  };
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
 <!-- Reusable Authentication Modal -->
 <div id="auth-modal" class="auth-modal-overlay">
   <div class="auth-modal-container">
     <button class="auth-modal-close" id="auth-close-btn">&times;</button>
-    
+
+    <!-- Top Rounded Square Badge -->
+    <div class="auth-square-badge">
+      <i class="fa-solid fa-arrow-right-to-bracket"></i>
+    </div>
+
     <!-- Sign In Wrapper -->
     <div class="auth-form-container" id="signin-form-wrapper">
-      <h2>Sign In to SenpaiWorks</h2>
-      <p class="auth-subtitle">Existing Member? Sign in below. New to SenpaiWorks? <a href="#" id="show-signup-link-top" style="color:#4d9dff; font-weight:700;">Create an account</a></p>
-      
-      <!-- Social Sign-In Options -->
-      <div class="social-auth-options" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-        <button type="button" class="social-auth-btn google-btn" id="btn-google-login" style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-          <i class="fa-brands fa-google" style="color: #ea4335; font-size: 1.1rem;"></i> <span>Continue with Google</span>
-        </button>
-        <button type="button" class="social-auth-btn fb-btn" id="btn-fb-login" style="padding: 12px; border-radius: 8px; border: none; background: #1877f2; color: #ffffff; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-          <i class="fa-brands fa-facebook" style="font-size: 1.1rem;"></i> <span>Continue with Facebook</span>
-        </button>
-      </div>
-
-      <div style="display: flex; align-items: center; margin: 20px 0; color: #94a3b8; font-size: 0.85rem; font-weight: 700;">
-        <div style="flex: 1; height: 1px; background: #334155;"></div>
-        <span style="padding: 0 12px; text-transform: uppercase;">OR EMAIL LOGIN</span>
-        <div style="flex: 1; height: 1px; background: #334155;"></div>
-      </div>
+      <h2 class="auth-title-center">Sign in with email</h2>
+      <p class="auth-subtitle-center">Bring your digital art, 3D assets, and orders together. For free</p>
 
       <div id="signin-error" class="auth-error-msg" style="display: none;"></div>
-      
+
       <form id="signin-form">
-        <div class="form-group">
-          <label for="signin-email">Email or Username</label>
-          <input type="text" id="signin-email" placeholder="e.g. senpai@gmail.com" required>
+        <div class="input-icon-group">
+          <i class="fa-solid fa-envelope input-leading-icon"></i>
+          <input type="text" id="signin-email" placeholder="Email" required>
         </div>
-        <div class="form-group">
-          <label for="signin-password">Password</label>
-          <input type="password" id="signin-password" placeholder="••••••••" required>
+
+        <div class="input-icon-group">
+          <i class="fa-solid fa-lock input-leading-icon"></i>
+          <input type="password" id="signin-password" placeholder="Password" required>
+          <button type="button" class="toggle-password-btn" id="toggle-signin-pass" title="Toggle Password Visibility">
+            <i class="fa-regular fa-eye-slash"></i>
+          </button>
         </div>
-        <button type="submit" class="auth-submit-btn">Sign In</button>
+
+        <div class="auth-forgot-wrap">
+          <a href="#" class="forgot-password-link" id="forgot-password-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="auth-submit-pill">Get Started</button>
       </form>
-      
-      <div class="auth-footer-text">
-        Don't have an account? <a href="#" id="show-signup-link">Create Account</a>
+
+      <!-- Dotted Line Divider -->
+      <div class="auth-dotted-divider">
+        <span>Or sign in with</span>
+      </div>
+
+      <!-- Bottom Social Sign-In Buttons (Facebook Blue & Google Color) -->
+      <div class="social-auth-bottom-row">
+        <button type="button" class="social-auth-card fb-card" id="btn-fb-login" title="Sign in with Facebook">
+          <i class="fa-brands fa-facebook" style="color: #ffffff; font-size: 1.35rem;"></i>
+        </button>
+        <button type="button" class="social-auth-card google-card" id="btn-google-login" title="Sign in with Google">
+          <i class="fa-brands fa-google" style="color: #ea4335; font-size: 1.35rem;"></i>
+        </button>
+      </div>
+
+      <div class="auth-footer-center">
+        Don't have an account yet? <a href="#" id="show-signup-link">Sign up</a>
       </div>
     </div>
-    
+
     <!-- Sign Up Wrapper -->
     <div class="auth-form-container" id="signup-form-wrapper" style="display: none;">
-      <h2>Create Account</h2>
-      <p class="auth-subtitle">Join SenpaiWorks to purchase digital & physical products.</p>
-      
+      <h2 class="auth-title-center">Create account</h2>
+      <p class="auth-subtitle-center">Register a free SenpaiWorks account to start exploring.</p>
+
       <div id="signup-error" class="auth-error-msg" style="display: none;"></div>
-      
+
       <form id="signup-form">
-        <div class="form-group">
-          <label for="signup-username">Username</label>
-          <input type="text" id="signup-username" placeholder="e.g. senpai_fan" required>
+        <div class="input-icon-group">
+          <i class="fa-solid fa-user input-leading-icon"></i>
+          <input type="text" id="signup-username" placeholder="Username" required>
         </div>
-        <div class="form-group">
-          <label for="signup-email">Email Address</label>
-          <input type="email" id="signup-email" placeholder="name@example.com" required>
+
+        <div class="input-icon-group">
+          <i class="fa-solid fa-envelope input-leading-icon"></i>
+          <input type="email" id="signup-email" placeholder="Email" required>
         </div>
-        <div class="form-group">
-          <label for="signup-password">Password</label>
-          <input type="password" id="signup-password" placeholder="At least 6 characters" required minlength="6">
+
+        <div class="input-icon-group">
+          <i class="fa-solid fa-lock input-leading-icon"></i>
+          <input type="password" id="signup-password" placeholder="Password (Min 6 characters)" required minlength="6">
+          <button type="button" class="toggle-password-btn" id="toggle-signup-pass" title="Toggle Password Visibility">
+            <i class="fa-regular fa-eye-slash"></i>
+          </button>
         </div>
-        <button type="submit" class="auth-submit-btn">Create Account</button>
+
+        <button type="submit" class="auth-submit-pill">Get Started</button>
       </form>
-      
-      <div class="auth-footer-text">
-        Already have an account? <a href="#" id="show-signin-link">Sign In</a>
+
+      <!-- Dotted Line Divider -->
+      <div class="auth-dotted-divider">
+        <span>Or sign up with</span>
+      </div>
+
+      <!-- Bottom Social Sign-Up Buttons (Facebook Blue & Google Color) -->
+      <div class="social-auth-bottom-row">
+        <button type="button" class="social-auth-card fb-card" id="btn-fb-signup" title="Sign up with Facebook">
+          <i class="fa-brands fa-facebook" style="color: #ffffff; font-size: 1.35rem;"></i>
+        </button>
+        <button type="button" class="social-auth-card google-card" id="btn-google-signup" title="Sign up with Google">
+          <i class="fa-brands fa-google" style="color: #ea4335; font-size: 1.35rem;"></i>
+        </button>
+      </div>
+
+      <div class="auth-footer-center">
+        Already have an account? <a href="#" id="show-signin-link">Sign in</a>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Reusable Sign Out Confirmation Modal -->
+<div id="signout-modal" class="auth-modal-overlay">
+  <div class="signout-modal-container">
+    <div class="signout-icon-wrap">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    </div>
+    <h3 class="signout-title">Sign Out of SenpaiWorks?</h3>
+    <p class="signout-message">Are you sure you want to sign out? You will need to log in again to access your saved
+      orders and profile.</p>
+    <div class="signout-actions">
+      <button type="button" class="signout-btn-cancel" id="signout-cancel-btn">Cancel</button>
+      <button type="button" class="signout-btn-confirm" id="signout-confirm-btn">Sign Out</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- Mobile/Tablet Bottom Navigation Bar -->
 <link rel="stylesheet" href="mobile-navbar.css">

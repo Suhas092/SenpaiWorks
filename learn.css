@@ -535,6 +535,27 @@ body {
   line-height: 1.6;
 }
 
+.request-auth-notice {
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.3);
+  color: #0284c7;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.request-auth-notice a {
+  color: #0066cc;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .request-form {
   display: flex;
   flex-direction: column;

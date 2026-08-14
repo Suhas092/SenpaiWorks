@@ -58,6 +58,7 @@ body {
   width: 90px;
   height: 90px;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .account-avatar-wrap img {
@@ -68,34 +69,62 @@ body {
   border: 4px solid #ffffff;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   background: #1e293b;
+  transition: filter 0.2s ease;
 }
 
-.avatar-edit-overlay {
+.avatar-large-preview:hover img {
+  filter: brightness(0.95);
+}
+
+/* Translucent Full-Circle Hover Edit Overlay (Profile Tab Only) */
+.avatar-hover-edit-overlay {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  background: #0066cc;
-  color: #ffffff;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  border: 2px solid #ffffff;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: transform 0.2s ease, background 0.2s ease;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  box-sizing: border-box;
 }
 
-.avatar-edit-overlay:hover {
-  transform: scale(1.1);
-  background: #2563eb;
+.avatar-large-preview:hover .avatar-hover-edit-overlay {
+  opacity: 1;
+}
+
+.avatar-hover-edit-overlay span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.account-user-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
 }
 
 .user-meta-name-row {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  align-self: flex-start !important;
   gap: 10px;
   margin-bottom: 4px;
   flex-wrap: wrap;
@@ -107,6 +136,7 @@ body {
   margin: 0;
   letter-spacing: -0.5px;
   word-break: break-word;
+  text-align: left !important;
 }
 
 .user-tier-badge {
@@ -126,13 +156,18 @@ body {
 #acc-banner-email {
   color: #94a3b8;
   font-size: 0.9rem;
-  margin: 0 0 10px 0;
+  margin: 2px 0 8px 0 !important;
   word-break: break-all;
+  text-align: left !important;
+  align-self: flex-start !important;
+  display: block !important;
 }
 
 .account-quick-badges {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  align-self: flex-start !important;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -177,11 +212,11 @@ body {
 }
 
 .acc-btn-signout-hero {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
   padding: 10px 18px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 800;
@@ -189,23 +224,31 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .acc-btn-signout-hero:hover {
-  background: #ef4444;
-  color: #ffffff;
+  background: #f1f5f9;
+  color: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.3);
 }
 
 .signout-nav-btn {
   margin-top: 12px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #e2e8f0;
   padding-top: 12px;
+  background: #f8fafc;
+  color: #0f172a;
+  border-radius: 10px;
+  font-weight: 700;
 }
 
 .signout-nav-btn:hover {
-  background: #fef2f2 !important;
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
 }
 
 /* MAIN HUB LAYOUT GRID */
@@ -315,7 +358,7 @@ body {
 .nav-unread-dot {
   width: 8px;
   height: 8px;
-  background: #ef4444;
+  background: #3b82f6;
   border-radius: 50%;
   margin-left: auto;
   display: inline-block;
@@ -425,24 +468,46 @@ body {
 
 /* FORM STYLES */
 .profile-avatar-row {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 16px !important;
   padding-bottom: 20px;
   border-bottom: 1px solid #e2e8f0;
   margin-bottom: 24px;
-  flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
 }
 
+.avatar-large-preview {
+  position: relative !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
+
 .avatar-large-preview img {
-  width: 76px;
-  height: 76px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #e2e8f0;
   flex-shrink: 0;
+  display: block;
+}
+
+.avatar-controls {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  text-align: left !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 6px !important;
+  flex: none !important;
+  width: auto !important;
 }
 
 .btn-avatar-upload {
@@ -459,6 +524,8 @@ body {
   align-items: center;
   gap: 8px;
   transition: all 0.2s ease;
+  margin: 0 !important;
+  align-self: flex-start !important;
 }
 
 .btn-avatar-upload:hover {
@@ -468,7 +535,9 @@ body {
 .avatar-hint {
   font-size: 0.8rem;
   color: #64748b;
-  margin: 6px 0 0 0;
+  margin: 0 !important;
+  text-align: left !important;
+  align-self: flex-start !important;
 }
 
 .account-form-grid {
@@ -498,6 +567,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
+  text-align: left;
 }
 
 .form-group-item label {
@@ -506,11 +576,44 @@ body {
   font-weight: 800;
   color: #0f172a;
   margin-bottom: 6px;
+  text-align: left;
+}
+
+.phone-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.country-code-select {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  outline: none;
+  cursor: pointer;
+  height: 44px;
+  max-width: 170px;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  flex: none;
+}
+
+.country-code-select:focus {
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12);
 }
 
 .input-wrapper {
   position: relative;
   width: 100%;
+  flex: 1;
   box-sizing: border-box;
 }
 
@@ -520,6 +623,8 @@ body {
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .input-wrapper input {
@@ -532,6 +637,7 @@ body {
   font-size: 0.9rem;
   outline: none;
   box-sizing: border-box;
+  text-align: left;
   transition: border-color 0.2s ease;
 }
 
@@ -839,7 +945,8 @@ body {
 
 .wishlist-img {
   width: 100%;
-  height: 160px;
+  height: auto;
+  aspect-ratio: 3/4;
   object-fit: cover;
   background: #f8fafc;
 }
@@ -1074,14 +1181,27 @@ body {
   }
 
   .account-user-summary {
-    flex-direction: column !important;
+    flex-direction: row !important;
     align-items: center !important;
-    gap: 10px !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    gap: 16px !important;
     width: 100% !important;
   }
 
+  .account-user-meta {
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+
   .user-meta-name-row {
-    justify-content: center !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+
+  #acc-banner-email {
+    text-align: left !important;
+    align-self: flex-start !important;
   }
 
   .user-meta-name-row h1 {
@@ -1089,7 +1209,7 @@ body {
   }
 
   .account-quick-badges {
-    justify-content: center !important;
+    justify-content: flex-start !important;
     gap: 6px !important;
   }
 
@@ -1111,14 +1231,26 @@ body {
   }
 
   .profile-avatar-row {
-    flex-direction: column !important;
-    text-align: center !important;
+    flex-direction: row !important;
+    text-align: left !important;
     align-items: center !important;
-    gap: 12px !important;
+    justify-content: flex-start !important;
+    gap: 16px !important;
+  }
+
+  .avatar-controls {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+    width: auto !important;
   }
 
   .avatar-hint {
-    text-align: center !important;
+    text-align: left !important;
   }
 
   .form-row-2 {
@@ -1139,10 +1271,15 @@ body {
     justify-content: center !important;
   }
 
-  .addresses-grid-wrap,
-  .wishlist-grid {
+  .addresses-grid-wrap {
     grid-template-columns: 1fr !important;
     width: 100% !important;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    width: 100% !important;
+    gap: 8px !important;
   }
 
   .wallet-balance-card {
@@ -1178,4 +1315,32 @@ body {
     width: 100% !important;
     justify-content: flex-start !important;
   }
+}
+
+/* GUARANTEED MODAL OVERLAY DISPLAY */
+.orders-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(15, 23, 42, 0.7) !important;
+  backdrop-filter: blur(4px) !important;
+  z-index: 100000 !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.25s ease, visibility 0.25s ease !important;
+  box-sizing: border-box !important;
+}
+
+.orders-modal-overlay.active {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }

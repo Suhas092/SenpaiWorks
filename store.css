@@ -67,7 +67,6 @@ body {
 
 .sh-preorder {
   color: #b24b43;
-  /* rust-red */
   font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 2px;
@@ -96,7 +95,7 @@ body {
 .sh-btn-black {
   display: inline-block;
   background: #111;
-  color: #fff;
+  color: #ffffff;
   font-size: 0.95rem;
   font-weight: 700;
   padding: 15px 35px;
@@ -132,38 +131,69 @@ body {
 
   .sh-content-left {
     margin: 0 auto;
-    max-width: 86%;
+    max-width: 90%;
     align-items: center;
     text-align: center;
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    padding: 16px 20px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
   }
 
   .sh-content-left h1,
   .sh-main-title {
-    color: #111111 !important;
+    color: #0f172a !important;
     font-size: 1.6rem;
     line-height: 1.2;
     margin-bottom: 8px;
+    font-weight: 900;
+    text-shadow: 
+      0 2px 10px rgba(255, 255, 255, 0.95),
+      0 0 20px rgba(255, 255, 255, 0.9),
+      0 0 35px rgba(255, 255, 255, 0.8),
+      0 1px 3px rgba(0, 0, 0, 0.25) !important;
+    -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.85) !important;
   }
 
   .sh-content-left p,
   .sh-sub-desc {
-    color: #333333 !important;
+    color: #1e293b !important;
     font-size: 0.82rem;
     margin-bottom: 14px;
     line-height: 1.38;
     max-width: 100%;
+    font-weight: 700;
+    text-shadow: 
+      0 1px 8px rgba(255, 255, 255, 0.95),
+      0 0 16px rgba(255, 255, 255, 0.9),
+      0 1px 2px rgba(0, 0, 0, 0.2) !important;
   }
 
   .sh-preorder {
     font-size: 0.72rem;
     margin-bottom: 6px;
+    font-weight: 900;
+    text-shadow: 0 1px 8px rgba(255, 255, 255, 0.95) !important;
+  }
+
+  /* Slide 4 (Suzens Band - Dark Background) Mobile Overrides */
+  .sh-slide[data-index="3"] .sh-main-title {
+    color: #ffffff !important;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.9) !important;
+    text-shadow: 
+      0 2px 12px rgba(0, 0, 0, 0.95),
+      0 0 24px rgba(0, 0, 0, 0.9),
+      0 0 35px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  .sh-slide[data-index="3"] .sh-sub-desc {
+    color: #f1f5f9 !important;
+    text-shadow: 
+      0 1px 10px rgba(0, 0, 0, 0.95),
+      0 0 18px rgba(0, 0, 0, 0.9) !important;
   }
 
   .sh-btn-black {
@@ -194,8 +224,8 @@ body {
   }
 
   .sh-content-left {
-    max-width: 90%;
-    padding: 14px 16px;
+    max-width: 92%;
+    padding: 0 !important;
   }
 
   .sh-preorder {
@@ -1969,49 +1999,6 @@ body {
   }
 }
 
-/* Load More Products Button Styling */
-.load-more-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 40px;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.load-more-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: #111111;
-  color: #ffffff;
-  border: 1.5px solid #111111;
-  border-radius: 30px;
-  padding: 14px 36px;
-  font-family: var(--font-family);
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-  outline: none;
-}
-
-.load-more-btn:hover {
-  background: #252528;
-  border-color: #252528;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-}
-
-.load-more-btn i {
-  transition: transform 0.25s ease;
-}
-
-.load-more-btn:hover i {
-  transform: translateY(3px);
-}
 
 /* End of Season Banner */
 .end-season-banner-section {
@@ -2222,9 +2209,9 @@ body {
     padding: 9px 18px !important;
   }
 
-  /* 3. Sale Is On Section - Single 2-Column Row */
+  /* 3. Sale Is On Section - Single 2-Column Row Side-by-Side Cards on Mobile */
   .sale-is-on-section {
-    padding: 20px 10px !important;
+    padding: 20px 8px !important;
   }
 
   .promo-section-title {
@@ -2235,37 +2222,89 @@ body {
   .promo-grid-2 {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
+    width: 100% !important;
   }
 
   .promo-banner-card {
-    padding: 12px 8px !important;
-    min-height: 110px !important;
-    height: 115px !important;
-    border-radius: 10px !important;
+    padding: 12px 10px !important;
+    min-height: 145px !important;
+    height: 150px !important;
+    border-radius: 12px !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .promo-info {
+    width: 65% !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
   }
 
   .promo-badge-text {
-    font-size: 0.55rem !important;
-    letter-spacing: 0.5px !important;
+    font-size: 0.52rem !important;
+    letter-spacing: 0.3px !important;
     margin-bottom: 2px !important;
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    color: #78716c !important;
   }
 
   .promo-info h3 {
     font-size: 0.78rem !important;
-    margin: 2px 0 6px 0 !important;
+    font-weight: 800 !important;
+    margin: 2px 0 8px 0 !important;
     line-height: 1.15 !important;
+    letter-spacing: -0.3px !important;
+    color: #111111 !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
   }
 
   .promo-btn-dark {
-    font-size: 0.62rem !important;
-    padding: 5px 8px !important;
-    border-radius: 12px !important;
+    font-size: 0.6rem !important;
+    font-weight: 700 !important;
+    padding: 5px 10px !important;
+    border-radius: 14px !important;
+    white-space: nowrap !important;
+    margin-top: auto !important;
+    z-index: 3 !important;
+  }
+
+  .promo-img {
+    position: absolute !important;
+    right: 2px !important;
+    bottom: 2px !important;
+    top: auto !important;
+    transform: none !important;
+    width: 44% !important;
+    height: 72% !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: bottom right !important;
+    z-index: 1 !important;
+    opacity: 0.95 !important;
   }
 
   .promo-date-stamp {
-    font-size: 0.5rem !important;
+    position: absolute !important;
     top: 8px !important;
     right: 8px !important;
+    font-size: 0.48rem !important;
+    font-weight: 800 !important;
+    color: #a8a29e !important;
+    z-index: 2 !important;
+    white-space: nowrap !important;
   }
 
   /* 4. Products Grid: 3 cols on tablet, 2 cols on mobile */
@@ -2601,5 +2640,59 @@ body {
   .dp-capsule-submit-btn {
     padding: 10px 18px;
     font-size: 0.82rem;
+  }
+}
+
+/* ===== Store Design Preference Poll Sign In Notice Banner ===== */
+.request-auth-notice, #store-poll-auth-notice {
+  background: linear-gradient(135deg, rgba(0, 102, 204, 0.08) 0%, rgba(2, 132, 199, 0.12) 100%);
+  border: 1px solid rgba(0, 102, 204, 0.25);
+  color: #0284c7;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.06);
+  backdrop-filter: blur(8px);
+  animation: fadeInNotice 0.3s ease-out;
+}
+
+.request-auth-notice i, #store-poll-auth-notice i {
+  color: rgba(0, 102, 204, 1);
+  font-size: 1rem;
+}
+
+.request-auth-notice a, #store-poll-auth-notice a {
+  color: rgba(0, 102, 204, 1);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: all 0.2s ease;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(0, 102, 204, 0.08);
+}
+
+.request-auth-notice a:hover, #store-poll-auth-notice a:hover {
+  color: #004499;
+  background: rgba(0, 102, 204, 0.18);
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+@keyframes fadeInNotice {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

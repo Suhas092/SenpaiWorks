@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Setup — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="profile-setup.css">
+</head>
+
+<body>
+
+  <script src="scripts/auth.js"></script>
+
+  <!-- ONBOARDING PAGE MAIN WRAPPER -->
+  <main class="auth-page-wrapper">
+    <!-- Top Left Brand Logo -->
+    <a href="home.html" class="auth-top-left-logo" title="Back to Home">
+      <img src="assets/SenpaiWorks logo.png" alt="SenpaiWorks Logo" class="auth-logo-img">
+      <h2 class="auth-logo-text">
+        <span class="big">S</span>ENPAI<span class="big">W</span>ORKS
+      </h2>
+    </a>
+
+    <!-- Glassmorphic Card Container -->
+    <div class="auth-card-container setup-card-container">
+      
+      <!-- Step Badge -->
+      <div style="text-align: center;">
+        <span class="setup-step-pill">
+          <i class="fa-solid fa-sparkles"></i> Step 1 of 1 — Account Setup
+        </span>
+      </div>
+
+      <h1 class="auth-title-center">Welcome to SenpaiWorks!</h1>
+      <p class="auth-subtitle-center">Let's quickly set up your profile before exploring 3D models, digital art, and orders.</p>
+
+      <!-- Avatar Upload Section -->
+      <div class="setup-avatar-section">
+        <div class="setup-avatar-frame">
+          <img id="setup-avatar-preview"
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+            alt="Profile Avatar" class="setup-avatar-img">
+          <label for="setup-avatar-file" class="setup-avatar-upload-badge" title="Choose Profile Photo">
+            <i class="fa-solid fa-camera"></i>
+          </label>
+          <input type="file" id="setup-avatar-file" accept="image/*" style="display: none;">
+        </div>
+        <div class="setup-avatar-hint">Click the camera icon to upload your avatar</div>
+      </div>
+
+      <div id="setup-error" class="auth-error-msg" style="display: none;"></div>
+
+      <form id="setup-form">
+        
+        <div class="setup-form-group">
+          <label for="setup-fullname" class="setup-form-label">Full Name or Display Handle</label>
+          <div class="input-icon-group" style="margin-bottom: 0;">
+            <i class="fa-solid fa-id-card input-leading-icon"></i>
+            <input type="text" id="setup-fullname" placeholder="e.g. Suhas Senpai" required>
+          </div>
+        </div>
+
+        <div class="setup-form-group">
+          <label for="setup-phone" class="setup-form-label">Mobile Number (Optional for SMS updates)</label>
+          <div class="input-icon-group" style="margin-bottom: 0;">
+            <i class="fa-solid fa-phone input-leading-icon"></i>
+            <input type="tel" id="setup-phone" placeholder="e.g. +91 98765 43210" maxlength="15">
+          </div>
+        </div>
+
+        <div class="setup-form-group">
+          <label for="setup-interest" class="setup-form-label">Primary Interest / Collection Category</label>
+          <select id="setup-interest" class="setup-select-input">
+            <option value="3d_models">3D Character Models & Rigs</option>
+            <option value="digital_art">2D Digital Art Prints & Wallpapers</option>
+            <option value="merchandise">Apparel & Anime Physical Merchandise</option>
+            <option value="game_assets">Game Assets & VTuber Avatars</option>
+          </select>
+        </div>
+
+        <button type="submit" class="auth-submit-pill" style="margin-top: 10px;">Save & Complete Setup &rarr;</button>
+      </form>
+
+      <div class="setup-skip-wrap">
+        <a href="#" id="setup-skip-btn" class="setup-skip-link">Skip for now & continue to Home &rarr;</a>
+      </div>
+
+    </div>
+
+    <!-- Standalone Minimal Footer -->
+    <footer class="auth-minimal-footer">
+      <div class="auth-minimal-links">
+        <a href="contact.html">Support</a>
+        <span class="sep">•</span>
+        <a href="privacy.html">Privacy Notice</a>
+        <span class="sep">•</span>
+        <a href="terms.html">Terms of Service</a>
+        <span class="sep">•</span>
+        <a href="privacy.html#cookies">Cookie Preferences</a>
+      </div>
+      <div class="auth-recaptcha-text">
+        This site is protected by Google reCAPTCHA and its <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Require authentication
+      if (window.Auth && !window.Auth.isLoggedIn()) {
+        window.location.href = "login.html?redirect=profile-setup.html";
+        return;
+      }
+
+      const curUser = window.Auth ? window.Auth.getCurrentUser() : null;
+
+      // If user already completed setup, bypass setup page to home.html
+      if (curUser && curUser.profile_completed === true) {
+        window.location.href = "home.html";
+        return;
+      }
+
+      const avatarPreview = document.getElementById("setup-avatar-preview");
+      const avatarInput = document.getElementById("setup-avatar-file");
+      const fullnameInput = document.getElementById("setup-fullname");
+      const phoneInput = document.getElementById("setup-phone");
+      const form = document.getElementById("setup-form");
+      const skipBtn = document.getElementById("setup-skip-btn");
+      const errBox = document.getElementById("setup-error");
+
+      let chosenAvatarBase64 = null;
+
+      if (curUser) {
+        if (fullnameInput) fullnameInput.value = curUser.name || curUser.username || "";
+        if (avatarPreview && curUser.avatar) avatarPreview.src = curUser.avatar;
+      }
+
+      // Handle avatar photo selection
+      if (avatarInput) {
+        avatarInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          if (file.size > 3 * 1024 * 1024) {
+            alert("Please select an image smaller than 3MB.");
+            avatarInput.value = "";
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            chosenAvatarBase64 = event.target.result;
+            if (avatarPreview) avatarPreview.src = chosenAvatarBase64;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Handle form submission
+      if (form) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const fullName = fullnameInput ? fullnameInput.value.trim() : "";
+          const phone = phoneInput ? phoneInput.value.trim() : "";
+          const interest = document.getElementById("setup-interest") ? document.getElementById("setup-interest").value : "";
+
+          const profileData = {
+            name: fullName,
+            phone: phone,
+            interest: interest
+          };
+          if (chosenAvatarBase64) {
+            profileData.avatar = chosenAvatarBase64;
+          }
+
+          const res = window.Auth.completeProfileSetup(profileData);
+          if (!res.success && errBox) {
+            errBox.textContent = res.message || "Failed to complete setup.";
+            errBox.style.display = "block";
+          }
+        });
+      }
+
+      // Handle skip button
+      if (skipBtn) {
+        skipBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          window.Auth.completeProfileSetup(null);
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -12,7 +12,7 @@
   max-width: 1300px;
   width: 100%;
   margin: 0 auto 30px auto;
-  padding: 0 40px;
+  padding: 0 20px;
   position: relative;
   z-index: 4;
 }
@@ -63,7 +63,7 @@
   max-width: 1300px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 20px;
   display: grid;
   grid-template-columns: 4fr 6fr;
   /* 40% / 60% split */

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="auth.css">
+
+  <script>
+    window.GOOGLE_CLIENT_ID = "681420178068-lpf5lcl98dfj560p9od15f7t12k4fcqa.apps.googleusercontent.com";
+    window.FB_APP_ID = "1043452911768475";
+  </script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+</head>
+
+<body>
+
+  <script src="scripts/auth.js"></script>
+
+  <!-- AUTH PAGE MAIN CONTAINER -->
+  <main class="auth-page-wrapper">
+    <!-- Top Left Brand Logo -->
+    <a href="home.html" class="auth-top-left-logo" title="Back to Home">
+      <img src="assets/SenpaiWorks logo.png" alt="SenpaiWorks Logo" class="auth-logo-img">
+      <h2 class="auth-logo-text">
+        <span class="big">S</span>ENPAI<span class="big">W</span>ORKS
+      </h2>
+    </a>
+
+    <!-- Glassmorphic Card Container -->
+    <div class="auth-card-container">
+      
+      <!-- Top Square Badge -->
+      <div class="auth-square-badge">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+      </div>
+
+      <h1 class="auth-title-center">Sign in to SenpaiWorks</h1>
+      <p class="auth-subtitle-center">Bring your digital art, 3D assets, and orders together in one place.</p>
+
+      <div id="signin-error" class="auth-error-msg" style="display: none;"></div>
+
+      <form id="signin-form">
+        <div class="input-icon-group">
+          <i class="fa-solid fa-envelope input-leading-icon"></i>
+          <input type="text" id="signin-email" placeholder="Email or Username" required autocomplete="username">
+        </div>
+
+        <div class="input-icon-group">
+          <i class="fa-solid fa-lock input-leading-icon"></i>
+          <input type="password" id="signin-password" placeholder="Password" required autocomplete="current-password">
+          <button type="button" class="toggle-password-btn" id="toggle-signin-pass" title="Toggle Password Visibility">
+            <i class="fa-regular fa-eye-slash"></i>
+          </button>
+        </div>
+
+        <div class="auth-forgot-wrap">
+          <a href="#" class="forgot-password-link" id="forgot-password-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="auth-submit-pill">Sign In</button>
+      </form>
+
+      <!-- Dotted Line Divider -->
+      <div class="auth-dotted-divider">
+        <span>Or sign in with</span>
+      </div>
+
+      <!-- Social Sign-In Buttons -->
+      <div class="social-auth-bottom-row">
+        <button type="button" class="social-auth-card fb-card" id="btn-fb-login" title="Sign in with Facebook">
+          <i class="fa-brands fa-facebook" style="color: #ffffff; font-size: 1.35rem;"></i>
+        </button>
+        <button type="button" class="social-auth-card google-card" id="btn-google-login" title="Sign in with Google">
+          <img src="assets/google-g-logo.svg" alt="Google Logo">
+        </button>
+      </div>
+
+      <div class="auth-footer-center">
+        Don't have an account yet? <a href="register.html">Sign up</a>
+      </div>
+
+    </div>
+
+    <!-- Standalone Minimal Footer -->
+    <footer class="auth-minimal-footer">
+      <div class="auth-minimal-links">
+        <a href="contact.html">Support</a>
+        <span class="sep">•</span>
+        <a href="privacy.html">Privacy Notice</a>
+        <span class="sep">•</span>
+        <a href="terms.html">Terms of Service</a>
+        <span class="sep">•</span>
+        <a href="privacy.html#cookies">Cookie Preferences</a>
+      </div>
+      <div class="auth-recaptcha-text">
+        This site is protected by Google reCAPTCHA and its <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Redirect if already logged in
+      if (window.Auth && window.Auth.isLoggedIn()) {
+        window.Auth.handlePostLoginRedirect("home.html");
+        return;
+      }
+
+      const form = document.getElementById("signin-form");
+      const errBox = document.getElementById("signin-error");
+      const togglePass = document.getElementById("toggle-signin-pass");
+
+      if (togglePass) {
+        togglePass.addEventListener("click", () => {
+          const passInput = document.getElementById("signin-password");
+          if (passInput) {
+            const isPass = passInput.type === "password";
+            passInput.type = isPass ? "text" : "password";
+            togglePass.innerHTML = isPass ? '<i class="fa-regular fa-eye"></i>' : '<i class="fa-regular fa-eye-slash"></i>';
+          }
+        });
+      }
+
+      if (form) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const email = document.getElementById("signin-email").value.trim();
+          const password = document.getElementById("signin-password").value.trim();
+
+          const result = window.Auth.login(email, password);
+          if (result.success) {
+            if (errBox) errBox.style.display = "none";
+            window.Auth.handlePostLoginRedirect("home.html");
+          } else {
+            if (errBox) {
+              errBox.textContent = result.message || "Invalid credentials.";
+              errBox.style.display = "block";
+            }
+          }
+        });
+      }
+
+      const googleBtn = document.getElementById("btn-google-login");
+      const fbBtn = document.getElementById("btn-fb-login");
+
+      if (googleBtn) {
+        googleBtn.addEventListener("click", () => {
+          if (window.Auth && window.Auth.triggerGoogleLogin) {
+            window.Auth.triggerGoogleLogin(() => window.Auth.handlePostLoginRedirect("home.html"));
+          }
+        });
+      }
+
+      if (fbBtn) {
+        fbBtn.addEventListener("click", () => {
+          if (window.Auth && window.Auth.triggerFacebookLogin) {
+            window.Auth.triggerFacebookLogin(() => window.Auth.handlePostLoginRedirect("home.html"));
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

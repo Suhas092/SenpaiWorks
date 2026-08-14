@@ -2,9 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="icon"
-    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-    type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Store & Assets - SenpaiWorks</title>
@@ -71,7 +69,8 @@
             <p class="sh-sub-desc" style="color: #444444;">
               Experience ultimate comfort with our heavyweight organic cotton Itachi duo graphic streetwear T-shirt.
             </p>
-            <a href="#store-catalog-section" class="sh-btn-black" style="background: #111111; color: #ffffff;">Shop Now</a>
+            <a href="store-detail.html?id=itachi-colored-half-tshirt" class="sh-btn-black"
+              style="background: #111111; color: #ffffff;">Shop Now</a>
           </div>
         </div>
       </div>
@@ -89,7 +88,8 @@
             <p class="sh-sub-desc" style="color: #444444;">
               Master the Three-Sword Style. Ultra-soft organic cotton with high-fidelity anime prints.
             </p>
-            <a href="#store-catalog-section" class="sh-btn-black" style="background: #111111; color: #ffffff;">Shop Now</a>
+            <a href="store-detail.html?id=zoro-colored-half-tshirt" class="sh-btn-black"
+              style="background: #111111; color: #ffffff;">Shop Now</a>
           </div>
         </div>
       </div>
@@ -107,7 +107,8 @@
             <p class="sh-sub-desc" style="color: #444444;">
               Embrace the dark aesthetic with our high-fidelity Kaneki awakened state streetwear T-shirt.
             </p>
-            <a href="#store-catalog-section" class="sh-btn-black" style="background: #111111; color: #ffffff;">Shop Now</a>
+            <a href="store-detail.html?id=kaneki-colored-half-tshirt" class="sh-btn-black"
+              style="background: #111111; color: #ffffff;">Shop Now</a>
           </div>
         </div>
       </div>
@@ -125,7 +126,8 @@
             <p class="sh-sub-desc" style="color: #cccccc;">
               Vibrant high-density screen prints of the Suzens band lineup. Premium heavyweight organic cotton.
             </p>
-            <a href="#store-catalog-section" class="sh-btn-black" style="background: #ffffff; color: #111111;">Shop Now</a>
+            <a href="#store-catalog-section" class="sh-btn-black" style="background: #ffffff; color: #111111;">Shop
+              Now</a>
           </div>
         </div>
       </div>
@@ -212,16 +214,15 @@
             <div class="bc-select-custom-box">
               <select id="bc-category-dropdown" class="bc-select-dropdown" onchange="selectBrowseCategory(this.value)">
                 <option value="" disabled selected>Select Category</option>
-                <option value="all" id="bc-option-all" style="display: none;">All Categories</option>
-                <option value="Merchandise">Merchandise</option>
-                <option value="3D Assets">3D Models</option>
-                <option value="Digital Courses">Courses</option>
+                <option value="all">All Categories</option>
+                <option value="Oversized T-Shirts">Oversized T-Shirts</option>
+                <option value="Hoodies">Hoodies</option>
               </select>
               <i class="fa-solid fa-chevron-down bc-select-arrow"></i>
             </div>
           </div>
         </div>
-        <div class="bc-banner-img" style="background-image: url('assets/Suzens new/suzens new.png');"></div>
+        <div class="bc-banner-img" style="background-image: url('assets/home page images/tee shirts slide.png');"></div>
       </div>
     </div>
   </section>
@@ -236,9 +237,12 @@
           <div class="promo-info">
             <span class="promo-badge-text">FLAT 48% OFF • ITACHI COLLECTION</span>
             <h3>ITACHI UCHIHA<br>GRAPHIC TEES</h3>
-            <a href="#store-catalog-section" onclick="filterByStoreCategory('Merchandise')" class="promo-btn-dark">SHOP ITACHI</a>
+            <a href="#store-catalog-section" onclick="filterByStoreCategory('Merchandise')" class="promo-btn-dark">SHOP
+              ITACHI</a>
           </div>
-          <div class="promo-img" id="sale-promo-img-1" style="background-image: url('assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg');"></div>
+          <div class="promo-img" id="sale-promo-img-1"
+            style="background-image: url('assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg');">
+          </div>
           <span class="promo-date-stamp">LIMITED STOCK</span>
         </div>
         <!-- Promo 2: Kaneki Section -->
@@ -246,9 +250,12 @@
           <div class="promo-info">
             <span class="promo-badge-text">FLAT 48% OFF • KANEKI COLLECTION</span>
             <h3>KANEKI KEN<br>GRAPHIC TEES</h3>
-            <a href="#store-catalog-section" onclick="filterByStoreCategory('Merchandise')" class="promo-btn-dark">SHOP KANEKI</a>
+            <a href="#store-catalog-section" onclick="filterByStoreCategory('Merchandise')" class="promo-btn-dark">SHOP
+              KANEKI</a>
           </div>
-          <div class="promo-img" id="sale-promo-img-2" style="background-image: url('assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg');"></div>
+          <div class="promo-img" id="sale-promo-img-2"
+            style="background-image: url('assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg');">
+          </div>
           <span class="promo-date-stamp">FLAT 48% OFF</span>
         </div>
       </div>
@@ -257,7 +264,7 @@
 
   <!-- Main Content -->
   <main class="store-layout-container" id="store-catalog-section">
-
+    
     <!-- Right Side: Product Area -->
     <section class="store-products-main">
 
@@ -282,12 +289,6 @@
         <!-- Filled dynamically by JavaScript -->
       </div>
 
-      <!-- Load More Products Container -->
-      <div class="load-more-wrap" id="load-more-wrap" style="display: none;">
-        <button type="button" id="load-more-btn" class="load-more-btn">
-          <span>Load More Products</span> <i class="fa-solid fa-arrow-down"></i>
-        </button>
-      </div>
     </section>
   </main>
 
@@ -303,11 +304,9 @@
       <!-- 2. YouTube Video Link Embed Second -->
       <div class="video-embed-col">
         <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube.com/embed/fq8f9ZxLaC8?rel=0&modestbranding=1" 
-            title="How T-Shirts Are Screen Printed - Quality & Craftsmanship" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          <iframe src="https://www.youtube.com/embed/fq8f9ZxLaC8?rel=0&modestbranding=1"
+            title="How T-Shirts Are Screen Printed - Quality & Craftsmanship" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen>
           </iframe>
         </div>
@@ -316,8 +315,9 @@
       <!-- 3. Quality Information & Features Third -->
       <div class="video-text-col">
         <p class="video-section-desc">
-          Rest assured knowing every SenpaiWorks graphic T-shirt is crafted from 100% 240GSM combed organic cotton. 
-          Watch our screen printing process highlighting high-density color layering, eco-friendly inks, and wash-resistant durability testing.
+          Rest assured knowing every SenpaiWorks graphic T-shirt is crafted from 100% 240GSM combed organic cotton.
+          Watch our screen printing process highlighting high-density color layering, eco-friendly inks, and
+          wash-resistant durability testing.
         </p>
         <div class="video-feature-list">
           <div class="vf-item">
@@ -355,13 +355,17 @@
   <!-- ===== Design Preference Poll Section ===== -->
   <section class="design-poll-section">
     <div class="design-poll-split-container">
-      
+
       <!-- Left Column: Poll & Search Form (Left-Aligned) -->
       <div class="dp-left-col">
         <div class="dp-header">
           <span class="dp-badge-tag"><i class="fa-solid fa-sparkles"></i> COMMUNITY POLL</span>
           <h2 class="dp-title">WHICH ANIME OR CHARACTER DESIGN SHOULD WE CRAFT NEXT?</h2>
-          <p class="dp-subtitle">Your suggestions drive our next release. Pick a trending request or type your custom idea below.</p>
+          <p class="dp-subtitle">Your suggestions drive our next release. Pick a trending request or type your custom
+            idea below.</p>
+          <div id="store-poll-auth-notice" class="request-auth-notice" style="display: none; margin-top: 12px;">
+            <i class="fa-solid fa-lock"></i> Please <a href="login.html">Sign In</a> to submit your response.
+          </div>
         </div>
 
         <!-- Quick Suggestion Tag Pills (No Emojis) -->
@@ -369,11 +373,14 @@
           <span class="dp-quick-tags-label">Trending Requests:</span>
           <div class="dp-tags-list">
             <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Gojo Satoru')">Gojo Satoru</button>
-            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Luffy Gear 5')">Luffy Gear 5</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Luffy Gear 5')">Luffy Gear
+              5</button>
             <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Sung Jinwoo')">Sung Jinwoo</button>
-            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Guts Berserk')">Guts Berserk</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Guts Berserk')">Guts
+              Berserk</button>
             <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Sukuna')">Sukuna</button>
-            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Chainsaw Man')">Chainsaw Man</button>
+            <button type="button" class="dp-tag-pill" onclick="appendPollSuggestion('Chainsaw Man')">Chainsaw
+              Man</button>
           </div>
         </div>
 
@@ -381,7 +388,8 @@
         <form id="design-poll-form" onsubmit="handleDesignPollSubmit(event)" class="dp-form">
           <div class="dp-capsule-bar">
             <i class="fa-solid fa-magnifying-glass dp-search-icon"></i>
-            <input type="text" id="dp-custom-character" placeholder="Type any anime, character, or design concept..." class="dp-capsule-input" required>
+            <input type="text" id="dp-custom-character" placeholder="Type any anime, character, or design concept..."
+              class="dp-capsule-input" required>
             <button type="submit" class="dp-capsule-submit-btn" title="Submit Request">
               <span>Submit</span>
               <i class="fa-solid fa-arrow-right"></i>
@@ -394,7 +402,9 @@
       <div class="dp-right-col">
         <div class="dp-ad-card">
           <div class="dp-ad-img-frame">
-            <div class="dp-ad-img" id="poll-ad-tshirt-img" style="background-image: url('assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg');"></div>
+            <div class="dp-ad-img" id="poll-ad-tshirt-img"
+              style="background-image: url('assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg');">
+            </div>
           </div>
         </div>
       </div>

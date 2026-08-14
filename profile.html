@@ -2,16 +2,15 @@
 <html lang="en">
 
 <head>
-  <link rel="icon"
-    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-    type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Account Center — SenpaiWorks Official</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <link rel="stylesheet" href="home.css">
@@ -25,7 +24,7 @@
   <!-- Fixed Header -->
   <div id="header-placeholder">
     <script>
-      (function() {
+      (function () {
         var cached = sessionStorage.getItem('cached_header');
         if (cached) {
           document.getElementById('header-placeholder').innerHTML = cached;
@@ -33,7 +32,8 @@
       })();
     </script>
   </div>
-  <script src="scripts/header.js?v=10"></script>
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/header.js?v=11"></script>
 
   <div class="top-bg-strip"></div>
 
@@ -45,16 +45,19 @@
   <header class="account-hero-banner">
     <div class="account-hero-inner">
       <div class="account-user-summary">
-        <div class="account-avatar-wrap">
-          <img id="acc-banner-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="User Avatar">
+        <div class="account-avatar-wrap" id="banner-avatar-trigger" title="Profile Avatar">
+          <img id="acc-banner-avatar"
+            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+            alt="User Avatar">
         </div>
         <div class="account-user-meta">
           <div class="user-meta-name-row">
             <h1 id="acc-banner-name">Suhas</h1>
           </div>
-          <p id="acc-banner-email">suhassenpai@gmail.com</p>
+          <p id="acc-banner-email">example@gmail.com</p>
           <div class="account-quick-badges">
-            <span class="badge-item"><i class="fa-solid fa-gift" style="color: #38bdf8;"></i> Welcome Discount: <strong>₹100 OFF</strong> (Code: <code>SENPAI100</code>)</span>
+            <span class="badge-item"><i class="fa-solid fa-gift" style="color: #38bdf8;"></i> Welcome Discount:
+              <strong>₹100 OFF</strong> (Code: <code>SENPAI100</code>)</span>
           </div>
         </div>
       </div>
@@ -72,7 +75,7 @@
 
   <!-- MAIN ACCOUNT HUB LAYOUT -->
   <main class="account-hub-container">
-    
+
     <!-- LEFT NAVIGATION SIDEBAR -->
     <aside class="account-sidebar">
       <div class="sidebar-title">ACCOUNT MANAGEMENT</div>
@@ -85,7 +88,7 @@
 
         <button class="account-nav-btn" data-tab="orders" onclick="switchAccountTab('orders')">
           <i class="fa-solid fa-box-archive"></i>
-          <span>Returns & Orders</span>
+          <span>Orders & Replacements</span>
           <span class="nav-count-badge" id="nav-orders-count">0</span>
         </button>
 
@@ -97,7 +100,7 @@
         <button class="account-nav-btn" data-tab="notifications" onclick="switchAccountTab('notifications')">
           <i class="fa-solid fa-bell"></i>
           <span>Notifications</span>
-          <span class="nav-unread-dot" id="nav-notif-unread"></span>
+          <span class="nav-count-badge" id="nav-notif-count">0</span>
         </button>
 
         <button class="account-nav-btn" data-tab="addresses" onclick="switchAccountTab('addresses')">
@@ -105,9 +108,12 @@
           <span>Saved Addresses</span>
         </button>
 
-        <button class="account-nav-btn" data-tab="wishlist" onclick="switchAccountTab('wishlist')">
-          <i class="fa-solid fa-heart"></i>
-          <span>Wishlist & Saved</span>
+        <button class="account-nav-btn" data-tab="wishlist" onclick="switchAccountTab('wishlist')" style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fa-regular fa-heart"></i>
+            <span>Wishlist & Saved</span>
+          </div>
+          <span id="profile-wishlist-dot" style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; display: none;"></span>
         </button>
 
         <button class="account-nav-btn" data-tab="payments" onclick="switchAccountTab('payments')">
@@ -121,8 +127,8 @@
         </button>
 
         <button type="button" class="account-nav-btn signout-nav-btn" onclick="handleSignOut()">
-          <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i>
-          <span style="color: #ef4444; font-weight: 800;">Sign Out Account</span>
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Sign Out Account</span>
         </button>
       </nav>
 
@@ -145,32 +151,38 @@
 
         <div class="panel-card">
           <div class="profile-avatar-row">
-            <div class="avatar-large-preview">
-              <img id="profile-avatar-preview" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Avatar">
+            <div class="avatar-large-preview" id="avatar-preview-trigger" title="Edit Profile Avatar">
+              <img id="profile-avatar-preview"
+                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+                alt="Avatar">
+              <div class="avatar-hover-edit-overlay">
+                <span><i class="fa-solid fa-pen"></i> Edit</span>
+              </div>
             </div>
             <div class="avatar-controls">
               <button type="button" class="btn-avatar-upload" id="avatar-upload-trigger">
                 <i class="fa-solid fa-camera"></i> Upload Photo
               </button>
               <input type="file" id="profile-avatar-file" accept="image/*" style="display: none;">
-              <p class="avatar-hint"><i class="fa-solid fa-circle-info"></i> Max file size: 1MB. Drag mouse to position & scroll wheel to zoom.</p>
+              <p class="avatar-hint"><i class="fa-solid fa-circle-info"></i> Max file size: 3MB. Drag mouse to position
+                & scroll wheel or slider to zoom.</p>
             </div>
           </div>
 
           <form id="profile-edit-form" class="account-form-grid">
             <div class="form-row-2">
               <div class="form-group-item">
-                <label for="profile-username">Username Handle</label>
+                <label for="profile-firstname">First Name</label>
                 <div class="input-wrapper">
                   <i class="fa-regular fa-user input-icon"></i>
-                  <input type="text" id="profile-username" placeholder="Choose a username" required>
+                  <input type="text" id="profile-firstname" placeholder="First name" required>
                 </div>
               </div>
               <div class="form-group-item">
-                <label for="profile-fullname">Full Name</label>
+                <label for="profile-lastname">Last Name</label>
                 <div class="input-wrapper">
                   <i class="fa-solid fa-id-card input-icon"></i>
-                  <input type="text" id="profile-fullname" placeholder="Your full name" required>
+                  <input type="text" id="profile-lastname" placeholder="Last name">
                 </div>
               </div>
             </div>
@@ -184,28 +196,60 @@
                 </div>
               </div>
               <div class="form-group-item">
-                <label for="profile-phone">Mobile Phone Number</label>
-                <div class="input-wrapper">
-                  <i class="fa-solid fa-phone input-icon"></i>
-                  <input type="tel" id="profile-phone" placeholder="+91 9876543210">
+                <label for="profile-phone">Phone Number</label>
+                <div class="phone-input-group">
+                  <select id="profile-country-code" class="country-code-select" aria-label="Country Code">
+                    <option value="+61">🇦🇺 Australia (+61)</option>
+                    <option value="+880">🇧🇩 Bangladesh (+880)</option>
+                    <option value="+55">🇧🇷 Brazil (+55)</option>
+                    <option value="+1">🇨🇦 Canada (+1)</option>
+                    <option value="+86">🇨🇳 China (+86)</option>
+                    <option value="+33">🇫🇷 France (+33)</option>
+                    <option value="+49">🇩🇪 Germany (+49)</option>
+                    <option value="+91" selected>🇮🇳 India (+91)</option>
+                    <option value="+62">🇮🇩 Indonesia (+62)</option>
+                    <option value="+39">🇮🇹 Italy (+39)</option>
+                    <option value="+81">🇯🇵 Japan (+81)</option>
+                    <option value="+52">🇲🇽 Mexico (+52)</option>
+                    <option value="+977">🇳🇵 Nepal (+977)</option>
+                    <option value="+31">🇳🇱 Netherlands (+31)</option>
+                    <option value="+92">🇵🇰 Pakistan (+92)</option>
+                    <option value="+7">🇷🇺 Russia (+7)</option>
+                    <option value="+966">🇸🇦 Saudi Arabia (+966)</option>
+                    <option value="+65">🇸🇬 Singapore (+65)</option>
+                    <option value="+27">🇿🇦 South Africa (+27)</option>
+                    <option value="+82">🇰🇷 South Korea (+82)</option>
+                    <option value="+34">🇪🇸 Spain (+34)</option>
+                    <option value="+94">🇱🇰 Sri Lanka (+94)</option>
+                    <option value="+971">🇦🇪 United Arab Emirates (+971)</option>
+                    <option value="+44">🇬🇧 United Kingdom (+44)</option>
+                    <option value="+1">🇺🇸 United States (+1)</option>
+                  </select>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-phone input-icon"></i>
+                    <input type="tel" id="profile-phone" placeholder="Mobile phone number" maxlength="10"
+                      pattern="[0-9]{8,11}" inputmode="numeric">
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="form-row-1">
-              <div class="form-group-item">
-                <label for="profile-bio">Bio</label>
-                <textarea id="profile-bio" rows="3" placeholder="Tell the SenpaiWorks community a bit about yourself..."></textarea>
-              </div>
-            </div>
-
-            <div class="form-row-1">
+            <div class="form-row-1" id="profile-password-wrapper">
               <div class="form-group-item">
                 <label for="profile-new-password">Change Password (Optional)</label>
                 <div class="input-wrapper">
                   <i class="fa-solid fa-lock input-icon"></i>
                   <input type="password" id="profile-new-password" placeholder="Enter new password (min 6 characters)">
                 </div>
+              </div>
+            </div>
+
+            <div class="form-row-1" id="profile-social-auth-banner" style="display: none;">
+              <div
+                style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); padding: 14px 18px; border-radius: 12px; display: flex; align-items: center; gap: 12px; color: #0284c7; font-size: 0.92rem; font-weight: 600;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 1.25rem;"></i>
+                <span id="social-auth-banner-text">Account authenticated via Google / Facebook (Password managed by
+                  provider)</span>
               </div>
             </div>
 
@@ -222,16 +266,18 @@
       <!-- 2. RETURNS & ORDERS TAB -->
       <div class="account-tab-panel" id="tab-panel-orders">
         <div class="panel-header">
-          <h2>Returns & Orders Management</h2>
+          <h2>Orders & Replacements Management</h2>
           <p>View past order receipts, live shipment tracking, or initiate returns & replacements.</p>
         </div>
 
         <div class="orders-filter-bar">
           <div class="orders-tabs">
             <button class="order-tab-btn active" data-tab="all" onclick="filterOrders('all')">All Orders</button>
-            <button class="order-tab-btn" data-tab="processing" onclick="filterOrders('processing')">Processing & Shipped</button>
+            <button class="order-tab-btn" data-tab="processing" onclick="filterOrders('processing')">Processing &
+              Shipped</button>
             <button class="order-tab-btn" data-tab="delivered" onclick="filterOrders('delivered')">Delivered</button>
-            <button class="order-tab-btn" data-tab="returned" onclick="filterOrders('returned')">Returns & Refunds</button>
+            <button class="order-tab-btn" data-tab="returned" onclick="filterOrders('returned')">Replacements &
+              Refunds</button>
           </div>
           <div class="orders-search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -281,7 +327,9 @@
             <div class="form-row-1" style="margin-top: 14px;">
               <div class="form-group-item">
                 <label>Message / Review</label>
-                <textarea id="feedback-msg-input" rows="4" placeholder="Tell us what you love or how we can improve your SenpaiWorks experience..." required></textarea>
+                <textarea id="feedback-msg-input" rows="4"
+                  placeholder="Tell us what you love or how we can improve your SenpaiWorks experience..."
+                  required></textarea>
               </div>
             </div>
 
@@ -300,70 +348,307 @@
       </div>
 
       <!-- 4. NOTIFICATIONS & INBOX TAB -->
-      <div class="account-tab-panel" id="tab-panel-notifications">
-        <div class="panel-header">
-          <h2>Notifications & Alert Preferences</h2>
-          <p>Stay updated on order dispatches, new drops, and community announcements.</p>
-        </div>
+      <div class="account-tab-panel" id="tab-panel-notifications" style="text-align: left;">
+          <!-- VIEW: NOTIFICATIONS INBOX -->
+          <div id="notifications-list-view">
+            <style>
+              .notif-panel-header { display: flex; flex-direction: column; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0; margin-bottom: 16px; gap: 16px; }
+              .notif-category-tabs { display: flex; gap: 12px; margin-top: 12px; padding-bottom: 4px; flex-wrap: wrap; }
+              @media (max-width: 768px) {
+                .notif-actions-toolbar { width: 100%; justify-content: space-between; }
+                .notif-category-tabs { width: 100%; }
+              }
+            </style>
+            <div class="panel-header notif-panel-header">
+              <div style="width: 100%; max-width: 100%;">
+                <h2 style="margin: 0 0 8px 0; font-size: 1.5rem; color: #0f172a;">Your Notifications</h2>
+                <p style="margin: 0 0 16px 0; color: #64748b;">Updates on your orders, wishlist restocks, and studio news.</p>
+              </div>
+              
+              <div class="notif-actions-toolbar" style="display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; width: 100%;">
+                <!-- Checkbox + Select Dropdown Arrow -->
+                <div style="display: flex; align-items: center; gap: 4px; padding-right: 8px; border-right: 1px solid #e2e8f0;">
+                  <input type="checkbox" id="notif-select-all" style="width: 16px; height: 16px; cursor: pointer; margin: 0;">
+                  <div style="position: relative;">
+                    <button type="button" class="notif-toolbar-btn" id="notif-select-options-btn" title="Select Options" style="width: 24px; padding: 0;">
+                      <i class="fa-solid fa-caret-down" style="font-size: 0.8rem;"></i>
+                    </button>
+                    <div id="notif-select-dropdown" style="display: none; position: absolute; left: 0; top: 100%; margin-top: 4px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 160px; z-index: 10;">
+                      <button type="button" class="notif-dropdown-item" id="notif-select-all-btn">Select All</button>
+                      <button type="button" class="notif-dropdown-item" id="notif-mark-unread-selected-btn">Mark as Unread</button>
+                      <button type="button" class="notif-dropdown-item notif-move-trash-item" id="notif-move-to-trash-btn">Move to Trash</button>
+                      <button type="button" class="notif-dropdown-item notif-restore-item" id="notif-restore-dropdown-btn" style="display:none;">Restore</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Refresh Button (Always visible) -->
+                <button type="button" class="notif-toolbar-btn" id="notif-refresh-btn" title="Refresh">
+                  <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                
+                <!-- Selected State Actions (Hidden by default) -->
+                <div id="notif-selected-actions" style="display: none; align-items: center; gap: 4px; margin-left: 4px;">
+                  <button type="button" class="notif-toolbar-btn" id="notif-mark-read-selected-btn" title="Mark as Read">
+                    <i class="fa-regular fa-circle-check"></i>
+                  </button>
+                  <button type="button" class="notif-toolbar-btn" id="notif-delete-selected-btn" title="Delete">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                  <button type="button" class="notif-toolbar-btn" id="notif-restore-selected-btn" title="Restore" style="display: none;">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                  </button>
+                  <button type="button" class="notif-toolbar-btn" id="notif-permanent-delete-selected-btn" title="Permanently Delete" style="display: none;">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+                <button type="button" class="notif-toolbar-btn" id="notif-empty-trash-btn" title="Empty Trash" style="display: none; width: auto; padding: 6px 12px; font-weight: 500; font-size: 0.85rem; color: #ef4444; margin-left: 4px;">
+                  Empty Trash
+                </button>
 
-        <div class="panel-card">
-          <div class="notif-header-row">
-            <h3>Notifications Inbox</h3>
-            <button type="button" class="btn-mark-read" onclick="markAllNotificationsRead()">Mark All as Read</button>
-          </div>
+                <div style="position: relative; margin-left: 4px;">
+                  <button type="button" class="notif-toolbar-btn" id="notif-more-options-btn" title="More">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                  </button>
+                  <div id="notif-more-dropdown" style="display: none; position: absolute; left: 0; top: 100%; margin-top: 4px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 160px; z-index: 10;">
+                    <button type="button" class="notif-dropdown-item" id="notif-mark-all-read-btn">Mark All as Read</button>
+                  </div>
+                </div>
 
-          <div id="notifications-inbox-list" class="notif-inbox-list">
-            <!-- Rendered dynamically -->
-          </div>
+                <div style="flex: 1;"></div>
+                <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;" id="notif-select-count"></span>
+                
+                <button type="button" class="notif-toolbar-btn notif-tab-btn-trash" id="notif-trash-tab-btn" title="Trash" data-category="Trash" style="margin-left: 8px; width: auto; padding: 6px 10px; gap: 6px; font-size: 0.82rem; font-weight: 600;">
+                  <i class="fa-solid fa-trash-can"></i> Trash
+                </button>
+              </div>
 
-          <hr class="panel-divider">
-
-          <h3 style="margin-top: 24px;">Notification Preferences</h3>
-          <div class="toggle-setting-row">
-            <div>
-              <div class="toggle-title">Order Status SMS Updates</div>
-              <div class="toggle-desc">Receive instant SMS alerts when your package is dispatched or out for delivery.</div>
+              <div class="notif-category-tabs">
+                <button class="notif-tab-btn active" data-category="All">All <span class="notif-badge" style="display: none;"></span></button>
+                <button class="notif-tab-btn" data-category="Orders">Orders <span class="notif-badge" style="display: none;"></span></button>
+                <button class="notif-tab-btn" data-category="Community">Community <span class="notif-badge" style="display: none;"></span></button>
+                <button class="notif-tab-btn" data-category="Store">Store <span class="notif-badge" style="display: none;"></span></button>
+                <button class="notif-tab-btn" data-category="News">News <span class="notif-badge" style="display: none;"></span></button>
+              </div>
             </div>
-            <input type="checkbox" class="acc-toggle-switch" checked>
-          </div>
-
-          <div class="toggle-setting-row">
-            <div>
-              <div class="toggle-title">Email Newsletter & Merch Drops</div>
-              <div class="toggle-desc">Be the first to hear about tee restocks and discount coupons.</div>
+            
+            <style>
+              .notif-toolbar-btn { background: transparent; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: background 0.2s; }
+              .notif-toolbar-btn:hover { background: #e2e8f0; color: #0f172a; }
+              .notif-toolbar-btn.active-tab { background: #e2e8f0; color: #0f172a; }
+              .notif-dropdown-item { width: 100%; text-align: left; padding: 8px 12px; background: transparent; border: none; cursor: pointer; font-size: 0.85rem; color: #334155; transition: background 0.2s; box-sizing: border-box; font-family: inherit; }
+              .notif-dropdown-item:hover { background: #f1f5f9; color: #0f172a; }
+              .notif-tab-btn { background: transparent; border: none; border-bottom: 2px solid transparent; padding: 6px 4px; font-weight: 600; font-size: 0.9rem; color: #64748b; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+              .notif-tab-btn:hover { color: #0f172a; }
+              .notif-tab-btn.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+              .notification-row { cursor: pointer; }
+              .notification-row:hover .btn-hover-delete { display: flex !important; }
+              .notification-row:hover .notif-row-timestamp { opacity: 0 !important; }
+              .notif-inbox-list .notif-checkbox-container { width: 0; margin-right: 0; opacity: 0; pointer-events: none; }
+              .notif-inbox-list.selection-mode .notif-checkbox-container { width: 24px; margin-right: 12px; opacity: 1; pointer-events: auto; }
+            </style>
+            
+            <div id="notifications-inbox-list" class="notif-inbox-list" style="display: flex; flex-direction: column; gap: 0; min-height: 700px;">
+              <!-- Rendered dynamically by profile.js -->
+              <div style="padding: 40px 20px; text-align: center; color: #64748b;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i>
+                <div style="margin-top: 12px;">Loading...</div>
+              </div>
             </div>
-            <input type="checkbox" class="acc-toggle-switch" checked>
+
+            <div id="notifications-pagination" style="margin-top: 24px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; display: none;">
+               <span id="notifs-page-info" style="color: #64748b; font-size: 0.9rem; margin-right: auto; padding-left: 8px;"></span>
+               <button type="button" id="btn-prev-notifs" style="padding: 8px 24px; border-radius: 20px; border: 1px solid #cbd5e1; background: white; font-weight: 600; font-size: 0.9rem; color: #0f172a; cursor: pointer; transition: background 0.2s;">
+                 Previous
+               </button>
+               <span id="notifs-page-number" style="color: #0f172a; font-weight: 600; font-size: 0.95rem; min-width: 24px; text-align: center;">1</span>
+               <button type="button" id="btn-next-notifs" style="padding: 8px 24px; border-radius: 20px; border: 1px solid #cbd5e1; background: white; font-weight: 600; font-size: 0.9rem; color: #0f172a; cursor: pointer; transition: background 0.2s;">
+                 Next
+               </button>
+            </div>
+
+            <!-- Notification Settings Section -->
+            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-gear" style="color: #64748b;"></i> Notification Settings
+              </h3>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                <div>
+                  <div style="font-weight: 600; font-size: 0.9rem; color: #0f172a;">Notification badge on header</div>
+                  <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">Show unread count on the bell icon</div>
+                </div>
+                <label style="position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer;">
+                  <input type="checkbox" id="notif-page-mute-toggle" style="opacity: 0; width: 0; height: 0;">
+                  <span id="notif-mute-slider" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #22c55e; border-radius: 24px; transition: background 0.3s;">
+                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: transform 0.3s; display: block;" id="notif-mute-knob"></span>
+                  </span>
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
+          
+          <!-- VIEW: NOTIFICATION PREVIEW -->
+          <div id="notification-preview-view" style="display: none;" class="panel-card">
+            <div class="preview-toolbar" style="display: flex; align-items: center; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0; margin-bottom: 24px;">
+              <button type="button" class="notif-toolbar-btn" id="notif-preview-back-btn" title="Back to Notifications" style="margin-right: 8px;">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+              
+              <div style="flex: 1;"></div>
+              
+              <button type="button" class="notif-toolbar-btn" id="notif-preview-delete-btn" title="Delete">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+              <button type="button" class="notif-toolbar-btn" id="notif-preview-unread-btn" title="Mark as Unread">
+                <i class="fa-regular fa-envelope"></i>
+              </button>
+            </div>
+            
+            <div class="preview-content" style="padding: 0 12px;">
+              <h3 id="notif-preview-title" style="margin: 0 0 16px 0; font-size: 1.5rem; color: #0f172a;">Notification Title</h3>
+              <div id="notif-preview-meta" style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <span id="notif-preview-date">Date</span>
+              </div>
+              <div id="notif-preview-sender" style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <span style="font-weight: 600; color: #334155; font-size: 0.95rem;">SenpaiWorks Team <span style="font-weight: 400; color: #94a3b8;" id="notif-preview-category-name"></span></span>
+              </div>
+              <div id="notif-preview-body" style="font-size: 1.05rem; color: #334155; line-height: 1.7; margin-bottom: 32px; min-height: 250px;">
+                Notification body goes here.
+              </div>
+            </div>
+          </div>
+      </div>
       </div>
 
       <!-- 5. SAVED ADDRESSES TAB -->
       <div class="account-tab-panel" id="tab-panel-addresses">
-        <div class="panel-header">
-          <h2>Saved Shipping Addresses</h2>
-          <p>Manage your delivery addresses for quick checkout.</p>
+        <!-- VIEW 1: SAVED ADDRESSES GRID VIEW -->
+        <div id="addresses-grid-view">
+          <div class="panel-header">
+            <h2>Saved Shipping Addresses</h2>
+            <p>Manage your delivery addresses for quick checkout.</p>
+          </div>
+
+          <div class="addresses-grid-wrap" id="user-saved-addresses-grid">
+            <!-- Dynamically rendered by loadSavedAddresses() -->
+          </div>
         </div>
 
-        <div class="addresses-grid-wrap">
-          <div class="address-card default-address">
-            <span class="default-badge"><i class="fa-solid fa-star"></i> Default Address</span>
-            <h4 class="address-name">Suhas</h4>
-            <p class="address-details">
-              SenpaiWorks Studio, High Street<br>
-              Indiranagar, MG Road<br>
-              Bengaluru, KARNATAKA 560038<br>
-              India<br>
-              Phone: +91 98765 43210
-            </p>
-            <div class="address-card-actions">
-              <button class="btn-address-action"><i class="fa-solid fa-pen"></i> Edit</button>
-            </div>
+        <!-- VIEW 2: INLINE ADD / EDIT ADDRESS FORM VIEW (SenpaiWorks Brand Colors: Blue, Black, White) -->
+        <div id="addresses-form-view" style="display: none; width: 100%; max-width: 680px; margin: 0 auto; text-align: left;">
+          <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+            <a href="javascript:void(0)" onclick="closeAddressInlineForm()" style="color: #0284c7; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+              <i class="fa-solid fa-arrow-left"></i> Your Addresses
+            </a>
+            <span>&rsaquo;</span>
+            <span style="color: #0f172a; font-weight: 700;" id="inline-addr-breadcrumbs">New Address</span>
           </div>
 
-          <div class="add-address-card" onclick="openAddAddressModal()">
-            <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
-            <div class="add-txt">Add New Delivery Address</div>
+          <h2 style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 20px;" id="inline-addr-title">Add a new address</h2>
+
+          <!-- Autofill Banner with SenpaiWorks Blue & White -->
+          <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 10px; color: #0284c7; font-weight: 700; font-size: 0.92rem;">
+              <i class="fa-solid fa-location-dot" style="font-size: 1.25rem; color: #0284c7;"></i>
+              <span>Save time. Autofill your current location.</span>
+            </div>
+            <button type="button" onclick="autofillLocation()" style="background: #ffffff; border: 1.5px solid #0284c7; color: #0284c7; padding: 7px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.88rem; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);">
+              <i class="fa-solid fa-crosshairs"></i> Autofill
+            </button>
           </div>
+
+          <form id="address-inline-form" onsubmit="handleSaveAddressSubmit(event)">
+            <input type="hidden" id="addr-edit-id" value="">
+
+            <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
+              <label for="addr-country" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Country/Region</label>
+              <select id="addr-country" required class="acc-select-input" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #ffffff; font-weight: 600;">
+                <option value="India" selected>India</option>
+                <option value="United States">United States</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Canada">Canada</option>
+                <option value="Australia">Australia</option>
+                <option value="Japan">Japan</option>
+                <option value="Germany">Germany</option>
+                <option value="United Arab Emirates">United Arab Emirates</option>
+                <option value="Singapore">Singapore</option>
+              </select>
+            </div>
+
+            <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
+              <label for="addr-fullname" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Full name (First and Last name)</label>
+              <input type="text" id="addr-fullname" required placeholder="Full Name" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+            </div>
+
+            <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
+              <label for="addr-phone" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 2px; color: #0f172a;">Mobile number</label>
+              <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 6px;">May be used to assist delivery</div>
+              <input type="tel" id="addr-phone" required placeholder="10-digit mobile number" maxlength="10" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+            </div>
+
+            <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
+              <label for="addr-pincode" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Pincode</label>
+              <input type="text" id="addr-pincode" required placeholder="6 digits [0-9] PIN code" maxlength="6" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+            </div>
+
+            <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
+              <label for="addr-flat" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Flat, House no., Building, Company, Apartment</label>
+              <input type="text" id="addr-flat" required placeholder="House / Flat No, Building name" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+            </div>
+
+            <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
+              <label for="addr-street" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Area, Street, Sector, Village</label>
+              <input type="text" id="addr-street" required placeholder="Street address, Area, Sector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+            </div>
+
+            <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
+              <label for="addr-landmark" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Landmark</label>
+              <input type="text" id="addr-landmark" placeholder="E.g. near Apollo hospital" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+            </div>
+
+            <div class="form-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group-item" style="text-align: left;">
+                <label for="addr-city" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Town/City</label>
+                <input type="text" id="addr-city" required placeholder="City / Town" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+              </div>
+              <div class="form-group-item" style="text-align: left;">
+                <label for="addr-state" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">State</label>
+                <select id="addr-state" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #ffffff; font-weight: 600;">
+                  <option value="Karnataka" selected>Karnataka</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Telangana">Telangana</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  <option value="Gujarat">Gujarat</option>
+                  <option value="Kerala">Kerala</option>
+                  <option value="West Bengal">West Bengal</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="addr-is-default" style="width: 18px; height: 18px; cursor: pointer; accent-color: #0f172a;">
+              <label for="addr-is-default" style="font-weight: 700; font-size: 0.9rem; cursor: pointer; color: #0f172a;">Make this my default address</label>
+            </div>
+
+            <div class="form-group-item" style="margin-bottom: 24px; text-align: left;">
+              <label for="addr-instructions" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Delivery instructions (optional)</label>
+              <textarea id="addr-instructions" rows="3" placeholder="Add preferences, notes, access codes and more..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; box-sizing: border-box; outline: none; background: #ffffff;"></textarea>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <button type="submit" id="btn-submit-address" style="background: #0f172a; color: #ffffff; border: none; padding: 12px 32px; border-radius: 24px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);">
+                Add address
+              </button>
+              <button type="button" onclick="closeAddressInlineForm()" style="background: #ffffff; color: #0f172a; border: 1.5px solid #cbd5e1; padding: 12px 24px; border-radius: 24px; font-weight: 700; font-size: 0.95rem; cursor: pointer;">
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -391,7 +676,9 @@
           <div>
             <div class="wallet-label">NEW ACCOUNT REGISTRATION DISCOUNT</div>
             <div class="wallet-val">₹100.00 OFF</div>
-            <div class="wallet-sub">Use Promo Code: <strong style="color: #38bdf8; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 4px;">SENPAI100</strong> at checkout (1-time use per account).</div>
+            <div class="wallet-sub">Use Promo Code: <strong
+                style="color: #38bdf8; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 4px;">SENPAI100</strong>
+              at checkout (1-time use per account).</div>
           </div>
         </div>
 
@@ -428,8 +715,8 @@
 
           <hr class="panel-divider">
 
-          <h3 style="margin-top: 24px; color: #dc2626;">Account Sign Out</h3>
-          <button type="button" class="btn-order-action outline" style="color: #dc2626; border-color: #fca5a5;" onclick="handleSignOut()">
+          <h3 style="margin-top: 24px; color: #0f172a;">Account Sign Out</h3>
+          <button type="button" class="btn-order-action outline" onclick="handleSignOut()">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out Account
           </button>
         </div>
@@ -439,26 +726,66 @@
 
   </main>
 
+  <!-- Reusable Sign Out Confirmation Modal -->
+  <div id="signout-modal" class="auth-modal-overlay">
+    <div class="signout-modal-container">
+      <div class="signout-icon-wrap">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </div>
+      <h3 class="signout-title">Sign Out of SenpaiWorks?</h3>
+      <p class="signout-message">Are you sure you want to sign out? You will need to log in again to access your saved
+        orders and profile.</p>
+      <div class="signout-actions">
+        <button type="button" class="signout-btn-cancel" id="signout-cancel-btn">Cancel</button>
+        <button type="button" class="signout-btn-confirm" id="signout-confirm-btn">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
   <!-- INTERACTIVE IMAGE CROP MODAL -->
   <div id="crop-avatar-modal" class="orders-modal-overlay">
-    <div class="orders-modal-content" style="max-width: 420px; padding: 24px;">
-      <button class="orders-modal-close" onclick="closeCropModal()">&times;</button>
-      <h3 style="margin: 0 0 14px 0; font-size: 1.2rem; font-weight: 800; color: #0f172a;">Position & Zoom</h3>
+    <div class="orders-modal-content avatar-crop-modal-content"
+      style="max-width: 440px; background: #fcfcff; color: #ffffff; border: 1px solid #222226; border-radius: 20px; padding: 22px;">
 
-      <div class="crop-canvas-container" style="width: 100%; height: 260px; background: #0f172a; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; user-select: none;">
+      <!-- Modal Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #000000;">Crop Avatar</h3>
+        <button type="button" onclick="closeCropModal()" aria-label="Close"
+          style="background: #1f1f23; border: none; color: #a1a1aa; width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">✕</button>
+      </div>
+
+      <!-- Canvas Area (Grey Cropper Frame with Green Circle & Grid) -->
+      <div class="crop-canvas-container"
+        style="width: 100%; height: 300px; background: #808080; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; user-select: none; border: 1px solid #333338;">
         <canvas id="crop-canvas" style="cursor: grab; touch-action: none;"></canvas>
       </div>
 
-      <div style="margin: 16px 0 20px 0; display: flex; align-items: center; gap: 10px;">
-        <i class="fa-solid fa-magnifying-glass-minus" style="color: #64748b; font-size: 0.9rem;"></i>
-        <input type="range" id="crop-zoom-range" min="1" max="3" step="0.05" value="1" style="flex: 1; accent-color: #0f172a;">
-        <i class="fa-solid fa-magnifying-glass-plus" style="color: #64748b; font-size: 0.9rem;"></i>
+      <!-- Interactive Zoom Control Bar -->
+      <div
+        style="margin: 16px 0; display: flex; align-items: center; gap: 12px; background: #ffffff; padding: 10px 16px; border-radius: 12px; border: 1px solid #27272a;">
+        <button type="button" onclick="stepCropZoom(-0.15)"
+          style="background: none; border: none; color: #a1a1aa; cursor: pointer; font-size: 1rem; padding: 0 4px;"
+          title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+        <input type="range" id="crop-zoom-range" min="1" max="4" step="0.02" value="1"
+          style="flex: 1; accent-color: #000000; cursor: pointer;">
+        <button type="button" onclick="stepCropZoom(0.15)"
+          style="background: none; border: none; color: #a1a1aa; cursor: pointer; font-size: 1rem; padding: 0 4px;"
+          title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
       </div>
 
-      <div style="display: flex; gap: 12px;">
-        <button type="button" class="btn-secondary-order" onclick="closeCropModal()" style="flex: 1; justify-content: center; padding: 10px;">Cancel</button>
-        <button type="button" class="btn-view-order" onclick="saveCroppedAvatar()" style="flex: 1; justify-content: center; padding: 10px;">Save Photo</button>
+      <!-- Modal Footer Action Bar -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
+        <span style="font-size: 0.85rem; font-weight: 700; color: #71717a;">Max 3MB</span>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <button type="button" onclick="closeCropModal()"
+            style="background: none; border: none; color: #000000; font-size: 0.9rem; font-weight: 700; cursor: pointer; padding: 6px 12px;">Cancel</button>
+          <button type="button" onclick="saveCroppedAvatar()"
+            style="background: #000000; color: #ffffff; border: none; border-radius: 10px; padding: 10px 22px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-floppy-disk"></i> Save
+          </button>
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -468,11 +795,13 @@
       <button class="orders-modal-close" onclick="closeTrackModal()">&times;</button>
       <div class="modal-header-tag"><i class="fa-solid fa-truck-fast"></i> Live Shipment Tracking</div>
       <h3 id="track-order-id-title">Tracking Order #ORD-105010</h3>
-      
+
       <div class="track-info-box">
         <div><strong>Carrier:</strong> <span id="track-carrier-name">Blue Dart Express</span></div>
-        <div><strong>AWB Tracking ID:</strong> <span id="track-awb-val" style="text-decoration: underline;">BD-884920194</span></div>
-        <div><strong>Est. Delivery:</strong> <span id="track-est-date" style="color: #059669; font-weight: 800;">Thu, 30 Jul 2026</span></div>
+        <div><strong>AWB Tracking ID:</strong> <span id="track-awb-val"
+            style="text-decoration: underline;">BD-884920194</span></div>
+        <div><strong>Est. Delivery:</strong> <span id="track-est-date" style="color: #059669; font-weight: 800;">Thu, 30
+            Jul 2026</span></div>
       </div>
 
       <div class="track-timeline-stepper">
@@ -498,17 +827,19 @@
     </div>
   </div>
 
-  <!-- Shared Return Request Modal -->
+  <!-- Shared Replacement Request Modal -->
   <div id="return-modal" class="orders-modal-overlay">
     <div class="orders-modal-content">
       <button class="orders-modal-close" onclick="closeReturnModal()">&times;</button>
-      <div class="modal-header-tag"><i class="fa-solid fa-rotate-left"></i> Return / Replacement Request</div>
-      <h3>Initiate Return for Order <span id="return-order-id-txt">#ORD-105010</span></h3>
+      <div class="modal-header-tag"><i class="fa-solid fa-rotate-left"></i> Replacement Request</div>
+      <h3>Initiate Replacement for Order <span id="return-order-id-txt">#ORD-105010</span></h3>
 
       <form id="return-request-form" onsubmit="handleReturnSubmit(event)">
         <div class="form-group-item" style="margin-bottom: 14px;">
-          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Reason for Return</label>
-          <select id="return-reason-select" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
+          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Reason for
+            Replacement</label>
+          <select id="return-reason-select" required
+            style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
             <option value="">Select a reason...</option>
             <option value="size">Size / Fit issue</option>
             <option value="damaged">Item damaged or print defect</option>
@@ -518,15 +849,44 @@
         </div>
 
         <div class="form-group-item" style="margin-bottom: 14px;">
-          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Preferred Resolution</label>
-          <select id="return-resolution-select" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
+          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Preferred
+            Resolution</label>
+          <select id="return-resolution-select" required
+            style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
             <option value="refund">Refund to Original Payment Method</option>
             <option value="replacement">Free Replacement / Exchange</option>
           </select>
         </div>
 
-        <button type="submit" class="btn-view-order" style="width: 100%;">Submit Return Request</button>
+        <button type="submit" class="btn-view-order" style="width: 100%;">Submit Replacement Request</button>
       </form>
+    </div>
+  </div>
+
+  <!-- Amazon-Style Confirm Deletion Modal -->
+  <div id="delete-address-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content" style="max-width: 480px; text-align: left; padding: 24px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0;">Confirm Deletion</h3>
+        <button class="orders-modal-close" onclick="closeDeleteAddressModal()" style="position: static; font-size: 1.25rem; background: none; border: none; cursor: pointer; color: #64748b;">&times;</button>
+      </div>
+
+      <div id="delete-addr-preview" style="font-size: 0.88rem; color: #0f172a; line-height: 1.45; margin-bottom: 16px;">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div style="font-size: 0.8rem; color: #64748b; line-height: 1.5; margin-bottom: 20px; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        <strong style="color: #0f172a;">Please note:</strong> Deleting this address will not delete any pending orders being shipped to this address. To ensure uninterrupted fulfillment of future orders, please update any wishlists, subscribe and save settings using this address.
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+        <button type="button" onclick="closeDeleteAddressModal()" style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #0f172a; padding: 8px 24px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease;">
+          No
+        </button>
+        <button type="button" id="btn-confirm-delete-addr" onclick="confirmDeleteAddressAction()" style="background: #0f172a; border: none; color: #ffffff; padding: 8px 28px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);">
+          Yes
+        </button>
+      </div>
     </div>
   </div>
 
@@ -540,8 +900,24 @@
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 
-  <script src="scripts/orders.js?v=85"></script>
-  <script src="scripts/profile.js?v=85"></script>
+  <script src="scripts/orders.js?v=88"></script>
+  <script src="scripts/profile.js?v=88"></script>
+  <!-- Custom Delete Confirmation Modal -->
+  <div class="auth-modal-overlay" id="delete-confirm-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; font-family: inherit;">
+    <div style="background: white; width: 100%; max-width: 320px; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); transform: translateY(0); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); font-family: inherit; text-align: center;">
+      <div style="width: 44px; height: 44px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.25rem; color: #ef4444;"></i>
+      </div>
+      <h3 style="margin-bottom: 8px; font-size: 1.15rem; font-weight: 700; color: #0f172a; font-family: inherit;">Delete Notifications</h3>
+      <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.4; font-family: inherit;" id="delete-confirm-msg">Are you sure you want to delete these notifications? This action cannot be undone.</p>
+      
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="btn-cancel-delete" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; color: #475569; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.9rem;">Cancel</button>
+        <button id="btn-confirm-delete" style="padding: 8px 16px; border-radius: 8px; border: none; background: #ef4444; color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(239,68,68,0.2); font-family: inherit; font-size: 0.9rem;">Delete</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

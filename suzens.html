@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suzens — Virtual Idol Anime Band | Official Studio Showcase</title>
+  <meta name="description"
+    content="Explore Suzens, the flagship 3D virtual anime band by SenpaiWorks. Discover band member profiles, character lore, upcoming album releases, and live stage concert performances." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Global Styles & Page Styles -->
+  <link rel="stylesheet" href="header.css" />
+  <link rel="stylesheet" href="drawer.css" />
+  <link rel="stylesheet" href="footer.css" />
+  <link rel="stylesheet" href="suzens.css" />
+</head>
+
+<body>
+  <!-- Dynamic Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=7"></script>
+
+  <!-- Side Drawer Container -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=7"></script>
+
+  <main class="suzens-page-main">
+    <!-- SECTION 1: CINEMATIC HERO & LIVE EVENT COUNTDOWN -->
+    <section class="sz-hero-section" id="sz-hero">
+      <div class="sz-hero-bg-overlay"></div>
+      <div class="sz-hero-glow-orb sz-orb-1"></div>
+      <div class="sz-hero-glow-orb sz-orb-2"></div>
+
+      <div class="sz-hero-container">
+        <div class="sz-hero-badge">
+          <i class="fa-solid fa-sparkles"></i> VIRTUAL IDOL ANIME BAND · OFFICIAL PORTAL
+        </div>
+        <h1 class="sz-hero-title">
+          SUZENS <span class="sz-gradient-text">LIVE</span>
+        </h1>
+        <p class="sz-hero-subtitle">
+          Where high-octane 3D anime aesthetics, cyberpunk storytelling, and electric J-rock melodies collide.
+          Step into the neon world of Suzana, Tiara, Remi, and Ayana.
+        </p>
+
+        <!-- Live Concert Event Banner -->
+        <div class="sz-event-spotlight-card">
+          <div class="sz-event-tag">NEXT STAGE PERFORMANCE</div>
+          <h2 class="sz-event-name">TOKYO CYBERDOME WORLD TOUR 2026</h2>
+          <p class="sz-event-meta"><i class="fa-solid fa-location-dot"></i> Tokyo Cyberdome & Metaverse Live Stream · Aug 28, 2026</p>
+
+          <div class="sz-countdown-box">
+            <div class="sz-cd-unit"><span id="cd-days">28</span><label>DAYS</label></div>
+            <div class="sz-cd-colon">:</div>
+            <div class="sz-cd-unit"><span id="cd-hours">14</span><label>HOURS</label></div>
+            <div class="sz-cd-colon">:</div>
+            <div class="sz-cd-unit"><span id="cd-mins">32</span><label>MINS</label></div>
+            <div class="sz-cd-colon">:</div>
+            <div class="sz-cd-unit"><span id="cd-secs">45</span><label>SECS</label></div>
+          </div>
+
+          <div class="sz-event-actions">
+            <a href="#sz-tour" class="sz-btn sz-btn-primary"><i class="fa-solid fa-ticket"></i> Get Concert Tickets</a>
+            <a href="#sz-members" class="sz-btn sz-btn-outline"><i class="fa-solid fa-users"></i> Meet The Band</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ANIMATED CHARACTER & MEMBER SHOWCASE -->
+    <section class="sz-section sz-members-section" id="sz-members">
+      <div class="sz-section-header">
+        <span class="sz-sub-tag"><i class="fa-solid fa-music"></i> THE BAND MEMBERS</span>
+        <h2 class="sz-section-title">MEET THE <span class="sz-gradient-text">SUZENS</span> IDOLS</h2>
+        <p class="sz-section-desc">Click any band member to explore their character photo, role, story lore, and instrument specialty.</p>
+      </div>
+
+      <div class="sz-members-showcase-container">
+        <!-- Member Selector Tabs -->
+        <div class="sz-member-tabs" id="sz-member-tabs">
+          <button class="sz-tab-btn active" data-member="suzana">
+            <img src="assets/suzana.png" alt="Suzana Thumbnail" />
+            <div class="sz-tab-info">
+              <span class="sz-tab-name">SUZANA</span>
+              <span class="sz-tab-role">Lead Vocal & Rhythm</span>
+            </div>
+          </button>
+          <button class="sz-tab-btn" data-member="tiara">
+            <img src="assets/Tiara.png" alt="Tiara Thumbnail" />
+            <div class="sz-tab-info">
+              <span class="sz-tab-name">TIARA</span>
+              <span class="sz-tab-role">Lead Guitar & Synth</span>
+            </div>
+          </button>
+          <button class="sz-tab-btn" data-member="remi">
+            <img src="assets/Remi.png" alt="Remi Thumbnail" />
+            <div class="sz-tab-info">
+              <span class="sz-tab-name">REMI</span>
+              <span class="sz-tab-role">Drums & Percussion</span>
+            </div>
+          </button>
+          <button class="sz-tab-btn" data-member="ayana">
+            <img src="assets/Ayana.png" alt="Ayana Thumbnail" />
+            <div class="sz-tab-info">
+              <span class="sz-tab-name">AYANA</span>
+              <span class="sz-tab-role">Bass & Visual Center</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Dynamic Character Display Card -->
+        <div class="sz-character-spotlight-card" id="sz-character-spotlight">
+          <div class="sz-char-visual-col">
+            <div class="sz-char-img-wrapper">
+              <img id="sz-char-img" src="assets/suzana all out.png" alt="Suzana Character Full Photo" />
+            </div>
+          </div>
+
+          <div class="sz-char-details-col">
+            <div class="sz-char-badge" id="sz-char-role-badge">LEAD VOCALIST & BAND LEADER</div>
+            <h3 class="sz-char-name" id="sz-char-name">SUZANA</h3>
+            <div class="sz-char-title" id="sz-char-title">"The Electric Spark"</div>
+
+            <p class="sz-char-desc" id="sz-char-desc">
+              Charismatic, fierce, and possessing raw vocal power, Suzana is the heartbeat of Suzens.
+              She crafts infectious melodies and commands the stage with explosive high notes during live holographic performances.
+            </p>
+
+            <div class="sz-char-stats">
+              <div class="sz-stat-item">
+                <span class="sz-stat-label">Instrument:</span>
+                <span class="sz-stat-val" id="sz-char-instrument">Custom Cyber Fender Stratocaster & Vocals</span>
+              </div>
+              <div class="sz-stat-item">
+                <span class="sz-stat-label">Vocal Style:</span>
+                <span class="sz-stat-val" id="sz-char-vocal">High Octane J-Rock & Emotional Melodic Pop</span>
+              </div>
+              <div class="sz-stat-item">
+                <span class="sz-stat-label">Signature Color:</span>
+                <span class="sz-stat-val" id="sz-char-color"><i class="fa-solid fa-circle" style="color: #ff2a75;"></i> Neon Crimson (#FF2A75)</span>
+              </div>
+            </div>
+
+            <div class="sz-char-quote-box">
+              <i class="fa-solid fa-quote-left"></i>
+              <p id="sz-char-quote">"Our music isn't just sound — it's a pulse that connects the real and virtual dimensions!"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: UPCOMING ALBUMS & DISCOGRAPHY -->
+    <section class="sz-section sz-albums-section" id="sz-albums">
+      <div class="sz-section-header">
+        <span class="sz-sub-tag"><i class="fa-solid fa-compact-disc"></i> DISCOGRAPHY & RELEASES</span>
+        <h2 class="sz-section-title">UPCOMING <span class="sz-gradient-text">ALBUMS</span> & SINGLES</h2>
+        <p class="sz-section-desc">Preview the latest studio recordings, tracklists, and digital audio drops from Suzens.</p>
+      </div>
+
+      <div class="sz-albums-grid">
+        <!-- Album Card 1 -->
+        <div class="sz-album-card">
+          <div class="sz-album-cover">
+            <img src="assets/suzens band.png" alt="First Bloom Album Cover" />
+            <div class="sz-album-tag">NEW ALBUM · OUT AUG 2026</div>
+          </div>
+          <div class="sz-album-content">
+            <h3 class="sz-album-title">FIRST BLOOM: METAVERSE ECLIPSE</h3>
+            <p class="sz-album-meta">Full Album · 10 Tracks · J-Rock / Cyberpop</p>
+
+            <ul class="sz-tracklist">
+              <li><span class="tk-num">01</span> Neon Velocity (Intro) <span class="tk-dur">1:42</span></li>
+              <li><span class="tk-num">02</span> Tokyo Godrays (Title Track) <span class="tk-dur">3:48</span></li>
+              <li><span class="tk-num">03</span> Cybernetic Heartbeats <span class="tk-dur">4:12</span></li>
+              <li><span class="tk-num">04</span> Holographic Horizon <span class="tk-dur">3:25</span></li>
+            </ul>
+
+            <div class="sz-audio-player-sim">
+              <button type="button" class="sz-play-btn" id="btn-play-sim-1"><i class="fa-solid fa-play"></i></button>
+              <div class="sz-track-info-sim">
+                <span class="sz-sim-track-name">Tokyo Godrays (Preview Snippet)</span>
+                <div class="sz-sim-progress-bar"><div class="sz-sim-progress-fill" style="width: 45%;"></div></div>
+              </div>
+            </div>
+
+            <div class="sz-album-actions">
+              <button type="button" class="sz-btn sz-btn-sm"><i class="fa-brands fa-spotify"></i> Pre-Save on Spotify</button>
+              <button type="button" class="sz-btn sz-btn-sm sz-btn-outline"><i class="fa-brands fa-apple"></i> Apple Music</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Album Card 2 -->
+        <div class="sz-album-card">
+          <div class="sz-album-cover">
+            <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp" alt="Suzana Solo Single" />
+            <div class="sz-album-tag">SINGLE · STREAMING NOW</div>
+          </div>
+          <div class="sz-album-content">
+            <h3 class="sz-album-title">SUZANA — RESONANCE IN RED</h3>
+            <p class="sz-album-meta">Special Single · 3 Tracks · Anime OST</p>
+
+            <ul class="sz-tracklist">
+              <li><span class="tk-num">01</span> Resonance in Red <span class="tk-dur">3:55</span></li>
+              <li><span class="tk-num">02</span> Resonance (Instrumental) <span class="tk-dur">3:55</span></li>
+              <li><span class="tk-num">03</span> Acoustic Live Session <span class="tk-dur">4:10</span></li>
+            </ul>
+
+            <div class="sz-audio-player-sim">
+              <button type="button" class="sz-play-btn" id="btn-play-sim-2"><i class="fa-solid fa-play"></i></button>
+              <div class="sz-track-info-sim">
+                <span class="sz-sim-track-name">Resonance in Red (Acoustic)</span>
+                <div class="sz-sim-progress-bar"><div class="sz-sim-progress-fill" style="width: 65%;"></div></div>
+              </div>
+            </div>
+
+            <div class="sz-album-actions">
+              <button type="button" class="sz-btn sz-btn-sm"><i class="fa-brands fa-spotify"></i> Listen Now</button>
+              <button type="button" class="sz-btn sz-btn-sm sz-btn-outline"><i class="fa-brands fa-youtube"></i> Watch MV</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: UPCOMING STAGE PERFORMANCES & TOUR -->
+    <section class="sz-section sz-tour-section" id="sz-tour">
+      <div class="sz-section-header">
+        <span class="sz-sub-tag"><i class="fa-solid fa-calendar-days"></i> LIVE CONCERT SCHEDULE</span>
+        <h2 class="sz-section-title">UPCOMING <span class="sz-gradient-text">STAGE PERFORMANCES</span></h2>
+        <p class="sz-section-desc">Experience Suzens live in 3D holographic projection across major cities and virtual world arenas.</p>
+      </div>
+
+      <div class="sz-tour-table-wrapper">
+        <table class="sz-tour-table">
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>CITY / VENUE</th>
+              <th>STAGE TYPE</th>
+              <th>STATUS</th>
+              <th>TICKETS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sz-date-col">
+                <span class="sz-date-day">28</span>
+                <span class="sz-date-mo">AUG 2026</span>
+              </td>
+              <td>
+                <div class="sz-venue-title">TOKYO CYBERDOME</div>
+                <div class="sz-venue-sub">Tokyo, Japan · Main Arena</div>
+              </td>
+              <td><span class="sz-badge sz-badge-holo">3D Hologram Live</span></td>
+              <td><span class="sz-status sz-status-fast">Selling Fast</span></td>
+              <td><button type="button" class="sz-ticket-btn" onclick="openTicketModal('Tokyo Cyberdome')">Reserve Seats</button></td>
+            </tr>
+            <tr>
+              <td class="sz-date-col">
+                <span class="sz-date-day">12</span>
+                <span class="sz-date-mo">SEP 2026</span>
+              </td>
+              <td>
+                <div class="sz-venue-title">ANIME EXPO MAIN STAGE</div>
+                <div class="sz-venue-sub">Los Angeles, CA · Hall A</div>
+              </td>
+              <td><span class="sz-badge sz-badge-hybrid">Hybrid Motion Live</span></td>
+              <td><span class="sz-status sz-status-available">Available</span></td>
+              <td><button type="button" class="sz-ticket-btn" onclick="openTicketModal('Anime Expo LA')">Reserve Seats</button></td>
+            </tr>
+            <tr>
+              <td class="sz-date-col">
+                <span class="sz-date-day">04</span>
+                <span class="sz-date-mo">OCT 2026</span>
+              </td>
+              <td>
+                <div class="sz-venue-title">SEOUL DIGITAL METAVERSE ARENA</div>
+                <div class="sz-venue-sub">Seoul, South Korea · VR World</div>
+              </td>
+              <td><span class="sz-badge sz-badge-vr">VR Stream</span></td>
+              <td><span class="sz-status sz-status-vip">VIP Pass Only</span></td>
+              <td><button type="button" class="sz-ticket-btn" onclick="openTicketModal('Seoul VR Arena')">Get VR Pass</button></td>
+            </tr>
+            <tr>
+              <td class="sz-date-col">
+                <span class="sz-date-day">19</span>
+                <span class="sz-date-mo">NOV 2026</span>
+              </td>
+              <td>
+                <div class="sz-venue-title">BERLIN ELECTRA HALL</div>
+                <div class="sz-venue-sub">Berlin, Germany · Central Stage</div>
+              </td>
+              <td><span class="sz-badge sz-badge-holo">3D Hologram Live</span></td>
+              <td><span class="sz-status sz-status-soon">Coming Soon</span></td>
+              <td><button type="button" class="sz-ticket-btn disabled" disabled>Notify Me</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Ticket Reservation Modal -->
+  <div class="sz-modal-backdrop" id="sz-ticket-modal" style="display: none;">
+    <div class="sz-modal-card">
+      <button type="button" class="sz-modal-close" id="sz-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="sz-modal-header">
+        <span class="sz-sub-tag">SUZENS STAGE PASS</span>
+        <h3 class="sz-modal-title">RESERVE CONCERT TICKETS</h3>
+        <p id="sz-modal-venue-name" style="color: #ff2a75; font-weight: 700; margin-top: 4px;">Tokyo Cyberdome</p>
+      </div>
+      <form class="sz-modal-form" id="sz-ticket-form">
+        <div class="sz-form-group">
+          <label>Full Name</label>
+          <input type="text" placeholder="Your name" required />
+        </div>
+        <div class="sz-form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@example.com" required />
+        </div>
+        <div class="sz-form-group">
+          <label>Ticket Quantity</label>
+          <select>
+            <option value="1">1 Pass ($45 USD)</option>
+            <option value="2" selected>2 Passes ($90 USD)</option>
+            <option value="4">4 VIP Fan Passes ($220 USD)</option>
+          </select>
+        </div>
+        <button type="submit" class="sz-btn sz-btn-primary" style="width: 100%; margin-top: 10px;">
+          Confirm Reservation
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contact & Footer Container -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630820/to_love_ru_copy_sthzsw.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <!-- Page Logic Script -->
+  <script src="scripts/suzens.js"></script>
+</body>
+
+</html>

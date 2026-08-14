@@ -2,9 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="icon"
-    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-    type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Community Hub - SenpaiWorks</title>
@@ -156,17 +154,6 @@
             <h2>Support SenpaiWorks</h2>
             <p class="donation-tagline">Your contributions help us build open-source tools, release free animation rigs, and expand our rendering resources!</p>
 
-            <!-- Goal Section -->
-            <div class="goal-container">
-              <div class="goal-meta">
-                <span class="goal-title"><i class="fa-solid fa-server"></i> Render Farm Goal</span>
-                <span class="goal-numbers" id="goal-progress-text">$1,150 / $1,500</span>
-              </div>
-              <div class="goal-progress-bar">
-                <div class="goal-progress-fill" id="goal-progress-fill" style="width: 76.6%"></div>
-              </div>
-            </div>
-
             <!-- Currency Selector -->
             <div class="form-group currency-selector-wrapper">
               <label for="currency-select">Select Currency</label>
@@ -176,8 +163,8 @@
               </select>
             </div>
 
-            <form class="donation-form" id="donation-form" onsubmit="event.preventDefault();">
-              <!-- STEP 1: Amount & Donor Details -->
+            <form class="donation-form" id="donation-form">
+              <!-- Amount & Donor Details -->
               <div class="donation-step" id="donation-step-details">
                 <!-- Tier Selector -->
                 <div class="form-group">
@@ -216,7 +203,7 @@
                   <textarea id="donor-message" rows="2" placeholder="Love your animation scripts! Keep it up!"></textarea>
                 </div>
 
-                <button type="button" class="submit-btn" id="btn-proceed-to-payment">
+                <button type="submit" class="submit-btn" id="btn-donate-submit">
                   <div class="btn-hearts-container">
                     <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -226,63 +213,9 @@
                   <span class="btn-text">Donate</span>
                 </button>
               </div>
-
-              <!-- STEP 2: Payment Details (Hidden by default) -->
-              <div class="donation-step" id="donation-step-payment" style="display: none;">
-                <!-- Payment Method Selector -->
-                <div class="form-group">
-                  <label>Select Payment Method</label>
-                  <div class="payment-methods">
-                    <button type="button" class="payment-method-btn active-payment" data-method="card">
-                      <i class="fa-solid fa-credit-card"></i> Card
-                    </button>
-                    <button type="button" class="payment-method-btn" data-method="paypal">
-                      <i class="fa-brands fa-paypal"></i> PayPal
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Dynamic Form: Card Inputs -->
-                <div id="payment-fields-card" class="payment-fields-group">
-                  <div class="form-group">
-                    <label for="card-num">Card Number</label>
-                    <input type="text" id="card-num" placeholder="1234 5678 1234 5678" maxlength="19" required>
-                  </div>
-                  <div style="display: flex; gap: 12px;">
-                    <div class="form-group" style="flex: 1;">
-                      <label for="card-expiry">Expiry Date</label>
-                      <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" required>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                      <label for="card-cvv">CVV</label>
-                      <input type="password" id="card-cvv" placeholder="123" maxlength="3" required>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Dynamic Form: PayPal Notice -->
-                <div id="payment-fields-paypal" class="payment-fields-group" style="display: none;">
-                  <div class="paypal-info-box">
-                    <i class="fa-brands fa-paypal paypal-icon-large"></i>
-                    <p>Click below to open secure simulated PayPal authorization pop-up. Funds will be deducted from your PayPal account.</p>
-                  </div>
-                </div>
-
-                <div class="step-navigation" style="display: flex; gap: 12px; margin-top: 20px;">
-                  <button type="button" class="reset-donation-btn" id="btn-back-to-details" style="flex: 1; background: #e2e8f0; color: #4a5568;">Back</button>
-                  <button type="submit" class="submit-btn" id="donation-submit-btn" style="flex: 2; margin-top: 0;">
-                    <div class="btn-hearts-container">
-                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                      <svg class="btn-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    </div>
-                    <span class="btn-text">Complete Support</span>
-                  </button>
-                </div>
-              </div>
             </form>
           </div>
+        </div>
 
           <!-- Success State Container (hidden by default) -->
           <div class="donation-success-state" id="donation-success-state" style="display: none;">
@@ -290,22 +223,42 @@
               <i class="fa-solid fa-circle-check"></i>
             </div>
             <h2>Thank You, <span id="success-donor-name">Supporter</span>!</h2>
-            <p>Your generous contribution of <strong id="success-donation-amount">$1.00</strong> was received successfully.</p>
+            <p>Your generous contribution of <strong id="success-donation-amount">$1.00</strong> was processed successfully.</p>
+            
+            <div class="receipt-box" id="donation-receipt-box">
+              <div class="receipt-header">
+                <span class="receipt-badge"><i class="fa-solid fa-shield-check"></i> Official Receipt</span>
+                <span class="receipt-txn-id" id="receipt-txn-id">TXN-DON-123456</span>
+              </div>
+              <div class="receipt-row">
+                <span>Payment Method:</span>
+                <strong id="receipt-payment-method">Credit Card</strong>
+              </div>
+              <div class="receipt-row">
+                <span>Gateway Status:</span>
+                <strong style="color: #10b981;"><i class="fa-solid fa-check"></i> Authorized & Verified</strong>
+              </div>
+              <div class="receipt-row">
+                <span>Date:</span>
+                <strong id="receipt-date">Today</strong>
+              </div>
+            </div>
+
             <div class="success-card">
               <i class="fa-solid fa-quote-left quote-icon"></i>
               <p class="success-message" id="success-donor-message">"Love your animation scripts!"</p>
             </div>
-            <p class="success-footnote">A receipt and access to your donor benefits have been sent to <span id="success-donor-email">email</span>.</p>
+            <p class="success-footnote">A receipt and confirmation have been sent to <span id="success-donor-email">email</span>.</p>
             <button type="button" class="reset-donation-btn" id="reset-donation-btn">Donate Again</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Community Reviews Section -->
+    <!-- Community Feedback Section -->
     <section class="community-reviews-section">
       <div class="reviews-header-row">
-        <h2 class="section-title">Community Reviews</h2>
+        <h2 class="section-title">Community Feedback <span class="reviews-count-pill" id="comm-reviews-count-pill">0</span></h2>
         <div class="reviews-actions">
           <div class="reviews-sort-wrapper">
             <label for="reviews-sort-select">Sort by:</label>
@@ -315,7 +268,7 @@
               <option value="best">Most Liked (Best)</option>
             </select>
           </div>
-          <a href="feedback.html" onclick="if(window.checkAuthOrPrompt && !window.isUserLoggedIn()){ event.preventDefault(); window.checkAuthOrPrompt('write a review', function(){ window.location.href='feedback.html'; }); }" class="leave-review-btn"><i class="fa-solid fa-pen-to-square"></i> Write a Review</a>
+          <button type="button" id="btn-open-review-modal" class="leave-review-btn"><i class="fa-solid fa-pen-to-square"></i> Write Feedback</button>
         </div>
       </div>
       <div class="reviews-grid" id="community-reviews-grid">
@@ -323,11 +276,89 @@
       </div>
       <div class="load-more-container" id="load-more-container" style="display: none;">
         <button id="btn-load-more" class="load-more-btn">
-          Load More Reviews <i class="fa-solid fa-chevron-down"></i>
+          Load More Feedback <i class="fa-solid fa-chevron-down"></i>
         </button>
       </div>
     </section>
   </main>
+
+  <!-- Write Community Feedback Modal Overlay -->
+  <div class="review-modal-overlay" id="write-review-modal">
+    <div class="review-modal-card">
+      <button type="button" class="review-modal-close" id="btn-close-review-modal" title="Close Modal">&times;</button>
+      <div class="review-modal-header">
+        <span class="review-modal-badge"><i class="fa-solid fa-star"></i> Feedback</span>
+        <h2>Write Community Feedback</h2>
+        <p>Share your experience and thoughts with the SenpaiWorks community.</p>
+        <div id="feedback-auth-notice" class="feedback-auth-notice" style="display: none;">
+          <i class="fa-solid fa-lock"></i> Please <a href="login.html">Sign In</a> to submit your response.
+        </div>
+      </div>
+
+      <form id="form-write-review" class="review-modal-form">
+        <!-- Star Rating -->
+        <div class="form-group">
+          <label>Star Rating *</label>
+          <div class="star-rating-picker" id="star-rating-picker">
+            <i class="fa-solid fa-star star-item active" data-rating="1"></i>
+            <i class="fa-solid fa-star star-item active" data-rating="2"></i>
+            <i class="fa-solid fa-star star-item active" data-rating="3"></i>
+            <i class="fa-solid fa-star star-item active" data-rating="4"></i>
+            <i class="fa-solid fa-star star-item active" data-rating="5"></i>
+            <span class="rating-value-label" id="rating-value-label">5 Stars (Excellent)</span>
+          </div>
+          <input type="hidden" id="rev-rating" value="5">
+        </div>
+
+        <!-- Review Title -->
+        <div class="form-group">
+          <label for="rev-title">Feedback Title *</label>
+          <input type="text" id="rev-title" required placeholder="e.g. Insane quality on Ken Kaneki Tee!">
+        </div>
+
+        <!-- Category (with Custom / None option) -->
+        <div class="form-group">
+          <label for="rev-category">Category *</label>
+          <select id="rev-category" required>
+            <option value="None">None / General</option>
+            <option value="Merchandise / Clothing">Merchandise / Clothing</option>
+            <option value="3D Assets & Rigs">3D Assets & Rigs</option>
+            <option value="Digital Courses">Digital Courses</option>
+            <option value="2D Art & Wallpapers">2D Art & Wallpapers</option>
+            <option value="Custom">Custom Category...</option>
+          </select>
+        </div>
+
+        <!-- Custom Category (hidden by default) -->
+        <div class="form-group" id="wrap-custom-cat" style="display: none;">
+          <label for="rev-custom-category">Custom Category Name *</label>
+          <input type="text" id="rev-custom-category" placeholder="e.g. Anime Manga Brushes, Custom Rig">
+        </div>
+
+        <!-- Feedback Details -->
+        <div class="form-group">
+          <label for="rev-text">Feedback Content *</label>
+          <textarea id="rev-text" rows="4" required placeholder="Tell us about the product quality, fit, shipping experience, or feature feedback..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-review-btn">
+          <i class="fa-solid fa-paper-plane"></i> Submit Community Feedback
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Feedback Success Dialogue Box Overlay -->
+  <div class="feedback-toast-dialogue" id="feedback-success-dialogue">
+    <div class="feedback-dialogue-card">
+      <div class="dialogue-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3 id="dialogue-title">Feedback Submitted!</h3>
+      <p id="dialogue-message">Thank you! Your community feedback has been posted successfully and is now live.</p>
+      <button type="button" class="dialogue-btn" id="dialogue-close-btn">Awesome!</button>
+    </div>
+  </div>
 
   <!-- Contact Section -->
   <div id="contact-container"></div>
@@ -341,7 +372,7 @@
   <script src="scripts/footer.js"></script>
 
   <!-- Community reviews logic -->
-  <script src="scripts/community.js"></script>
+  <script src="scripts/community.js?v=999"></script>
 
 </body>
 

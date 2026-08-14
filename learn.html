@@ -2,9 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="icon"
-    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-    type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Learn & Tutorials - SenpaiWorks</title>
@@ -74,7 +72,7 @@
         <!-- Course 1: ZBrush Character Sculpting -->
         <a href="course-detail.html?id=zbrush" class="teaser-card">
           <div class="teaser-thumb-wrapper">
-            <img src="assets/courses/zbrush-course.png" alt="ZBrush Character Sculpting Masterclass" class="teaser-thumb">
+            <img src="assets/courses/zbrush-course.png" alt="ZBrush Character Sculpting Masterclass" class="teaser-thumb" loading="lazy" decoding="async">
           </div>
           <div class="teaser-card-body">
             <span class="teaser-tag">3D Digital Sculpting</span>
@@ -96,7 +94,7 @@
         <!-- Course 2: Blender 3D Complete Pipeline -->
         <a href="course-detail.html?id=blender" class="teaser-card">
           <div class="teaser-thumb-wrapper">
-            <img src="assets/courses/blender-course.png" alt="Blender 3D Complete Pipeline" class="teaser-thumb">
+            <img src="assets/courses/blender-course.png" alt="Blender 3D Complete Pipeline" class="teaser-thumb" loading="lazy" decoding="async">
           </div>
           <div class="teaser-card-body">
             <span class="teaser-tag">3D Modeling & Rigging</span>
@@ -118,7 +116,7 @@
         <!-- Course 3: Marvelous Designer Garments -->
         <a href="course-detail.html?id=marvelous-designer" class="teaser-card">
           <div class="teaser-thumb-wrapper">
-            <img src="assets/courses/marvelous-designer-course.png" alt="Marvelous Designer 3D Clothing" class="teaser-thumb">
+            <img src="assets/courses/marvelous-designer-course.png" alt="Marvelous Designer 3D Clothing" class="teaser-thumb" loading="lazy" decoding="async">
           </div>
           <div class="teaser-card-body">
             <span class="teaser-tag">3D Clothing & Simulation</span>
@@ -140,7 +138,7 @@
         <!-- Course 4: Creating Website & Portfolios -->
         <a href="course-detail.html?id=web-dev" class="teaser-card">
           <div class="teaser-thumb-wrapper">
-            <img src="assets/courses/web-dev-course.png" alt="Creating Modern Web Portfolios" class="teaser-thumb">
+            <img src="assets/courses/web-dev-course.png" alt="Creating Modern Web Portfolios" class="teaser-thumb" loading="lazy" decoding="async">
           </div>
           <div class="teaser-card-body">
             <span class="teaser-tag">Web Development</span>
@@ -162,7 +160,7 @@
         <!-- Course 5: Unreal Engine 5 Environments -->
         <a href="course-detail.html?id=unreal-engine" class="teaser-card">
           <div class="teaser-thumb-wrapper">
-            <img src="assets/courses/unreal-engine-course.png" alt="Unreal Engine 5 Anime Environments" class="teaser-thumb">
+            <img src="assets/courses/unreal-engine-course.png" alt="Unreal Engine 5 Anime Environments" class="teaser-thumb" loading="lazy" decoding="async">
           </div>
           <div class="teaser-card-body">
             <span class="teaser-tag">Real-Time & Environments</span>
@@ -190,6 +188,9 @@
           <span class="request-badge"><i class="fa-regular fa-comments"></i> COMMUNITY FEEDBACK</span>
           <h2>Which Courses Are You Guys Interested In?</h2>
           <p>Tell us what topics, software tools, or creative skills you want us to teach next! We build our upcoming courses based on community interest.</p>
+          <div id="course-auth-notice" class="request-auth-notice" style="display: none;">
+            <i class="fa-solid fa-lock"></i> Please <a href="login.html">Sign In</a> to submit your response.
+          </div>
         </div>
 
         <form id="course-request-form" class="request-form">
@@ -259,6 +260,51 @@
 
   <!-- Script for course interest form handling -->
   <script>
+    function isUserLoggedIn() {
+      if (window.Auth && typeof window.Auth.isLoggedIn === "function") {
+        return window.Auth.isLoggedIn();
+      }
+      const isLoggedOut = localStorage.getItem("userLoggedOut") === "true" || localStorage.getItem("isLoggedIn") === "false";
+      if (isLoggedOut) return false;
+      const user = localStorage.getItem("currentUser");
+      return !!user;
+    }
+
+    function updateCourseRequestFormState() {
+      const isLoggedIn = isUserLoggedIn();
+      const authNotice = document.getElementById("course-auth-notice");
+      const topicInput = document.getElementById("request-topic");
+      const categorySelect = document.getElementById("request-category");
+      const detailsInput = document.getElementById("request-details");
+      const nameInput = document.getElementById("request-name");
+      const emailInput = document.getElementById("request-email");
+      const submitBtn = document.querySelector(".submit-request-btn");
+
+      if (!isLoggedIn) {
+        if (authNotice) authNotice.style.display = "flex";
+        if (topicInput) { topicInput.disabled = true; topicInput.placeholder = "Please sign in to submit your response"; }
+        if (categorySelect) categorySelect.disabled = true;
+        if (detailsInput) { detailsInput.disabled = true; detailsInput.placeholder = "Please sign in to submit your response"; }
+        if (nameInput) { nameInput.disabled = true; nameInput.placeholder = "Please sign in to submit your response"; }
+        if (emailInput) { emailInput.disabled = true; emailInput.placeholder = "Please sign in to submit your response"; }
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = "0.5"; submitBtn.style.cursor = "not-allowed"; }
+      } else {
+        if (authNotice) authNotice.style.display = "none";
+        if (topicInput) { topicInput.disabled = false; topicInput.placeholder = "e.g. Unreal Engine 5 Anime Environments, Shader Art, etc."; }
+        if (categorySelect) categorySelect.disabled = false;
+        if (detailsInput) { detailsInput.disabled = false; detailsInput.placeholder = "Describe the specific techniques, tools, or skills you are eager to learn..."; }
+        if (nameInput) { nameInput.disabled = false; nameInput.placeholder = "e.g. SenpaiFan"; }
+        if (emailInput) { emailInput.disabled = false; emailInput.placeholder = "yourname@example.com"; }
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = "1"; submitBtn.style.cursor = "pointer"; }
+
+        try {
+          const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+          if (nameInput && !nameInput.value) nameInput.value = currentUser.name || currentUser.username || "";
+          if (emailInput && !emailInput.value) emailInput.value = currentUser.email || "";
+        } catch(e) {}
+      }
+    }
+
     const requestForm = document.getElementById('course-request-form');
     const successAlert = document.getElementById('request-success-alert');
     const resetBtn = document.getElementById('reset-request-btn');
@@ -266,18 +312,54 @@
     if (requestForm) {
       requestForm.addEventListener('submit', (e) => {
         e.preventDefault();
+
+        if (!isUserLoggedIn()) {
+          alert("Please sign in to submit your response.");
+          return;
+        }
+
+        try {
+          const topic = document.getElementById("request-topic")?.value.trim() || "";
+          const category = document.getElementById("request-category")?.value || "General";
+          const details = document.getElementById("request-details")?.value.trim() || "";
+          const name = document.getElementById("request-name")?.value.trim() || "Community Member";
+
+          let list = [];
+          const raw = localStorage.getItem("site_design_poll_suggestions");
+          if (raw) list = JSON.parse(raw);
+          list.unshift({
+            id: "course_req_" + Date.now(),
+            user: name,
+            suggestion: `Course Request: ${topic} (${category}) - ${details}`,
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            status: "Pending"
+          });
+          localStorage.setItem("site_design_poll_suggestions", JSON.stringify(list));
+        } catch(err) {}
+
         requestForm.style.display = 'none';
-        successAlert.style.display = 'flex';
+        if (successAlert) successAlert.style.display = 'flex';
       });
     }
 
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
-        requestForm.reset();
-        successAlert.style.display = 'none';
-        requestForm.style.display = 'flex';
+        if (requestForm) {
+          requestForm.reset();
+          updateCourseRequestFormState();
+          requestForm.style.display = 'flex';
+        }
+        if (successAlert) successAlert.style.display = 'none';
       });
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateCourseRequestFormState();
+    });
+
+    window.addEventListener("profileUpdated", updateCourseRequestFormState);
+    window.addEventListener("storage", updateCourseRequestFormState);
+    setInterval(updateCourseRequestFormState, 1000);
   </script>
 
 </body>

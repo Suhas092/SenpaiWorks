@@ -10,8 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
   let publicReviews = [];
   let currentSort = "newest";
 
-  function initCommunityReviews() {
+  async function initCommunityReviews() {
     if (!reviewsGrid) return;
+
+    let apiReviews = [];
+    try {
+      const res = await fetch("/api/community/reviews");
+      if (res.ok) {
+        apiReviews = await res.json();
+      }
+    } catch (e) { }
 
     let userReviews = localStorage.getItem("userReviews");
     let reviewsList = [];
@@ -23,119 +31,36 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Preserve custom reviews (id not starting with "rev-seed-")
-    const customReviews = reviewsList.filter(r => r && r.id && !r.id.startsWith("rev-seed-"));
-
     const seedReviews = [
-      {
-        id: "rev-seed-1",
-        author: "ZoroFan42",
-        rating: 5,
-        category: "Order Issue",
-        title: "Incredible print quality!",
-        text: "The green contrast on the Zoro poster is even more vibrant in person. Paper feels very premium and looks great in a frame. Arrived safely in a solid packaging tube.",
-        date: "July 10, 2026",
-        isPublic: true,
-        likes: 24
-      },
-      {
-        id: "rev-seed-2",
-        author: "RigArtist",
-        rating: 5,
-        category: "3D Character Rig",
-        title: "Perfect blender rig!",
-        text: "Excellent topology and weight painting on the Suzens model. Rigify skeleton mapping works like a charm. Saved me days of rigging work. Recommended!",
-        date: "July 08, 2026",
-        isPublic: true,
-        likes: 15
-      },
-      {
-        id: "rev-seed-3",
-        author: "BrushesPro",
-        rating: 4,
-        category: "Brushes & Textures",
-        title: "Super clean brushes",
-        text: "Nice digital painting brushes and template guidelines. The oil presets feel very natural in Photoshop. Great asset pack for digital painters.",
-        date: "July 05, 2026",
-        isPublic: true,
-        likes: 8
-      },
-      {
-        id: "rev-seed-4",
-        author: "BlenderNewbie",
-        rating: 4,
-        category: "3D Character Rig",
-        title: "Fun to animate",
-        text: "Stretching and bending features are highly expressive. A few minor weight painting artifacts near the shoulder, but overall a great tool for practice.",
-        date: "July 03, 2026",
-        isPublic: true,
-        likes: 19
-      },
-      {
-        id: "rev-seed-5",
-        author: "DevSora",
-        rating: 5,
-        category: "General Website",
-        title: "Smooth website UI",
-        text: "The donation page micro-animations and confetti effects are beautiful. Navigation is fast, and responsive designs make it a joy to use on mobile.",
-        date: "June 29, 2026",
-        isPublic: true,
-        likes: 42
-      },
-      {
-        id: "rev-seed-6",
-        author: "SketchLover",
-        rating: 5,
-        category: "Brushes & Textures",
-        title: "Saved me so much time",
-        text: "Excellent texture resolution and crosshatch brushes. Fits my retro manga art style perfectly. Worth every single cent!",
-        date: "June 25, 2026",
-        isPublic: true,
-        likes: 31
-      },
-      {
-        id: "rev-seed-7",
-        author: "NamiSticker",
-        rating: 4,
-        category: "Order Issue",
-        title: "Slow delivery but great product",
-        text: "Shipping took an extra week, but the support team was very responsive. The sticker pack quality is phenomenal and waterproof.",
-        date: "June 22, 2026",
-        isPublic: true,
-        likes: 5
-      },
-      {
-        id: "rev-seed-8",
-        author: "WebDevPro",
-        rating: 5,
-        category: "Other",
-        title: "Great developer assets",
-        text: "The procedural shader collection is fantastic. Extremely optimized code and clean nodes inside Blender.",
-        date: "June 18, 2026",
-        isPublic: true,
-        likes: 12
-      },
-      {
-        id: "rev-seed-9",
-        author: "AnimeCollector",
-        rating: 5,
-        category: "Order Issue",
-        title: "Collector's dream!",
-        text: "Stunning colors and ultra-heavy paper weight. Matches the photos exactly. Packaged with extreme care. Will buy again!",
-        date: "June 15, 2026",
-        isPublic: true,
-        likes: 3
-      }
+      { id: "rev-seed-1", author: "ZoroFan42", rating: 5, category: "Order Issue", title: "Incredible print quality!", text: "The green contrast on the Zoro poster is even more vibrant in person. Paper feels very premium.", date: "July 10, 2026", isPublic: true, likes: 24 },
+      { id: "rev-seed-2", author: "RigArtist", rating: 5, category: "3D Character Rig", title: "Perfect blender rig!", text: "Excellent topology and weight painting on the Suzens model.", date: "July 08, 2026", isPublic: true, likes: 15 },
+      { id: "rev-seed-3", author: "BrushesPro", rating: 4, category: "Brushes & Textures", title: "Super clean brushes", text: "Nice digital painting brushes and template guidelines.", date: "July 05, 2026", isPublic: true, likes: 8 },
+      { id: "rev-seed-4", author: "DevSora", rating: 5, category: "General Website", title: "Smooth website UI", text: "The donation page micro-animations are beautiful.", date: "June 29, 2026", isPublic: true, likes: 42 }
     ];
 
-    const combinedReviews = [...customReviews, ...seedReviews];
-    localStorage.setItem("userReviews", JSON.stringify(combinedReviews));
+    const customReviews = reviewsList.filter(r => r && r.id && !r.id.startsWith("rev-seed-"));
 
-    publicReviews = combinedReviews.filter(r => r.isPublic === true);
+    const reviewMap = new Map();
+    [...apiReviews, ...customReviews, ...seedReviews].forEach(r => {
+      if (r && r.id && !reviewMap.has(r.id)) {
+        reviewMap.set(r.id, r);
+      }
+    });
+
+    const combinedReviews = Array.from(reviewMap.values());
+    localStorage.setItem("userReviews", JSON.stringify(combinedReviews));
+    localStorage.setItem("user_reviews", JSON.stringify(combinedReviews));
+
+    publicReviews = combinedReviews.filter(r => r.isPublic !== false);
     renderReviews();
   }
 
   function renderReviews() {
+    const commReviewsCountPill = document.getElementById("comm-reviews-count-pill");
+    if (commReviewsCountPill) {
+      commReviewsCountPill.textContent = publicReviews.length;
+    }
+
     if (publicReviews.length === 0) {
       reviewsGrid.innerHTML = `<div class="no-orders-msg" style="grid-column: 1 / -1;">No public reviews yet. Be the first to submit feedback!</div>`;
       if (loadMoreContainer) loadMoreContainer.style.display = "none";
@@ -307,36 +232,240 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initCommunityReviews();
 
+  // ── Write Community Feedback Modal Handlers ───────────────────────
+  const writeReviewModal = document.getElementById("write-review-modal");
+  const btnOpenReviewModal = document.getElementById("btn-open-review-modal");
+  const btnCloseReviewModal = document.getElementById("btn-close-review-modal");
+  const formWriteReview = document.getElementById("form-write-review");
+  const categorySelectEl = document.getElementById("rev-category");
+  const wrapCustomCat = document.getElementById("wrap-custom-cat");
+  const customCatInput = document.getElementById("rev-custom-category");
+  const starPicker = document.getElementById("star-rating-picker");
+  const ratingInput = document.getElementById("rev-rating");
+  const ratingLabel = document.getElementById("rating-value-label");
+
+  function isUserLoggedIn() {
+    if (window.Auth && typeof window.Auth.isLoggedIn === "function") {
+      return window.Auth.isLoggedIn();
+    }
+    const isLoggedOut = localStorage.getItem("userLoggedOut") === "true" || localStorage.getItem("isLoggedIn") === "false";
+    if (isLoggedOut) return false;
+    const user = localStorage.getItem("currentUser");
+    return !!user;
+  }
+
+  function getLoggedInUser() {
+    if (window.Auth && typeof window.Auth.getCurrentUser === "function") {
+      return window.Auth.getCurrentUser();
+    }
+    try {
+      return JSON.parse(localStorage.getItem("currentUser") || "null");
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function updateFeedbackFormFieldsState() {
+    const isLoggedIn = isUserLoggedIn();
+    const authNotice = document.getElementById("feedback-auth-notice");
+    const titleInput = document.getElementById("rev-title");
+    const categorySelect = document.getElementById("rev-category");
+    const customCatInput = document.getElementById("rev-custom-category");
+    const textInput = document.getElementById("rev-text");
+    const submitBtn = document.querySelector("#form-write-review button[type='submit']") || document.querySelector(".submit-review-btn");
+    const starItems = document.querySelectorAll("#star-rating-picker .star-item");
+
+    if (!isLoggedIn) {
+      if (authNotice) authNotice.style.display = "flex";
+      if (titleInput) { titleInput.disabled = true; titleInput.placeholder = "Please sign in to submit your response"; }
+      if (categorySelect) categorySelect.disabled = true;
+      if (customCatInput) customCatInput.disabled = true;
+      if (textInput) { textInput.disabled = true; textInput.placeholder = "Please sign in to submit your response"; }
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = "0.5"; submitBtn.style.cursor = "not-allowed"; }
+      starItems.forEach(s => s.style.pointerEvents = "none");
+    } else {
+      if (authNotice) authNotice.style.display = "none";
+      if (titleInput) { titleInput.disabled = false; titleInput.placeholder = "e.g. Insane quality on Ken Kaneki Tee!"; }
+      if (categorySelect) categorySelect.disabled = false;
+      if (customCatInput) customCatInput.disabled = false;
+      if (textInput) { textInput.disabled = false; textInput.placeholder = "Tell us about the product quality, fit, shipping experience, or feature feedback..."; }
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = "1"; submitBtn.style.cursor = "pointer"; }
+      starItems.forEach(s => s.style.pointerEvents = "auto");
+    }
+  }
+
+  if (btnOpenReviewModal && writeReviewModal) {
+    btnOpenReviewModal.addEventListener("click", () => {
+      updateFeedbackFormFieldsState();
+      writeReviewModal.classList.add("active");
+    });
+  }
+
+  if (btnCloseReviewModal && writeReviewModal) {
+    btnCloseReviewModal.addEventListener("click", () => {
+      writeReviewModal.classList.remove("active");
+    });
+
+    writeReviewModal.addEventListener("click", (e) => {
+      if (e.target === writeReviewModal) {
+        writeReviewModal.classList.remove("active");
+      }
+    });
+  }
+
+  // Star Rating Picker Interactive Logic
+  if (starPicker) {
+    const stars = starPicker.querySelectorAll(".star-item");
+    const labels = {
+      1: "1 Star (Poor)",
+      2: "2 Stars (Fair)",
+      3: "3 Stars (Good)",
+      4: "4 Stars (Very Good)",
+      5: "5 Stars (Excellent)"
+    };
+
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        const rating = parseInt(star.getAttribute("data-rating") || "5", 10);
+        if (ratingInput) ratingInput.value = rating;
+        if (ratingLabel) ratingLabel.textContent = labels[rating] || `${rating} Stars`;
+
+        stars.forEach((s, idx) => {
+          if (idx < rating) {
+            s.classList.add("active");
+          } else {
+            s.classList.remove("active");
+          }
+        });
+      });
+    });
+  }
+
+  // Category Select -> Custom Category Input Reveal
+  if (categorySelectEl && wrapCustomCat) {
+    categorySelectEl.addEventListener("change", (e) => {
+      if (e.target.value === "Custom") {
+        wrapCustomCat.style.display = "block";
+        if (customCatInput) customCatInput.required = true;
+      } else {
+        wrapCustomCat.style.display = "none";
+        if (customCatInput) customCatInput.required = false;
+      }
+    });
+  }
+
+  function showCustomDialogue(title, message) {
+    const dialogue = document.getElementById("feedback-success-dialogue");
+    const titleEl = document.getElementById("dialogue-title");
+    const msgEl = document.getElementById("dialogue-message");
+    const closeBtn = document.getElementById("dialogue-close-btn");
+
+    if (titleEl) titleEl.textContent = title;
+    if (msgEl) msgEl.textContent = message;
+
+    if (dialogue) {
+      dialogue.classList.add("active");
+
+      const closeHandler = () => {
+        dialogue.classList.remove("active");
+        if (closeBtn) closeBtn.removeEventListener("click", closeHandler);
+      };
+
+      if (closeBtn) {
+        closeBtn.removeEventListener("click", closeHandler);
+        closeBtn.addEventListener("click", closeHandler);
+      }
+    }
+  }
+
+  // Feedback Form Submit Handler
+  if (formWriteReview) {
+    formWriteReview.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!isUserLoggedIn()) {
+        showCustomDialogue("Sign In Required", "Please sign in to submit community feedback.");
+        return;
+      }
+
+      const user = getLoggedInUser();
+      const author = user ? (user.name || user.username || "Community Member") : "Community Member";
+      const userEmail = user ? (user.email || "") : "";
+
+      const rating = parseInt(document.getElementById("rev-rating")?.value || "5", 10);
+      const title = document.getElementById("rev-title")?.value.trim() || "";
+      const rawCategory = document.getElementById("rev-category")?.value || "None";
+      let category = rawCategory;
+      if (rawCategory === "Custom") {
+        category = document.getElementById("rev-custom-category")?.value.trim() || "Custom";
+      } else if (rawCategory === "None") {
+        category = "General";
+      }
+
+      const text = document.getElementById("rev-text")?.value.trim() || "";
+
+      if (!title || !text) {
+        showCustomDialogue("Required Fields Missing", "Please fill out all required fields.");
+        return;
+      }
+
+      const formattedDate = new Date().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+
+      const newReview = {
+        id: "rev-" + Date.now(),
+        author: author,
+        email: userEmail,
+        rating: rating,
+        category: category,
+        title: title,
+        text: text,
+        date: formattedDate,
+        isPublic: true,
+        likes: 0
+      };
+
+      // Post to Backend Database
+      try {
+        const res = await fetch("/api/community/reviews", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newReview)
+        });
+        if (res.ok) {
+          const savedDbReview = await res.json();
+          newReview.id = savedDbReview.id || newReview.id;
+        }
+      } catch (e) {
+        console.warn("Backend API sync offline, using local storage fallback:", e);
+      }
+
+      let userReviews = [];
+      try {
+        userReviews = JSON.parse(localStorage.getItem("userReviews") || localStorage.getItem("user_reviews") || "[]");
+      } catch (e) {
+        userReviews = [];
+      }
+
+      userReviews.unshift(newReview);
+      localStorage.setItem("userReviews", JSON.stringify(userReviews));
+      localStorage.setItem("user_reviews", JSON.stringify(userReviews));
+
+      publicReviews = userReviews.filter(r => r.isPublic !== false);
+      renderReviews();
+
+      formWriteReview.reset();
+      if (wrapCustomCat) wrapCustomCat.style.display = "none";
+      if (writeReviewModal) writeReviewModal.classList.remove("active");
+
+      showCustomDialogue("Feedback Submitted!", `Thank you, ${author}! Your community feedback has been posted successfully and is now live.`);
+    });
+  }
+
   // --- Support & Donation Box Logic ---
   const donationForm = document.getElementById("donation-form");
-  const donationFormWrapper = document.getElementById("donation-form-wrapper");
-  const donationSuccessState = document.getElementById("donation-success-state");
   const customAmountWrapper = document.getElementById("custom-amount-wrapper");
   const customAmountInput = document.getElementById("custom-amount");
   const inputCurrencySymbol = document.getElementById("input-currency-symbol");
-  const goalProgressText = document.getElementById("goal-progress-text");
-  const goalProgressFill = document.getElementById("goal-progress-fill");
-
-  const successDonorName = document.getElementById("success-donor-name");
-  const successDonationAmount = document.getElementById("success-donation-amount");
-  const successDonorMessage = document.getElementById("success-donor-message");
-  const successDonorEmail = document.getElementById("success-donor-email");
-  const resetDonationBtn = document.getElementById("reset-donation-btn");
-
-  // Step Elements
-  const stepDetails = document.getElementById("donation-step-details");
-  const stepPayment = document.getElementById("donation-step-payment");
-  const btnProceedToPayment = document.getElementById("btn-proceed-to-payment");
-  const btnBackToDetails = document.getElementById("btn-back-to-details");
-  const donationSubmitBtn = document.getElementById("donation-submit-btn");
-
-  // Payment Toggle Elements
-  const paymentMethodBtns = document.querySelectorAll(".payment-method-btn");
-  const paymentFieldsCard = document.getElementById("payment-fields-card");
-  const paymentFieldsPaypal = document.getElementById("payment-fields-paypal");
-  const cardNumInput = document.getElementById("card-num");
-  const cardExpiryInput = document.getElementById("card-expiry");
-  const cardCvvInput = document.getElementById("card-cvv");
 
   // Currency Selector
   const currencySelect = document.getElementById("currency-select");
@@ -345,8 +474,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const usdToInrRate = 85;
   let selectedAmount = 1; // Default starting amount is 1
   let isCustomActive = false;
-  let selectedMethod = "card";
-  const goalTarget = 1500; // stored in USD
 
   // Dynamic Presets Render
   function renderPresets() {
@@ -379,15 +506,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const amountVal = btn.getAttribute("data-amount");
         if (amountVal === "custom") {
           isCustomActive = true;
-          customAmountWrapper.style.display = "flex";
-          customAmountInput.focus();
+          if (customAmountWrapper) customAmountWrapper.style.display = "flex";
+          if (customAmountInput) customAmountInput.focus();
           selectedAmount = parseFloat(customAmountInput.value) || 0;
         } else {
           isCustomActive = false;
-          customAmountWrapper.style.display = "none";
+          if (customAmountWrapper) customAmountWrapper.style.display = "none";
           selectedAmount = parseFloat(amountVal);
         }
-        updateButtonTexts();
       });
     });
   }
@@ -411,58 +537,14 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (oldCurrency === "INR" && currentCurrency === "USD") {
           val = Math.round(val / usdToInrRate);
         }
-        customAmountInput.value = val;
+        if (customAmountInput) customAmountInput.value = val;
         selectedAmount = val;
       } else {
-        // Default presets switch
         selectedAmount = currentCurrency === "USD" ? 1 : 50;
       }
 
-      // Re-render presets
       renderPresets();
-
-      // Update goal progression displays
-      let usdTotal = parseFloat(localStorage.getItem("donationTotal")) || 1150;
-      updateGoalUI(usdTotal);
-
-      updateButtonTexts();
     });
-  }
-
-  // Goal Progression Tracker
-  function initDonationGoal() {
-    let currentTotal = localStorage.getItem("donationTotal");
-    if (currentTotal === null) {
-      currentTotal = 1150; // default seed USD
-      localStorage.setItem("donationTotal", currentTotal);
-    } else {
-      currentTotal = parseFloat(currentTotal);
-    }
-    updateGoalUI(currentTotal);
-  }
-
-  function updateGoalUI(usdTotal) {
-    if (!goalProgressText || !goalProgressFill) return;
-
-    let displayTotal, displayTarget;
-    if (currentCurrency === "USD") {
-      displayTotal = usdTotal;
-      displayTarget = goalTarget;
-    } else {
-      displayTotal = usdTotal * usdToInrRate;
-      displayTarget = goalTarget * usdToInrRate;
-    }
-
-    const symbol = currentCurrency === "USD" ? "$" : "₹";
-    const formattedTotal = symbol + displayTotal.toLocaleString('en-US', { maximumFractionDigits: 0 });
-    const formattedTarget = symbol + displayTarget.toLocaleString('en-US', { maximumFractionDigits: 0 });
-
-    goalProgressText.textContent = `${formattedTotal} / ${formattedTarget}`;
-
-    const percentage = Math.min(100, (usdTotal / goalTarget) * 100);
-    setTimeout(() => {
-      goalProgressFill.style.width = `${percentage}%`;
-    }, 100);
   }
 
   // Handle Custom Amount Input typing
@@ -474,287 +556,63 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         selectedAmount = val;
       }
-      updateButtonTexts();
     });
   }
 
-  // Format currency value helper
-  function formatAmount(amount) {
-    const symbol = currentCurrency === "USD" ? "$" : "₹";
-    return symbol + amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  }
-
-  function updateButtonTexts() {
-    if (btnProceedToPayment) {
-      const textSpan = btnProceedToPayment.querySelector(".btn-text");
-      if (textSpan) {
-        if (selectedAmount > 0) {
-          textSpan.textContent = "Donate";
-          btnProceedToPayment.disabled = false;
-        } else {
-          textSpan.textContent = "Enter Valid Amount";
-          btnProceedToPayment.disabled = true;
-        }
-      }
-    }
-    if (donationSubmitBtn) {
-      const textSpan = donationSubmitBtn.querySelector(".btn-text");
-      if (textSpan) {
-        if (selectedAmount > 0) {
-          textSpan.textContent = "Complete Support";
-          donationSubmitBtn.disabled = false;
-        } else {
-          textSpan.textContent = "Complete Support";
-          donationSubmitBtn.disabled = true;
-        }
-      }
-    }
-  }
-
-  // Step 1 navigation: Proceed to payment
-  if (btnProceedToPayment) {
-    btnProceedToPayment.addEventListener("click", () => {
-      // Validate step 1 fields
-      const nameField = document.getElementById("donor-name");
-      const emailField = document.getElementById("donor-email");
-
-      if (selectedAmount <= 0) {
-        alert("Please enter or select a valid amount.");
-        return;
-      }
-
-      if (!nameField.checkValidity()) {
-        nameField.reportValidity();
-        return;
-      }
-
-      if (!emailField.checkValidity()) {
-        emailField.reportValidity();
-        return;
-      }
-
-      // If valid, transit step
-      stepDetails.style.opacity = "0";
-      setTimeout(() => {
-        stepDetails.style.display = "none";
-        stepPayment.style.display = "block";
-        stepPayment.style.opacity = "0";
-        stepPayment.offsetHeight; // reflow
-        stepPayment.style.opacity = "1";
-      }, 300);
-    });
-  }
-
-  // Step 2 navigation: Back to details
-  if (btnBackToDetails) {
-    btnBackToDetails.addEventListener("click", () => {
-      stepPayment.style.opacity = "0";
-      setTimeout(() => {
-        stepPayment.style.display = "none";
-        stepDetails.style.display = "block";
-        stepDetails.style.opacity = "0";
-        stepDetails.offsetHeight; // reflow
-        stepDetails.style.opacity = "1";
-      }, 300);
-    });
-  }
-
-  // Payment Method Selection
-  paymentMethodBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      paymentMethodBtns.forEach(b => b.classList.remove("active-payment"));
-      btn.classList.add("active-payment");
-      selectedMethod = btn.getAttribute("data-method");
-
-      // Show/Hide Fields
-      if (selectedMethod === "card") {
-        paymentFieldsCard.style.display = "block";
-        paymentFieldsPaypal.style.display = "none";
-        cardNumInput.required = true;
-        cardExpiryInput.required = true;
-        cardCvvInput.required = true;
-      } else {
-        paymentFieldsCard.style.display = "none";
-        paymentFieldsPaypal.style.display = "block";
-        cardNumInput.required = false;
-        cardExpiryInput.required = false;
-        cardCvvInput.required = false;
-      }
-    });
-  });
-
-  // Helper formatting for Card Inputs (Auto-spaces card, auto-slash expiry)
-  if (cardNumInput) {
-    cardNumInput.addEventListener("input", (e) => {
-      let value = e.target.value.replace(/\D/g, "");
-      let formatted = value.match(/.{1,4}/g);
-      e.target.value = formatted ? formatted.join(" ") : "";
-    });
-  }
-
-  if (cardExpiryInput) {
-    cardExpiryInput.addEventListener("input", (e) => {
-      let value = e.target.value.replace(/\D/g, "");
-      if (value.length > 2) {
-        e.target.value = value.substring(0, 2) + "/" + value.substring(2, 4);
-      } else {
-        e.target.value = value;
-      }
-    });
-  }
-
-  if (cardCvvInput) {
-    cardCvvInput.addEventListener("input", (e) => {
-      e.target.value = e.target.value.replace(/\D/g, "");
-    });
-  }
-
-  // Handle Form Submission (Complete Support)
+  // Handle Form Submission -> Navigate directly to checkout payment page
   if (donationForm) {
     donationForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      // Double check amount and payment inputs validity
       if (selectedAmount <= 0) {
-        alert("Please enter a valid donation amount.");
+        alert("Please enter or select a valid donation amount.");
         return;
       }
 
-      if (selectedMethod === "card") {
-        if (!cardNumInput.checkValidity()) { cardNumInput.reportValidity(); return; }
-        if (!cardExpiryInput.checkValidity()) { cardExpiryInput.reportValidity(); return; }
-        if (!cardCvvInput.checkValidity()) { cardCvvInput.reportValidity(); return; }
+      const nameInput = document.getElementById("donor-name");
+      const emailInput = document.getElementById("donor-email");
+      const messageInput = document.getElementById("donor-message");
+
+      if (nameInput && !nameInput.checkValidity()) {
+        nameInput.reportValidity();
+        return;
+      }
+      if (emailInput && !emailInput.checkValidity()) {
+        emailInput.reportValidity();
+        return;
       }
 
-      // Convert donated amount to USD if it was INR before writing to localStorage
-      const donatedUsd = currentCurrency === "USD" ? selectedAmount : (selectedAmount / usdToInrRate);
+      const donorNameVal = nameInput ? nameInput.value.trim() : "";
+      const donorEmailVal = emailInput ? emailInput.value.trim() : "";
+      const donorMessageVal = messageInput ? messageInput.value.trim() : "";
 
-      // Add to Total in LocalStorage
-      let currentUsdTotal = parseFloat(localStorage.getItem("donationTotal")) || 1150;
-      currentUsdTotal += donatedUsd;
-      localStorage.setItem("donationTotal", currentUsdTotal);
+      const donationItem = {
+        id: "donation-" + Date.now(),
+        name: `Community Support Donation${donorNameVal ? ' - ' + donorNameVal : ''}`,
+        price: selectedAmount,
+        originalPrice: selectedAmount,
+        displayPriceFormatted: currentCurrency === 'USD' ? `$${selectedAmount}` : `₹${selectedAmount}`,
+        quantity: 1,
+        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
+        type: "digital",
+        isDonation: true,
+        currency: currentCurrency,
+        originalAmount: selectedAmount,
+        donorName: donorNameVal,
+        donorEmail: donorEmailVal,
+        donorMessage: donorMessageVal
+      };
 
-      // Update UI displays
-      updateGoalUI(currentUsdTotal);
+      // Set shoppingCart to contain this donation item for store checkout page
+      localStorage.setItem("shoppingCart", JSON.stringify([donationItem]));
 
-      // Populate Success Details
-      const donorName = document.getElementById("donor-name").value.trim() || "Anonymous Supporter";
-      const donorEmail = document.getElementById("donor-email").value.trim();
-      const donorMessageVal = document.getElementById("donor-message").value.trim();
-
-      if (successDonorName) successDonorName.textContent = donorName;
-      if (successDonationAmount) {
-        const symbol = currentCurrency === "USD" ? "$" : "₹";
-        successDonationAmount.textContent = symbol + selectedAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      }
-      if (successDonorEmail) successDonorEmail.textContent = donorEmail;
-
-      if (successDonorMessage) {
-        if (donorMessageVal) {
-          successDonorMessage.parentNode.style.display = "block";
-          successDonorMessage.textContent = `"${donorMessageVal}"`;
-        } else {
-          successDonorMessage.parentNode.style.display = "none";
-        }
-      }
-
-      // Animate transition to success
-      donationFormWrapper.style.opacity = "0";
-      setTimeout(() => {
-        donationFormWrapper.style.display = "none";
-        donationSuccessState.style.display = "block";
-        donationSuccessState.style.opacity = "0";
-        donationSuccessState.offsetHeight; // reflow
-        donationSuccessState.style.opacity = "1";
-
-        // Confetti burst
-        createConfetti();
-      }, 300);
+      // Redirect directly to store payment page (checkout.html)
+      window.location.href = "checkout.html";
     });
-  }
-
-  // Reset / Donate again click handler
-  if (resetDonationBtn) {
-    resetDonationBtn.addEventListener("click", () => {
-      donationForm.reset();
-
-      // Reset values
-      currentCurrency = "USD";
-      if (currencySelect) currencySelect.value = "USD";
-      if (inputCurrencySymbol) inputCurrencySymbol.textContent = "$";
-      selectedAmount = 1;
-      isCustomActive = false;
-      selectedMethod = "card";
-
-      // Reset card selection states
-      paymentMethodBtns.forEach(b => b.classList.remove("active-payment"));
-      const defaultPayment = document.querySelector('.payment-method-btn[data-method="card"]');
-      if (defaultPayment) defaultPayment.classList.add("active-payment");
-
-      paymentFieldsCard.style.display = "block";
-      paymentFieldsPaypal.style.display = "none";
-
-      customAmountWrapper.style.display = "none";
-
-      renderPresets();
-      updateButtonTexts();
-
-      // Reset Step Layouts back to details
-      stepPayment.style.display = "none";
-      stepDetails.style.display = "block";
-      stepDetails.style.opacity = "1";
-
-      // Animate back transition
-      donationSuccessState.style.opacity = "0";
-      setTimeout(() => {
-        donationSuccessState.style.display = "none";
-        donationFormWrapper.style.display = "block";
-        donationFormWrapper.style.opacity = "0";
-        donationFormWrapper.offsetHeight; // reflow
-        donationFormWrapper.style.opacity = "1";
-
-        // Sync Goal values
-        let usdTotal = parseFloat(localStorage.getItem("donationTotal")) || 1150;
-        updateGoalUI(usdTotal);
-      }, 300);
-    });
-  }
-
-  // Confetti bursts
-  function createConfetti() {
-    const colors = ["#0066cc", "#00d2ff", "#ff424d", "#ffd700", "#10b981"];
-    const container = document.getElementById("donation-container");
-    if (!container) return;
-
-    for (let i = 0; i < 40; i++) {
-      const confetti = document.createElement("div");
-      confetti.style.position = "absolute";
-      confetti.style.width = `${Math.random() * 8 + 6}px`;
-      confetti.style.height = `${Math.random() * 8 + 6}px`;
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      confetti.style.borderRadius = Math.random() > 0.5 ? "50%" : "0";
-      confetti.style.top = "100%";
-      confetti.style.left = `${Math.random() * 90 + 5}%`;
-      confetti.style.opacity = "1";
-      confetti.style.pointerEvents = "none";
-      confetti.style.zIndex = "10";
-
-      container.appendChild(confetti);
-
-      const animation = confetti.animate([
-        { transform: "translate3d(0, 0, 0) rotate(0deg)", opacity: 1 },
-        { transform: `translate3d(${(Math.random() - 0.5) * 150}px, -${Math.random() * 250 + 150}px, 0) rotate(${Math.random() * 360}deg)`, opacity: 0 }
-      ], {
-        duration: Math.random() * 1500 + 1000,
-        easing: "cubic-bezier(0.1, 0.8, 0.3, 1)"
-      });
-
-      animation.onfinish = () => confetti.remove();
-    }
   }
 
   // Run initialization
   renderPresets();
-  updateButtonTexts();
-  initDonationGoal();
 });
+
+

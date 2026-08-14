@@ -2,9 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="icon"
-    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-    type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — SenpaiWorks Official</title>
@@ -67,8 +65,13 @@
             </div>
 
             <div class="chk-field-group">
-              <label for="chk-email" class="chk-field-label">Email address for Order Confirmation</label>
+              <label for="chk-email" class="chk-field-label">Email address for Order / Donation Confirmation</label>
               <input type="email" id="chk-email" class="chk-input-elem" placeholder="name@example.com" required>
+            </div>
+
+            <div class="chk-field-group" id="chk-donor-name-wrap" style="margin-top: 12px;">
+              <label for="chk-donor-name" class="chk-field-label">Your Name / Supporter Name (Optional)</label>
+              <input type="text" id="chk-donor-name" class="chk-input-elem" placeholder="Sora / Anonymous">
             </div>
 
             <label class="chk-checkbox-wrap">
@@ -78,7 +81,7 @@
           </div>
 
           <!-- 2. Delivery Address -->
-          <div class="chk-card-box" style="margin-top: 20px;">
+          <div class="chk-card-box" id="delivery-address-card-box" style="margin-top: 20px;">
             <div class="chk-sec-head">
               <h2 class="chk-sec-title"><i class="fa-solid fa-truck-fast" style="color: #0f172a;"></i> Delivery Address</h2>
             </div>
@@ -88,6 +91,17 @@
 
             <!-- MANUAL ADDRESS FORM FIELDS (HIDDEN WHEN USING SAVED ADDRESS) -->
             <div id="manual-address-form-group">
+              <!-- Save time. Autofill location banner -->
+              <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px;">
+                <div style="display: flex; align-items: center; gap: 8px; color: #0284c7; font-weight: 700; font-size: 0.88rem;">
+                  <i class="fa-solid fa-location-dot" style="font-size: 1.1rem; color: #0284c7;"></i>
+                  <span>Save time. Autofill your current location.</span>
+                </div>
+                <button type="button" onclick="autofillCheckoutLocation(event)" style="background: #ffffff; border: 1.5px solid #0284c7; color: #0284c7; padding: 6px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(14, 165, 233, 0.12);">
+                  <i class="fa-solid fa-crosshairs"></i> Autofill
+                </button>
+              </div>
+
               <div class="chk-field-group">
                 <label for="chk-country" class="chk-field-label">Country / Region</label>
                 <select id="chk-country" class="chk-select-elem" onchange="onCountryChange()">
@@ -152,6 +166,31 @@
                 <input type="checkbox" id="chk-save-info" checked>
                 <span>Save this address for future 1-click checkout</span>
               </label>
+            </div>
+          </div>
+
+          <!-- DONATION SUMMARY BAR (Hidden by default, shown in donation mode) -->
+          <div class="chk-card-box" id="donation-summary-bar" style="display: none; margin-top: 20px;">
+            <div class="chk-sec-head">
+              <h2 class="chk-sec-title"><i class="fa-solid fa-hand-holding-heart" style="color: #e11d48;"></i> Donation Summary</h2>
+            </div>
+
+            <!-- Currency Toggle Pills -->
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+              <button type="button" class="donate-currency-pill active" id="donate-pill-inr" onclick="switchDonateCurrency('INR')">
+                🇮🇳 <span id="donate-pill-inr-val">₹85.00</span>
+              </button>
+              <button type="button" class="donate-currency-pill" id="donate-pill-usd" onclick="switchDonateCurrency('USD')">
+                🇺🇸 <span id="donate-pill-usd-val">$1.00</span>
+              </button>
+            </div>
+            <p style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 16px;" id="donate-conversion-rate">1 USD = 85 INR</p>
+
+            <hr class="chk-divider">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+              <span style="font-weight: 600; color: #e2e8f0;">One-time donation</span>
+              <span style="font-weight: 800; font-size: 1.15rem; color: #38bdf8;" id="donate-line-amount">₹85.00</span>
             </div>
           </div>
 
@@ -276,7 +315,7 @@
       </div>
 
       <!-- RIGHT COLUMN: ORDER SUMMARY SIDEBAR -->
-      <div class="chk-right-summary-col">
+      <div class="chk-right-summary-col" id="chk-right-summary-col">
         <div class="chk-summary-card">
           <div class="chk-summary-head-wrap" onclick="toggleMobileSummaryList()">
             <h3 class="chk-summary-title">Order Summary</h3>

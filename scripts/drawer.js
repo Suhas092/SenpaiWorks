@@ -116,36 +116,68 @@ function initDrawer() {
         }
       }
 
-      const drawerItems = drawer ? drawer.querySelectorAll('.drawer-item, .drawer-group-title.single-link') : [];
+      // Hover preview image swapping for drawer items & titles
+      const drawerItems = drawer ? drawer.querySelectorAll('.drawer-item, .drawer-group-title') : [];
       drawerItems.forEach(item => {
         item.addEventListener('mouseenter', () => swapImages(item));
-        item.addEventListener('click', () => {
-          window.closeDrawer();
+      });
+
+      // Explicit link navigation handler for ALL links inside drawer (Sub-options & Feature Cards)
+      const subLinks = drawer ? drawer.querySelectorAll('.drawer-item, .drawer-feature-card, .drawer-brand-logo') : [];
+      subLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (href && href !== '#' && !href.startsWith('javascript:')) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.closeDrawer();
+            setTimeout(() => {
+              window.location.href = href;
+            }, 20);
+          }
         });
       });
 
-      // Accordion dropdown functionality for mobile & tablet viewports
+      // Category Title Redirection & Chevron Accordion Toggle
       const drawerGroups = drawer ? drawer.querySelectorAll('.drawer-group') : [];
       drawerGroups.forEach(group => {
-        const groupHeader = group.querySelector('.drawer-group-header');
+        const titleLink = group.querySelector('.drawer-group-title');
+        const accordionIcon = group.querySelector('.drawer-accordion-icon');
 
-        if (groupHeader) {
-          groupHeader.addEventListener('click', (e) => {
-            if (window.innerWidth <= 1024) {
-              const targetLink = e.target.closest('.drawer-group-title');
-              if (targetLink && group.classList.contains('active')) {
-                // If already open and title link clicked, allow direct navigation
-                window.closeDrawer();
-                return;
-              }
+        // 1. Tapping title text (HOME, NEWS, ART LIBRARY, etc.) redirects directly to page
+        if (titleLink) {
+          titleLink.addEventListener('click', (e) => {
+            const href = titleLink.getAttribute('href');
+            if (href && href !== '#' && !href.startsWith('javascript:')) {
               e.preventDefault();
               e.stopPropagation();
+              window.closeDrawer();
+              setTimeout(() => {
+                window.location.href = href;
+              }, 20);
+            }
+          });
+        }
 
-              const isActive = group.classList.contains('active');
-              drawerGroups.forEach(otherGroup => otherGroup.classList.remove('active'));
-              if (!isActive) {
-                group.classList.add('active');
+        // 2. Tapping chevron dropdown arrow toggles sub-options accordion
+        if (accordionIcon) {
+          accordionIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const isActive = group.classList.contains('active');
+
+            // Collapse other open groups for clean single-accordion UI
+            drawerGroups.forEach(otherGroup => {
+              if (otherGroup !== group) {
+                otherGroup.classList.remove('active');
               }
+            });
+
+            if (isActive) {
+              group.classList.remove('active');
+            } else {
+              group.classList.add('active');
             }
           });
         }

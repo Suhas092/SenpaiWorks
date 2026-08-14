@@ -549,11 +549,12 @@ body {
   position: relative;
   width: 100%;
   background: #ffffff;
-  padding: 80px 20px;
+  padding: 60px 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: none;
+  box-sizing: border-box;
 }
 
 .whats-happening-wrapper .overlay {
@@ -565,6 +566,9 @@ body {
   z-index: 2;
   max-width: 1300px;
   width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
   color: #111118;
 }
 
@@ -738,13 +742,18 @@ body {
 .home-community-section,
 .movies-section,
 .news-section,
-.whats-happening-section {
+.whats-happening,
+.whats-happening-section,
+.merch-review,
+.showcase-header,
+.showcase-container {
   max-width: 1300px !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding-left: 20px !important;
   padding-right: 20px !important;
   box-sizing: border-box !important;
+  width: 100% !important;
 }
 
 @media (max-width: 768px) {
@@ -1338,7 +1347,6 @@ body {
   border-radius: var(--border-radius-md);
   overflow: hidden;
   position: relative;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   scroll-snap-align: start;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -2408,16 +2416,34 @@ body {
   height: 160px;
 }
 
-.glossy-orb {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d8b4fe 30%, #818cf8 70%, #4f46e5 100%);
-  box-shadow:
-    0 15px 35px rgba(99, 102, 241, 0.25),
-    inset -8px -8px 25px rgba(0, 0, 0, 0.15),
-    inset 8px 8px 20px rgba(255, 255, 255, 0.6);
+.feature-logo-wrap {
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
   animation: float-orb 6s ease-in-out infinite;
+}
+
+.feature-logo-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #d8b4fe 30%, #818cf8 70%, #4f46e5 100%);
+  -webkit-mask: url('assets/SenpaiWorks logo.png') center/contain no-repeat;
+  mask: url('assets/SenpaiWorks logo.png') center/contain no-repeat;
+  filter: drop-shadow(0 15px 35px rgba(99, 102, 241, 0.45));
+}
+
+.feature-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  opacity: 0.15;
+  filter: drop-shadow(0 10px 25px rgba(99, 102, 241, 0.4));
 }
 
 /* Right Recommended Column Styles */
@@ -2630,7 +2656,7 @@ body {
     height: 170px;
   }
 
-  .glossy-orb {
+  .feature-logo-wrap {
     width: 110px;
     height: 110px;
   }
@@ -3224,5 +3250,237 @@ body {
   .community-chip {
     font-size: 0.75rem;
     padding: 6px 12px;
+  }
+}
+
+/* ============================================
+   PREMIUM ANIMATIONS & TRANSITIONS ENGINE
+   ============================================ */
+
+/* 1. Page Transition Curtain Overlay */
+.page-transition-curtain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.page-loaded .page-transition-curtain {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.page-transition-curtain.is-exiting {
+  pointer-events: all;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 2. SECTION-BY-SECTION SIGNATURE ANIMATIONS */
+
+/* SECTION A: SUZENS 3D SHOWCASE SIGNATURE (Dual-Wing Split Unveil) */
+.showcase-details {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.showcase-cards-wrapper {
+  opacity: 0;
+  transform: perspective(1000px) rotateY(25deg) translateX(40px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.suzens-showcase-section.is-revealed .showcase-details,
+.suzens-showcase-section.is-revealed .showcase-cards-wrapper {
+  opacity: 1;
+  transform: perspective(1000px) rotateY(0deg) translateX(0);
+}
+
+/* SECTION B: FEATURED NEWS SIGNATURE (Diagonal Clip Unveil & Orb Pulse) */
+.whats-happening-feature {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s ease;
+  will-change: opacity, transform;
+}
+
+.whats-happening-feature.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.recommended-column {
+  opacity: 0;
+  transform: translateX(45px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.recommended-column.is-revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* SECTION C: THINGS YOU MIGHT LIKE SIGNATURE (Elastic Sheet Slide-Up) */
+.merch-review {
+  opacity: 0;
+  transform: translateY(50px) scale(0.94);
+  transition: opacity 0.85s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: opacity, transform;
+}
+
+.merch-review.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* SECTION D: SHORTS & ENTERTAINMENT SIGNATURE (Filmstrip Wave Roll-In) */
+.movies-section .movie-card {
+  opacity: 0;
+  transform: translateY(35px) rotate(-3deg) scale(0.95);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease;
+  will-change: opacity, transform;
+}
+
+.movies-section .movie-card:nth-child(even) {
+  transform: translateY(35px) rotate(3deg) scale(0.95);
+}
+
+.movies-section .movie-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg) scale(1);
+}
+
+.movies-section .movie-card:hover {
+  transform: translateY(-8px) rotate(0deg) scale(1.04) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* SECTION E: NEW MERCHANDISE SIGNATURE (Elastic Scale Zoom Pop & Beam Traverse) */
+.merch-section .grid-card {
+  opacity: 0;
+  transform: scale(0.84) translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s ease;
+  will-change: opacity, transform;
+}
+
+.merch-section .grid-card.is-revealed {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.merch-section .grid-card:hover {
+  transform: translateY(-8px) scale(1.03) !important;
+  box-shadow: 0 20px 40px rgba(74, 163, 255, 0.25);
+}
+
+/* SECTION F: COMMUNITY HUB SIGNATURE (Center Prism Unfold & Badge Bounce) */
+.community-intro-card {
+  opacity: 0;
+  transform: scaleX(0.93) scaleY(0.93) translateY(40px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s ease;
+  will-change: opacity, transform;
+}
+
+.community-intro-card.is-revealed {
+  opacity: 1;
+  transform: scaleX(1) scaleY(1) translateY(0);
+  box-shadow: 0 20px 60px rgba(74, 163, 255, 0.16);
+}
+
+.community-intro-card.is-revealed .community-chip {
+  animation: chipBouncePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes chipBouncePop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 3. Mobile & Reduced Motion Overrides */
+body.page-loaded .page-transition-curtain {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+@media (max-width: 768px) {
+  .page-transition-curtain {
+    display: none !important;
+  }
+
+  .showcase-details,
+  .showcase-cards-wrapper,
+  .whats-happening-feature,
+  .recommended-column,
+  .merch-review,
+  .movies-section .movie-card,
+  .merch-section .grid-card,
+  .community-intro-card {
+    transform: translateY(16px) rotate(0deg) scale(1) !important;
+    clip-path: none !important;
+    transition: opacity 0.5s ease, transform 0.5s ease !important;
+  }
+
+  .showcase-details.is-revealed,
+  .showcase-cards-wrapper.is-revealed,
+  .whats-happening-feature.is-revealed,
+  .recommended-column.is-revealed,
+  .merch-review.is-revealed,
+  .movies-section .movie-card.is-revealed,
+  .merch-section .grid-card.is-revealed,
+  .community-intro-card.is-revealed,
+  .suzens-showcase-section.is-revealed .showcase-details,
+  .suzens-showcase-section.is-revealed .showcase-cards-wrapper {
+    opacity: 1 !important;
+    transform: translateY(0) rotate(0deg) scale(1) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-curtain,
+  .showcase-details,
+  .showcase-cards-wrapper,
+  .whats-happening-feature,
+  .recommended-column,
+  .merch-review,
+  .movies-section .movie-card,
+  .merch-section .grid-card,
+  .community-intro-card {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
   }
 }

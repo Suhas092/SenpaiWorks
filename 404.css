@@ -1,13 +1,208 @@
-body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-#message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px 16px; border-radius: 3px; }
-#message h3 { color: #888; font-weight: normal; font-size: 16px; margin: 16px 0 12px; }
-#message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-#message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-#message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-#message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-#message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-#load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-@media (max-width: 600px) {
-  body, #message { margin-top: 0; background: white; box-shadow: none; }
-  body { border-top: 16px solid #ffa100; }
+@font-face {
+  font-family: 'BankGothic Lt BT';
+  src: url('assets/font_assets/BNKGOTHL.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #0b0f19;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  /* Zoro Lost Background */
+  background: 
+    linear-gradient(180deg, rgba(11, 15, 25, 0.4) 0%, rgba(11, 15, 25, 0.3) 40%, rgba(11, 15, 25, 0.85) 100%),
+    radial-gradient(circle at center, rgba(11, 15, 25, 0.1) 0%, rgba(11, 15, 25, 0.65) 100%),
+    url('assets/News page assets/zoro lost.png') center/cover no-repeat;
+  background-attachment: fixed;
+}
+
+/* ── TOP LEFT BRAND LOGO (Exact Login Page Styling from auth.css) ────── */
+.auth-top-left-logo {
+  position: fixed;
+  top: 28px;
+  left: 36px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  z-index: 100;
+  transition: transform 0.2s ease;
+}
+
+.auth-top-left-logo:hover {
+  transform: scale(1.03);
+}
+
+.auth-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+.auth-logo-text {
+  margin: 0;
+  font-family: 'BankGothic Lt BT', sans-serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #ffffff;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.auth-logo-text .big {
+  font-size: 1.55rem;
+}
+
+/* ── 404 HERO CONTENT CONTAINER ────────────────────────── */
+.error-content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 680px;
+  padding: 40px 24px;
+  z-index: 10;
+  margin: auto;
+}
+
+.error-headline {
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  margin-bottom: 16px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.9);
+  line-height: 1.1;
+}
+
+.error-subheadline {
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 540px;
+  line-height: 1.55;
+  margin-bottom: 32px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* ── PRIMARY HOME BUTTON (Netflix White Pill Button Style) ─ */
+.error-home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  margin-bottom: 48px;
+}
+
+.error-home-btn:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.03);
+  box-shadow: 0 8px 28px rgba(255, 255, 255, 0.25), 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.error-home-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── ERROR CODE TAG ─────────────────────────────────────── */
+.error-code-tag {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-code-tag span {
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #ffffff;
+  border-left: 2px solid #449cef;
+  padding-left: 8px;
+}
+
+/* ── BOTTOM RIGHT ATTRIBUTION ───────────────────────────── */
+.error-bg-attribution {
+  position: fixed;
+  bottom: 24px;
+  right: 32px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  z-index: 10;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.error-bg-attribution .highlight {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 800;
+}
+
+/* ── RESPONSIVE DESIGN ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .auth-top-left-logo {
+    top: 20px;
+    left: 20px;
+  }
+  .auth-logo-img {
+    height: 32px;
+  }
+  .auth-logo-text {
+    font-size: 1.05rem;
+  }
+  .error-content-container {
+    padding: 20px;
+  }
+  .error-headline {
+    margin-bottom: 12px;
+  }
+  .error-subheadline {
+    margin-bottom: 24px;
+  }
+  .error-home-btn {
+    padding: 12px 26px;
+    font-size: 0.95rem;
+  }
+  .error-bg-attribution {
+    bottom: 16px;
+    right: 20px;
+    font-size: 0.68rem;
+  }
 }

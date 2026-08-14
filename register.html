@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="auth.css">
+
+  <script>
+    window.GOOGLE_CLIENT_ID = "681420178068-lpf5lcl98dfj560p9od15f7t12k4fcqa.apps.googleusercontent.com";
+    window.FB_APP_ID = "1043452911768475";
+  </script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+</head>
+
+<body>
+
+  <script src="scripts/auth.js"></script>
+
+  <!-- AUTH PAGE MAIN CONTAINER -->
+  <main class="auth-page-wrapper">
+    <!-- Top Left Brand Logo -->
+    <a href="home.html" class="auth-top-left-logo" title="Back to Home">
+      <img src="assets/SenpaiWorks logo.png" alt="SenpaiWorks Logo" class="auth-logo-img">
+      <h2 class="auth-logo-text">
+        <span class="big">S</span>ENPAI<span class="big">W</span>ORKS
+      </h2>
+    </a>
+
+    <!-- Glassmorphic Card Container -->
+    <div class="auth-card-container">
+      
+      <!-- Top Square Badge -->
+      <div class="auth-square-badge">
+        <i class="fa-solid fa-user-plus"></i>
+      </div>
+
+      <div id="signup-error" class="auth-error-msg" style="display: none;"></div>
+
+      <!-- ================= STEP 1: ENTER EMAIL ================= -->
+      <div id="register-step-1">
+        <h1 class="auth-title-center">Create an account</h1>
+        <p class="auth-subtitle-center">Enter your email address to get started with SenpaiWorks.</p>
+
+        <form id="step1-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-envelope input-leading-icon"></i>
+            <input type="email" id="step1-email" placeholder="Email Address" required autocomplete="email" autofocus>
+          </div>
+
+          <button type="submit" class="auth-submit-pill">Continue &rarr;</button>
+        </form>
+
+        <!-- Dotted Line Divider -->
+        <div class="auth-dotted-divider">
+          <span>Or sign up with</span>
+        </div>
+
+        <!-- Social Sign-Up Buttons -->
+        <div class="social-auth-bottom-row">
+          <button type="button" class="social-auth-card fb-card" id="btn-fb-signup" title="Sign up with Facebook">
+            <i class="fa-brands fa-facebook" style="color: #ffffff; font-size: 1.35rem;"></i>
+          </button>
+          <button type="button" class="social-auth-card google-card" id="btn-google-signup" title="Sign up with Google">
+            <img src="assets/google-g-logo.svg" alt="Google Logo">
+          </button>
+        </div>
+
+        <div class="auth-footer-center">
+          Already have an account? <a href="login.html">Sign in</a>
+        </div>
+      </div>
+
+      <!-- ================= STEP 2: ACCOUNT DETAILS ================= -->
+      <div id="register-step-2" style="display: none;">
+        <h1 class="auth-title-center" style="font-size: 1.5rem; text-align: left; margin-bottom: 8px;">Create an account to continue</h1>
+        <p class="auth-subtitle-center" style="text-align: left; max-width: 100%; margin-bottom: 22px; line-height: 1.5;">
+          With a SenpaiWorks account, you can access 3D assets, digital prints, and order tracking across SenpaiWorks. Create your account using <strong id="step2-email-display" style="color: #ffffff;">user@gmail.com</strong> <a href="#" id="step2-edit-email" class="auth-edit-link">edit</a>
+        </p>
+
+        <form id="step2-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-user input-leading-icon"></i>
+            <input type="text" id="signup-firstname" placeholder="First Name" required autocomplete="given-name">
+          </div>
+
+          <div class="input-icon-group">
+            <i class="fa-solid fa-user-tag input-leading-icon"></i>
+            <input type="text" id="signup-lastname" placeholder="Last Name" required autocomplete="family-name">
+          </div>
+
+          <div class="input-icon-group">
+            <i class="fa-solid fa-lock input-leading-icon"></i>
+            <input type="password" id="signup-password" placeholder="Choose a password (Min 6 characters)" required minlength="6" autocomplete="new-password">
+            <button type="button" class="toggle-password-btn" id="toggle-signup-pass" title="Toggle Password Visibility">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+
+          <!-- Marketing Checkboxes -->
+          <div class="auth-checkbox-group">
+            <input type="checkbox" id="chk-updates" checked>
+            <label for="chk-updates" class="auth-checkbox-label">
+              Yes! I would like to receive updates, special drops, and exclusive offers from SenpaiWorks.
+            </label>
+          </div>
+
+          <div class="auth-checkbox-group">
+            <input type="checkbox" id="chk-newsletter" checked>
+            <label for="chk-newsletter" class="auth-checkbox-label">
+              Yes, I would like to receive SenpaiWorks's Weekly Pulse newsletter for a weekly round-up of news from across the 3D multiverse, podcasts, gear, and subscriber-only surprises.
+            </label>
+          </div>
+
+          <!-- Legal Terms Disclaimer -->
+          <div class="auth-legal-notice">
+            By creating an account, I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and acknowledge that I have read the <a href="privacy.html" target="_blank">Privacy Policy</a>.
+          </div>
+
+          <div class="auth-country-notice">
+            My home country/region: <strong id="country-val">India</strong>. <a href="#" id="edit-country-btn" class="auth-edit-link">edit</a>
+          </div>
+
+          <button type="submit" class="auth-submit-pill" style="margin-top: 6px;">Agree & Continue</button>
+        </form>
+
+        <div class="auth-footer-center" style="margin-top: 18px;">
+          Already have an account? <a href="login.html">Sign in</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Standalone Minimal Footer -->
+    <footer class="auth-minimal-footer">
+      <div class="auth-minimal-links">
+        <a href="contact.html">Support</a>
+        <span class="sep">•</span>
+        <a href="privacy.html">Privacy Notice</a>
+        <span class="sep">•</span>
+        <a href="terms.html">Terms of Service</a>
+        <span class="sep">•</span>
+        <a href="privacy.html#cookies">Cookie Preferences</a>
+      </div>
+      <div class="auth-recaptcha-text">
+        This site is protected by Google reCAPTCHA and its <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Redirect if already logged in
+      if (window.Auth && window.Auth.isLoggedIn()) {
+        window.Auth.handlePostLoginRedirect("home.html");
+        return;
+      }
+
+      const step1Div = document.getElementById("register-step-1");
+      const step2Div = document.getElementById("register-step-2");
+
+      const step1Form = document.getElementById("step1-form");
+      const step2Form = document.getElementById("step2-form");
+
+      const step1Email = document.getElementById("step1-email");
+      const step2EmailDisplay = document.getElementById("step2-email-display");
+      const editEmailBtn = document.getElementById("step2-edit-email");
+      const editCountryBtn = document.getElementById("edit-country-btn");
+      const countryVal = document.getElementById("country-val");
+
+      const errBox = document.getElementById("signup-error");
+      const togglePass = document.getElementById("toggle-signup-pass");
+
+      let userEmail = "";
+
+      // Step 1 Submission: Validate Email & Show Step 2
+      if (step1Form) {
+        step1Form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          userEmail = step1Email ? step1Email.value.trim() : "";
+          if (!userEmail || !userEmail.includes("@")) {
+            if (errBox) {
+              errBox.textContent = "Please enter a valid email address.";
+              errBox.style.display = "block";
+            }
+            return;
+          }
+
+          if (errBox) errBox.style.display = "none";
+          if (step2EmailDisplay) step2EmailDisplay.textContent = userEmail;
+
+          step1Div.style.display = "none";
+          step2Div.style.display = "block";
+        });
+      }
+
+      // Edit Email Button -> Return to Step 1
+      if (editEmailBtn) {
+        editEmailBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          step2Div.style.display = "none";
+          step1Div.style.display = "block";
+          if (step1Email) step1Email.focus();
+        });
+      }
+
+      // Edit Country Option
+      if (editCountryBtn) {
+        editCountryBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const newCountry = prompt("Enter your home country/region:", countryVal ? countryVal.textContent : "India");
+          if (newCountry && newCountry.trim()) {
+            if (countryVal) countryVal.textContent = newCountry.trim();
+          }
+        });
+      }
+
+      // Toggle Password Visibility
+      if (togglePass) {
+        togglePass.addEventListener("click", () => {
+          const passInput = document.getElementById("signup-password");
+          if (passInput) {
+            const isPass = passInput.type === "password";
+            passInput.type = isPass ? "text" : "password";
+            togglePass.innerHTML = isPass ? '<i class="fa-regular fa-eye"></i>' : '<i class="fa-regular fa-eye-slash"></i>';
+          }
+        });
+      }
+
+      // Step 2 Submission: Complete Registration
+      if (step2Form) {
+        step2Form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const firstName = document.getElementById("signup-firstname").value.trim();
+          const lastName = document.getElementById("signup-lastname").value.trim();
+          const password = document.getElementById("signup-password").value.trim();
+
+          const username = `${firstName} ${lastName}`.trim();
+
+          const result = window.Auth.register(username, userEmail, password);
+          if (result.success) {
+            if (errBox) errBox.style.display = "none";
+            window.Auth.handlePostLoginRedirect("home.html");
+          } else {
+            if (errBox) {
+              errBox.textContent = result.message || "Registration failed.";
+              errBox.style.display = "block";
+            }
+          }
+        });
+      }
+
+      // Social Registration Buttons
+      const googleBtn = document.getElementById("btn-google-signup");
+      const fbBtn = document.getElementById("btn-fb-signup");
+
+      if (googleBtn) {
+        googleBtn.addEventListener("click", () => {
+          if (window.Auth && window.Auth.triggerGoogleLogin) {
+            window.Auth.triggerGoogleLogin(() => window.Auth.handlePostLoginRedirect("home.html"));
+          }
+        });
+      }
+
+      if (fbBtn) {
+        fbBtn.addEventListener("click", () => {
+          if (window.Auth && window.Auth.triggerFacebookLogin) {
+            window.Auth.triggerFacebookLogin(() => window.Auth.handlePostLoginRedirect("home.html"));
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

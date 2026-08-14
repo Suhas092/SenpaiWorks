@@ -6,15 +6,11 @@
   box-sizing: border-box !important;
 }
 
-html {
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-}
-
+html,
 body.checkout-body {
   margin: 0 !important;
   padding: 0 !important;
+  padding-top: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   overflow-x: hidden !important;
@@ -29,6 +25,7 @@ body.checkout-body {
 
 /* 1. DEDICATED HEADER BAR WITH CENTERED INNER CONTAINER */
 .chk-dedicated-header {
+  margin-top: 0 !important;
   background: #090d16 !important;
   color: #ffffff !important;
   position: sticky !important;
@@ -1156,4 +1153,55 @@ body.checkout-body {
   border-color: #0f172a;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   transform: translateY(-1px);
+}
+
+/* ============================================
+   DONATION MODE CHECKOUT STYLES
+   ============================================ */
+
+/* Full-width layout for donation checkout (no sidebar) */
+.chk-layout-grid.donation-mode-layout {
+  grid-template-columns: 1fr !important;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Donation Currency Toggle Pills */
+.donate-currency-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1.5px solid #334155;
+  background: #1e293b;
+  color: #94a3b8;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.donate-currency-pill:hover {
+  border-color: #38bdf8;
+  color: #e2e8f0;
+}
+
+.donate-currency-pill.active {
+  background: #0f172a;
+  border-color: #38bdf8;
+  color: #f8fafc;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+/* Donation mode submit button heart animation */
+.chk-place-order-btn.donate-btn {
+  background: linear-gradient(135deg, #e11d48, #be123c) !important;
+}
+
+.chk-place-order-btn.donate-btn:hover {
+  background: linear-gradient(135deg, #f43f5e, #e11d48) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(225, 29, 72, 0.35) !important;
 }

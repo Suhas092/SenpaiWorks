@@ -405,3 +405,215 @@ html, body {
   max-width: 700px;
   margin: 0 auto 36px auto;
 }
+
+/* ============================================
+   PREMIUM ANIMATIONS & TRANSITIONS ENGINE
+   ============================================ */
+
+/* 1. Page Transition Curtain Overlay */
+.page-transition-curtain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.page-loaded .page-transition-curtain {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.page-transition-curtain.is-exiting {
+  pointer-events: all;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 2. Hero Intro Entrance Animations */
+.hero-reveal-element {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: heroFadeSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes heroFadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.video-overlay-logo.hero-reveal-element {
+  animation-name: heroLogoPulse;
+}
+
+@keyframes heroLogoPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(20px);
+    filter: drop-shadow(0 0 0 rgba(0,102,204,0));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 8px 30px rgba(0, 102, 204, 0.4));
+  }
+}
+
+/* 3. Section Signature Scroll Reveals */
+
+/* Section 1: Gateway Portals Signature (3D Portal Flip-In & Blur Unveil) */
+.gateway-portal-card {
+  opacity: 0;
+  transform: perspective(900px) rotateY(-18deg) translateY(40px) scale(0.95);
+  filter: blur(8px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s ease, border-color 0.4s ease;
+  will-change: opacity, transform, filter;
+}
+
+.gateway-portal-card.is-revealed {
+  opacity: 1;
+  transform: perspective(900px) rotateY(0deg) translateY(0) scale(1);
+  filter: blur(0px);
+}
+
+.gateway-portal-card:hover {
+  transform: perspective(900px) rotateY(0deg) translateY(-8px) scale(1.03) !important;
+  box-shadow: 0 20px 45px rgba(0, 102, 204, 0.28);
+  border-color: rgba(74, 163, 255, 0.8);
+}
+
+/* Section 2: Creative Pipeline Signature (Floating Glass Spring & Icon Spin) */
+.pipeline-card {
+  opacity: 0;
+  transform: translateY(45px) scale(0.92);
+  transition: opacity 0.75s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s ease, border-color 0.35s ease;
+  will-change: opacity, transform;
+}
+
+.pipeline-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.pipeline-card.is-revealed .pipeline-icon {
+  animation: pipelineIconSpin 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes pipelineIconSpin {
+  0% {
+    transform: scale(0.5) rotate(-180deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.pipeline-card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  box-shadow: 0 18px 40px rgba(0, 102, 204, 0.16);
+  border-color: #0066cc;
+}
+
+/* Section 3: Direct Action CTA Banner Signature (Pulse Zoom & Neon Glow Sweep) */
+.index-cta-box {
+  opacity: 0;
+  transform: scale(0.88) translateY(30px);
+  box-shadow: 0 0 0 rgba(0, 102, 204, 0);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, box-shadow;
+}
+
+.index-cta-box.is-revealed {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  box-shadow: 0 20px 60px rgba(0, 102, 204, 0.2);
+}
+
+/* Generic Fallback Reveals */
+.reveal-on-scroll,
+.reveal-slide-up {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.is-revealed.reveal-on-scroll,
+.is-revealed.reveal-slide-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 5. Mobile & Accessible Overrides */
+body.page-loaded .page-transition-curtain {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+@media (max-width: 768px) {
+  .page-transition-curtain {
+    display: none !important;
+  }
+
+  .gateway-portal-card,
+  .pipeline-card,
+  .index-cta-box,
+  .reveal-on-scroll,
+  .reveal-slide-up {
+    transform: translateY(16px) !important;
+    filter: none !important;
+    transition: opacity 0.5s ease, transform 0.5s ease !important;
+  }
+
+  .gateway-portal-card.is-revealed,
+  .pipeline-card.is-revealed,
+  .index-cta-box.is-revealed,
+  .reveal-on-scroll.is-revealed,
+  .reveal-slide-up.is-revealed {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-curtain,
+  .hero-reveal-element,
+  .reveal-on-scroll,
+  .reveal-slide-up,
+  .gateway-portal-card,
+  .pipeline-card,
+  .index-cta-box {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+
+

@@ -90,55 +90,6 @@ function formatINR(val) {
 }
 
 function renderWishlistOrSuggestionsSection() {
-  const wishlist = getWishlistData();
-
-  // 1. IF WISHLIST HAS SAVED ITEMS -> RENDER WISHLIST SECTION (STORE PRODUCT CARD UI)
-  if (wishlist && wishlist.length > 0) {
-    const cardsHtml = wishlist.map((item, idx) => `
-      <div class="product-card ${item.type || 'physical'}">
-        <div class="prod-img-wrap">
-          <a href="store-detail.html?id=${item.id || ''}">
-            <img src="${item.img}" alt="${item.name}">
-          </a>
-          <div class="prod-badges-row">
-            <span class="prod-badge badge-custom"><i class="fa-solid fa-heart" style="color: #ef4444;"></i> Saved</span>
-          </div>
-        </div>
-        <div class="prod-body">
-          <h3 class="prod-title"><a href="store-detail.html?id=${item.id || ''}">${item.name}</a></h3>
-          <div class="prod-sub-row">
-            <span class="prod-sub-text">${item.variant || item.subLabel || 'Standard Edition'}</span>
-          </div>
-          <div class="prod-price-row">
-            <span class="prod-price">${formatINR(item.price)}</span>
-          </div>
-          <div class="wishlist-actions-row">
-            <button type="button" class="btn-store-cart-action" onclick="addWishlistItemToCart(${idx})">
-              <i class="fa-solid fa-cart-plus"></i> <span class="btn-txt-full">Move to Cart</span><span class="btn-txt-short">Cart</span>
-            </button>
-            <button type="button" class="btn-remove-from-wishlist" onclick="removeWishlistItem(${idx})" title="Remove from Wishlist">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    `).join("");
-
-    return `
-      <section class="wishlist-section-container">
-        <div class="wishlist-section-header">
-          <div class="wishlist-header-title">
-            <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
-            <h2>Your Wishlist & Saved Items</h2>
-          </div>
-          <p class="wishlist-header-desc">Items saved from store. Click <strong>Move to Cart</strong> whenever you are ready to buy!</p>
-        </div>
-        <div class="product-grid wishlist-store-grid">
-          ${cardsHtml}
-        </div>
-      </section>
-    `;
-  }
 
   // 2. IF WISHLIST IS EMPTY -> RENDER SUGGESTED PRODUCTS SECTION (EXACT STORE PRODUCT CARD UI)
   const suggestedHtml = SUGGESTED_STORE_PRODUCTS.map((item, idx) => `
@@ -185,6 +136,7 @@ function renderWishlistOrSuggestionsSection() {
 
 function renderCartPage() {
   cartData = getCartData();
+  if (window.clearCartHighlight) window.clearCartHighlight();
 
   const container = document.getElementById("cart-main-container");
   const countLabel = document.getElementById("cart-item-count-label");
@@ -220,7 +172,7 @@ function renderCartPage() {
           </div>
           <div class="perk-item">
             <i class="fa-solid fa-rotate-left"></i>
-            <span>7-Day Easy Returns</span>
+            <span>7-Day Easy Replacements</span>
           </div>
           <div class="perk-item">
             <i class="fa-solid fa-headset"></i>
@@ -270,10 +222,21 @@ function renderCartPage() {
           <button type="button" class="cart-item-delete-btn" onclick="removeCartItem(${index})">
             <i class="fa-solid fa-trash-can"></i> Remove
           </button>
+          <button type="button" class="cart-item-checkout-single-btn" onclick="checkoutSingleItem(${index})" style="background: #000000ff; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; margin-top: 8px; width: 100%; transition: opacity 0.2s;">
+            Buy Now
+          </button>
         </div>
       </div>
     `;
   });
+
+  window.checkoutSingleItem = function(index) {
+    const item = cartData[index];
+    if (item) {
+      sessionStorage.setItem("checkoutSingleItem", JSON.stringify(item));
+      window.location.href = "checkout.html";
+    }
+  };
 
   container.innerHTML = `
     <div class="cart-layout-grid">
@@ -326,7 +289,7 @@ function renderCartPage() {
 
           <div class="cart-guarantee-badges">
             <div><i class="fa-solid fa-shield-halved" style="color: #059669;"></i> 256-Bit Encrypted Secure Checkout</div>
-            <div><i class="fa-solid fa-rotate-left" style="color: #38bdf8;"></i> 7-Day Easy Returns & Replacements</div>
+            <div><i class="fa-solid fa-rotate-left" style="color: #38bdf8;"></i> 7-Day Easy Replacements</div>
           </div>
         </div>
       </div>
@@ -345,12 +308,18 @@ window.updateCartQuantity = function(index, newQty) {
   }
   cartData[index].quantity = newQty;
   localStorage.setItem("shoppingCart", JSON.stringify(cartData));
+  if (window.Auth && window.Auth.syncUserCart) {
+    window.Auth.syncUserCart(cartData);
+  }
   renderCartPage();
 };
 
 window.removeCartItem = function(index) {
   cartData.splice(index, 1);
   localStorage.setItem("shoppingCart", JSON.stringify(cartData));
+  if (window.Auth && window.Auth.syncUserCart) {
+    window.Auth.syncUserCart(cartData);
+  }
   renderCartPage();
 };
 

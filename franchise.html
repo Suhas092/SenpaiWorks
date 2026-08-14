@@ -2,20 +2,36 @@
 <html lang="en">
 
 <head>
-  <link rel="icon"
-    href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-    type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Five Realms & Great Houses — SenpaiWorks GOT Franchise</title>
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="header.css">
-  <link rel="stylesheet" href="franchise.css?v=60">
+  <link rel="stylesheet" href="franchise.css?v=62">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+
+  <!-- Top Scroll Progress Indicator -->
+  <div id="aes-scroll-progress"></div>
+
+  <!-- Ambient Dragon Ember Canvas Particles -->
+  <canvas id="aes-ember-canvas"></canvas>
+
+  <!-- Floating Realm Codex Quick Nav Dock -->
+  <div class="aes-realm-dock">
+    <a href="#section-hero" class="aes-dock-link active"><i class="fa-solid fa-video"></i><span class="aes-dock-tooltip">World Video</span></a>
+    <a href="#section-world-building" class="aes-dock-link"><i class="fa-solid fa-book-bookmark"></i><span class="aes-dock-tooltip">World Codex</span></a>
+    <a href="#section-map-intro" class="aes-dock-link"><i class="fa-solid fa-compass"></i><span class="aes-dock-tooltip">Realm Atlas</span></a>
+    <a href="#section-houses" class="aes-dock-link"><i class="fa-solid fa-shield-halved"></i><span class="aes-dock-tooltip">Heraldry</span></a>
+    <a href="#section-royalty" class="aes-dock-link"><i class="fa-solid fa-crown"></i><span class="aes-dock-tooltip">Royalty</span></a>
+    <a href="#section-others" class="aes-dock-link"><i class="fa-solid fa-layer-group"></i><span class="aes-dock-tooltip">Multiverse</span></a>
+    <a href="#section-oath" class="aes-dock-link"><i class="fa-solid fa-flag"></i><span class="aes-dock-tooltip">Royal Oath</span></a>
+    <button id="aes-sound-toggle" class="aes-sound-toggle-btn sound-on" title="Audio FX: ON"><i class="fa-solid fa-volume-high"></i></button>
+  </div>
 
   <!-- Header Placeholder -->
   <div id="header-placeholder">
@@ -35,25 +51,84 @@
   <div id="drawer-container"></div>
   <script src="scripts/drawer.js?v=5"></script>
 
-  <!-- HERO PROLOGUE BANNER -->
-  <section class="aes-hero-section">
-    <div class="aes-hero-bg"
-      style="background-image: url('https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp');">
-    </div>
+  <!-- HERO PROLOGUE CINEMATIC VIDEO BANNER -->
+  <section class="aes-hero-section" id="section-hero">
+    <!-- World Building Video Background from assets/Franchise assets/world building.mp4 -->
+    <video class="aes-hero-video" autoplay loop muted playsinline poster="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp">
+      <source src="assets/Franchise%20assets/world%20building.mp4" type="video/mp4">
+    </video>
     <div class="aes-hero-overlay">
-      <div class="aes-hero-content">
-        <span class="aes-tag"><i class="fa-solid fa-crown"></i> SENPAIWORKS CHRONICLES</span>
+      <div class="aes-hero-content" data-reveal="zoom-in">
+        <span class="aes-tag"><i class="fa-solid fa-film"></i> SENPAIWORKS CINEMATIC CHRONICLES</span>
         <h1 class="aes-hero-title">THE REALMS OF FIRE & ICE</h1>
         <p class="aes-hero-desc">
           "When the dragons soar over the Frostpeaks and Valyrian steel catches golden light, five Great Houses duel for honor, kingdom, and the eternal crown."
         </p>
         <div class="aes-btn-wrap">
-          <a href="#section-map-intro" class="aes-btn aes-btn-gold">
+          <a href="#section-world-building" class="aes-btn aes-btn-gold">
+            <i class="fa-solid fa-book-bookmark"></i> WORLD CODEX LORE
+          </a>
+          <a href="#section-map-intro" class="aes-btn aes-btn-outline">
             <i class="fa-solid fa-map-location-dot"></i> EXPLORE REALM MAP
           </a>
-          <a href="#section-royalty" class="aes-btn aes-btn-outline">
-            <i class="fa-solid fa-crown"></i> KINGS & QUEENS
-          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORLD BUILDING INFORMATION SCROLL CHRONICLES -->
+  <section class="aes-wb-section" id="section-world-building">
+    <div class="aes-section-header" data-reveal="fade-up">
+      <span class="aes-tag"><i class="fa-solid fa-book-bookmark"></i> WORLD CODEX · ANCIENT LORE</span>
+      <h2 class="aes-section-title">THE ARCHITECTURE OF THE FIVE REALMS</h2>
+      <p class="aes-section-subtitle">
+        Scroll down to explore the foundational history, Valyrian bloodlines, and elemental strongholds of the SenpaiWorks GOT multiverse.
+      </p>
+    </div>
+
+    <div class="aes-wb-panels-grid">
+      <!-- Panel 1 -->
+      <div class="aes-wb-card" style="--reveal-delay: 0.1s;" data-reveal="zoom-in">
+        <span class="aes-wb-number">01</span>
+        <div class="aes-wb-icon"><i class="fa-solid fa-dragon"></i></div>
+        <h3 class="aes-wb-title">Valyrian Flame & Dragonmont</h3>
+        <p class="aes-wb-desc">
+          Forged in subterranean lava fissures, the volcanic mines of Dragonstone contain ancient dragonglass, obsidian chambers, and three crimson drakes raised under Queen Suzana Targaryen.
+        </p>
+        <div class="aes-wb-tag-list">
+          <span class="aes-wb-chip">Dragonfire Alchemy</span>
+          <span class="aes-wb-chip">Obsidian Dragonglass</span>
+          <span class="aes-wb-chip">Sunfire Blade</span>
+        </div>
+      </div>
+
+      <!-- Panel 2 -->
+      <div class="aes-wb-card" style="--reveal-delay: 0.2s;" data-reveal="zoom-in">
+        <span class="aes-wb-number">02</span>
+        <div class="aes-wb-icon"><i class="fa-solid fa-shield-cat"></i></div>
+        <h3 class="aes-wb-title">Frostpeak Thermal Crypts</h3>
+        <p class="aes-wb-desc">
+          Beneath the snows of Winterfell, natural thermal hot springs heat stone walls guarding ancient subterranean crypts where Kings of Winter watch over northern direwolf skinchangers.
+        </p>
+        <div class="aes-wb-tag-list">
+          <span class="aes-wb-chip">First Men Blood</span>
+          <span class="aes-wb-chip">Icebringer Blade</span>
+          <span class="aes-wb-chip">Direwolf Warging</span>
+        </div>
+      </div>
+
+      <!-- Panel 3 -->
+      <div class="aes-wb-card" style="--reveal-delay: 0.3s;" data-reveal="zoom-in">
+        <span class="aes-wb-number">03</span>
+        <div class="aes-wb-icon"><i class="fa-solid fa-crown"></i></div>
+        <h3 class="aes-wb-title">Golden Vaults & Sky Cells</h3>
+        <p class="aes-wb-desc">
+          From the sea-cliff gold mines of Casterly Rock to the thousand-foot wind gales of The Eyrie Sky Cells, sovereign rulers command legions, lancers, and Valkyrie falcon knights.
+        </p>
+        <div class="aes-wb-tag-list">
+          <span class="aes-wb-chip">Golden Lancers</span>
+          <span class="aes-wb-chip">Sky Falcon Spear</span>
+          <span class="aes-wb-chip">Thunder-Blade Trio</span>
         </div>
       </div>
     </div>
@@ -61,7 +136,7 @@
 
   <!-- SECTION 1: MAP INTRODUCTION (FIRST SECTION) -->
   <section class="aes-map-section" id="section-map-intro">
-    <div class="aes-section-header">
+    <div class="aes-section-header" data-reveal="fade-up">
       <span class="aes-tag"><i class="fa-solid fa-compass"></i> SECTION I · REALM ATLAS</span>
       <h2 class="aes-section-title">MAP OF WESTEROS & THE FIVE STRONGHOLDS</h2>
       <p class="aes-section-subtitle">
@@ -71,7 +146,7 @@
 
     <div class="aes-map-container">
       <!-- Medieval Map Viewport -->
-      <div class="aes-map-viewport">
+      <div class="aes-map-viewport" data-reveal="slide-left">
         <div class="aes-map-overlay-layer"></div>
 
         <!-- Pin 1: Dragonstone -->
@@ -106,7 +181,7 @@
       </div>
 
       <!-- Live Details Panel -->
-      <div class="aes-map-info-panel" id="map-house-info-panel">
+      <div class="aes-map-info-panel" id="map-house-info-panel" data-reveal="slide-right">
         <div class="aes-info-header">
           <div class="aes-info-icon" id="map-house-icon">
             <i class="fa-solid fa-dragon"></i>
@@ -125,18 +200,22 @@
           <div class="aes-stat-box">
             <span class="aes-stat-lbl">Ruling Monarch</span>
             <span class="aes-stat-val" id="map-stat-ruler">Queen Suzana Targaryen</span>
+            <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="95%"></div></div>
           </div>
           <div class="aes-stat-box">
             <span class="aes-stat-lbl">Valyrian Weapon</span>
             <span class="aes-stat-val" id="map-stat-weapon">Sunfire Sword</span>
+            <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="98%"></div></div>
           </div>
           <div class="aes-stat-box">
             <span class="aes-stat-lbl">Realm Legions</span>
             <span class="aes-stat-val" id="map-stat-army">10,000 Dragon Vanguard</span>
+            <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="90%"></div></div>
           </div>
           <div class="aes-stat-box">
             <span class="aes-stat-lbl">Sigil Element</span>
             <span class="aes-stat-val" id="map-stat-element">Dragonfire</span>
+            <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="100%"></div></div>
           </div>
         </div>
       </div>
@@ -145,7 +224,7 @@
 
   <!-- SECTION 2: THE GREAT HOUSES OF THE REALM -->
   <section class="aes-houses-section" id="section-houses">
-    <div class="aes-section-header">
+    <div class="aes-section-header" data-reveal="fade-up">
       <span class="aes-tag"><i class="fa-solid fa-shield-halved"></i> SECTION II · HERALDRY</span>
       <h2 class="aes-section-title">THE FIVE GREAT HOUSES</h2>
       <p class="aes-section-subtitle">
@@ -155,7 +234,7 @@
 
     <div class="aes-houses-grid">
       <!-- House 1 -->
-      <div class="aes-house-card" style="--house-border: #cc0000; --house-glow: rgba(204,0,0,0.4);">
+      <div class="aes-house-card" style="--house-border: #cc0000; --house-glow: rgba(204,0,0,0.4); --reveal-delay: 0.1s;" data-reveal="flip-up">
         <div class="aes-house-icon"><i class="fa-solid fa-dragon"></i></div>
         <h3 class="aes-house-name">House Targaryen</h3>
         <div class="aes-house-motto">"FIRE AND BLOOD"</div>
@@ -166,11 +245,12 @@
           <span>Ruler: <strong>Queen Suzana Targaryen</strong></span>
           <span>Seat: <strong>Dragonstone Citadel</strong></span>
           <span>Weapon: <strong>Sunfire Blade</strong></span>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="96%" style="background: linear-gradient(90deg, #cc0000, #ff4d4d);"></div></div>
         </div>
       </div>
 
       <!-- House 2 -->
-      <div class="aes-house-card" style="--house-border: #2b6cb0; --house-glow: rgba(43,108,176,0.4);">
+      <div class="aes-house-card" style="--house-border: #2b6cb0; --house-glow: rgba(43,108,176,0.4); --reveal-delay: 0.2s;" data-reveal="flip-up">
         <div class="aes-house-icon"><i class="fa-solid fa-shield-cat"></i></div>
         <h3 class="aes-house-name">House Stark</h3>
         <div class="aes-house-motto" style="color: #2b6cb0;">"WINTER IS COMING"</div>
@@ -181,11 +261,12 @@
           <span>Ruler: <strong>King Remi Stark</strong></span>
           <span>Seat: <strong>Winterfell Keep</strong></span>
           <span>Weapon: <strong>Icebringer</strong></span>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="92%" style="background: linear-gradient(90deg, #2b6cb0, #63b3ed);"></div></div>
         </div>
       </div>
 
       <!-- House 3 -->
-      <div class="aes-house-card" style="--house-border: #d69e2e; --house-glow: rgba(214,158,46,0.4);">
+      <div class="aes-house-card" style="--house-border: #d69e2e; --house-glow: rgba(214,158,46,0.4); --reveal-delay: 0.3s;" data-reveal="flip-up">
         <div class="aes-house-icon"><i class="fa-solid fa-crown"></i></div>
         <h3 class="aes-house-name">House Lannister</h3>
         <div class="aes-house-motto" style="color: #d69e2e;">"HEAR ME ROAR"</div>
@@ -196,11 +277,12 @@
           <span>Ruler: <strong>Queen Ayana Lannister</strong></span>
           <span>Seat: <strong>Casterly Rock</strong></span>
           <span>Weapon: <strong>Lionclaw Rapier</strong></span>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="98%" style="background: linear-gradient(90deg, #d69e2e, #faf089);"></div></div>
         </div>
       </div>
 
       <!-- House 4 -->
-      <div class="aes-house-card" style="--house-border: #319795; --house-glow: rgba(49,151,149,0.4);">
+      <div class="aes-house-card" style="--house-border: #319795; --house-glow: rgba(49,151,149,0.4); --reveal-delay: 0.4s;" data-reveal="flip-up">
         <div class="aes-house-icon"><i class="fa-solid fa-feather-pointed"></i></div>
         <h3 class="aes-house-name">House Arryn</h3>
         <div class="aes-house-motto" style="color: #319795;">"AS HIGH AS HONOR"</div>
@@ -211,11 +293,12 @@
           <span>Ruler: <strong>Queen Tiara Arryn</strong></span>
           <span>Seat: <strong>The Eyrie Sanctuary</strong></span>
           <span>Weapon: <strong>Sky-Falcon Spear</strong></span>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="88%" style="background: linear-gradient(90deg, #319795, #81e6d9);"></div></div>
         </div>
       </div>
 
       <!-- House 5 -->
-      <div class="aes-house-card" style="--house-border: #dd6b20; --house-glow: rgba(221,107,32,0.4);">
+      <div class="aes-house-card" style="--house-border: #dd6b20; --house-glow: rgba(221,107,32,0.4); --reveal-delay: 0.5s;" data-reveal="flip-up">
         <div class="aes-house-icon"><i class="fa-solid fa-bolt"></i></div>
         <h3 class="aes-house-name">House Baratheon</h3>
         <div class="aes-house-motto" style="color: #dd6b20;">"OURS IS THE FURY"</div>
@@ -226,6 +309,7 @@
           <span>Ruler: <strong>King Zoro Baratheon</strong></span>
           <span>Seat: <strong>Storm's End Keep</strong></span>
           <span>Weapon: <strong>Thunder-Blade Trio</strong></span>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="94%" style="background: linear-gradient(90deg, #dd6b20, #fbd38d);"></div></div>
         </div>
       </div>
     </div>
@@ -233,7 +317,7 @@
 
   <!-- SECTION 3: KINGS, QUEENS & RULERS -->
   <section class="aes-royalty-section" id="section-royalty">
-    <div class="aes-section-header">
+    <div class="aes-section-header" data-reveal="fade-up">
       <span class="aes-tag"><i class="fa-solid fa-crown"></i> SECTION III · ROYALTY</span>
       <h2 class="aes-section-title">KINGS, QUEENS & RULERS OF THE REALM</h2>
       <p class="aes-section-subtitle">
@@ -244,9 +328,9 @@
     <div class="aes-royalty-grid">
 
       <!-- Ruler 1: Suzana Targaryen -->
-      <div class="aes-ruler-full-card" style="--ruler-border: #cc0000;">
+      <div class="aes-ruler-full-card" style="--ruler-border: #cc0000; --reveal-delay: 0.1s;" data-reveal="slide-left">
         <div class="aes-ruler-img-wrap" style="--ruler-border: #cc0000;">
-          <img src="assets/suzana.png" alt="Suzana Targaryen">
+          <img src="assets/suzana.png" alt="Suzana Targaryen" loading="lazy" decoding="async">
         </div>
         <div>
           <span class="aes-ruler-title-tag">QUEEN OF DRAGONS & SUNFIRE SOVEREIGN</span>
@@ -258,15 +342,16 @@
             <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Targaryen</span></div>
             <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Dragonstone</span></div>
             <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Sunfire Blade</span></div>
-            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">10,000 Vanguard</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val aes-counter-val" data-target="10000" data-suffix=" Vanguard">0</span></div>
           </div>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="95%" style="background: linear-gradient(90deg, #cc0000, #ff4d4d);"></div></div>
         </div>
       </div>
 
       <!-- Ruler 2: Remi Stark -->
-      <div class="aes-ruler-full-card" style="--ruler-border: #2b6cb0;">
+      <div class="aes-ruler-full-card" style="--ruler-border: #2b6cb0; --reveal-delay: 0.15s;" data-reveal="slide-right">
         <div class="aes-ruler-img-wrap" style="--ruler-border: #2b6cb0;">
-          <img src="assets/Remi.png" alt="Remi Stark">
+          <img src="assets/Remi.png" alt="Remi Stark" loading="lazy" decoding="async">
         </div>
         <div>
           <span class="aes-ruler-title-tag" style="color: #2b6cb0;">WARDEN OF THE NORTH & DIREWOLF BLADE</span>
@@ -278,15 +363,16 @@
             <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Stark</span></div>
             <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Winterfell</span></div>
             <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Icebringer</span></div>
-            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">15,000 Guards</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val aes-counter-val" data-target="15000" data-suffix=" Guards">0</span></div>
           </div>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="92%" style="background: linear-gradient(90deg, #2b6cb0, #63b3ed);"></div></div>
         </div>
       </div>
 
       <!-- Ruler 3: Ayana Lannister -->
-      <div class="aes-ruler-full-card" style="--ruler-border: #d69e2e;">
+      <div class="aes-ruler-full-card" style="--ruler-border: #d69e2e; --reveal-delay: 0.2s;" data-reveal="slide-left">
         <div class="aes-ruler-img-wrap" style="--ruler-border: #d69e2e;">
-          <img src="assets/Ayana.png" alt="Ayana Lannister">
+          <img src="assets/Ayana.png" alt="Ayana Lannister" loading="lazy" decoding="async">
         </div>
         <div>
           <span class="aes-ruler-title-tag" style="color: #d69e2e;">HIGH STRATEGIST & GOLDEN EMPRESS</span>
@@ -298,15 +384,16 @@
             <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Lannister</span></div>
             <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Casterly Rock</span></div>
             <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Lionclaw Rapier</span></div>
-            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">25,000 Lancers</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val aes-counter-val" data-target="25000" data-suffix=" Lancers">0</span></div>
           </div>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="98%" style="background: linear-gradient(90deg, #d69e2e, #faf089);"></div></div>
         </div>
       </div>
 
       <!-- Ruler 4: Tiara Arryn -->
-      <div class="aes-ruler-full-card" style="--ruler-border: #319795;">
+      <div class="aes-ruler-full-card" style="--ruler-border: #319795; --reveal-delay: 0.25s;" data-reveal="slide-right">
         <div class="aes-ruler-img-wrap" style="--ruler-border: #319795;">
-          <img src="assets/Tiara.png" alt="Tiara Arryn">
+          <img src="assets/Tiara.png" alt="Tiara Arryn" loading="lazy" decoding="async">
         </div>
         <div>
           <span class="aes-ruler-title-tag" style="color: #319795;">VALKYRIE RULER OF THE HIGH EYRIE</span>
@@ -318,15 +405,16 @@
             <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Arryn</span></div>
             <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">The Eyrie</span></div>
             <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Sky-Falcon Spear</span></div>
-            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">8,000 Knights</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val aes-counter-val" data-target="8000" data-suffix=" Knights">0</span></div>
           </div>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="88%" style="background: linear-gradient(90deg, #319795, #81e6d9);"></div></div>
         </div>
       </div>
 
       <!-- Ruler 5: Zoro Baratheon -->
-      <div class="aes-ruler-full-card" style="--ruler-border: #dd6b20;">
+      <div class="aes-ruler-full-card" style="--ruler-border: #dd6b20; --reveal-delay: 0.3s;" data-reveal="slide-left">
         <div class="aes-ruler-img-wrap" style="--ruler-border: #dd6b20;">
-          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp" alt="Zoro Baratheon">
+          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp" alt="Zoro Baratheon" loading="lazy" decoding="async">
         </div>
         <div>
           <span class="aes-ruler-title-tag" style="color: #dd6b20;">STORM LORD OF TEMPEST CRAG</span>
@@ -338,8 +426,9 @@
             <div><span class="aes-stat-lbl">House</span><span class="aes-stat-val">House Baratheon</span></div>
             <div><span class="aes-stat-lbl">Seat</span><span class="aes-stat-val">Storm's End</span></div>
             <div><span class="aes-stat-lbl">Weapon</span><span class="aes-stat-val">Thunder-Blade Trio</span></div>
-            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val">18,000 Vanguard</span></div>
+            <div><span class="aes-stat-lbl">Legion</span><span class="aes-stat-val aes-counter-val" data-target="18000" data-suffix=" Vanguard">0</span></div>
           </div>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="94%" style="background: linear-gradient(90deg, #dd6b20, #fbd38d);"></div></div>
         </div>
       </div>
 
@@ -348,7 +437,7 @@
 
   <!-- SECTION 4: OTHER CHAMPIONS & MULTIVERSE LEGENDS -->
   <section class="aes-others-section" id="section-others">
-    <div class="aes-section-header">
+    <div class="aes-section-header" data-reveal="fade-up">
       <span class="aes-tag"><i class="fa-solid fa-layer-group"></i> SECTION IV · OTHER CHAMPIONS</span>
       <h2 class="aes-section-title">MULTIVERSE LEGENDS & DUNGEON HEROES</h2>
       <p class="aes-section-subtitle">
@@ -359,7 +448,7 @@
     <!-- Anime Champions Grid -->
     <div class="aes-champions-grid">
       <!-- Champ 1 -->
-      <div class="aes-champ-card" style="--champ-color: #ef4444;">
+      <div class="aes-champ-card" style="--champ-color: #ef4444; --reveal-delay: 0.1s;" data-reveal="zoom-in">
         <div class="aes-champ-img-wrap">
           <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp" alt="Itachi Uchiha">
         </div>
@@ -369,11 +458,12 @@
           <p class="aes-champ-lore">
             Master of the Crimson Sharingan & Amaterasu flames. Summons the spectral Susanoo avatar to safeguard the shadow realm.
           </p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="99%" style="background: linear-gradient(90deg, #ef4444, #f87171);"></div></div>
         </div>
       </div>
 
       <!-- Champ 2 -->
-      <div class="aes-champ-card" style="--champ-color: #8b5cf6;">
+      <div class="aes-champ-card" style="--champ-color: #8b5cf6; --reveal-delay: 0.2s;" data-reveal="zoom-in">
         <div class="aes-champ-img-wrap">
           <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp" alt="Kaneki Ken">
         </div>
@@ -383,11 +473,12 @@
           <p class="aes-champ-lore">
             The Eyepatch Ghoul ruler bridging humans and monsters. Wields the tentacled Rinkaku Kagune Centipede state.
           </p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="94%" style="background: linear-gradient(90deg, #8b5cf6, #c084fc);"></div></div>
         </div>
       </div>
 
       <!-- Champ 3 -->
-      <div class="aes-champ-card" style="--champ-color: #f59e0b;">
+      <div class="aes-champ-card" style="--champ-color: #f59e0b; --reveal-delay: 0.3s;" data-reveal="zoom-in">
         <div class="aes-champ-img-wrap">
           <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/luffy_copy_lqrkg0.webp" alt="Luffy">
         </div>
@@ -397,11 +488,12 @@
           <p class="aes-champ-lore">
             Empowered by Gear 5 awakening. Turns battlefields into elastic freedom and thunderous Bajrang strikes.
           </p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="97%" style="background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div></div>
         </div>
       </div>
 
       <!-- Champ 4 -->
-      <div class="aes-champ-card" style="--champ-color: #06b6d4;">
+      <div class="aes-champ-card" style="--champ-color: #06b6d4; --reveal-delay: 0.4s;" data-reveal="zoom-in">
         <div class="aes-champ-img-wrap">
           <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/Mikasa_copy_jcwuga.webp" alt="Mikasa">
         </div>
@@ -411,6 +503,7 @@
           <p class="aes-champ-lore">
             Awakened Ackerman battle instinct. Navigates 3D ODM gear with flawless dual blade slice precision.
           </p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="95%" style="background: linear-gradient(90deg, #06b6d4, #22d3ee);"></div></div>
         </div>
       </div>
     </div>
@@ -418,11 +511,12 @@
     <!-- Dungeon Guild Hero Class Strips -->
     <div class="aes-dungeon-strips">
       <!-- Warrior -->
-      <div class="aes-dungeon-strip" style="--strip-color: #e53e3e;">
+      <div class="aes-dungeon-strip" style="--strip-color: #e53e3e; --reveal-delay: 0.1s;" data-reveal="slide-left">
         <img src="assets/game/warrior.png" alt="Warrior" class="aes-dungeon-img">
         <div>
           <h3 class="aes-dungeon-title">Vanguard Warrior Class</h3>
           <p class="aes-dungeon-desc">Heavy armored juggernaut equipped with plate mail and two-handed Valyrian greatswords.</p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="90%" style="background: #e53e3e;"></div></div>
         </div>
         <div class="aes-dungeon-stats">
           <div>Weapon: <strong style="color: #e53e3e;">Greatsword</strong></div>
@@ -431,11 +525,12 @@
       </div>
 
       <!-- Mage -->
-      <div class="aes-dungeon-strip" style="--strip-color: #805ad5;">
+      <div class="aes-dungeon-strip" style="--strip-color: #805ad5; --reveal-delay: 0.2s;" data-reveal="slide-right">
         <img src="assets/game/mage.png" alt="Mage" class="aes-dungeon-img">
         <div>
           <h3 class="aes-dungeon-title">Elemental Arcana Mage</h3>
           <p class="aes-dungeon-desc">Master of elemental spellcraft. Channels lightning meteors and arcana explosions from crystal staves.</p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="96%" style="background: #805ad5;"></div></div>
         </div>
         <div class="aes-dungeon-stats">
           <div>Weapon: <strong style="color: #805ad5;">Crystal Staff</strong></div>
@@ -444,11 +539,12 @@
       </div>
 
       <!-- Rogue -->
-      <div class="aes-dungeon-strip" style="--strip-color: #319795;">
+      <div class="aes-dungeon-strip" style="--strip-color: #319795; --reveal-delay: 0.3s;" data-reveal="slide-left">
         <img src="assets/game/rogue.png" alt="Rogue" class="aes-dungeon-img">
         <div>
           <h3 class="aes-dungeon-title">Shadowstep Rogue Assassin</h3>
           <p class="aes-dungeon-desc">Silent shadowstep assassin using stealth cloaks and envenomed daggers for critical strikes.</p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="92%" style="background: #319795;"></div></div>
         </div>
         <div class="aes-dungeon-stats">
           <div>Weapon: <strong style="color: #319795;">Poison Daggers</strong></div>
@@ -457,11 +553,12 @@
       </div>
 
       <!-- Healer -->
-      <div class="aes-dungeon-strip" style="--strip-color: #d69e2e;">
+      <div class="aes-dungeon-strip" style="--strip-color: #d69e2e; --reveal-delay: 0.4s;" data-reveal="slide-right">
         <img src="assets/game/healer.png" alt="Healer" class="aes-dungeon-img">
         <div>
           <h3 class="aes-dungeon-title">Radiant Life Priest Healer</h3>
           <p class="aes-dungeon-desc">Sovereign priest of holy restoration channeling aura shields and divine light beam cleansing.</p>
+          <div class="aes-stat-meter-bg"><div class="aes-stat-meter-fill" data-target-width="88%" style="background: #d69e2e;"></div></div>
         </div>
         <div class="aes-dungeon-stats">
           <div>Weapon: <strong style="color: #d69e2e;">Holy Scepter</strong></div>
@@ -473,51 +570,51 @@
 
   <!-- SECTION 5: ROYAL OATH OF ALLEGIANCE -->
   <section class="aes-oath-section" id="section-oath">
-    <div class="aes-section-header">
+    <div class="aes-section-header" data-reveal="fade-up">
       <span class="aes-tag"><i class="fa-solid fa-flag"></i> SECTION V · ROYAL OATH</span>
       <h2 class="aes-section-title">SWEAR YOUR ALLEGIANCE</h2>
-      <p class="aes-section-subtitle">Pledge your sword to a Great House of the realm.</p>
+      <p class="aes-section-subtitle">Pledge your sword to a Great House of the realm and claim your royal seal of fealty.</p>
     </div>
 
     <div class="aes-oath-grid">
       <!-- House 1 -->
-      <div class="aes-fealty-card" style="--fealty-color: #cc0000; --fealty-glow: rgba(204,0,0,0.5);">
+      <div class="aes-fealty-card" style="--fealty-color: #cc0000; --fealty-glow: rgba(204,0,0,0.5); --reveal-delay: 0.1s;" data-reveal="flip-up">
         <div class="aes-fealty-icon"><i class="fa-solid fa-dragon"></i></div>
         <h3 class="aes-fealty-name">House Suzana</h3>
         <p class="aes-fealty-motto">"FIRE AND BLOOD"</p>
-        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Suzana Targaryen', 'Fire & Blood')">Swear Fealty</button>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouseCustom('House Suzana Targaryen', 'Fire and Blood', '#cc0000', 'fa-dragon')">Swear Fealty</button>
       </div>
 
       <!-- House 2 -->
-      <div class="aes-fealty-card" style="--fealty-color: #2b6cb0; --fealty-glow: rgba(43,108,176,0.5);">
+      <div class="aes-fealty-card" style="--fealty-color: #2b6cb0; --fealty-glow: rgba(43,108,176,0.5); --reveal-delay: 0.2s;" data-reveal="flip-up">
         <div class="aes-fealty-icon"><i class="fa-solid fa-shield-cat"></i></div>
         <h3 class="aes-fealty-name">House Remi</h3>
         <p class="aes-fealty-motto">"WINTER IS COMING"</p>
-        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Remi Stark', 'Winter Is Coming')">Swear Fealty</button>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouseCustom('House Remi Stark', 'Winter is Coming', '#2b6cb0', 'fa-shield-cat')">Swear Fealty</button>
       </div>
 
       <!-- House 3 -->
-      <div class="aes-fealty-card" style="--fealty-color: #d69e2e; --fealty-glow: rgba(214,158,46,0.5);">
+      <div class="aes-fealty-card" style="--fealty-color: #d69e2e; --fealty-glow: rgba(214,158,46,0.5); --reveal-delay: 0.3s;" data-reveal="flip-up">
         <div class="aes-fealty-icon"><i class="fa-solid fa-crown"></i></div>
         <h3 class="aes-fealty-name">House Ayana</h3>
         <p class="aes-fealty-motto">"HEAR ME ROAR"</p>
-        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Ayana Lannister', 'Hear Me Roar')">Swear Fealty</button>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouseCustom('House Ayana Lannister', 'Hear Me Roar', '#d69e2e', 'fa-crown')">Swear Fealty</button>
       </div>
 
       <!-- House 4 -->
-      <div class="aes-fealty-card" style="--fealty-color: #319795; --fealty-glow: rgba(49,151,149,0.5);">
+      <div class="aes-fealty-card" style="--fealty-color: #319795; --fealty-glow: rgba(49,151,149,0.5); --reveal-delay: 0.4s;" data-reveal="flip-up">
         <div class="aes-fealty-icon"><i class="fa-solid fa-feather-pointed"></i></div>
         <h3 class="aes-fealty-name">House Tiara</h3>
         <p class="aes-fealty-motto">"AS HIGH AS HONOR"</p>
-        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Tiara Arryn', 'As High as Honor')">Swear Fealty</button>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouseCustom('House Tiara Arryn', 'As High as Honor', '#319795', 'fa-feather-pointed')">Swear Fealty</button>
       </div>
 
       <!-- House 5 -->
-      <div class="aes-fealty-card" style="--fealty-color: #dd6b20; --fealty-glow: rgba(221,107,32,0.5);">
+      <div class="aes-fealty-card" style="--fealty-color: #dd6b20; --fealty-glow: rgba(221,107,32,0.5); --reveal-delay: 0.5s;" data-reveal="flip-up">
         <div class="aes-fealty-icon"><i class="fa-solid fa-bolt"></i></div>
         <h3 class="aes-fealty-name">House Zoro</h3>
         <p class="aes-fealty-motto">"OURS IS THE FURY"</p>
-        <button type="button" class="aes-fealty-btn" onclick="pledgeHouse('House Zoro Baratheon', 'Ours is the Fury')">Swear Fealty</button>
+        <button type="button" class="aes-fealty-btn" onclick="pledgeHouseCustom('House Zoro Baratheon', 'Ours is the Fury', '#dd6b20', 'fa-bolt')">Swear Fealty</button>
       </div>
     </div>
   </section>
@@ -578,6 +675,8 @@
     };
 
     function selectMapPin(houseKey) {
+      if (window.realmAudioSynth) window.realmAudioSynth.playChime();
+
       const data = HOUSE_MAP_DATA[houseKey];
       if (!data) return;
 
@@ -597,25 +696,10 @@
       document.getElementById('map-stat-army').textContent = data.army;
       document.getElementById('map-stat-element').textContent = data.element;
     }
-
-    function pledgeHouse(houseName, motto) {
-      let toast = document.getElementById('aes-toast-notice');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'aes-toast-notice';
-        toast.className = 'got-toast-notification';
-        document.body.appendChild(toast);
-      }
-
-      toast.innerHTML = `<i class="fa-solid fa-shield-halved" style="color: #ffd700; font-size: 1.2rem;"></i> <span>You have sworn fealty to <strong>${houseName}</strong>! <em>"${motto}"</em></span>`;
-      toast.classList.add('active');
-
-      if (window.aesToastTimeout) clearTimeout(window.aesToastTimeout);
-      window.aesToastTimeout = setTimeout(() => {
-        toast.classList.remove('active');
-      }, 4000);
-    }
   </script>
+
+  <!-- Interactive Franchise Engine Script -->
+  <script src="scripts/franchise.js?v=62"></script>
 
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>

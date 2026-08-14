@@ -1,0 +1,1043 @@
+[
+  {
+    "id": "itachi-colored-half-tshirt",
+    "name": "Itachi Uchiha Duo Graphic Colored T-Shirt",
+    "category": "Oversized T-Shirts",
+    "subCategory": "T-Shirts",
+    "price": 999,
+    "originalPrice": 1499,
+    "rating": 5,
+    "ratingCount": 0,
+    "description": "Heavyweight 100% organic cotton Itachi Uchiha duo graphic T-shirt with vibrant full-color artwork.",
+    "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg",
+    "additionalImages": [
+      "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg",
+      "assets/Store/Tshirts/Colored itachi tshirts/itachi_white_tshirt_colored.jpg",
+      "assets/Store/Tshirts/Colored itachi tshirts/itachi_purple_tshirt_colored.jpg",
+      "assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "hex": "#111111",
+        "colorCode": "#111111",
+        "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg",
+        "available": true
+      },
+      {
+        "name": "White",
+        "hex": "#ffffff",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_white_tshirt_colored.jpg",
+        "available": true
+      },
+      {
+        "name": "Purple",
+        "hex": "#7e22ce",
+        "colorCode": "#7e22ce",
+        "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_purple_tshirt_colored.jpg",
+        "available": true
+      },
+      {
+        "name": "Crimson Red",
+        "hex": "#dc2626",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg",
+        "available": false
+      },
+      {
+        "name": "Flame Red",
+        "hex": "#991b1b",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg",
+        "available": false
+      },
+      {
+        "name": "Black",
+        "hex": "#111111",
+        "colorCode": "#111111",
+        "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg",
+        "available": true
+      }
+    ],
+    "badge": "Pre-Order",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 599,
+    "sku": "SW-ITACHI-C",
+    "slug": "itachi-colored-half-tshirt",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-11T18:34:32.325Z",
+    "stockQuantity": 50,
+    "available": false,
+    "variantsData": {
+      "printTypes": [
+        {
+          "id": "bw-half",
+          "name": "Black & White Half Print",
+          "available": true
+        },
+        {
+          "id": "bw-full",
+          "name": "Black & White Full Print",
+          "available": true
+        },
+        {
+          "id": "col-half",
+          "name": "Colored Half Print",
+          "available": true
+        },
+        {
+          "id": "col-full",
+          "name": "Colored Full Print",
+          "available": true
+        }
+      ],
+      "colors": [
+        {
+          "name": "Black",
+          "hex": "#111111",
+          "colorCode": "#111111",
+          "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg",
+          "available": true
+        },
+        {
+          "name": "White",
+          "hex": "#ffffff",
+          "colorCode": "#ffffff",
+          "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_white_tshirt_colored.jpg",
+          "available": true
+        },
+        {
+          "name": "Purple",
+          "hex": "#7e22ce",
+          "colorCode": "#7e22ce",
+          "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_purple_tshirt_colored.jpg",
+          "available": true
+        },
+        {
+          "name": "Crimson Red",
+          "hex": "#dc2626",
+          "colorCode": "#dc2626",
+          "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg",
+          "available": false
+        },
+        {
+          "name": "Flame Red",
+          "hex": "#991b1b",
+          "colorCode": "#991b1b",
+          "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg",
+          "available": false
+        },
+        {
+          "name": "Black",
+          "hex": "#111111",
+          "colorCode": "#111111",
+          "img": "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg",
+          "available": true
+        }
+      ],
+      "sizes": [
+        {
+          "name": "S",
+          "available": true
+        },
+        {
+          "name": "M",
+          "available": true
+        },
+        {
+          "name": "L",
+          "available": true
+        },
+        {
+          "name": "XL",
+          "available": false
+        },
+        {
+          "name": "XXL",
+          "available": false
+        }
+      ]
+    },
+    "featureHighlights": [
+      {
+        "title": "Weather-Ready Performance",
+        "desc": "Designed to handle light rain and changing conditions with water-resistant finishes.",
+        "img": "assets/closeup_weather.png"
+      },
+      {
+        "title": "Functional Design",
+        "desc": "Smart pocket systems and practical details keep your essentials organized wherever you go.",
+        "img": "assets/closeup_functional.png"
+      },
+      {
+        "title": "Heavyweight Organic Fabric",
+        "desc": "Crafted from 100% premium 240 GSM organic combed cotton for ultra-soft comfort.",
+        "img": "assets/closeup_performance.png"
+      }
+    ]
+  },
+  {
+    "id": "itachi-bw-half-tshirt",
+    "name": "Itachi Uchiha Monochrome Edition T-Shirt",
+    "category": "Oversized T-Shirts",
+    "subCategory": "T-Shirts",
+    "price": 899,
+    "originalPrice": 1499,
+    "rating": 4.9,
+    "ratingCount": 32,
+    "description": "Heavyweight 100% organic cotton Itachi Uchiha graphic T-shirt in crisp monochrome black & white contrast prints.",
+    "img": "assets/Store/Tshirts/black and white itachi tshirts/itachi_black_tshirt_bw.jpg",
+    "additionalImages": [
+      "assets/Store/Tshirts/black and white itachi tshirts/itachi_black_tshirt_bw.jpg",
+      "assets/Store/Tshirts/black and white itachi tshirts/itachi_white_tshirt_bw.jpg",
+      "assets/Store/Tshirts/black and white itachi tshirts/itachi_red_tshirt_bw.jpg",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Tshirts/black and white itachi tshirts/itachi_black_tshirt_bw.jpg",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Tshirts/black and white itachi tshirts/itachi_white_tshirt_bw.jpg",
+        "available": true
+      },
+      {
+        "name": "Crimson Red",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Tshirts/black and white itachi tshirts/itachi_red_tshirt_bw.jpg",
+        "available": false
+      },
+      {
+        "name": "Flame Red",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Tshirts/black and white itachi tshirts/itachi_red_tshirt_bw.jpg",
+        "available": false
+      }
+    ],
+    "badge": "New Arrival",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 599,
+    "sku": "SW-ITACHI-B",
+    "slug": "itachi-bw-half-tshirt",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "zoro-colored-half-tshirt",
+    "name": "Roronoa Zoro Three-Sword Colored T-Shirt",
+    "category": "Oversized T-Shirts",
+    "subCategory": "T-Shirts",
+    "price": 849,
+    "originalPrice": 1399,
+    "rating": 4.9,
+    "ratingCount": 42,
+    "description": "Ultra-soft organic cotton graphic tee featuring high-fidelity colored artwork of Roronoa Zoro.",
+    "img": "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_black_tshirt.jpg",
+    "additionalImages": [
+      "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_black_tshirt.jpg",
+      "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg",
+      "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_white_tshirt.jpg",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_black_tshirt.jpg",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_white_tshirt.jpg",
+        "available": true
+      },
+      {
+        "name": "Emerald Green",
+        "colorCode": "#15803d",
+        "img": "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg",
+        "available": true
+      },
+      {
+        "name": "Forest Green",
+        "colorCode": "#14532d",
+        "img": "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg",
+        "available": false
+      },
+      {
+        "name": "Lime Green",
+        "colorCode": "#84cc16",
+        "img": "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg",
+        "available": false
+      }
+    ],
+    "badge": "Best Seller",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 559,
+    "sku": "SW-ZORO-COL",
+    "slug": "zoro-colored-half-tshirt",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "zoro-bw-half-tshirt",
+    "name": "Roronoa Zoro Monochrome Edition T-Shirt",
+    "category": "Oversized T-Shirts",
+    "subCategory": "T-Shirts",
+    "price": 849,
+    "originalPrice": 1399,
+    "rating": 4.8,
+    "ratingCount": 27,
+    "description": "High-contrast black & white graphic print featuring Roronoa Zoro on heavyweight organic cotton.",
+    "img": "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_black_tshirt.jpg",
+    "additionalImages": [
+      "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_black_tshirt.jpg",
+      "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_green_tshirt.jpg",
+      "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_white_tshirt.jpg",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_black_tshirt.jpg",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_white_tshirt.jpg",
+        "available": true
+      },
+      {
+        "name": "Emerald Green",
+        "colorCode": "#15803d",
+        "img": "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_green_tshirt.jpg",
+        "available": true
+      },
+      {
+        "name": "Forest Green",
+        "colorCode": "#14532d",
+        "img": "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_green_tshirt.jpg",
+        "available": false
+      },
+      {
+        "name": "Lime Green",
+        "colorCode": "#84cc16",
+        "img": "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_green_tshirt.jpg",
+        "available": false
+      }
+    ],
+    "badge": "Limited Edition",
+    "software": [],
+    "format": [],
+    "isNew": false,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 559,
+    "sku": "SW-ZORO-BW-",
+    "slug": "zoro-bw-half-tshirt",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "kaneki-bw-half-tshirt",
+    "name": "Ken Kaneki Tokyo Ghoul B&W Edition T-Shirt",
+    "category": "Oversized T-Shirts",
+    "subCategory": "T-Shirts",
+    "price": 799,
+    "originalPrice": 1299,
+    "rating": 4.9,
+    "ratingCount": 38,
+    "description": "Embrace the dark aesthetic with our high-fidelity Kaneki awakened state streetwear graphic T-shirt.",
+    "img": "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_black_tshirt_bw.jpg",
+    "additionalImages": [
+      "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_black_tshirt_bw.jpg",
+      "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_maroon_tshirt_bw.jpg",
+      "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_white_tshirt_bw.jpg",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_black_tshirt_bw.jpg",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_white_tshirt_bw.jpg",
+        "available": true
+      },
+      {
+        "name": "Maroon",
+        "colorCode": "#881337",
+        "img": "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_maroon_tshirt_bw.jpg",
+        "available": true
+      },
+      {
+        "name": "Blood Red",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_maroon_tshirt_bw.jpg",
+        "available": false
+      },
+      {
+        "name": "Crimson Red",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_maroon_tshirt_bw.jpg",
+        "available": false
+      }
+    ],
+    "badge": "New Arrival",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 519,
+    "sku": "SW-KANEKI-B",
+    "slug": "kaneki-bw-half-tshirt",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "kaneki-colored-half-tshirt",
+    "name": "Ken Kaneki Tokyo Ghoul Full Color T-Shirt",
+    "category": "Oversized T-Shirts",
+    "subCategory": "T-Shirts",
+    "price": 899,
+    "originalPrice": 1299,
+    "rating": 5,
+    "ratingCount": 0,
+    "description": "Vibrant full-color illustration of Kaneki Ken on heavyweight 240gsm combed organic cotton.",
+    "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+    "additionalImages": [
+      "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+      "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_white_tshirt_colored.jpg",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "hex": "#111111",
+        "colorCode": "#111111",
+        "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+        "available": true
+      },
+      {
+        "name": "White",
+        "hex": "#ffffff",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_white_tshirt_colored.jpg",
+        "available": true
+      },
+      {
+        "name": "Dark Grey",
+        "hex": "#334155",
+        "colorCode": "#334155",
+        "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_darkgrey_tshirt_colored.jpg",
+        "available": true
+      },
+      {
+        "name": "Blood Red",
+        "hex": "#991b1b",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+        "available": false
+      },
+      {
+        "name": "Crimson Red",
+        "hex": "#dc2626",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+        "available": false
+      }
+    ],
+    "badge": "Best Seller",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 519,
+    "sku": "SW-KANEKI-C",
+    "slug": "kaneki-colored-half-tshirt",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T10:07:00.375Z",
+    "available": true,
+    "stockQuantity": 50,
+    "variantsData": {
+      "printTypes": [
+        {
+          "id": "bw-half",
+          "name": "Black & White Half Print",
+          "available": true
+        },
+        {
+          "id": "bw-full",
+          "name": "Black & White Full Print",
+          "available": true
+        },
+        {
+          "id": "col-half",
+          "name": "Colored Half Print",
+          "available": true
+        },
+        {
+          "id": "col-full",
+          "name": "Colored Full Print",
+          "available": true
+        }
+      ],
+      "colors": [
+        {
+          "name": "Black",
+          "hex": "#111111",
+          "colorCode": "#111111",
+          "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+          "available": true
+        },
+        {
+          "name": "White",
+          "hex": "#ffffff",
+          "colorCode": "#ffffff",
+          "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_white_tshirt_colored.jpg",
+          "available": true
+        },
+        {
+          "name": "Dark Grey",
+          "hex": "#334155",
+          "colorCode": "#334155",
+          "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_darkgrey_tshirt_colored.jpg",
+          "available": true
+        },
+        {
+          "name": "Blood Red",
+          "hex": "#991b1b",
+          "colorCode": "#991b1b",
+          "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+          "available": false
+        },
+        {
+          "name": "Crimson Red",
+          "hex": "#dc2626",
+          "colorCode": "#dc2626",
+          "img": "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg",
+          "available": false
+        }
+      ],
+      "sizes": [
+        {
+          "name": "S",
+          "available": true
+        },
+        {
+          "name": "M",
+          "available": true
+        },
+        {
+          "name": "L",
+          "available": true
+        },
+        {
+          "name": "XL",
+          "available": true
+        },
+        {
+          "name": "XXL",
+          "available": false
+        }
+      ]
+    },
+    "featureHighlights": [
+      {
+        "title": "Weather-Ready Performance",
+        "desc": "Designed to handle light rain and changing conditions with water-resistant finishes.",
+        "img": "assets/closeup_weather.png"
+      },
+      {
+        "title": "Functional Design",
+        "desc": "Smart pocket systems and practical details keep your essentials organized wherever you go.",
+        "img": "assets/closeup_functional.png"
+      },
+      {
+        "title": "Heavyweight Organic Fabric",
+        "desc": "Crafted from 100% premium 240 GSM organic combed cotton for ultra-soft comfort.",
+        "img": "assets/closeup_performance.png"
+      }
+    ]
+  },
+  {
+    "id": "itachi-colored-hoodie",
+    "name": "Itachi Uchiha Duo Graphic Colored Hoodie",
+    "category": "Hoodies",
+    "subCategory": "Hoodies",
+    "price": 1899,
+    "originalPrice": 2499,
+    "rating": 5,
+    "ratingCount": 0,
+    "description": "Heavyweight 100% organic cotton fleece hoodie featuring vibrant full-color Itachi Uchiha duo graphic artwork with double-layered hood and kangaroo pocket.",
+    "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie  color black.png",
+    "additionalImages": [
+      "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie  color black.png",
+      "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie color white.png",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png",
+      "assets/material_vest.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "hex": "#111111",
+        "colorCode": "#111111",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie  color black.png",
+        "available": true
+      },
+      {
+        "name": "White",
+        "hex": "#ffffff",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie color white.png",
+        "available": true
+      },
+      {
+        "name": "Crimson Red",
+        "hex": "#dc2626",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie  color black.png",
+        "available": false
+      },
+      {
+        "name": "Flame Red",
+        "hex": "#991b1b",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie color white.png",
+        "available": false
+      }
+    ],
+    "badge": "Pre-Order",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 1999,
+    "sku": "SW-ITACHI-C",
+    "slug": "itachi-colored-hoodie",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T10:04:47.913Z",
+    "stockQuantity": 50,
+    "available": true,
+    "variantsData": {
+      "printTypes": [
+        {
+          "id": "bw-half",
+          "name": "Black & White Half Print",
+          "available": true
+        },
+        {
+          "id": "bw-full",
+          "name": "Black & White Full Print",
+          "available": true
+        },
+        {
+          "id": "col-half",
+          "name": "Colored Half Print",
+          "available": true
+        },
+        {
+          "id": "col-full",
+          "name": "Colored Full Print",
+          "available": true
+        }
+      ],
+      "colors": [
+        {
+          "name": "Black",
+          "hex": "#111111",
+          "colorCode": "#111111",
+          "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie  color black.png",
+          "available": true
+        },
+        {
+          "name": "White",
+          "hex": "#ffffff",
+          "colorCode": "#ffffff",
+          "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie color white.png",
+          "available": true
+        },
+        {
+          "name": "Crimson Red",
+          "hex": "#dc2626",
+          "colorCode": "#dc2626",
+          "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie  color black.png",
+          "available": false
+        },
+        {
+          "name": "Flame Red",
+          "hex": "#991b1b",
+          "colorCode": "#991b1b",
+          "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie color white.png",
+          "available": false
+        }
+      ],
+      "sizes": [
+        {
+          "name": "S",
+          "available": true
+        },
+        {
+          "name": "M",
+          "available": true
+        },
+        {
+          "name": "L",
+          "available": true
+        },
+        {
+          "name": "XL",
+          "available": false
+        },
+        {
+          "name": "XXL",
+          "available": false
+        }
+      ]
+    },
+    "featureHighlights": [
+      {
+        "title": "Weather-Ready Performance",
+        "desc": "Designed to handle light rain and changing conditions with water-resistant finishes.",
+        "img": "assets/closeup_weather.png"
+      },
+      {
+        "title": "Functional Design",
+        "desc": "Smart pocket systems and practical details keep your essentials organized wherever you go.",
+        "img": "assets/closeup_functional.png"
+      },
+      {
+        "title": "Heavyweight Organic Fabric",
+        "desc": "Crafted from 100% premium 240 GSM organic combed cotton for ultra-soft comfort.",
+        "img": "assets/closeup_performance.png"
+      }
+    ]
+  },
+  {
+    "id": "itachi-bw-hoodie",
+    "name": "Itachi Uchiha Monochrome Edition Hoodie",
+    "category": "Hoodies",
+    "subCategory": "Hoodies",
+    "price": 1599,
+    "originalPrice": 2499,
+    "rating": 4.9,
+    "ratingCount": 36,
+    "description": "Heavyweight organic cotton fleece hoodie featuring crisp monochrome black & white contrast Itachi Uchiha graphic print.",
+    "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie black and white.png",
+    "additionalImages": [
+      "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie black and white.png",
+      "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie b&w white.png",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png",
+      "assets/material_vest.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie black and white.png",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie b&w white.png",
+        "available": true
+      },
+      {
+        "name": "Crimson Red",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie black and white.png",
+        "available": false
+      },
+      {
+        "name": "Flame Red",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie b&w white.png",
+        "available": false
+      }
+    ],
+    "badge": "New Arrival",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 999,
+    "sku": "SW-ITACHI-B",
+    "slug": "itachi-bw-hoodie",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "zoro-colored-hoodie",
+    "name": "Roronoa Zoro Three-Sword Colored Hoodie",
+    "category": "Hoodies",
+    "subCategory": "Hoodies",
+    "price": 1499,
+    "originalPrice": 2299,
+    "rating": 4.9,
+    "ratingCount": 44,
+    "description": "Ultra-soft organic fleece hoodie featuring high-fidelity colored artwork of Roronoa Zoro in three-sword style posture.",
+    "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color black.png",
+    "additionalImages": [
+      "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color black.png",
+      "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color white.png",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png",
+      "assets/material_vest.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color black.png",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color white.png",
+        "available": true
+      },
+      {
+        "name": "Forest Green",
+        "colorCode": "#14532d",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color black.png",
+        "available": false
+      },
+      {
+        "name": "Lime Green",
+        "colorCode": "#84cc16",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color white.png",
+        "available": false
+      }
+    ],
+    "badge": "Best Seller",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 919,
+    "sku": "SW-ZORO-COL",
+    "slug": "zoro-colored-hoodie",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "zoro-bw-hoodie",
+    "name": "Roronoa Zoro Monochrome Edition Hoodie",
+    "category": "Hoodies",
+    "subCategory": "Hoodies",
+    "price": 1499,
+    "originalPrice": 2299,
+    "rating": 4.8,
+    "ratingCount": 29,
+    "description": "High-contrast black & white graphic print featuring Roronoa Zoro on heavyweight organic fleece hoodie.",
+    "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie  b&w black.png",
+    "additionalImages": [
+      "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie  b&w black.png",
+      "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie b&w white.png",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png",
+      "assets/material_vest.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie  b&w black.png",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie b&w white.png",
+        "available": true
+      },
+      {
+        "name": "Forest Green",
+        "colorCode": "#14532d",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie  b&w black.png",
+        "available": false
+      },
+      {
+        "name": "Lime Green",
+        "colorCode": "#84cc16",
+        "img": "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie b&w white.png",
+        "available": false
+      }
+    ],
+    "badge": "Limited Edition",
+    "software": [],
+    "format": [],
+    "isNew": false,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 919,
+    "sku": "SW-ZORO-BW-",
+    "slug": "zoro-bw-hoodie",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "kaneki-colored-hoodie",
+    "name": "Ken Kaneki Tokyo Ghoul Full Color Hoodie",
+    "category": "Hoodies",
+    "subCategory": "Hoodies",
+    "price": 1399,
+    "originalPrice": 2099,
+    "rating": 5,
+    "ratingCount": 49,
+    "description": "Vibrant full-color illustration of Kaneki Ken on heavyweight 350gsm combed organic cotton fleece hoodie.",
+    "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color black.png",
+    "additionalImages": [
+      "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color black.png",
+      "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color white.png",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png",
+      "assets/material_vest.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color black.png",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color white.png",
+        "available": true
+      },
+      {
+        "name": "Blood Red",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color black.png",
+        "available": false
+      },
+      {
+        "name": "Crimson Red",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color white.png",
+        "available": false
+      }
+    ],
+    "badge": "Best Seller",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 839,
+    "sku": "SW-KANEKI-C",
+    "slug": "kaneki-colored-hoodie",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  },
+  {
+    "id": "kaneki-bw-hoodie",
+    "name": "Ken Kaneki Tokyo Ghoul B&W Edition Hoodie",
+    "category": "Hoodies",
+    "subCategory": "Hoodies",
+    "price": 1399,
+    "originalPrice": 2099,
+    "rating": 4.9,
+    "ratingCount": 41,
+    "description": "Embrace the dark aesthetic with our high-fidelity Kaneki awakened state streetwear graphic fleece hoodie.",
+    "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie  b&w black.png",
+    "additionalImages": [
+      "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie  b&w black.png",
+      "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie b&w white.png",
+      "assets/closeup_weather.png",
+      "assets/closeup_functional.png",
+      "assets/material_vest.png"
+    ],
+    "colorVariants": [
+      {
+        "name": "Black",
+        "colorCode": "#111111",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie  b&w black.png",
+        "available": true
+      },
+      {
+        "name": "White",
+        "colorCode": "#ffffff",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie b&w white.png",
+        "available": true
+      },
+      {
+        "name": "Blood Red",
+        "colorCode": "#991b1b",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie  b&w black.png",
+        "available": false
+      },
+      {
+        "name": "Crimson Red",
+        "colorCode": "#dc2626",
+        "img": "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie b&w white.png",
+        "available": false
+      }
+    ],
+    "badge": "New Arrival",
+    "software": [],
+    "format": [],
+    "isNew": true,
+    "type": "physical",
+    "creator": "SenpaiWorks",
+    "status": "Active",
+    "costPrice": 839,
+    "sku": "SW-KANEKI-B",
+    "slug": "kaneki-bw-hoodie",
+    "createdAt": "2026-08-10T09:02:13.831Z",
+    "updatedAt": "2026-08-10T09:02:13.831Z"
+  }
+]

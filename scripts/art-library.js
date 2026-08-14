@@ -242,7 +242,7 @@ function layoutMasonry() {
     detailWrapper.style.width = `${panelWidth}px`;
     const topBar = document.querySelector(".detail-top-bar");
     const topBarHeight = topBar ? topBar.offsetHeight : 60;
-    
+
     const imageContainer = document.querySelector(".detail-image-container");
     const infoSection = document.querySelector(".detail-info-section");
     const imgHeight = imageContainer ? imageContainer.offsetHeight : 0;
@@ -348,58 +348,85 @@ function shuffleArray(array) {
   return array;
 }
 
+let heroSearchQuery = "";
+
 // ── Update Visibility & Fill Empty Spaces ──────
 function updateVisibleItems() {
   const grid = document.getElementById("pinterest-grid");
   if (!grid) return;
 
-  if (activeCategory === 'all') {
+  if (activeCategory === 'all' && !heroSearchQuery) {
     const items = Array.from(grid.querySelectorAll(".pinterest-item"));
     shuffleArray(items);
     items.forEach(item => grid.appendChild(item));
   }
 
   const items = Array.from(grid.querySelectorAll(".pinterest-item"));
+  const cleanQuery = (heroSearchQuery || "").toLowerCase().trim();
+  let visibleCount = 0;
 
   items.forEach(item => {
     const itemCat = item.getAttribute("data-category") || "";
-    const matchCategory = activeCategory === 'all' || itemCat === activeCategory;
+    const charName = (item.getAttribute("data-charname") || item.querySelector(".pinterest-title")?.textContent || "").toLowerCase();
+    const artist = (item.getAttribute("data-artist") || "").toLowerCase();
+    const source = (item.getAttribute("data-source") || "").toLowerCase();
 
-    if (matchCategory) {
+    const matchCategory = activeCategory === 'all' || itemCat === activeCategory;
+    const matchSearch = !cleanQuery || charName.includes(cleanQuery) || artist.includes(cleanQuery) || source.includes(cleanQuery);
+
+    if (matchCategory && matchSearch) {
       if (item === activeCardEl) {
         item.style.display = 'none'; // Temporarily removed from collection while open in detail view
       } else {
         item.style.display = '';
+        visibleCount++;
+      }
+
+      if (cleanQuery && (charName.includes(cleanQuery) || artist.includes(cleanQuery) || source.includes(cleanQuery))) {
+        item.classList.add("search-highlighted");
+      } else {
+        item.classList.remove("search-highlighted");
       }
     } else {
       item.style.display = 'none';
+      item.classList.remove("search-highlighted");
     }
   });
+
+  // Update the search results count badge
+  const countBadge = document.getElementById("art-search-result-count");
+  if (countBadge) {
+    if (cleanQuery) {
+      countBadge.textContent = visibleCount === 0
+        ? "No results found"
+        : `${visibleCount} result${visibleCount !== 1 ? 's' : ''} found`;
+      countBadge.style.display = "block";
+    } else {
+      countBadge.style.display = "none";
+    }
+  }
 
   layoutMasonry();
 }
 
 // ── Non-Blocking Fast API Fetch Handler ──────────────────────
 async function fetchAndRenderDatabaseArtworks(grid) {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-    const res = await fetch("http://localhost:5000/api/artworks", { signal: controller.signal });
-    clearTimeout(timeoutId);
-
-    if (!res.ok) throw new Error("Failed to fetch artworks");
-    const artworks = await res.json();
-
-    artworks.forEach((art) => {
+  const renderList = (artworksList) => {
+    artworksList.forEach((art) => {
       const item = document.createElement("div");
       item.className = "pinterest-item";
+      item.setAttribute("data-db-id", art.id);
+      item.setAttribute("data-downloads", art.downloadCount || 0);
       item.setAttribute("data-category", art.category);
       item.setAttribute("data-charname", art.charname);
-      item.setAttribute("data-source", art.source);
+      item.setAttribute("data-artist", art.artist || "SenpaiWorks Official");
+      item.setAttribute("data-source", art.source || "SenpaiWorks Original");
       item.setAttribute("data-sex", art.sex || "Female");
       item.setAttribute("data-artstyle", art.artstyle || "Digital Art");
+      item.setAttribute("data-software", art.software || "Photoshop");
       item.setAttribute("data-description", art.description || "");
+      item.setAttribute("data-about-desc", art.aboutDesc || "");
+      item.setAttribute("data-created-at", art.createdAt || "");
 
       item.innerHTML = `
         <img src="${escapeHTML2D(art.img)}" alt="${escapeHTML2D(art.charname)}" />
@@ -411,15 +438,97 @@ async function fetchAndRenderDatabaseArtworks(grid) {
       grid.insertBefore(item, grid.firstChild);
     });
 
+    initPinterestHoverShareButtons();
     updateVisibleItems();
+  };
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    const res = await fetch("/api/artworks", { signal: controller.signal, cache: "no-store" });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) throw new Error("Failed to fetch artworks");
+    const artworks = await res.json();
+    
+    try {
+      localStorage.setItem("cached_artworks", JSON.stringify(artworks));
+    } catch(e) {}
+
+    renderList(artworks);
   } catch (err) {
-    // Fail silently
+    console.warn("Backend API not reachable; falling back to cached artworks:", err.message);
+    try {
+      const stored = localStorage.getItem("cached_artworks");
+      if (stored) {
+        const artworks = JSON.parse(stored);
+        renderList(artworks);
+      }
+    } catch(e) {}
   }
+}
+
+function initPinterestHoverShareButtons() {
+  const items = document.querySelectorAll(".pinterest-item");
+  items.forEach(item => {
+    if (!item.querySelector(".pin-hover-share-btn")) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pin-hover-share-btn";
+      btn.title = "Share Artwork";
+      btn.innerHTML = `<i class="fa-solid fa-arrow-up-from-bracket"></i>`;
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const charName = item.getAttribute("data-charname") || item.querySelector(".pinterest-title")?.textContent || "Artwork";
+        const shareUrl = window.location.href;
+        const shareTitle = `SenpaiWorks - ${charName}`;
+        const shareText = `Check out this artwork of ${charName} on SenpaiWorks!`;
+        if (window.toggleSharePopover) {
+          window.toggleSharePopover(btn, shareTitle, shareText, shareUrl);
+        }
+      });
+
+      item.appendChild(btn);
+    }
+  });
 }
 
 // ── Open Artwork Detail Card Modal ──────────────────────────
 function openDetailCard(img, cardEl, addToHistory = true) {
   const previousCardEl = activeCardEl; // capture BEFORE it gets reassigned below
+
+  // When opening a card while a search is active, clear the search and
+  // switch to the clicked item's full category so all thumbnails are visible
+  if (heroSearchQuery) {
+    const clickedParent = cardEl || img.closest('.pinterest-item');
+    const clickedCat = clickedParent ? clickedParent.getAttribute("data-category") : null;
+
+    heroSearchQuery = "";
+    const heroInput = document.getElementById("art-hero-search-input");
+    const heroClear = document.getElementById("art-hero-search-clear");
+    const countBadge = document.getElementById("art-search-result-count");
+    if (heroInput) heroInput.value = "";
+    if (heroClear) heroClear.style.display = "none";
+    if (countBadge) countBadge.style.display = "none";
+
+    if (clickedCat) {
+      activeCategory = clickedCat;
+      const container = document.querySelector(".category-filter-bar");
+      if (container) {
+        container.querySelectorAll('.filter-btn').forEach(btn => {
+          if (btn.dataset.filter === clickedCat) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+    }
+  }
+
   const pinPageLayout = document.getElementById('pin-page-layout');
   if (pinPageLayout) {
     pinPageLayout.classList.add('detail-open');
@@ -505,10 +614,11 @@ function openDetailCard(img, cardEl, addToHistory = true) {
 
   loadDetailInteractions(artworkId);
   initDetailCardListeners();
+  updateDownloadButtonStates();
 
   // Re-run updateVisibleItems to layout 2-column wide detail panel & remaining items
   updateVisibleItems();
-  
+
   // Fast follow-up layout refresh for smooth animation positioning
   setTimeout(() => layoutMasonry(), 50);
   setTimeout(() => layoutMasonry(), 200);
@@ -629,7 +739,7 @@ async function loadDetailInteractions(artworkId) {
 
   try {
     const userKey = getCurrentUserKey();
-    const fetchUrl = `http://localhost:5000/api/anime/likes?animeId=${artworkId}` + (userKey ? `&userKey=${encodeURIComponent(userKey)}` : '');
+    const fetchUrl = `/api/anime/likes?animeId=${artworkId}` + (userKey ? `&userKey=${encodeURIComponent(userKey)}` : '');
     const res = await fetch(fetchUrl, {
       credentials: 'include'
     });
@@ -658,7 +768,7 @@ async function loadDetailInteractions(artworkId) {
 
   try {
     const userKey = getCurrentUserKey();
-    const commentsUrl = `http://localhost:5000/api/anime/comments?animeId=${artworkId}` + (userKey ? `&userKey=${encodeURIComponent(userKey)}` : '');
+    const commentsUrl = `/api/anime/comments?animeId=${artworkId}` + (userKey ? `&userKey=${encodeURIComponent(userKey)}` : '');
     const res = await fetch(commentsUrl, { credentials: 'include' });
     if (res.ok) {
       const comments = await res.json();
@@ -932,7 +1042,7 @@ function attachCommentSocialListeners(container) {
       if (icon) icon.className = !isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart";
 
       try {
-        const res = await fetch(`http://localhost:5000/api/anime/comments/like`, {
+        const res = await fetch(`/api/anime/comments/like`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1009,11 +1119,11 @@ function attachCommentSocialListeners(container) {
       if (!text) return;
 
       btn.disabled = true;
-      const authorName = (currentUser.name && currentUser.name.trim()) || 
-                         (currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : '') || 
-                         (currentUser.username && currentUser.username.trim()) || 
-                         (currentUser.email ? currentUser.email.split('@')[0] : '') || 
-                         "Member";
+      const authorName = (currentUser.name && currentUser.name.trim()) ||
+        (currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : '') ||
+        (currentUser.username && currentUser.username.trim()) ||
+        (currentUser.email ? currentUser.email.split('@')[0] : '') ||
+        "Member";
       const userKey = currentUser.username || currentUser.email || authorName;
       const userAvatar = currentUser.avatar || null;
 
@@ -1026,7 +1136,7 @@ function attachCommentSocialListeners(container) {
       };
 
       try {
-        const res = await fetch(`http://localhost:5000/api/anime/comments`, {
+        const res = await fetch(`/api/anime/comments`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1105,7 +1215,7 @@ function attachCommentSocialListeners(container) {
       if (reason === null) return;
 
       try {
-        const res = await fetch(`http://localhost:5000/api/anime/comments/report`, {
+        const res = await fetch(`/api/anime/comments/report`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1139,7 +1249,7 @@ function attachCommentSocialListeners(container) {
       }
 
       try {
-        const res = await fetch(`http://localhost:5000/api/users/block`, {
+        const res = await fetch(`/api/users/block`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1207,7 +1317,7 @@ function attachCommentSocialListeners(container) {
           const targetArtworkId = activeArtworkId || "2d_artwork";
 
           try {
-            const res = await fetch(`http://localhost:5000/api/anime/comments/edit`, {
+            const res = await fetch(`/api/anime/comments/edit`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: 'include',
@@ -1244,7 +1354,7 @@ function attachCommentSocialListeners(container) {
       const targetArtworkId = activeArtworkId || "2d_artwork";
 
       try {
-        const res = await fetch(`http://localhost:5000/api/anime/comments/delete`, {
+        const res = await fetch(`/api/anime/comments/delete`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1390,6 +1500,13 @@ function toggleArtworkInterested(artworkId, categoryName) {
 
   updateInterestedUI(newState);
 
+  // Sync Interest Count to Backend API
+  fetch("/api/artworks/interest", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artworkId, action: newState ? "interest" : "uninterest" })
+  }).catch(() => { });
+
   const charName = document.getElementById("detail-charname")?.textContent || "this artwork";
   if (newState) {
     showArtToast(`✨ Marked as Interested! We'll recommend more ${categoryName || 'similar'} art to you.`, 'fa-solid fa-star');
@@ -1398,11 +1515,32 @@ function toggleArtworkInterested(artworkId, categoryName) {
   }
 }
 
+function isUserSignedIn() {
+  try {
+    const raw = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
+    if (!raw) return false;
+    const u = JSON.parse(raw);
+    return Boolean(u && (u.username || u.email || u.id || u.name));
+  } catch (e) {
+    return false;
+  }
+}
+
 // ── Download Image Helper ────────────────────────────────────
 function downloadCurrentArtwork() {
+  if (!isUserSignedIn()) {
+    showArtToast(`Please sign in to download artwork images!`, 'fa-solid fa-lock');
+    return;
+  }
+
   const img = document.getElementById("detail-main-img");
   const charName = document.getElementById("detail-charname")?.textContent || "";
   if (!img || !img.src) return;
+
+  const dbId = activeCardEl ? activeCardEl.getAttribute("data-db-id") : null;
+  if (dbId) {
+    fetch(`/api/artworks/${dbId}/download`, { method: "POST" }).catch(() => { });
+  }
 
   const fileName = (charName ? charName.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'senpaiworks_artwork') + '.jpg';
   const a = document.createElement("a");
@@ -1415,32 +1553,79 @@ function downloadCurrentArtwork() {
   showArtToast(`Downloading high quality artwork image...`, 'fa-solid fa-download');
 }
 
-// ── About Art Modal ──────────────────────────────────────────
+function updateDownloadButtonStates() {
+  const signedIn = isUserSignedIn();
+  const downloadBtns = [
+    document.getElementById("option-download-btn"),
+    document.getElementById("mobile-option-download-btn"),
+    document.getElementById("modal-download-btn")
+  ].filter(Boolean);
+
+  downloadBtns.forEach(btn => {
+    if (!signedIn) {
+      btn.classList.add("disabled-download");
+      btn.title = "Sign in required to download image";
+    } else {
+      btn.classList.remove("disabled-download");
+      btn.title = "Download Image";
+    }
+  });
+}
+
+function setFieldOrHide(rowId, valId, val) {
+  const row = document.getElementById(rowId);
+  const valEl = document.getElementById(valId);
+  const cleanVal = (val || "").trim();
+
+  if (!row) return;
+
+  if (cleanVal && cleanVal !== "N/A" && cleanVal !== "null" && cleanVal !== "undefined") {
+    if (valEl) valEl.textContent = cleanVal;
+    row.style.display = "";
+  } else {
+    row.style.display = "none";
+  }
+}
+
 function openAboutArtModal() {
   const modal = document.getElementById("about-art-modal");
   if (!modal) return;
 
-  const img = document.getElementById("detail-main-img");
   const charName = document.getElementById("detail-charname")?.textContent || "Artwork Details";
-  const description = document.getElementById("detail-description")?.textContent || "No description available.";
-  const categoryBadge = document.getElementById("detail-category-badge")?.textContent || "Digital Art";
+  const description = activeCardEl ? (activeCardEl.getAttribute("data-description") || document.getElementById("detail-description")?.textContent || "") : (document.getElementById("detail-description")?.textContent || "");
+  const categoryBadge = document.getElementById("detail-category-badge")?.textContent || "";
 
-  const modalImg = document.getElementById("about-art-img");
   const modalTitle = document.getElementById("about-art-title");
-  const modalCategory = document.getElementById("about-art-category");
-  const modalStyle = document.getElementById("about-art-style");
-  const modalResolution = document.getElementById("about-art-resolution");
-  const modalDesc = document.getElementById("about-art-desc");
 
-  if (modalImg && img) modalImg.src = img.src;
+  const cardArtist = activeCardEl ? (activeCardEl.getAttribute("data-artist") || "") : "";
+  const cardSource = activeCardEl ? (activeCardEl.getAttribute("data-source") || "") : "";
+  const cardSex = activeCardEl ? (activeCardEl.getAttribute("data-sex") || "") : "";
+  const cardArtstyle = activeCardEl ? (activeCardEl.getAttribute("data-artstyle") || "") : "";
+  const cardAboutDesc = activeCardEl ? (activeCardEl.getAttribute("data-about-desc") || "") : "";
+  const cardCreatedAt = activeCardEl ? (activeCardEl.getAttribute("data-created-at") || "") : "";
+
+  let formattedDate = "";
+  if (cardCreatedAt) {
+    try {
+      formattedDate = new Date(cardCreatedAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    } catch (e) { }
+  }
+
   if (modalTitle) modalTitle.textContent = charName;
-  if (modalCategory) modalCategory.textContent = categoryBadge;
-  if (modalStyle) modalStyle.textContent = categoryBadge.includes("Charcoal") ? "Charcoal & Pencil" : categoryBadge.includes("Color") ? "Color Pencil" : "Digital Anime Illustration";
-  if (modalResolution) modalResolution.textContent = "High Resolution (HD)";
-  if (modalDesc) modalDesc.textContent = description;
+
+  // Dynamically display field only if entered in admin, hide if empty/not entered
+  setFieldOrHide("row-about-artist", "about-art-artist", cardArtist);
+  setFieldOrHide("row-about-created-at", "about-art-created-at", formattedDate);
+  setFieldOrHide("row-about-category", "about-art-category", categoryBadge);
+  setFieldOrHide("row-about-style", "about-art-style", cardArtstyle);
+  setFieldOrHide("row-about-source", "about-art-source", cardSource);
+  setFieldOrHide("row-about-sex", "about-art-sex", cardSex);
+  setFieldOrHide("row-about-desc", "about-art-desc", description);
+  setFieldOrHide("row-about-about-desc", "about-art-about-desc", cardAboutDesc);
 
   const isInterested = activeArtworkId ? isArtworkInterested(activeArtworkId) : false;
   updateInterestedUI(isInterested);
+  updateDownloadButtonStates();
 
   modal.classList.add("active");
 }
@@ -1666,7 +1851,7 @@ function initDetailCardListeners() {
 
         try {
           const userKey = getCurrentUserKey();
-          const res = await fetch(`http://localhost:5000/api/anime/likes`, {
+          const res = await fetch(`/api/anime/likes`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
@@ -1716,44 +1901,44 @@ function initDetailCardListeners() {
     }
   });
 
-function appendLocalCommentFallback(artworkId, username, text, parentId, userAvatar) {
-  const newComment = {
-    id: Date.now(),
-    animeId: artworkId,
-    username,
-    userAvatar: userAvatar || null,
-    text,
-    parentId: parentId ? parseInt(parentId, 10) : null,
-    createdAt: new Date().toISOString(),
-    likeCount: 0,
-    userHasLiked: false,
-    replies: []
-  };
+  function appendLocalCommentFallback(artworkId, username, text, parentId, userAvatar) {
+    const newComment = {
+      id: Date.now(),
+      animeId: artworkId,
+      username,
+      userAvatar: userAvatar || null,
+      text,
+      parentId: parentId ? parseInt(parentId, 10) : null,
+      createdAt: new Date().toISOString(),
+      likeCount: 0,
+      userHasLiked: false,
+      replies: []
+    };
 
-  let comments = [];
-  try {
-    const raw = localStorage.getItem(`mock_comments_${artworkId}`);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      comments = Array.isArray(parsed) ? parsed : (parsed.comments || []);
-    }
-  } catch (e) { }
+    let comments = [];
+    try {
+      const raw = localStorage.getItem(`mock_comments_${artworkId}`);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        comments = Array.isArray(parsed) ? parsed : (parsed.comments || []);
+      }
+    } catch (e) { }
 
-  if (!newComment.parentId) {
-    comments.unshift(newComment);
-  } else {
-    const parent = comments.find(c => c.id === newComment.parentId);
-    if (parent) {
-      if (!parent.replies) parent.replies = [];
-      parent.replies.push(newComment);
-    } else {
+    if (!newComment.parentId) {
       comments.unshift(newComment);
+    } else {
+      const parent = comments.find(c => c.id === newComment.parentId);
+      if (parent) {
+        if (!parent.replies) parent.replies = [];
+        parent.replies.push(newComment);
+      } else {
+        comments.unshift(newComment);
+      }
     }
-  }
 
-  localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
-  renderCommentsList(comments);
-}
+    localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
+    renderCommentsList(comments);
+  }
 
   if (commentForm && textInput && !commentForm.dataset.hasSubmitListener) {
     commentForm.dataset.hasSubmitListener = "true";
@@ -1780,11 +1965,11 @@ function appendLocalCommentFallback(artworkId, username, text, parentId, userAva
       const submitBtn = commentForm.querySelector("button[type='submit']");
       if (submitBtn) submitBtn.disabled = true;
 
-      const authorName = (currentUser.name && currentUser.name.trim()) || 
-                         (currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : '') || 
-                         (currentUser.username && currentUser.username.trim()) || 
-                         (currentUser.email ? currentUser.email.split('@')[0] : '') || 
-                         "Member";
+      const authorName = (currentUser.name && currentUser.name.trim()) ||
+        (currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : '') ||
+        (currentUser.username && currentUser.username.trim()) ||
+        (currentUser.email ? currentUser.email.split('@')[0] : '') ||
+        "Member";
       const userKey = currentUser.username || currentUser.email || authorName;
       const userAvatar = currentUser.avatar || null;
 
@@ -1797,7 +1982,7 @@ function appendLocalCommentFallback(artworkId, username, text, parentId, userAva
       };
 
       try {
-        const res = await fetch(`http://localhost:5000/api/anime/comments`, {
+        const res = await fetch(`/api/anime/comments`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1832,7 +2017,7 @@ function appendLocalCommentFallback(artworkId, username, text, parentId, userAva
 }
 
 // ── Popover Share Card Directly Below Share Button ──────────────────────────────
-window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
+window.toggleSharePopover = function (btn, shareTitle, shareText, shareUrl) {
   let existingPopover = document.getElementById("art-share-popover-card");
   if (existingPopover) {
     existingPopover.remove();
@@ -1846,8 +2031,20 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedText = encodeURIComponent(shareText);
 
+  const popoverWidth = 340;
+  const viewportWidth = window.innerWidth;
+
+  // Calculate left position centered under button & clamp strictly within viewport
+  let leftPos = rect.left + window.scrollX + (rect.width / 2) - (popoverWidth / 2);
+  const minLeft = window.scrollX + 16;
+  const maxLeft = window.scrollX + viewportWidth - popoverWidth - 16;
+  leftPos = Math.max(minLeft, Math.min(maxLeft, leftPos));
+
   const topPos = rect.bottom + window.scrollY + 10;
-  const leftPos = Math.max(10, rect.left + window.scrollX + (rect.width / 2) - 180);
+
+  // Dynamic caret pointer calculation pointing to trigger button center
+  const btnCenterX = rect.left + window.scrollX + (rect.width / 2);
+  const caretLeft = Math.max(20, Math.min(popoverWidth - 28, btnCenterX - leftPos));
 
   popover.style.cssText = `
     position: absolute;
@@ -1859,16 +2056,16 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
     border-radius: 20px;
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
     z-index: 999999;
-    width: 360px;
-    max-width: 90vw;
+    width: ${popoverWidth}px;
+    max-width: calc(100vw - 32px);
     border: 1px solid #e2e8f0;
     font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
     box-sizing: border-box;
   `;
 
   popover.innerHTML = `
-    <!-- Upward Caret Pointer -->
-    <div style="position: absolute; top: -7px; right: 24px; width: 12px; height: 12px; background: #ffffff; border-left: 1px solid #e2e8f0; border-top: 1px solid #e2e8f0; transform: rotate(45deg);"></div>
+    <!-- Dynamic Caret Pointer -->
+    <div style="position: absolute; top: -7px; left: ${caretLeft}px; width: 12px; height: 12px; background: #ffffff; border-left: 1px solid #e2e8f0; border-top: 1px solid #e2e8f0; transform: rotate(45deg);"></div>
 
     <!-- Header Row -->
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding: 0 4px;">
@@ -1878,18 +2075,10 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
       <button type="button" onclick="document.getElementById('art-share-popover-card')?.remove()" style="background: none; border: none; color: #64748b; font-size: 1.2rem; cursor: pointer; padding: 0; line-height: 1;">&times;</button>
     </div>
 
-    <!-- Apps Grid (4 columns, 2 rows) -->
+    <!-- Apps Grid -->
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 10px; margin-bottom: 16px;">
       
-      <!-- 1. Copy link -->
-      <div onclick="window.copyShareLinkToClipboard('${shareUrl}')" style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;">
-        <div id="share-copy-icon-bg" style="width: 50px; height: 50px; border-radius: 16px; background: #e5e5e0; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #0f172a; transition: all 0.2s ease;">
-          <i id="share-copy-icon" class="fa-solid fa-link"></i>
-        </div>
-        <span id="share-copy-label" style="font-size: 0.74rem; font-weight: 600; color: #000000; text-align: center; line-height: 1.2;">Copy link</span>
-      </div>
-
-      <!-- 2. WhatsApp -->
+      <!-- 1. WhatsApp -->
       <a href="https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #25d366; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
           <i class="fa-brands fa-whatsapp"></i>
@@ -1897,7 +2086,7 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
         <span style="font-size: 0.74rem; font-weight: 600; color: #000000; text-align: center;">WhatsApp</span>
       </a>
 
-      <!-- 3. Instagram -->
+      <!-- 2. Instagram -->
       <div onclick="window.copyInstagramLink('${shareUrl}')" style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
           <i class="fa-brands fa-instagram"></i>
@@ -1905,7 +2094,7 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
         <span style="font-size: 0.74rem; font-weight: 600; color: #000000; text-align: center;">Instagram</span>
       </div>
 
-      <!-- 4. Facebook -->
+      <!-- 3. Facebook -->
       <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #1877f2; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
           <i class="fa-brands fa-facebook-f"></i>
@@ -1913,7 +2102,7 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
         <span style="font-size: 0.74rem; font-weight: 600; color: #000000; text-align: center;">Facebook</span>
       </a>
 
-      <!-- 5. X (Twitter) - Soft white/gray circle background with dark X icon -->
+      <!-- 4. X (Twitter) -->
       <a href="https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #f8fafc; color: #0f172a; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
           <i class="fa-brands fa-x-twitter"></i>
@@ -1921,7 +2110,7 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
         <span style="font-size: 0.74rem; font-weight: 600; color: #000000; text-align: center;">X</span>
       </a>
 
-      <!-- 6. Telegram -->
+      <!-- 5. Telegram -->
       <a href="https://t.me/share/url?url=${encodedUrl}&text=${encodedText}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #0284c7; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
           <i class="fa-brands fa-telegram"></i>
@@ -1929,7 +2118,7 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
         <span style="font-size: 0.74rem; font-weight: 600; color: #000000; text-align: center;">Telegram</span>
       </a>
 
-      <!-- 7. Reddit -->
+      <!-- 6. Reddit -->
       <a href="https://reddit.com/submit?url=${encodedUrl}&title=${encodedText}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #ff4500; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
           <i class="fa-brands fa-reddit-alien"></i>
@@ -1937,7 +2126,7 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
         <span style="font-size: 0.74rem; font-weight: 600; color: #000000; text-align: center;">Reddit</span>
       </a>
 
-      <!-- 8. Pinterest -->
+      <!-- 7. Pinterest -->
       <a href="https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedText}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #e60023; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
           <i class="fa-brands fa-pinterest-p"></i>
@@ -1947,13 +2136,11 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
 
     </div>
 
-    <!-- Link Input Bar -->
-    <div style="display: flex; align-items: center; gap: 8px; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 4px 6px 4px 12px; border-radius: 12px; margin-top: 6px;">
-      <input type="text" readonly value="${shareUrl}" id="art-share-link-input" style="border: none; background: transparent; width: 100%; font-size: 0.8rem; color: #475569; outline: none; font-family: monospace;">
-      <button type="button" id="btn-copy-art-link-bar" onclick="window.copyShareLinkToClipboard('${shareUrl}')" style="background: #0f172a; color: #ffffff; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 0.78rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease;">
-        <i class="fa-solid fa-copy"></i> Copy
-      </button>
-    </div>
+    <!-- Full-Width Copy Link Button with Micro-Animation & Toast Message -->
+    <button type="button" id="btn-copy-art-link-bar" onclick="window.copyShareLinkToClipboard('${shareUrl}')" style="width: 100%; background: #0f172a; color: #ffffff; border: none; padding: 12px 16px; border-radius: 14px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 4px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">
+      <i id="btn-copy-art-icon" class="fa-solid fa-link"></i>
+      <span id="btn-copy-art-text">Copy Link</span>
+    </button>
   `;
 
   document.body.appendChild(popover);
@@ -1969,64 +2156,79 @@ window.toggleSharePopover = function(btn, shareTitle, shareText, shareUrl) {
   }, 50);
 };
 
-window.copyShareLinkToClipboard = function(url) {
-  navigator.clipboard.writeText(url).then(() => {
-    const label = document.getElementById("share-copy-label");
-    const iconBg = document.getElementById("share-copy-icon-bg");
-    const icon = document.getElementById("share-copy-icon");
-    const barBtn = document.getElementById("btn-copy-art-link-bar");
+window.copyShareLinkToClipboard = function (url) {
+  const barBtn = document.getElementById("btn-copy-art-link-bar");
+  const barIcon = document.getElementById("btn-copy-art-icon");
+  const barText = document.getElementById("btn-copy-art-text");
 
-    if (label) {
-      label.innerHTML = `<i class="fa-solid fa-check" style="color: #059669;"></i> Link copied!`;
-      label.style.color = "#059669";
-      label.style.fontWeight = "700";
-    }
+  if (barBtn) {
+    barBtn.style.transform = "scale(0.95)";
+    setTimeout(() => { barBtn.style.transform = "scale(1)"; }, 120);
+  }
 
-    if (iconBg) {
-      iconBg.style.background = "#dcfce7";
-      iconBg.style.color = "#059669";
-    }
-    if (icon) {
-      icon.className = "fa-solid fa-check";
-    }
-
+  const applySuccessState = () => {
     if (barBtn) {
       barBtn.style.background = "#059669";
-      barBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+    }
+    if (barIcon) {
+      barIcon.className = "fa-solid fa-check";
+    }
+    if (barText) {
+      barText.textContent = "Link is copied!";
+    }
+
+    if (typeof showArtToast === 'function') {
+      showArtToast("Link copied to clipboard!", "fa-solid fa-check");
     }
 
     setTimeout(() => {
-      if (label) {
-        label.textContent = "Copy link";
-        label.style.color = "#000000";
-        label.style.fontWeight = "600";
-      }
-      if (iconBg) {
-        iconBg.style.background = "#e5e5e0";
-        iconBg.style.color = "#0f172a";
-      }
-      if (icon) {
-        icon.className = "fa-solid fa-link";
-      }
       if (barBtn) {
         barBtn.style.background = "#0f172a";
-        barBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Copy`;
+      }
+      if (barIcon) {
+        barIcon.className = "fa-solid fa-link";
+      }
+      if (barText) {
+        barText.textContent = "Copy Link";
       }
     }, 2500);
-  });
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(applySuccessState).catch(() => {
+      fallbackCopyText(url);
+      applySuccessState();
+    });
+  } else {
+    fallbackCopyText(url);
+    applySuccessState();
+  }
 };
 
-window.copyInstagramLink = function(url) {
+function fallbackCopyText(text) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand("copy");
+  } catch (e) { }
+  document.body.removeChild(textarea);
+}
+
+window.copyInstagramLink = function (url) {
   window.copyShareLinkToClipboard(url);
   alert("Artwork link copied to clipboard! You can now paste it directly into your Instagram Story or Direct Message.");
 };
 
-window.closeShareModal = function() {
+window.closeShareModal = function () {
   const modal = document.getElementById("art-share-modal-overlay");
   if (modal) modal.remove();
 };
 
-window.copyShareLinkToClipboard = function() {
+window.copyShareLinkToClipboard = function () {
   const input = document.getElementById("art-share-link-input");
   const btn = document.getElementById("btn-copy-art-link");
   if (input) {
@@ -2043,7 +2245,7 @@ window.copyShareLinkToClipboard = function() {
   }
 };
 
-window.copyInstagramLink = function(url) {
+window.copyInstagramLink = function (url) {
   navigator.clipboard.writeText(url).then(() => {
     alert("Artwork link copied to clipboard! You can now paste it directly into your Instagram Story or Direct Message.");
   });
@@ -2101,6 +2303,28 @@ document.addEventListener("DOMContentLoaded", () => {
       slides[currentIndex].classList.add('active');
       slideWrapper.scrollTo({ left: currentIndex * slideWrapper.clientWidth, behavior: 'smooth' });
     }, 5000);
+  }
+
+  // Transparent Hero Search Bar Setup
+  const heroSearchInput = document.getElementById("art-hero-search-input");
+  const heroSearchClear = document.getElementById("art-hero-search-clear");
+
+  if (heroSearchInput) {
+    heroSearchInput.addEventListener("input", (e) => {
+      const val = e.target.value;
+      if (heroSearchClear) {
+        heroSearchClear.style.display = val.trim() ? "inline-block" : "none";
+      }
+      handleHeroSearchInput(val);
+    });
+  }
+
+  if (heroSearchClear) {
+    heroSearchClear.addEventListener("click", () => {
+      if (heroSearchInput) heroSearchInput.value = "";
+      heroSearchClear.style.display = "none";
+      handleHeroSearchInput("");
+    });
   }
 
   // Pinterest Grid Initialization
@@ -2171,6 +2395,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, 50);
   };
+
+  // Expose closePanel globally so category buttons & search can close the preview
+  window.closeDetailPanel = closePanel;
 
   const handleBackArrowClick = (e) => {
     if (e) e.stopPropagation();
@@ -2296,6 +2523,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const lightboxShareBtn = document.getElementById("lightbox-share-btn");
+  if (lightboxShareBtn) {
+    lightboxShareBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const charName = document.getElementById("detail-charname")?.textContent || "Artwork";
+      const shareUrl = window.location.href;
+      const shareTitle = `SenpaiWorks - ${charName}`;
+      const shareText = `Check out this artwork of ${charName} on SenpaiWorks!`;
+      if (window.toggleSharePopover) {
+        window.toggleSharePopover(lightboxShareBtn, shareTitle, shareText, shareUrl);
+      }
+    });
+  }
+
   if (lightboxCloseBtn) lightboxCloseBtn.addEventListener("click", closeLightbox);
   if (lightboxModal) {
     lightboxModal.addEventListener("click", (e) => {
@@ -2315,27 +2557,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Category filter buttons
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeCategory = btn.dataset.filter || 'all';
-      visibleLimit = getInitialLimit();
-      if (typeof closePanel === 'function') closePanel();
-      updateVisibleItems();
-    });
-  });
-
-  // Auto-filter by URL hash if present (e.g. #digital-portrait, #insane-artwork)
-  const hashCategory = window.location.hash.replace('#', '');
-  if (hashCategory) {
-    const targetFilterBtn = document.querySelector(`.filter-btn[data-filter="${hashCategory}"]`);
-    if (targetFilterBtn) {
-      setTimeout(() => targetFilterBtn.click(), 50);
-    }
-  }
+  // Load dynamic categories from backend API & bind filter buttons
+  loadDynamicCategories();
 
   // Calculate layout on resize
   window.addEventListener('resize', () => {
@@ -2349,3 +2572,114 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => layoutMasonry(), delay);
   });
 });
+
+function handleHeroSearchInput(query) {
+  heroSearchQuery = (query || "").trim();
+  const cleanQuery = heroSearchQuery.toLowerCase();
+
+  const grid = document.getElementById("pinterest-grid");
+  const container = document.querySelector(".category-filter-bar");
+
+  // Silently close detail panel without scrolling, so the user can keep typing
+  const pinPageLayout = document.getElementById("pin-page-layout");
+  if (pinPageLayout && pinPageLayout.classList.contains("detail-open")) {
+    pinPageLayout.classList.remove("detail-open");
+    if (typeof activeCardEl !== 'undefined' && activeCardEl) {
+      activeCardEl.style.display = '';
+      activeCardEl.classList.remove("is-active");
+      activeCardEl = null;
+    }
+  }
+
+  if (cleanQuery && grid) {
+    const items = Array.from(grid.querySelectorAll(".pinterest-item"));
+    const match = items.find(item => {
+      const charName = (item.getAttribute("data-charname") || item.querySelector(".pinterest-title")?.textContent || "").toLowerCase();
+      const artist = (item.getAttribute("data-artist") || "").toLowerCase();
+      const source = (item.getAttribute("data-source") || "").toLowerCase();
+      return charName.includes(cleanQuery) || artist.includes(cleanQuery) || source.includes(cleanQuery);
+    });
+
+    if (match) {
+      const matchCat = match.getAttribute("data-category");
+      if (matchCat && container) {
+        activeCategory = matchCat;
+        const filterBtns = container.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+          if (btn.dataset.filter === matchCat) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+    }
+  } else if (!cleanQuery && container) {
+    // When search is cleared, reset to "All" category
+    activeCategory = 'all';
+    const filterBtns = container.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      if (btn.dataset.filter === 'all') {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  updateVisibleItems();
+}
+
+async function loadDynamicCategories() {
+  const container = document.querySelector(".category-filter-bar");
+  if (!container) return;
+
+  try {
+    const res = await fetch("/api/categories");
+    if (!res.ok) return;
+    const categories = await res.json();
+
+    if (categories && categories.length > 0) {
+      let html = `<button class="filter-btn ${activeCategory === 'all' ? 'active' : ''}" data-filter="all">All</button>`;
+      categories.forEach(cat => {
+        const isAct = activeCategory === cat.slug;
+        html += `<button class="filter-btn ${isAct ? 'active' : ''}" data-filter="${cat.slug}">${cat.name}</button>`;
+      });
+      container.innerHTML = html;
+    }
+
+    // Bind event listeners to dynamic filter buttons
+    const filterBtns = container.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCategory = btn.dataset.filter || 'all';
+
+        // Clear search query on category button click so category displays cleanly
+        heroSearchQuery = "";
+        const heroInput = document.getElementById("art-hero-search-input");
+        const heroClear = document.getElementById("art-hero-search-clear");
+        if (heroInput) heroInput.value = "";
+        if (heroClear) heroClear.style.display = "none";
+
+        visibleLimit = getInitialLimit();
+        if (typeof window.closeDetailPanel === 'function') {
+          window.closeDetailPanel();
+        }
+        updateVisibleItems();
+      });
+    });
+
+    // Auto-filter by URL hash if present
+    const hashCategory = window.location.hash.replace('#', '');
+    if (hashCategory) {
+      const targetFilterBtn = container.querySelector(`.filter-btn[data-filter="${hashCategory}"]`);
+      if (targetFilterBtn) {
+        setTimeout(() => targetFilterBtn.click(), 50);
+      }
+    }
+  } catch (e) {
+    console.error("Error loading dynamic categories in art library:", e);
+  }
+}

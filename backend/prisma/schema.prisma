@@ -12,7 +12,37 @@ model Comment {
   animeId   String
   username  String
   text      String
+  parentId  Int?
+  likeCount Int      @default(0)
   createdAt DateTime @default(now())
+}
+
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  commentId Int
+  userKey   String
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userKey])
+}
+
+model CommentReport {
+  id          Int      @id @default(autoincrement())
+  commentId   Int
+  reporterKey String
+  reason      String
+  createdAt   DateTime @default(now())
+
+  @@unique([commentId, reporterKey])
+}
+
+model UserBlock {
+  id             Int      @id @default(autoincrement())
+  userKey        String
+  blockedUserKey String
+  createdAt      DateTime @default(now())
+
+  @@unique([userKey, blockedUserKey])
 }
 
 model Like {
@@ -53,7 +83,10 @@ model Product {
   printingMethod      String   @default("N/A")
   washingInstructions String   @default("N/A")
   shippingWeight      String   @default("N/A")
-  packageDimensions   String   @default("N/A")
+  available           Boolean  @default(true)
+  stockQuantity       Int      @default(50)
+  variantsData        String   @default("")
+  featureHighlights   String   @default("")
   createdAt           DateTime @default(now())
 }
 
@@ -61,11 +94,103 @@ model Artwork {
   id          Int      @id @default(autoincrement())
   category    String
   charname    String
+  artist      String   @default("SenpaiWorks Official")
   source      String
   sex         String   @default("Female")
   artstyle    String   @default("Digital Art")
   software    String   @default("Photoshop")
   description String
+  aboutDesc   String   @default("")
   img         String
+  downloadCount Int    @default(0)
   createdAt   DateTime @default(now())
+}
+
+model ArtworkInterest {
+  id        Int    @id @default(autoincrement())
+  artworkId String @unique
+  count     Int    @default(0)
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  username   String?
+  name       String?
+  avatar     String?
+  provider   String   @default("local")
+  providerId String?
+  createdAt  DateTime @default(now())
+}
+
+model CommunityReview {
+  id        String   @id @default(uuid())
+  author    String
+  email     String   @default("")
+  rating    Int      @default(5)
+  category  String   @default("General")
+  title     String
+  text      String
+  date      String
+  isPublic  Boolean  @default(true)
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slug      String   @unique
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Donation {
+  id            String   @id @default(uuid())
+  donorName     String
+  donorEmail    String
+  amount        Float
+  currency      String   @default("USD")
+  amountInUsd   Float
+  paymentMethod String
+  transactionId String   @unique
+  paymentStatus String   @default("SUCCESS")
+  message       String?
+  createdAt     DateTime @default(now())
+}
+
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  userEmail   String?  // Null means it's a global notification (if we chose to do that), but we will fan out and set this to specific emails
+  type        String
+  title       String
+  message     String
+  link        String?
+  icon        String?
+  actorAvatar String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  deletedAt   DateTime?
+}
+
+model Broadcast {
+  id         Int      @id @default(autoincrement())
+  title      String
+  message    String
+  link       String?
+  icon       String?
+  audience   String   // "all" or specific email
+  category   String   @default("Studio")
+  status     String   // "sent", "scheduled", "cancelled"
+  sendAt     DateTime @default(now())
+  createdAt  DateTime @default(now())
+  readCount  Int      @default(0)
+  totalCount Int      @default(0)
+}
+
+model NotificationTrigger {
+  id        Int      @id @default(autoincrement())
+  type      String   @unique
+  enabled   Boolean  @default(true)
 }

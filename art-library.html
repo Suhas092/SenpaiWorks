@@ -39,9 +39,17 @@
     <div class="tech-hero-bg" style="background-image: url('assets/Suzens band.png');">
     </div>
     <div class="tech-hero-overlay">
-      <h1 class="tech-title">2D ART LIBRARY</h1>
+      <h1 class="tech-title">ART LIBRARY</h1>
       <p class="tech-description">Explore original anime portraits, insane artwork, and hand-crafted pencil drawings by
         SenpaiWorks.</p>
+
+      <!-- Transparent Hero Search Bar -->
+      <div class="art-hero-search-wrapper">
+        <input type="text" id="art-hero-search-input" class="art-hero-search-input" placeholder="Search artwork by character name" autocomplete="off" />
+        <button type="button" id="art-hero-search-clear" class="art-hero-search-clear" title="Clear Search">&times;</button>
+        <i class="fa-solid fa-magnifying-glass art-search-icon"></i>
+      </div>
+      <span id="art-search-result-count" class="art-search-result-count" style="display:none;"></span>
     </div>
   </section>
 
@@ -92,7 +100,7 @@
                   <span id="detail-comments-shortcut-count" class="top-bar-count">0</span>
                 </button>
                 <button type="button" class="top-bar-icon-btn" id="detail-share-btn" title="Share Artwork">
-                  <i class="fa-regular fa-paper-plane"></i>
+                  <i class="fa-solid fa-arrow-up-from-bracket"></i>
                 </button>
                 <div class="top-bar-dropdown-wrapper">
                   <button type="button" class="top-bar-icon-btn" id="detail-more-btn" title="More Options" aria-label="More Options">
@@ -112,7 +120,7 @@
                       <span id="option-interested-text">Interested</span>
                     </button>
                     <button type="button" class="art-dropdown-item" id="option-share-btn">
-                      <i class="fa-solid fa-share-nodes"></i>
+                      <i class="fa-solid fa-arrow-up-from-bracket"></i>
                       <span>Share Artwork</span>
                     </button>
                     <button type="button" class="art-dropdown-item" id="option-enlarge-btn">
@@ -149,7 +157,7 @@
                         <span id="mobile-detail-comments-shortcut-count" class="ig-count">0</span>
                       </button>
                       <button type="button" class="ig-icon-btn" id="mobile-detail-share-btn" title="Share Artwork">
-                        <i class="fa-regular fa-paper-plane"></i>
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
                       </button>
                     </div>
 
@@ -172,7 +180,7 @@
                             <span id="mobile-option-interested-text">Interested</span>
                           </button>
                           <button type="button" class="art-dropdown-item" id="mobile-option-share-btn">
-                            <i class="fa-solid fa-share-nodes"></i>
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
                             <span>Share Artwork</span>
                           </button>
                           <button type="button" class="art-dropdown-item" id="mobile-option-enlarge-btn">
@@ -273,6 +281,9 @@
 
   <!-- Enlarged Image Lightbox Modal -->
   <div class="image-lightbox-modal" id="image-lightbox-modal">
+    <button type="button" class="lightbox-share-btn" id="lightbox-share-btn" title="Share Artwork">
+      <i class="fa-solid fa-arrow-up-from-bracket"></i>
+    </button>
     <button type="button" class="lightbox-close-btn" id="lightbox-close-btn" title="Close Lightbox">
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -303,33 +314,42 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
       <div class="art-modal-header">
-        <div class="art-modal-badge"><i class="fa-solid fa-palette"></i> Artwork Details</div>
+        <div class="art-modal-badge">Artwork Details</div>
         <h3 class="art-modal-title" id="about-art-title">Character Name</h3>
       </div>
       <div class="art-modal-body">
-        <div class="art-modal-preview">
-          <img id="about-art-img" src="" alt="Artwork Preview" />
-        </div>
         <div class="art-modal-info-grid">
-          <div class="info-row">
+          <div class="info-row" id="row-about-artist">
             <span class="info-label"><i class="fa-solid fa-user-pen"></i> Artist</span>
-            <span class="info-val">SenpaiWorks Official</span>
+            <span class="info-val" id="about-art-artist">SenpaiWorks Official</span>
           </div>
-          <div class="info-row">
+          <div class="info-row" id="row-about-created-at">
+            <span class="info-label"><i class="fa-regular fa-calendar-days"></i> Created Date</span>
+            <span class="info-val" id="about-art-created-at">Aug 01, 2026</span>
+          </div>
+          <div class="info-row" id="row-about-category">
             <span class="info-label"><i class="fa-solid fa-tags"></i> Category</span>
             <span class="info-val" id="about-art-category">Digital Portrait</span>
           </div>
-          <div class="info-row">
+          <div class="info-row" id="row-about-style">
             <span class="info-label"><i class="fa-solid fa-paint-brush"></i> Art Style</span>
             <span class="info-val" id="about-art-style">Original Anime</span>
           </div>
-          <div class="info-row">
-            <span class="info-label"><i class="fa-solid fa-image"></i> Quality</span>
-            <span class="info-val" id="about-art-resolution">High Resolution (HD)</span>
+          <div class="info-row" id="row-about-source">
+            <span class="info-label"><i class="fa-solid fa-tv"></i> Anime Source</span>
+            <span class="info-val" id="about-art-source">SenpaiWorks Original</span>
           </div>
-          <div class="info-row full-width">
-            <span class="info-label"><i class="fa-solid fa-align-left"></i> Description</span>
+          <div class="info-row" id="row-about-sex">
+            <span class="info-label"><i class="fa-solid fa-venus-mars"></i> Gender</span>
+            <span class="info-val" id="about-art-sex">Female</span>
+          </div>
+          <div class="info-row full-width" id="row-about-desc">
+            <span class="info-label"><i class="fa-solid fa-align-left"></i> Art Description</span>
             <p class="info-desc" id="about-art-desc">Artwork details will appear here.</p>
+          </div>
+          <div class="info-row full-width" id="row-about-about-desc">
+            <span class="info-label"><i class="fa-solid fa-circle-info"></i> About Artwork</span>
+            <p class="info-desc" id="about-art-about-desc">Additional background notes and detailed information will appear here.</p>
           </div>
           <div class="info-row full-width license-box">
             <span class="info-label"><i class="fa-solid fa-shield-halved"></i> Personal License</span>

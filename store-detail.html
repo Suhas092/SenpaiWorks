@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Details - SenpaiWorks</title>
@@ -62,7 +62,7 @@
           <h1 class="product-title" id="product-title">Loading Product...</h1>
           <div class="title-action-buttons">
             <button class="title-action-btn" id="action-share" title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-            <button class="title-action-btn" id="action-wishlist" title="Add to Wishlist"><i class="fa-regular fa-heart"></i></button>
+            <button class="title-action-btn" id="action-wishlist" title="Save to Wishlist" style="display: none;"><i class="fa-regular fa-heart"></i></button>
           </div>
         </div>
 
@@ -92,14 +92,6 @@
           <button class="desc-toggle-btn" id="desc-toggle-btn">Show More</button>
         </div>
 
-        <!-- Color Selection -->
-        <div class="color-selection-group" id="color-selection-group" style="display: none;">
-          <span class="selection-label">Color</span>
-          <div class="color-swatches" id="color-swatches">
-            <!-- color swatches generated dynamically -->
-          </div>
-        </div>
-
         <!-- Size Selection -->
         <div class="size-selection-group" id="size-selection-group">
           <div class="size-label-row">
@@ -121,19 +113,11 @@
           </button>
         </div>
 
-        <!-- Other Color Options Section -->
-        <div class="pair-it-with-section" id="pair-it-with-section">
-          <div class="piw-header">
-            <h3>Other Color Options</h3>
-            <div class="piw-nav-arrows">
-              <button class="piw-arrow piw-arrow-left" id="piw-arrow-left"><i class="fa-solid fa-chevron-left"></i></button>
-              <button class="piw-arrow piw-arrow-right" id="piw-arrow-right"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-          </div>
-          <div class="piw-slider-container">
-            <div class="piw-slider" id="piw-slider">
-              <!-- Color variants generated dynamically -->
-            </div>
+        <!-- Color Selection (Placed below Action Buttons) -->
+        <div class="color-selection-group" id="color-selection-group" style="display: none; margin-top: 24px;">
+          <span class="selection-label">Colour: <strong id="selected-color-label" style="color: #111; font-weight: 700;">Black</strong></span>
+          <div class="color-swatches" id="color-swatches">
+            <!-- color variant tiles generated dynamically -->
           </div>
         </div>
 
@@ -167,7 +151,7 @@
 
     <!-- Closeup Details Section (Image 2) -->
     <section class="closeup-details-section">
-      <div class="closeup-grid">
+      <div class="closeup-grid" id="closeup-grid-container">
         <div class="closeup-card card-weather" style="background-image: url('assets/closeup_weather.png');">
           <div class="closeup-overlay">
             <h3>Weather-Ready Performance</h3>

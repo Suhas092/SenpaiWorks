@@ -1,127 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<!-- <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png"> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Catalog & Studio Assets — SenpaiWorks</title>
+  <meta name="description"
+    content="Search SenpaiWorks digital storefront, 2D art galleries, Suzens virtual idol band members, news stories, and 3D masterclasses." />
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SenpaiWorks</title>
-    <link rel="stylesheet" href="home.css">
-    <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="search.css">
-  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Global Styles & Page Styles -->
+  <link rel="stylesheet" href="header.css" />
+  <link rel="stylesheet" href="drawer.css" />
+  <link rel="stylesheet" href="footer.css" />
+  <link rel="stylesheet" href="search.css" />
 </head>
+
 <body>
-
-  <!-- Marvel-style logo -->
-<div id="header-placeholder"></div>
-<script src="scripts/header.js"></script>
-
-
-<div class="top-bg-strip"></div>
-
-<div id="drawer-container"></div>
-<script src="scripts/drawer.js"></script>
-
-
-
-
-
-
-  <div class="search-hero">
-    <h1>Search results</h1>
-    <form class="search-form" onsubmit="return searchContent(event)">
-      <input class="search-input" type="text" id="searchInput" placeholder="What are you looking for?" autocomplete="off" autofocus>
-      <button class="search-btn" type="submit">
-        <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/>
-          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="white" stroke-width="2"/>
-        </svg>
-        <span style="display:none;">Search</span>
-      </button>
-    </form>
+  <!-- Dynamic Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
   </div>
+  <script src="scripts/header.js?v=7"></script>
 
-  <section class="results-section">
-    <div class="results-header" id="resultsHeader">Type to search your favorite art or character…</div>
-    <div class="results-grid" id="resultsGrid">
-      <!-- Search results appear here -->
+  <!-- Side Drawer Container -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=7"></script>
+
+  <!-- SEARCH HERO BANNER -->
+  <section class="search-hero">
+    <h1>STUDIO CATALOG <span style="color: #0284c7;">SEARCH</span></h1>
+    <p>Find merchandise, 2D artworks, Suzens band tracks, news stories, and masterclass tutorials.</p>
+
+    <div class="search-form-wrap">
+      <form class="search-input-box" id="searchForm">
+        <i class="fa-solid fa-magnifying-glass search-input-icon"></i>
+        <input class="search-input" type="text" id="searchInput" placeholder="Search characters, hoodies, art, or tutorials..."
+          autocomplete="off" autofocus />
+        <button type="button" class="search-clear-btn" id="searchClearBtn" style="display: none;" title="Clear Search">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <button class="search-submit-btn" type="submit">Search</button>
+      </form>
     </div>
   </section>
 
-  <script>
-    // Placeholder search dataset (sample gallery)
-    const items = [
-      { title: "Kaori", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/black_kaori_copy_csr9qi.webp", link: "#" },
-      { title: "Miku Nakano", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/miku_full_copy_vdritm.webp", link: "#" },
-      { title: "Mikasa", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/Mikasa_copy_jcwuga.webp", link: "#" },
-      { title: "Li Shiya", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/li_shiya_copy_jyopqy.webp", link: "#" },
-      { title: "Nico Robin", category: "Digital Art", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/nico_robin_copy_eoj6o4.webp", link: "#" },
-      { title: "Zoro", category: "Insane Artwork", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/zoro_copy_bki4to.webp", link: "#" },
-      { title: "Itachi", category: "Insane Artwork", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp", link: "#" },
-      { title: "Kaneki", category: "Insane Artwork", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp", link: "#" },
-      { title: "Rose", category: "Color Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rose_copy_hqkhss.webp", link: "#" },
-      { title: "IU", category: "Color Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/iu_copy_cdbits.webp", link: "#" },
-      { title: "Lisa", category: "Color Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/lisa_copy_zsrdfj.webp", link: "#" },
-      { title: "Jhope", category: "Charcoal Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jhope_copy_sregrz.webp", link: "#" },
-      { title: "Jungkook", category: "Charcoal Pencil", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp", link: "#" },
-      { title: "Zero 2 Infinity", category: "Digital Logo", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630849/zero_2_infinity_aipeww.webp", link: "#" },
-      { title: "Chronos Play", category: "Digital Logo", img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/chronos_plays_fl47xm.webp", link: "#" },
-      // ...add your actual gallery
-    ];
+  <!-- RESULTS & FILTER SECTION -->
+  <section class="results-section">
+    <div class="search-controls-bar">
+      <!-- Category Filter Pills -->
+      <div class="search-filter-pills">
+        <button type="button" class="search-filter-pill active" data-filter="all">
+          All <span class="pill-count">0</span>
+        </button>
+        <button type="button" class="search-filter-pill" data-filter="store">
+          <i class="fa-solid fa-bag-shopping"></i> Store & Merch <span class="pill-count">0</span>
+        </button>
+        <button type="button" class="search-filter-pill" data-filter="artwork">
+          <i class="fa-solid fa-palette"></i> 2D Artworks <span class="pill-count">0</span>
+        </button>
+        <button type="button" class="search-filter-pill" data-filter="band">
+          <i class="fa-solid fa-music"></i> Virtual Band <span class="pill-count">0</span>
+        </button>
+        <button type="button" class="search-filter-pill" data-filter="news">
+          <i class="fa-solid fa-newspaper"></i> News & Editorial <span class="pill-count">0</span>
+        </button>
+        <button type="button" class="search-filter-pill" data-filter="learn">
+          <i class="fa-solid fa-graduation-cap"></i> Courses <span class="pill-count">0</span>
+        </button>
+      </div>
 
-    function searchContent(event){
-      event.preventDefault();
-      updateSearchResults();
-      return false;
-    }
-    function updateSearchResults() {
-      const grid = document.getElementById('resultsGrid');
-      const header = document.getElementById('resultsHeader');
-      const q = document.getElementById('searchInput').value.trim().toLowerCase();
-      let results = [];
-      if (q.length === 0) {
-        header.textContent = "Type to search your favorite art or character…";
-        grid.innerHTML = "";
-        return;
-      }
-      results = items.filter(item =>
-        item.title.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q)
-      );
-      header.textContent = results.length
-        ? `Results for "${q}"`
-        : `No results found for "${q}"`;
-      grid.innerHTML = results.map(item => `
-        <a class="result-card" href="${item.link}">
-          <img src="${item.img}" alt="${item.title}">
-          <div class="result-card-title">${item.title}</div>
-          <div class="result-card-meta">${item.category}</div>
-        </a>
-      `).join('');
-    }
-    document.getElementById('searchInput').addEventListener('input', updateSearchResults);
+      <!-- Sort Controls -->
+      <div class="search-sort-wrap">
+        <label for="searchSortSelect">Sort By:</label>
+        <select id="searchSortSelect" class="search-sort-select">
+          <option value="relevance" selected>Relevance</option>
+          <option value="name-asc">Name (A - Z)</option>
+          <option value="price-low">Price (Low to High)</option>
+          <option value="price-high">Price (High to Low)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Search Results Header Summary -->
+    <div class="results-header" id="resultsHeader"></div>
+
+    <!-- Results Cards Grid -->
+    <div class="results-grid" id="resultsGrid">
+      <!-- Search results generated dynamically by scripts/search.js -->
+    </div>
+  </section>
+
+  <!-- Contact & Footer Container -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630820/to_love_ru_copy_sthzsw.webp");
   </script>
 
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
 
+  <!-- Store Products Data Source -->
+  <script src="scripts/products-data.js"></script>
 
-
-  
-<div id="contact-container"></div>
-<script src="scripts/contact.js"></script>
-<script>
-  // Set different image per page
-  loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630820/to_love_ru_copy_sthzsw.webp");
-  // e.g. another page:
-  // loadContactSection("assets/3dworld assets/ironman.png");
-</script>
-
-
-
-<div id="footer-container"></div>
-<script src="scripts/footer.js"></script>
-
-<script src="scripts/2dworld.js"></script>
-
+  <!-- Live Search Engine Script -->
+  <script src="scripts/search.js"></script>
 </body>
+
 </html>

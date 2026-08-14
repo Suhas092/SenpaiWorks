@@ -1,0 +1,915 @@
+/* ============================================================
+   SenpaiWorks — Suzens Virtual Idol Band Showcase Styles
+   ============================================================ */
+
+:root {
+  --sz-bg: #09090e;
+  --sz-card-bg: rgba(18, 18, 28, 0.75);
+  --sz-card-border: rgba(255, 255, 255, 0.1);
+  --sz-pink: #ff2a75;
+  --sz-cyan: #00f0ff;
+  --sz-purple: #9d4edd;
+  --sz-text: #f0f0f5;
+  --sz-muted: #9595a8;
+  --sz-font-head: 'Space Grotesk', sans-serif;
+  --sz-font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  background-color: var(--sz-bg);
+  color: var(--sz-text);
+  font-family: var(--sz-font-body);
+  overflow-x: hidden;
+}
+
+/* ── Reusable Buttons & Badges ───────────────────────────── */
+.sz-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 26px;
+  font-family: var(--sz-font-head);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  text-decoration: none;
+  border: none;
+}
+
+.sz-btn-primary {
+  background: linear-gradient(135deg, var(--sz-pink), #e6005c);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(255, 42, 117, 0.4);
+}
+
+.sz-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(255, 42, 117, 0.6);
+  color: #ffffff;
+}
+
+.sz-btn-outline {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.sz-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--sz-cyan);
+  color: var(--sz-cyan);
+  transform: translateY(-3px);
+}
+
+.sz-btn-sm {
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+.sz-gradient-text {
+  background: linear-gradient(135deg, var(--sz-pink) 0%, var(--sz-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sz-sub-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sz-font-head);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--sz-cyan);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ── Section Headers ──────────────────────────────────────── */
+.sz-section {
+  padding: 80px 24px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.sz-section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.sz-section-title {
+  font-family: var(--sz-font-head);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+}
+
+.sz-section-desc {
+  color: var(--sz-muted);
+  font-size: 1.05rem;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* ── SECTION 1: HERO & EVENT COUNTDOWN ──────────────────── */
+.sz-hero-section {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px 60px 24px;
+  background: radial-gradient(circle at 50% 20%, #1a0826 0%, var(--sz-bg) 70%);
+  overflow: hidden;
+}
+
+.sz-hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url('assets/suzens band.png');
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.18;
+  filter: blur(4px) contrast(1.1);
+}
+
+.sz-hero-glow-orb {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.sz-orb-1 {
+  top: 10%;
+  left: 15%;
+  background: var(--sz-pink);
+}
+
+.sz-orb-2 {
+  bottom: 10%;
+  right: 15%;
+  background: var(--sz-cyan);
+}
+
+.sz-hero-container {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  text-align: center;
+}
+
+.sz-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(255, 42, 117, 0.15);
+  border: 1px solid rgba(255, 42, 117, 0.4);
+  border-radius: 30px;
+  color: var(--sz-pink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--sz-font-head);
+  margin-bottom: 24px;
+  box-shadow: 0 0 20px rgba(255, 42, 117, 0.2);
+}
+
+.sz-hero-title {
+  font-family: var(--sz-font-head);
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  letter-spacing: -1.5px;
+}
+
+.sz-hero-subtitle {
+  font-size: 1.18rem;
+  color: #d0d0e0;
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto 40px auto;
+}
+
+/* Event Spotlight Box */
+.sz-event-spotlight-card {
+  background: rgba(18, 18, 28, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 36px 30px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 240, 255, 0.05);
+  text-align: center;
+}
+
+.sz-event-tag {
+  font-family: var(--sz-font-head);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--sz-cyan);
+  margin-bottom: 8px;
+}
+
+.sz-event-name {
+  font-family: var(--sz-font-head);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.sz-event-meta {
+  color: var(--sz-muted);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.sz-countdown-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.sz-cd-unit {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 12px 18px;
+  min-width: 70px;
+}
+
+.sz-cd-unit span {
+  display: block;
+  font-family: var(--sz-font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.sz-cd-unit label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--sz-muted);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.sz-cd-colon {
+  font-family: var(--sz-font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--sz-pink);
+}
+
+.sz-event-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── SECTION 2: MEMBER SHOWCASE ───────────────────────────── */
+.sz-members-showcase-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.sz-member-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sz-tab-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.sz-tab-btn img {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.sz-tab-name {
+  display: block;
+  font-family: var(--sz-font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.sz-tab-role {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--sz-muted);
+}
+
+.sz-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 42, 117, 0.4);
+}
+
+.sz-tab-btn.active {
+  background: linear-gradient(135deg, rgba(255, 42, 117, 0.2), rgba(0, 240, 255, 0.1));
+  border-color: var(--sz-pink);
+  box-shadow: 0 8px 24px rgba(255, 42, 117, 0.25);
+}
+
+.sz-tab-btn.active img {
+  border-color: var(--sz-pink);
+  transform: scale(1.08);
+}
+
+/* Character Spotlight Card */
+.sz-character-spotlight-card {
+  background: rgba(18, 18, 28, 0.8);
+  border: 1px solid var(--sz-card-border);
+  border-radius: 28px;
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 40px;
+  align-items: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.sz-char-visual-col {
+  display: flex;
+  justify-content: center;
+}
+
+.sz-char-img-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: radial-gradient(circle at center, rgba(255, 42, 117, 0.15), transparent 70%);
+  padding: 10px;
+}
+
+.sz-char-img-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.sz-char-role-badge {
+  display: inline-block;
+  font-family: var(--sz-font-head);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--sz-pink);
+  background: rgba(255, 42, 117, 0.12);
+  border: 1px solid rgba(255, 42, 117, 0.3);
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.sz-char-name {
+  font-family: var(--sz-font-head);
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1;
+}
+
+.sz-char-title {
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--sz-cyan);
+  margin-bottom: 18px;
+}
+
+.sz-char-desc {
+  font-size: 1.05rem;
+  color: #d0d0e2;
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.sz-char-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 18px 22px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 24px;
+}
+
+.sz-stat-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.92rem;
+}
+
+.sz-stat-label {
+  color: var(--sz-muted);
+  font-weight: 600;
+}
+
+.sz-stat-val {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sz-char-quote-box {
+  background: linear-gradient(135deg, rgba(255, 42, 117, 0.1), rgba(0, 240, 255, 0.05));
+  border-left: 4px solid var(--sz-pink);
+  padding: 16px 20px;
+  border-radius: 0 14px 14px 0;
+  position: relative;
+}
+
+.sz-char-quote-box i {
+  color: var(--sz-pink);
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.sz-char-quote-box p {
+  margin: 0;
+  font-style: italic;
+  color: #ffffff;
+  font-size: 0.98rem;
+}
+
+/* ── SECTION 3: UPCOMING ALBUMS ───────────────────────────── */
+.sz-albums-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.sz-album-card {
+  background: rgba(18, 18, 28, 0.75);
+  border: 1px solid var(--sz-card-border);
+  border-radius: 24px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sz-album-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 240, 255, 0.15);
+}
+
+.sz-album-cover {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+}
+
+.sz-album-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.sz-album-card:hover .sz-album-cover img {
+  transform: scale(1.05);
+}
+
+.sz-album-tag {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(9, 9, 14, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: var(--sz-cyan);
+  font-family: var(--sz-font-head);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.sz-album-content {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.sz-album-title {
+  font-family: var(--sz-font-head);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.sz-album-meta {
+  font-size: 0.88rem;
+  color: var(--sz-muted);
+  margin-bottom: 20px;
+}
+
+.sz-tracklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sz-tracklist li {
+  display: flex;
+  align-items: center;
+  font-size: 0.92rem;
+  color: #d0d0e0;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+}
+
+.tk-num {
+  font-family: var(--sz-font-head);
+  font-weight: 700;
+  color: var(--sz-pink);
+  margin-right: 12px;
+  width: 20px;
+}
+
+.tk-dur {
+  margin-left: auto;
+  color: var(--sz-muted);
+  font-size: 0.82rem;
+}
+
+/* Audio Player Simulator */
+.sz-audio-player-sim {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+}
+
+.sz-play-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--sz-pink);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(255, 42, 117, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.sz-play-btn:hover {
+  transform: scale(1.08);
+}
+
+.sz-track-info-sim {
+  flex-grow: 1;
+}
+
+.sz-sim-track-name {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.sz-sim-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sz-sim-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sz-pink), var(--sz-cyan));
+  border-radius: 4px;
+}
+
+.sz-album-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+/* ── SECTION 4: TOUR STAGE SCHEDULE ───────────────────────── */
+.sz-tour-table-wrapper {
+  background: rgba(18, 18, 28, 0.75);
+  border: 1px solid var(--sz-card-border);
+  border-radius: 24px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+
+.sz-tour-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.sz-tour-table th {
+  font-family: var(--sz-font-head);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--sz-muted);
+  padding: 20px 24px;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sz-tour-table td {
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+}
+
+.sz-tour-table tbody tr {
+  transition: background 0.25s ease;
+}
+
+.sz-tour-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sz-date-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.sz-date-day {
+  font-family: var(--sz-font-head);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--sz-pink);
+  line-height: 1;
+}
+
+.sz-date-mo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--sz-muted);
+  margin-top: 2px;
+}
+
+.sz-venue-title {
+  font-family: var(--sz-font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.sz-venue-sub {
+  font-size: 0.85rem;
+  color: var(--sz-muted);
+  margin-top: 2px;
+}
+
+.sz-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 12px;
+
+}
+
+.sz-badge-holo {
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--sz-cyan);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.sz-badge-hybrid {
+  background: rgba(157, 78, 221, 0.15);
+  color: var(--sz-purple);
+  border: 1px solid rgba(157, 78, 221, 0.3);
+}
+
+.sz-badge-vr {
+  background: rgba(255, 42, 117, 0.15);
+  color: var(--sz-pink);
+  border: 1px solid rgba(255, 42, 117, 0.3);
+}
+
+.sz-status {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.sz-status-fast { color: #ff9900; }
+.sz-status-available { color: #00ff88; }
+.sz-status-vip { color: var(--sz-pink); }
+.sz-status-soon { color: var(--sz-muted); }
+
+.sz-ticket-btn {
+  background: linear-gradient(135deg, var(--sz-pink), #cc0052);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-family: var(--sz-font-head);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.sz-ticket-btn:hover:not(.disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 42, 117, 0.4);
+}
+
+.sz-ticket-btn.disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sz-muted);
+  cursor: not-allowed;
+}
+
+/* ── MODAL BACKDROP ───────────────────────────────────────── */
+.sz-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.sz-modal-card {
+  background: #12121c;
+  border: 1px solid var(--sz-pink);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(255, 42, 117, 0.3);
+}
+
+.sz-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sz-modal-title {
+  font-family: var(--sz-font-head);
+  font-size: 1.4rem;
+  color: #fff;
+  margin: 4px 0 0 0;
+}
+
+.sz-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.sz-form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--sz-muted);
+  margin-bottom: 6px;
+}
+
+.sz-form-group input,
+.sz-form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #fff;
+  font-family: var(--sz-font-body);
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.sz-form-group input:focus,
+.sz-form-group select:focus {
+  outline: none;
+  border-color: var(--sz-pink);
+}
+
+/* ── RESPONSIVE MOBILE STYLES ────────────────────────────── */
+@media (max-width: 992px) {
+  .sz-character-spotlight-card {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .sz-member-tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sz-albums-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .sz-hero-title {
+    font-size: 3rem;
+  }
+
+  .sz-hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .sz-event-spotlight-card {
+    padding: 24px 18px;
+  }
+
+  .sz-cd-unit {
+    min-width: 54px;
+    padding: 8px 12px;
+  }
+
+  .sz-cd-unit span {
+    font-size: 1.5rem;
+  }
+
+  .sz-member-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .sz-tour-table th:nth-child(3),
+  .sz-tour-table td:nth-child(3) {
+    display: none;
+  }
+
+  .sz-tour-table td {
+    padding: 16px 12px;
+  }
+}
