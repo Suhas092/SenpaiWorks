@@ -78,12 +78,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initFilterBar();
   initTableSearch();
-  initEditModal();
   
   const sortSelect = document.getElementById("feedback-sort-select");
-  if (sortSelect) {
-    sortSelect.addEventListener("change", loadCommunityReviews);
-  }
+  if (sortSelect) sortSelect.addEventListener("change", () => { feedbackCurrentPage = 1; loadCommunityReviews(); });
+  
+  const searchInput = document.getElementById("feedback-search-input");
+  if (searchInput) searchInput.addEventListener("input", () => { feedbackCurrentPage = 1; loadCommunityReviews(); });
+  
+  const catFilter = document.getElementById("feedback-category-filter");
+  if (catFilter) catFilter.addEventListener("change", () => { feedbackCurrentPage = 1; loadCommunityReviews(); });
+  
+  const statusFilter = document.getElementById("feedback-status-filter");
+  if (statusFilter) statusFilter.addEventListener("change", () => { feedbackCurrentPage = 1; loadCommunityReviews(); });
 });
 
 
@@ -2648,6 +2654,28 @@ async function loadCommunityReviews() {
 
   let allReviews = Array.from(reviewMap.values());
 
+  const searchInput = document.getElementById("feedback-search-input");
+  const catFilter = document.getElementById("feedback-category-filter");
+  const statusFilter = document.getElementById("feedback-status-filter");
+
+  if (searchInput && searchInput.value) {
+    const q = searchInput.value.toLowerCase().trim();
+    allReviews = allReviews.filter(r => 
+      (r.author && r.author.toLowerCase().includes(q)) || 
+      (r.user && r.user.toLowerCase().includes(q)) ||
+      (r.text && r.text.toLowerCase().includes(q)) ||
+      (r.title && r.title.toLowerCase().includes(q))
+    );
+  }
+
+  if (catFilter && catFilter.value !== "All") {
+    allReviews = allReviews.filter(r => (r.category || 'General') === catFilter.value);
+  }
+
+  if (statusFilter && statusFilter.value !== "All") {
+    allReviews = allReviews.filter(r => (r.status || 'Pending') === statusFilter.value);
+  }
+
   const sortSelect = document.getElementById("feedback-sort-select");
   if (sortSelect) {
     const sortBy = sortSelect.value;
@@ -2668,19 +2696,43 @@ async function loadCommunityReviews() {
   if (countBadge) countBadge.textContent = allReviews.length;
   if (feedbackCountBadge) feedbackCountBadge.textContent = allReviews.length;
 
+  window.feedbackCurrentPage = window.feedbackCurrentPage || 1;
+  const itemsPerPage = 10;
+  const totalPages = Math.max(1, Math.ceil(allReviews.length / itemsPerPage));
+  if (window.feedbackCurrentPage > totalPages) window.feedbackCurrentPage = totalPages;
+
+  const startIndex = (window.feedbackCurrentPage - 1) * itemsPerPage;
+  const paginatedReviews = allReviews.slice(startIndex, startIndex + itemsPerPage);
+
+  const prevBtn = document.getElementById("feedback-prev-btn");
+  const nextBtn = document.getElementById("feedback-next-btn");
+  const pageInfo = document.getElementById("feedback-page-info");
+  if (prevBtn && nextBtn && pageInfo) {
+    prevBtn.disabled = window.feedbackCurrentPage <= 1;
+    nextBtn.disabled = window.feedbackCurrentPage >= totalPages;
+    pageInfo.textContent = `Page ${window.feedbackCurrentPage} of ${totalPages}`;
+  }
+
   if (allReviews.length === 0) {
     const emptyRow = `<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">No community feedback submitted yet.</td></tr>`;
     allTargetTbodies.forEach(tb => tb.innerHTML = emptyRow);
     return;
   }
 
-  const rowsHtml = allReviews.map(r => {
+  const rowsHtml = paginatedReviews.map(r => {
     const stars = '★'.repeat(r.rating || 5);
     const author = r.author || r.user || 'Anonymous';
-    const likes = r.likes || 0;
+    const status = r.status || 'Pending';
+    let statusColor = '#94a3b8'; // Pending
+    if (status === 'Reviewed') statusColor = '#3b82f6';
+    if (status === 'Resolved') statusColor = '#10b981';
+    if (status === 'Flagged') statusColor = '#ef4444';
 
     return `
-      <tr>
+      <tr style="cursor: pointer;" onclick="openFeedbackDetail('${r.id}', event)">
+        <td style="text-align: center;" onclick="event.stopPropagation()">
+          <input type="checkbox" class="feedback-row-checkbox" value="${r.id}" onchange="updateBulkActionState()">
+        </td>
         <td>
           <div style="font-weight:700; color:#f8fafc;">${author}</div>
           ${r.email ? `<small style="color:#64748b;">${r.email}</small>` : ''}
@@ -2690,20 +2742,18 @@ async function loadCommunityReviews() {
           <strong style="color:#38bdf8; font-size:0.85rem;">${r.title || 'Review'}</strong>
         </td>
         <td>
+          <div style="color:#e2e8f0; font-size:0.84rem; max-width:280px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${r.text || ''}">${r.text || ''}</div>
+        </td>
+        <td>
           <span class="badge badge-type" style="display:inline-block; font-size:0.75rem;">${r.category || 'General'}</span>
         </td>
         <td>
-          <div style="color:#e2e8f0; font-size:0.84rem; max-width:280px; line-height:1.35;" title="${r.text || ''}">${r.text || ''}</div>
+          <span style="display:inline-block; padding: 4px 8px; border-radius: 4px; font-size:0.75rem; font-weight:700; border: 1px solid ${statusColor}; color: ${statusColor};">${status}</span>
         </td>
         <td>
           <span style="color:#94a3b8; font-size:0.82rem;">${r.date || 'Today'}</span>
         </td>
-        <td>
-          <span title="Likes Count" style="color:#ef4444; font-weight:700; display:inline-flex; align-items:center; gap:4px; font-size:0.88rem;">
-            <i class="fa-solid fa-heart"></i> ${likes}
-          </span>
-        </td>
-        <td>
+        <td onclick="event.stopPropagation()">
           <button class="action-btn btn-delete" onclick="window.deleteAdminCommunityReview('${r.id}')" title="Delete Review"><i class="fa-solid fa-trash"></i> Delete</button>
         </td>
       </tr>
@@ -2729,7 +2779,113 @@ window.deleteAdminCommunityReview = async function (reviewId) {
     localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
   } catch (e) { }
 
+  if (typeof showAdminToast === 'function') showAdminToast("Review deleted successfully.", "success");
   loadCommunityReviews();
+};
+
+window.feedbackChangePage = function(delta) {
+  window.feedbackCurrentPage = (window.feedbackCurrentPage || 1) + delta;
+  loadCommunityReviews();
+};
+
+window.toggleAllFeedback = function(source) {
+  const checkboxes = document.querySelectorAll(".feedback-row-checkbox");
+  checkboxes.forEach(cb => cb.checked = source.checked);
+  updateBulkActionState();
+};
+
+window.updateBulkActionState = function() {
+  const checkboxes = document.querySelectorAll(".feedback-row-checkbox:checked");
+  const count = checkboxes.length;
+  const bulkBar = document.getElementById("feedback-bulk-actions");
+  const countText = document.getElementById("feedback-bulk-count");
+  if (bulkBar && countText) {
+    if (count > 0) {
+      bulkBar.style.display = "flex";
+      countText.textContent = `${count} selected`;
+    } else {
+      bulkBar.style.display = "none";
+    }
+  }
+};
+
+window.bulkDeleteFeedback = function() {
+  const checkboxes = document.querySelectorAll(".feedback-row-checkbox:checked");
+  if (checkboxes.length === 0) return;
+  if (!confirm(`Are you sure you want to delete ${checkboxes.length} selected feedbacks?`)) return;
+
+  const idsToDelete = Array.from(checkboxes).map(cb => cb.value);
+  try {
+    let reviewsList = JSON.parse(localStorage.getItem("userReviews") || localStorage.getItem("user_reviews") || "[]");
+    reviewsList = reviewsList.filter(r => !idsToDelete.includes(r.id));
+    localStorage.setItem("userReviews", JSON.stringify(reviewsList));
+    localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
+  } catch (e) {}
+
+  if (typeof showAdminToast === 'function') showAdminToast(`${checkboxes.length} reviews deleted successfully.`, "success");
+  document.getElementById("feedback-select-all").checked = false;
+  updateBulkActionState();
+  loadCommunityReviews();
+};
+
+window.openFeedbackDetail = function(id, event) {
+  if (event) {
+    // Ignore if click was on a checkbox or button
+    if (event.target.closest('button') || event.target.closest('input[type="checkbox"]')) return;
+  }
+  
+  let reviewsList = [];
+  try {
+    const raw = localStorage.getItem("userReviews") || localStorage.getItem("user_reviews");
+    if (raw) reviewsList = JSON.parse(raw) || [];
+  } catch (e) {}
+
+  const review = reviewsList.find(r => r.id === id);
+  if (!review) return;
+
+  // We will assume the modal elements exist in the DOM (we will create them next in admin.html)
+  document.getElementById("detail-modal-id").value = review.id;
+  document.getElementById("detail-modal-user").textContent = review.author || review.user || 'Anonymous';
+  document.getElementById("detail-modal-category").textContent = review.category || 'General';
+  document.getElementById("detail-modal-date").textContent = review.date || 'Unknown';
+  document.getElementById("detail-modal-rating").textContent = review.rating ? '★'.repeat(review.rating) : 'N/A';
+  document.getElementById("detail-modal-content").textContent = review.text || 'No content provided.';
+  
+  document.getElementById("detail-modal-status").value = review.status || 'Pending';
+  document.getElementById("detail-modal-priority").value = review.priority || 'Low';
+  document.getElementById("detail-modal-internal-notes").value = review.internal_notes || '';
+  document.getElementById("detail-modal-admin-reply").value = review.admin_reply || '';
+
+  const modal = document.getElementById("modal-feedback-detail");
+  if (modal) {
+    modal.classList.add("active");
+  }
+};
+
+window.saveFeedbackDetail = function() {
+  const id = document.getElementById("detail-modal-id").value;
+  if (!id) return;
+
+  try {
+    let reviewsList = JSON.parse(localStorage.getItem("userReviews") || localStorage.getItem("user_reviews") || "[]");
+    const idx = reviewsList.findIndex(r => r.id === id);
+    if (idx > -1) {
+      reviewsList[idx].status = document.getElementById("detail-modal-status").value;
+      reviewsList[idx].priority = document.getElementById("detail-modal-priority").value;
+      reviewsList[idx].internal_notes = document.getElementById("detail-modal-internal-notes").value;
+      reviewsList[idx].admin_reply = document.getElementById("detail-modal-admin-reply").value;
+      
+      localStorage.setItem("userReviews", JSON.stringify(reviewsList));
+      localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
+      
+      if (typeof showAdminToast === 'function') showAdminToast("Feedback updated successfully.", "success");
+      
+      const modal = document.getElementById("modal-feedback-detail");
+      if (modal) modal.classList.remove("active");
+      
+      loadCommunityReviews();
+    }
+  } catch (e) {}
 };
 
 window.addEventListener("storage", (e) => {

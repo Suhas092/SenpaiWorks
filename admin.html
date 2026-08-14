@@ -632,23 +632,52 @@
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-feedback">
           <div class="admin-card list-card" style="margin-bottom: 28px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h2 style="margin-bottom: 0;"><i class="fa-solid fa-comment-dots"></i> User Feedback Logs</h2>
-              <select id="feedback-sort-select" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="highest_rating">Highest Rating</option>
-                <option value="lowest_rating">Lowest Rating</option>
-              </select>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+              <h2 style="margin-bottom: 0; flex-grow: 1;"><i class="fa-solid fa-comment-dots"></i> User Feedback Logs</h2>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <div class="table-search-wrap" style="margin: 0;">
+                  <i class="fa-solid fa-search"></i>
+                  <input type="text" id="feedback-search-input" class="table-search-input" placeholder="Search user, content..." style="padding: 8px 12px 8px 32px;">
+                </div>
+                <select id="feedback-category-filter" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
+                  <option value="All">All Categories</option>
+                  <option value="Order Issue">Order Issue</option>
+                  <option value="Bug / Technical Issue">Bug / Technical Issue</option>
+                  <option value="Digital Course">Digital Course</option>
+                  <option value="3D Character Rig">3D Character Rig</option>
+                  <option value="Brushes & Textures">Brushes & Textures</option>
+                  <option value="General Website">General Website</option>
+                  <option value="Other">Other</option>
+                </select>
+                <select id="feedback-status-filter" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
+                  <option value="All">All Statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Reviewed">Reviewed</option>
+                  <option value="Resolved">Resolved</option>
+                  <option value="Flagged">Flagged</option>
+                </select>
+                <select id="feedback-sort-select" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="highest_rating">Highest Rating</option>
+                  <option value="lowest_rating">Lowest Rating</option>
+                </select>
+              </div>
             </div>
             <div class="table-responsive">
+              <div id="feedback-bulk-actions" style="display: none; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; margin-bottom: 16px; align-items: center; gap: 12px;">
+                <span id="feedback-bulk-count" style="font-weight: 600; color: #f8fafc; font-size: 0.9rem;">0 selected</span>
+                <button type="button" onclick="bulkDeleteFeedback()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-trash"></i> Bulk Delete</button>
+              </div>
               <table class="admin-table" id="feedback-admin-table">
                 <thead>
                   <tr>
+                    <th style="width: 40px; text-align: center;"><input type="checkbox" id="feedback-select-all" onchange="toggleAllFeedback(this)"></th>
                     <th>User</th>
                     <th>Rating</th>
                     <th>Review Content</th>
                     <th>Category</th>
+                    <th>Status</th>
                     <th>Date</th>
                     <th>Actions</th>
                   </tr>
@@ -657,6 +686,11 @@
                   <!-- Populated dynamically -->
                 </tbody>
               </table>
+              <div id="feedback-pagination" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 16px;">
+                <button type="button" id="feedback-prev-btn" onclick="feedbackChangePage(-1)" style="padding: 6px 12px; background: #334155; border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 0.85rem;" disabled>Prev</button>
+                <span id="feedback-page-info" style="color: #94a3b8; font-size: 0.85rem;">Page 1</span>
+                <button type="button" id="feedback-next-btn" onclick="feedbackChangePage(1)" style="padding: 6px 12px; background: #334155; border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 0.85rem;" disabled>Next</button>
+              </div>
             </div>
           </div>
         </section>
@@ -878,6 +912,65 @@
   </div>
 
   <!-- EDIT MODAL -->
+  <!-- Feedback Detail Modal -->
+  <div class="edit-modal-overlay" id="modal-feedback-detail" style="display: none;">
+    <div class="edit-modal" style="max-width: 600px;">
+      <div class="edit-modal-header">
+        <h2>Feedback Detail</h2>
+        <button class="edit-modal-close" onclick="document.getElementById('modal-feedback-detail').classList.remove('active')"><i class="fa-solid fa-times"></i></button>
+      </div>
+      <form class="admin-form" style="padding: 20px;">
+        <input type="hidden" id="detail-modal-id">
+        <div style="margin-bottom: 20px; padding: 16px; background: rgba(30, 41, 59, 0.5); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <strong style="color: #f8fafc;" id="detail-modal-user"></strong>
+            <span style="color: #94a3b8; font-size: 0.85rem;" id="detail-modal-date"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem;">
+            <span style="color: #38bdf8;" id="detail-modal-category"></span>
+            <span style="color: #eab308;" id="detail-modal-rating"></span>
+          </div>
+          <div style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.5;" id="detail-modal-content"></div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="detail-modal-status">Status</label>
+            <select id="detail-modal-status" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc;">
+              <option value="Pending">Pending</option>
+              <option value="Reviewed">Reviewed</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Flagged">Flagged</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="detail-modal-priority">Priority</label>
+            <select id="detail-modal-priority" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc;">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group" style="margin-top: 16px;">
+          <label for="detail-modal-internal-notes">Internal Notes (Admin Only)</label>
+          <textarea id="detail-modal-internal-notes" rows="3" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc; font-family: inherit; resize: vertical;"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-top: 16px;">
+          <label for="detail-modal-admin-reply">Official Reply</label>
+          <textarea id="detail-modal-admin-reply" rows="3" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc; font-family: inherit; resize: vertical;"></textarea>
+        </div>
+
+        <div class="edit-modal-actions" style="margin-top: 24px; padding: 0;">
+          <button type="button" class="btn-cancel" onclick="document.getElementById('modal-feedback-detail').classList.remove('active')">Cancel</button>
+          <button type="button" class="btn-save" onclick="saveFeedbackDetail()">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="edit-modal-overlay" id="edit-modal-overlay">
     <div class="edit-modal">
       <div class="edit-modal-header">

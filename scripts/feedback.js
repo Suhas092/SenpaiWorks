@@ -148,7 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
           text: commentVal,
           date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
           isPublic: isPublicVal,
-          helpfulCount: 0
+          helpfulCount: 0,
+          status: "Pending",
+          admin_reply: null,
+          internal_notes: null,
+          priority: null
         };
 
         // Save to userReviews list in localStorage
