@@ -68,6 +68,10 @@
           <i class="fa-solid fa-comments"></i>
           <span>Community Reviews</span>
         </a>
+        <a href="#" class="sidebar-link" data-tab="tab-feedback">
+          <i class="fa-solid fa-comment-dots"></i>
+          <span>User Feedback</span>
+        </a>
         <a href="#" class="sidebar-link" data-tab="tab-notifications">
           <i class="fa-solid fa-bell"></i>
           <span>Notifications</span>
@@ -621,6 +625,32 @@
             </div>
           </div>
 
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE: USER FEEDBACK                     -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-feedback">
+          <div class="admin-card list-card" style="margin-bottom: 28px;">
+            <h2><i class="fa-solid fa-comment-dots"></i> User Feedback Logs</h2>
+            <div class="table-responsive">
+              <table class="admin-table" id="feedback-admin-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Rating</th>
+                    <th>Review Content</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="feedback-admin-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         <!-- ========================================== -->
