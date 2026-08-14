@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadNewsArticles();
   loadCoupons();
   loadCommunityReviews();
-  loadCustomerFeedback();
   loadDesignPollSuggestions();
   loadDonations();
 
