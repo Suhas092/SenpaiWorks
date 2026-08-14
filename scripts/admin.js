@@ -79,6 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
   initFilterBar();
   initTableSearch();
   initEditModal();
+  
+  const sortSelect = document.getElementById("feedback-sort-select");
+  if (sortSelect) {
+    sortSelect.addEventListener("change", loadCommunityReviews);
+  }
 });
 
 
@@ -2641,7 +2646,24 @@ async function loadCommunityReviews() {
     }
   });
 
-  const allReviews = Array.from(reviewMap.values());
+  let allReviews = Array.from(reviewMap.values());
+
+  const sortSelect = document.getElementById("feedback-sort-select");
+  if (sortSelect) {
+    const sortBy = sortSelect.value;
+    allReviews.sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.date || 0) - new Date(a.date || 0);
+      } else if (sortBy === "oldest") {
+        return new Date(a.date || 0) - new Date(b.date || 0);
+      } else if (sortBy === "highest_rating") {
+        return (b.rating || 0) - (a.rating || 0);
+      } else if (sortBy === "lowest_rating") {
+        return (a.rating || 0) - (b.rating || 0);
+      }
+      return 0;
+    });
+  }
 
   if (countBadge) countBadge.textContent = allReviews.length;
   if (feedbackCountBadge) feedbackCountBadge.textContent = allReviews.length;

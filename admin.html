@@ -632,7 +632,15 @@
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-feedback">
           <div class="admin-card list-card" style="margin-bottom: 28px;">
-            <h2><i class="fa-solid fa-comment-dots"></i> User Feedback Logs</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h2 style="margin-bottom: 0;"><i class="fa-solid fa-comment-dots"></i> User Feedback Logs</h2>
+              <select id="feedback-sort-select" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="highest_rating">Highest Rating</option>
+                <option value="lowest_rating">Lowest Rating</option>
+              </select>
+            </div>
             <div class="table-responsive">
               <table class="admin-table" id="feedback-admin-table">
                 <thead>
