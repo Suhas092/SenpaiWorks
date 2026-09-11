@@ -682,15 +682,15 @@ function updateSubmitBtnState() {
 
   if (!selectedPaymentMethod) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Use this payment method`;
+    submitBtn.textContent = "Use this payment method";
     submitBtn.setAttribute("title", "Please select a payment method to continue");
   } else {
     submitBtn.disabled = false;
     submitBtn.removeAttribute("title");
     if (selectedPaymentMethod === "cod") {
-      submitBtn.innerHTML = `<i class="fa-solid fa-truck"></i> Use this payment method (Cash on Delivery)`;
+      submitBtn.textContent = "Use this payment method (Cash on Delivery)";
     } else {
-      submitBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Use this payment method`;
+      submitBtn.textContent = "Use this payment method";
     }
   }
 }
@@ -742,25 +742,6 @@ window.selectPayOption = function (method) {
     if (radio) radio.checked = true;
   }
   updateSubmitBtnState();
-};
-
-window.usePaymentMethodAndProceed = function (method, event) {
-  if (event) {
-    event.stopPropagation();
-  }
-  if (method) {
-    window.selectPayOption(method);
-  }
-  const form = document.getElementById("checkout-main-form");
-  if (form) {
-    if (typeof form.requestSubmit === "function") {
-      form.requestSubmit();
-    } else {
-      window.handleCheckoutSubmit();
-    }
-  } else {
-    window.handleCheckoutSubmit();
-  }
 };
 
 // 9. CHECKOUT FORM SUBMISSION & VALIDATION
