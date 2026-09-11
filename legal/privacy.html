@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="/assets/Videos/SenpaiWorks logo.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Notice — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/header.css">
+  <link rel="stylesheet" href="/legal/legal.css?v=26">
+</head>
+
+<body>
+
+  <!-- Fixed Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function() {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="/scripts/auth.js"></script>
+  <script src="/scripts/header.js"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="/scripts/drawer.js"></script>
+
+  <!-- MAIN LEGAL CONTENT -->
+  <main class="legal-container">
+    <header class="legal-header">
+      <h1 class="legal-title">Privacy Notice</h1>
+      <p class="legal-meta">Last updated: August 25, 2026</p>
+      <p class="legal-lead">This Privacy Notice describes how SenpaiWorks collects, uses, and protects your personal information when you visit our website, create an account, purchase 3D models, or order merchandise.</p>
+      <hr class="legal-divider">
+    </header>
+
+    <div class="legal-content">
+      <section class="legal-section">
+        <h2>1. Introduction</h2>
+        <p>SenpaiWorks respects your privacy and is dedicated to securing your personal information. This notice outlines what information we gather, how we use it, and the choices available to you regarding your personal data.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>2. Information We Collect</h2>
+        <p>We collect information directly provided by you during account creation, order checkout, or support communications:</p>
+        <ul>
+          <li><strong>Account Details:</strong> Name, username, email address, password hash, and user preferences.</li>
+          <li><strong>Order and Shipping Details:</strong> Recipient name, delivery address, phone number, and purchase history.</li>
+          <li><strong>Technical Data:</strong> IP address, device type, browser specifications, and local storage data for cart persistence.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>3. Payment Security</h2>
+        <p>Payments on SenpaiWorks are handled through encrypted, industry-standard payment gateways (including Stripe and Razorpay). We do not store or process raw debit or credit card numbers on our servers. All transactions comply with PCI-DSS standards.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>4. Cookies &amp; Local Storage</h2>
+        <p>We utilize cookies and browser storage strictly to maintain active user sessions, retain shopping cart items, and save wishlist items. You can manage or disable cookie preferences directly in your browser settings.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>5. Google reCAPTCHA</h2>
+        <p>We use Google reCAPTCHA on our forms to mitigate automated spam and abuse. Use of reCAPTCHA is subject to Google's <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a>.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>6. Your Rights &amp; Data Management</h2>
+        <p>You have the right to access, update, or request the deletion of your personal data at any time. You can edit your details in your <a href="/profile">Account Center</a> or contact us directly to request full account removal.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>7. Contact Us</h2>
+        <p>If you have any questions or concerns regarding this Privacy Notice, please visit our <a href="/contact">Support Center</a> or reach out to our team at <code>senpaiworks.official@gmail.com</code>.</p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Contact & Footer Section -->
+  <div id="contact-container"></div>
+  <script src="/scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/suzan_main_bg_zrmgwb.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="/scripts/footer.js"></script>
+</body>
+
+</html>

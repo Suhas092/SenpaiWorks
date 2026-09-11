@@ -297,6 +297,11 @@ async function initProductDetailPage() {
   ];
 
   let selectedColor = colorsList[0] ? colorsList[0].name : "Black";
+  const requestedColor = urlParams.get("color");
+  if (requestedColor) {
+    const matchedColor = colorsList.find(c => c.name.toLowerCase() === requestedColor.toLowerCase());
+    if (matchedColor) selectedColor = matchedColor.name;
+  }
   let selectedSize = sizesList[0] ? sizesList[0].name : "M";
 
   // Check if product is already in shopping cart
@@ -715,7 +720,7 @@ window.showCartModal = function(msg) {
     mainImg.style.display = "block";
     mainImg.onerror = function () {
       this.onerror = null;
-      this.src = "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp";
+      this.src = "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp";
     };
   }
 
@@ -740,7 +745,7 @@ window.showCartModal = function(msg) {
     images = [...new Set(images)].filter(Boolean);
 
     if (images.length === 0) {
-      images = [product.img || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"];
+      images = [product.img || "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"];
     }
 
     thumbGallery.innerHTML = images.map((imgUrl, idx) => `
@@ -1057,14 +1062,99 @@ window.toggleFaq = function (idx) {
   }
 };
 
-// 21. Helpful Vote clicker
-window.voteHelpful = function (btn, initialCount) {
-  if (btn.classList.contains("voted")) {
-    btn.classList.remove("voted");
-    btn.innerHTML = `<i class="fa-regular fa-thumbs-up"></i> Helpful (${initialCount})`;
-  } else {
-    btn.classList.add("voted");
-    btn.innerHTML = `<i class="fa-solid fa-thumbs-up"></i> Voted Helpful (${initialCount + 1})`;
+// Helper for non-intrusive toast notifications
+function showToastNotice(msg, type = "info") {
+  if (window.showAuthToast) {
+    window.showAuthToast(msg);
+    return;
+  }
+  let toast = document.getElementById("senpai-global-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "senpai-global-toast";
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #3b82f6;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      font-size: 0.88rem;
+      font-weight: 600;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> <span>${escapeHtml(msg)}</span>`;
+  toast.style.transform = "translateY(0)";
+  toast.style.opacity = "1";
+  setTimeout(() => {
+    toast.style.transform = "translateY(100px)";
+    toast.style.opacity = "0";
+  }, 3500);
+}
+
+// 21. Real Helpful Vote Handler (Customer Protected)
+window.voteReviewHelpful = async function (btn, reviewId) {
+  const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+  if (!token) {
+    showToastNotice("Please sign in to vote on customer reviews.");
+    setTimeout(() => {
+      window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.href);
+    }, 1200);
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/reviews/${reviewId}/helpful`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showToastNotice(data.error || "Failed to submit vote.");
+      return;
+    }
+
+    const actionsBar = btn.closest(".review-actions-bar");
+    let countSpan = actionsBar ? actionsBar.querySelector(".helpful-people-count") : null;
+
+    if (data.helpfulCount > 0) {
+      const helpfulText = data.helpfulCount === 1 ? "1 person found this helpful" : `${data.helpfulCount} people found this helpful`;
+      btn.innerHTML = `<i class="fa-${data.voted ? 'solid' : 'regular'} fa-thumbs-up"></i> Helpful (${data.helpfulCount})`;
+      if (data.voted) {
+        btn.classList.add("voted");
+      } else {
+        btn.classList.remove("voted");
+      }
+      if (!countSpan && actionsBar) {
+        countSpan = document.createElement("span");
+        countSpan.className = "helpful-people-count";
+        countSpan.style.cssText = "font-size: 0.78rem; color: #94a3b8;";
+        actionsBar.appendChild(countSpan);
+      }
+      if (countSpan) countSpan.textContent = helpfulText;
+    } else {
+      btn.innerHTML = `<i class="fa-regular fa-thumbs-up"></i> Helpful`;
+      btn.classList.remove("voted");
+      if (countSpan) {
+        countSpan.remove();
+      }
+    }
+  } catch (err) {
+    console.error("Helpful vote error:", err);
+    showToastNotice("Network error while submitting vote.");
   }
 };
 
@@ -1113,28 +1203,26 @@ function displayProductNotFound() {
   }
 }
 
-// State for customer reviews pagination & sorting
+// ── 24. Real Customer Reviews System (Prisma Database-Backed) ──────────────────
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 let currentReviewSort = "recent";
 let currentReviewDisplayLimit = 5;
+let currentRatingFilter = null; // 1-5 or null
+let verifiedOnlyFilter = false; // boolean
 let activeDetailProduct = null;
+let currentEligibilityData = null;
 
-const DEFAULT_PRODUCT_REVIEWS = [
-  { id: "rev_1", author: "Alex Mercer", rating: 5, date: "July 24, 2026", title: "Exceptional quality and incredible detail!", text: "The fabric weight and print sharpness exceeded my expectations. Fits true to size with an awesome streetwear drape.", helpfulCount: 18 },
-  { id: "rev_2", author: "Sarah Jenkins", rating: 5, date: "July 20, 2026", title: "My new favorite item!", text: "Subtle yet stylish. Worn it to multiple anime expos and got tons of compliments from fellow fans.", helpfulCount: 14 },
-  { id: "rev_3", author: "Kenji Sato", rating: 4, date: "July 15, 2026", title: "Very comfortable & great fit", text: "Great organic cotton texture and holds up really well after multiple cold washes. Will order again!", helpfulCount: 9 },
-  { id: "rev_4", author: "Michael B.", rating: 5, date: "July 10, 2026", title: "Top-tier craftsmanship", text: "SenpaiWorks never disappoints with their creator merch. High fidelity print and super fast shipping.", helpfulCount: 12 },
-  { id: "rev_5", author: "David Chen", rating: 5, date: "July 4, 2026", title: "Stunning graphics!", text: "The color vibrancy in person is insane. Extremely soft feel on skin.", helpfulCount: 8 },
-  { id: "rev_6", author: "Elena Rostova", rating: 4, date: "June 28, 2026", title: "Great customer support", text: "Package arrived 2 days earlier than expected. Sizing is comfortably relaxed.", helpfulCount: 5 },
-  { id: "rev_7", author: "Jordan Taylor", rating: 5, date: "June 22, 2026", title: "Worth every penny!", text: "The premium heavyweight feel is immediately noticeable when you unpack it.", helpfulCount: 11 },
-  { id: "rev_8", author: "Chloe Bennett", rating: 5, date: "June 18, 2026", title: "Five stars overall", text: "Super aesthetic design, high durability, and overall 10/10 purchase experience.", helpfulCount: 7 },
-  { id: "rev_9", author: "Rohan Patel", rating: 4, date: "June 12, 2026", title: "Solid quality and finish", text: "Really nice stitching and high density graphic print that does not fade.", helpfulCount: 4 },
-  { id: "rev_10", author: "Liam O'Connor", rating: 5, date: "June 5, 2026", title: "Best anime apparel in my closet", text: "Looks fire with cargo pants or jackets. Essential staple item.", helpfulCount: 15 },
-  { id: "rev_11", author: "Hannah Wright", rating: 5, date: "May 29, 2026", title: "Amazing gift!", text: "Bought this as a birthday present and they absolutely loved it.", helpfulCount: 6 },
-  { id: "rev_12", author: "Marcus Vance", rating: 4, date: "May 20, 2026", title: "Very satisfied", text: "Clean packaging, premium materials, and authentic SenpaiWorks branding.", helpfulCount: 3 }
-];
-
-// 24. Render Customer Reviews, sorting, and 7-item pagination limit
-function renderReviewsSection(product) {
+async function renderReviewsSection(product) {
   if (!product) return;
   activeDetailProduct = product;
 
@@ -1151,126 +1239,188 @@ function renderReviewsSection(product) {
   const avgRatingPreview = document.getElementById("avg-rating-preview");
   const reviewsCountPreview = document.getElementById("reviews-count-preview");
 
-  let baseReviews = product.reviews && product.reviews.length >= 7 ? product.reviews : DEFAULT_PRODUCT_REVIEWS;
-
-  let savedReviews = [];
   try {
-    const raw = localStorage.getItem("user_reviews_" + product.id);
-    if (raw) savedReviews = JSON.parse(raw);
-  } catch (e) { }
+    const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+    const headers = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const allReviews = [...savedReviews, ...baseReviews];
-  const totalCount = allReviews.length;
-  const sumRating = allReviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0);
-  const avgRating = totalCount > 0 ? sumRating / totalCount : product.rating;
+    let queryUrl = `/api/products/${encodeURIComponent(product.id)}/reviews?sort=${currentReviewSort}&limit=${currentReviewDisplayLimit}&offset=0`;
+    if (currentRatingFilter) queryUrl += `&star=${currentRatingFilter}`;
+    if (verifiedOnlyFilter) queryUrl += `&verifiedOnly=true`;
 
-  if (ratingStarsPreview) ratingStarsPreview.innerHTML = getStarsHTML(avgRating);
-  if (avgRatingPreview) avgRatingPreview.textContent = avgRating.toFixed(1);
-  if (reviewsCountPreview) reviewsCountPreview.textContent = `(${totalCount} reviews)`;
-
-  if (avgRatingValHuge) avgRatingValHuge.textContent = avgRating.toFixed(1);
-  if (hugeStarsRow) hugeStarsRow.innerHTML = getStarsHTML(avgRating);
-  if (hugeCountText) hugeCountText.textContent = `based on ${totalCount} review${totalCount === 1 ? '' : 's'}`;
-
-  if (distributionChart) {
-    let counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    allReviews.forEach(r => {
-      const star = Math.min(5, Math.max(1, Math.round(r.rating)));
-      counts[star] = (counts[star] || 0) + 1;
-    });
-    const getPct = (c) => totalCount > 0 ? Math.round((c / totalCount) * 100) + "%" : "0%";
-
-    distributionChart.innerHTML = `
-      <div class="chart-row">
-        <span class="stars-label">5 star</span>
-        <div class="bar-bg"><div class="bar-fill" style="width: ${getPct(counts[5])}"></div></div>
-        <span class="percent-label">${getPct(counts[5])}</span>
-      </div>
-      <div class="chart-row">
-        <span class="stars-label">4 star</span>
-        <div class="bar-bg"><div class="bar-fill" style="width: ${getPct(counts[4])}"></div></div>
-        <span class="percent-label">${getPct(counts[4])}</span>
-      </div>
-      <div class="chart-row">
-        <span class="stars-label">3 star</span>
-        <div class="bar-bg"><div class="bar-fill" style="width: ${getPct(counts[3])}"></div></div>
-        <span class="percent-label">${getPct(counts[3])}</span>
-      </div>
-      <div class="chart-row">
-        <span class="stars-label">2 star</span>
-        <div class="bar-bg"><div class="bar-fill" style="width: ${getPct(counts[2])}"></div></div>
-        <span class="percent-label">${getPct(counts[2])}</span>
-      </div>
-      <div class="chart-row">
-        <span class="stars-label">1 star</span>
-        <div class="bar-bg"><div class="bar-fill" style="width: ${getPct(counts[1])}"></div></div>
-        <span class="percent-label">${getPct(counts[1])}</span>
-      </div>
-    `;
-  }
-
-  // Sort reviews based on currentReviewSort
-  let sortedReviews = [...allReviews];
-  if (currentReviewSort === "highest") {
-    sortedReviews.sort((a, b) => b.rating - a.rating);
-  } else if (currentReviewSort === "lowest") {
-    sortedReviews.sort((a, b) => a.rating - b.rating);
-  } else if (currentReviewSort === "helpful") {
-    sortedReviews.sort((a, b) => (b.helpfulCount || 0) - (a.helpfulCount || 0));
-  } else {
-    // recent
-    sortedReviews.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-  }
-
-  // Apply display limit (initial 7)
-  const visibleReviews = sortedReviews.slice(0, currentReviewDisplayLimit);
-
-  if (headerCountText) {
-    headerCountText.textContent = `Showing ${visibleReviews.length} of ${totalCount} reviews`;
-  }
-
-  if (commentsList) {
-    commentsList.innerHTML = visibleReviews.map(rev => {
-      const initial = (rev.author && rev.author.charAt(0).toUpperCase()) || "U";
-      return `
-        <div class="review-comment-card">
-          <div class="review-user-row">
-            <div class="user-avatar-initial">${initial}</div>
-            <span class="user-name-text">${rev.author}</span>
-          </div>
-          <div class="review-rating-line">
-            <span class="star-rating-stars">${getStarsHTML(rev.rating)}</span>
-            <span class="review-title-text">${rev.title}</span>
-          </div>
-          <p class="review-date-text">Reviewed on ${rev.date}</p>
-          <p class="review-body-text">${rev.text}</p>
-          <div class="review-actions-bar">
-            <button class="helpful-vote-btn" onclick="voteHelpful(this, ${rev.helpfulCount || 0})">
-              <i class="fa-regular fa-thumbs-up"></i> Helpful (${rev.helpfulCount || 0})
-            </button>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  // Handle Load More Reviews Button
-  if (loadMoreWrap) {
-    if (totalCount > currentReviewDisplayLimit) {
-      loadMoreWrap.style.display = "flex";
-      if (loadMoreBtn) {
-        const btnSpan = loadMoreBtn.querySelector("span");
-        if (btnSpan) btnSpan.textContent = "Load More Reviews";
-      }
-    } else {
-      loadMoreWrap.style.display = "none";
+    const res = await fetch(queryUrl, { headers });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to fetch reviews: ${res.status}`);
     }
+
+    const data = await res.json();
+    const totalCount = data.totalCount || 0;
+    const filteredCount = data.filteredCount !== undefined ? data.filteredCount : totalCount;
+    const avgRating = totalCount > 0 ? data.avgRating : (product.rating || 5.0);
+    const distribution = data.distribution || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    const reviews = data.reviews || [];
+    const userVotedReviewIds = data.userVotedReviewIds || [];
+
+    // Header product previews
+    if (ratingStarsPreview) ratingStarsPreview.innerHTML = getStarsHTML(avgRating);
+    if (avgRatingPreview) avgRatingPreview.textContent = avgRating.toFixed(1);
+    if (reviewsCountPreview) reviewsCountPreview.textContent = `(${totalCount} reviews)`;
+
+    // Aggregates Box
+    if (avgRatingValHuge) avgRatingValHuge.textContent = avgRating.toFixed(1);
+    if (hugeStarsRow) hugeStarsRow.innerHTML = getStarsHTML(avgRating);
+    if (hugeCountText) hugeCountText.textContent = `based on ${totalCount} review${totalCount === 1 ? '' : 's'}`;
+
+    // Distribution Bars (Clickable Star Filters)
+    if (distributionChart) {
+      const getPct = (c) => totalCount > 0 ? Math.round((c / totalCount) * 100) + "%" : "0%";
+      distributionChart.innerHTML = [5, 4, 3, 2, 1].map(star => {
+        const isSelected = currentRatingFilter === star;
+        const count = distribution[star] || 0;
+        const pct = getPct(count);
+        return `
+          <div class="chart-row ${isSelected ? 'active-filter' : ''}" onclick="handleStarFilter(${star})" title="Filter by ${star} stars (${count} reviews)" style="cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: background 0.2s; ${isSelected ? 'background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4);' : ''}">
+            <span class="stars-label" style="${isSelected ? 'font-weight: 700; color: #3b82f6;' : ''}">${star} star</span>
+            <div class="bar-bg"><div class="bar-fill" style="width: ${pct}"></div></div>
+            <span class="percent-label">${pct}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // Header text
+    if (headerCountText) {
+      let filterDesc = [];
+      if (currentRatingFilter) filterDesc.push(`${currentRatingFilter}-star`);
+      if (verifiedOnlyFilter) filterDesc.push(`verified`);
+      
+      const filterSuffix = filterDesc.length > 0 ? ` (${filterDesc.join(', ')})` : '';
+      headerCountText.textContent = filteredCount > 0 ? `Showing ${reviews.length} of ${filteredCount} reviews${filterSuffix}` : `No reviews matching criteria${filterSuffix}`;
+    }
+
+    // Reviews list
+    if (commentsList) {
+      if (reviews.length === 0) {
+        commentsList.innerHTML = `
+          <div style="padding: 40px 20px; text-align: center; color: #94a3b8;">
+            <i class="fa-regular fa-comment-dots" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.6;"></i>
+            <p style="font-size: 1rem; font-weight: 600; color: #cbd5e1; margin-bottom: 4px;">No reviews found</p>
+            <p style="font-size: 0.85rem; color: #64748b;">${(currentRatingFilter || verifiedOnlyFilter) ? 'Try clearing your filters to view more reviews.' : 'Be the first to share your thoughts!'}</p>
+            ${(currentRatingFilter || verifiedOnlyFilter) ? `<button type="button" onclick="clearAllReviewFilters()" style="margin-top: 12px; background: #334155; color: #f8fafc; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.82rem; cursor: pointer;">Clear Filters</button>` : ''}
+          </div>
+        `;
+      } else {
+        commentsList.innerHTML = reviews.map(rev => {
+          const authorName = rev.user ? (rev.user.name || rev.user.username || "Community Member") : "Community Member";
+          const safeAuthor = escapeHtml(authorName);
+          const safeTitle = escapeHtml(rev.title);
+          const safeText = escapeHtml(rev.text);
+          const safeDate = new Date(rev.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+          const isVoted = userVotedReviewIds.includes(rev.id);
+          const initial = safeAuthor.charAt(0).toUpperCase() || "U";
+          const helpfulCount = rev.helpfulCount || 0;
+          const helpfulText = helpfulCount === 1 ? "1 person found this helpful" : `${helpfulCount} people found this helpful`;
+
+          const avatarHtml = rev.user && rev.user.avatar 
+            ? `<img src="${escapeHtml(rev.user.avatar)}" alt="${safeAuthor}" class="user-avatar-img" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #334155;">` 
+            : `<div class="user-avatar-initial">${initial}</div>`;
+
+          const verifiedBadgeHtml = rev.verifiedPurchase 
+            ? `<span style="font-size: 0.72rem; color: #10b981; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+                 <i class="fa-solid fa-circle-check"></i> Verified Purchase
+               </span>`
+            : '';
+
+          const variantHtml = rev.variant 
+            ? `<span class="review-variant-tag" style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">Variant: ${escapeHtml(rev.variant)}</span>`
+            : '';
+
+          return `
+            <div class="review-comment-card" data-review-id="${rev.id}">
+              <div class="review-user-row">
+                ${avatarHtml}
+                <div style="display: flex; flex-direction: column;">
+                  <span class="user-name-text">${safeAuthor}</span>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    ${verifiedBadgeHtml}
+                    ${variantHtml}
+                  </div>
+                </div>
+              </div>
+              <div class="review-rating-line">
+                <span class="star-rating-stars">${getStarsHTML(rev.rating)}</span>
+                <span class="review-title-text">${safeTitle}</span>
+              </div>
+              <p class="review-date-text">Reviewed on ${safeDate}</p>
+              <p class="review-body-text">${safeText}</p>
+              <div class="review-actions-bar" style="display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap;">
+                <button class="helpful-vote-btn ${isVoted ? 'voted' : ''}" onclick="window.voteReviewHelpful(this, ${rev.id})">
+                  <i class="fa-${isVoted ? 'solid' : 'regular'} fa-thumbs-up"></i> Helpful ${helpfulCount > 0 ? `(${helpfulCount})` : ''}
+                </button>
+                <button type="button" class="report-review-btn" onclick="window.openReportReviewModal(${rev.id})" style="background: transparent; border: none; color: #64748b; font-size: 0.78rem; cursor: pointer; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s;" title="Report this review">
+                  <i class="fa-regular fa-flag"></i> Report
+                </button>
+                ${helpfulCount > 0 ? `<span class="helpful-people-count" style="font-size: 0.78rem; color: #94a3b8;">${helpfulText}</span>` : ''}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    // Load More Visibility
+    if (loadMoreWrap) {
+      if (filteredCount > currentReviewDisplayLimit) {
+        loadMoreWrap.style.display = "flex";
+        if (loadMoreBtn) {
+          const btnSpan = loadMoreBtn.querySelector("span");
+          if (btnSpan) btnSpan.textContent = "Load More Reviews";
+        }
+      } else {
+        loadMoreWrap.style.display = "none";
+      }
+    }
+  } catch (err) {
+    console.error("Error rendering reviews section:", err);
   }
 }
 
-// Global Handlers for Review Sorting & Load More
+// Global Handlers for Review Sorting, Filters & Load More
 window.handleReviewSortChange = function (sortValue) {
-  currentReviewSort = sortValue;
+  if (sortValue === "verified") {
+    verifiedOnlyFilter = true;
+    currentReviewSort = "recent";
+  } else {
+    verifiedOnlyFilter = false;
+    currentReviewSort = sortValue;
+  }
+  currentReviewDisplayLimit = 5;
+  if (activeDetailProduct) {
+    renderReviewsSection(activeDetailProduct);
+  }
+};
+
+window.handleStarFilter = function (star) {
+  if (currentRatingFilter === star) {
+    currentRatingFilter = null; // Toggle off
+  } else {
+    currentRatingFilter = star;
+  }
+  currentReviewDisplayLimit = 5;
+  if (activeDetailProduct) {
+    renderReviewsSection(activeDetailProduct);
+  }
+};
+
+window.clearAllReviewFilters = function () {
+  currentRatingFilter = null;
+  verifiedOnlyFilter = false;
+  const sortSelect = document.getElementById("reviews-sort-select");
+  if (sortSelect && sortSelect.value === "verified") {
+    sortSelect.value = "recent";
+    currentReviewSort = "recent";
+  }
   currentReviewDisplayLimit = 5;
   if (activeDetailProduct) {
     renderReviewsSection(activeDetailProduct);
@@ -1284,62 +1434,121 @@ window.handleLoadMoreReviews = function () {
   }
 };
 
-// 25. Initialize Write a Review modal logic
-function initReviewModal(product) {
+// Report Review Handlers
+window.openReportReviewModal = function (reviewId) {
+  const currentUser = getCurrentUser();
+  if (!currentUser) {
+    showToastNotice("Please log in to report a review.");
+    setTimeout(() => {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+    }, 1200);
+    return;
+  }
+  const modal = document.getElementById("report-review-modal");
+  const hiddenId = document.getElementById("report-target-review-id");
+  if (hiddenId) hiddenId.value = reviewId;
+  if (modal) modal.classList.add("active");
+};
+
+window.closeReportReviewModal = function () {
+  const modal = document.getElementById("report-review-modal");
+  if (modal) modal.classList.remove("active");
+  const form = document.getElementById("report-review-form");
+  if (form) form.reset();
+};
+
+window.handleReportReviewSubmit = async function (e) {
+  if (e) e.preventDefault();
+  const reviewId = document.getElementById("report-target-review-id")?.value;
+  const selectedRadio = document.querySelector('input[name="report-reason"]:checked');
+  const details = document.getElementById("report-details-input")?.value || "";
+  const submitBtn = document.getElementById("report-submit-btn");
+
+  if (!reviewId || !selectedRadio) {
+    showToastNotice("Please select a reason for reporting.");
+    return;
+  }
+
+  const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+  if (!token) {
+    showToastNotice("Please sign in to report a review.");
+    return;
+  }
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
+  }
+
+  try {
+    const res = await fetch(`/api/reviews/${reviewId}/report`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        reason: selectedRadio.value,
+        details: details.trim()
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      showToastNotice(data.error || "Failed to submit report.");
+      return;
+    }
+
+    closeReportReviewModal();
+    showToastNotice(data.message || "Thank you. We'll check if this review meets our community guidelines.");
+  } catch (err) {
+    console.error("Error submitting report:", err);
+    showToastNotice("Network error while submitting report.");
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Report";
+    }
+  }
+};
+
+// 25. Initialize Write / Edit a Review Modal & Gating Logic
+async function initReviewModal(product) {
   const writeReviewBtn = document.getElementById("write-review-btn");
   const reviewModal = document.getElementById("write-review-modal");
   const reviewCloseBtn = document.getElementById("review-modal-close");
   const reviewCancelBtn = document.getElementById("review-cancel-btn");
   const reviewForm = document.getElementById("write-review-form");
   const reviewProductName = document.getElementById("review-modal-product-name");
+  const reviewProductImg = document.getElementById("review-modal-product-img");
+  const reviewCategoryHint = document.getElementById("review-modal-category-hint");
+  const reviewSubmitBtn = document.getElementById("review-submit-btn");
 
   if (!writeReviewBtn || !reviewModal) return;
 
-  const openModal = () => {
-    const reviewProductName = document.getElementById("review-modal-product-name");
-    const reviewProductImg = document.getElementById("review-modal-product-img");
-    if (reviewProductName) reviewProductName.textContent = product.name;
-    if (reviewProductImg) {
-      const imgSrc = product.img || (product.colorVariants && product.colorVariants[0] ? product.colorVariants[0].img : "");
-      reviewProductImg.src = imgSrc;
-    }
-    reviewModal.classList.add("active");
-  };
-
-  const closeModal = () => {
-    reviewModal.classList.remove("active");
-  };
-
-  writeReviewBtn.onclick = () => {
-    openModal();
-  };
-
-  if (reviewCloseBtn) reviewCloseBtn.onclick = closeModal;
-  if (reviewCancelBtn) reviewCancelBtn.onclick = closeModal;
-  reviewModal.onclick = (e) => {
-    if (e.target === reviewModal) closeModal();
-  };
-
-  // Interactive star rating setup
   const starInputContainer = document.getElementById("star-rating-input");
   const ratingValueInput = document.getElementById("review-rating-value");
   const ratingTextHint = document.getElementById("rating-text-hint");
+  const titleInput = document.getElementById("review-title-input");
+  const textInput = document.getElementById("review-text-input");
+
+  const hints = ["", "1.0 - Poor", "2.0 - Fair", "3.0 - Good", "4.0 - Very Good", "5.0 - Excellent"];
+
+  const updateStars = (val) => {
+    if (!starInputContainer) return;
+    const stars = starInputContainer.querySelectorAll("i");
+    stars.forEach((star, idx) => {
+      if (idx + 1 <= val) {
+        star.className = "fa-solid fa-star active-star";
+      } else {
+        star.className = "fa-regular fa-star";
+      }
+    });
+    if (ratingTextHint) ratingTextHint.textContent = hints[val] || "Select a rating";
+  };
 
   if (starInputContainer) {
     const stars = starInputContainer.querySelectorAll("i");
-    const hints = ["", "1.0 - Poor", "2.0 - Fair", "3.0 - Good", "4.0 - Very Good", "5.0 - Excellent"];
-
-    const updateStars = (val) => {
-      stars.forEach((star, idx) => {
-        if (idx + 1 <= val) {
-          star.className = "fa-solid fa-star active-star";
-        } else {
-          star.className = "fa-regular fa-star";
-        }
-      });
-      if (ratingTextHint) ratingTextHint.textContent = hints[val] || "Select a rating";
-    };
-
     stars.forEach(star => {
       star.onmouseenter = () => {
         const rating = parseInt(star.getAttribute("data-rating"), 10);
@@ -1358,81 +1567,200 @@ function initReviewModal(product) {
     };
   }
 
+  // Category-aware prompt helper text
+  const isClothing = product.category === "Merchandise" || product.category === "Oversized T-Shirts" || product.category === "Hoodies" || product.type === "physical";
+  const isDigital = product.type === "digital" || product.category === "Digital Courses" || product.category === "3D Assets";
+  
+  let categoryHelperText = "What did you like or dislike about this product?";
+  if (isClothing) {
+    categoryHelperText = "How's the fit, fabric feel, and print quality?";
+  } else if (isDigital) {
+    categoryHelperText = "How was the asset quality, compatibility, and ease of use?";
+  }
+
+  const openModal = () => {
+    if (reviewProductName) reviewProductName.textContent = product.name;
+    if (reviewProductImg) {
+      const imgSrc = product.img || (product.colorVariants && product.colorVariants[0] ? product.colorVariants[0].img : "");
+      reviewProductImg.src = imgSrc;
+    }
+    if (reviewCategoryHint) {
+      reviewCategoryHint.textContent = categoryHelperText;
+    }
+
+    if (currentEligibilityData && currentEligibilityData.alreadyReviewed && currentEligibilityData.existingReview) {
+      const rev = currentEligibilityData.existingReview;
+      if (ratingValueInput) ratingValueInput.value = rev.rating;
+      updateStars(rev.rating);
+      if (titleInput) titleInput.value = rev.title || "";
+      if (textInput) textInput.value = rev.text || "";
+      if (reviewSubmitBtn) reviewSubmitBtn.textContent = "Save Changes";
+    } else {
+      if (ratingValueInput) ratingValueInput.value = 0;
+      updateStars(0);
+      if (titleInput) titleInput.value = "";
+      if (textInput) textInput.value = "";
+      if (reviewSubmitBtn) reviewSubmitBtn.textContent = "Submit Review";
+    }
+
+    reviewModal.classList.add("active");
+  };
+
+  const closeModal = () => {
+    reviewModal.classList.remove("active");
+  };
+
+  if (reviewCloseBtn) reviewCloseBtn.onclick = closeModal;
+  if (reviewCancelBtn) reviewCancelBtn.onclick = closeModal;
+  reviewModal.onclick = (e) => {
+    if (e.target === reviewModal) closeModal();
+  };
+
+  // Check Eligibility on Load (Opened to all authenticated users)
+  const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+  
+  if (!token) {
+    writeReviewBtn.textContent = "Log in to write a review";
+    writeReviewBtn.disabled = false;
+    writeReviewBtn.classList.remove("disabled-btn");
+    writeReviewBtn.style.opacity = "1";
+    writeReviewBtn.style.cursor = "pointer";
+    writeReviewBtn.title = "Click to sign in to your account";
+    writeReviewBtn.onclick = () => {
+      window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.href);
+    };
+  } else {
+    try {
+      const res = await fetch(`/api/products/${encodeURIComponent(product.id)}/reviews/eligibility`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const data = await res.json();
+      currentEligibilityData = data;
+
+      if (data.alreadyReviewed) {
+        writeReviewBtn.textContent = "Edit Your Review";
+        writeReviewBtn.disabled = false;
+        writeReviewBtn.classList.remove("disabled-btn");
+        writeReviewBtn.style.opacity = "1";
+        writeReviewBtn.style.cursor = "pointer";
+        writeReviewBtn.title = "Click to edit your published review";
+        writeReviewBtn.onclick = openModal;
+      } else {
+        writeReviewBtn.textContent = "Write a Review";
+        writeReviewBtn.disabled = false;
+        writeReviewBtn.classList.remove("disabled-btn");
+        writeReviewBtn.style.opacity = "1";
+        writeReviewBtn.style.cursor = "pointer";
+        writeReviewBtn.title = "Share your review with the community";
+        writeReviewBtn.onclick = openModal;
+      }
+    } catch (err) {
+      console.warn("Failed to check review eligibility:", err);
+      writeReviewBtn.textContent = "Write a Review";
+      writeReviewBtn.disabled = false;
+      writeReviewBtn.onclick = openModal;
+    }
+  }
+
+  // Check for auto-open query param: ?openReview=true
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("openReview") === "true") {
+    if (token) {
+      setTimeout(() => {
+        openModal();
+      }, 400);
+    } else {
+      window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.href);
+    }
+  }
+
   // Form Submission
   if (reviewForm) {
-    reviewForm.onsubmit = (e) => {
+    reviewForm.onsubmit = async (e) => {
       e.preventDefault();
-      const ratingVal = parseInt(document.getElementById("review-rating-value").value, 10);
-      const titleVal = document.getElementById("review-title-input").value.trim();
-      const textVal = document.getElementById("review-text-input").value.trim();
+      const ratingVal = parseInt(ratingValueInput ? ratingValueInput.value : 0, 10);
+      const titleVal = titleInput ? titleInput.value.trim() : "";
+      const textVal = textInput ? textInput.value.trim() : "";
 
-      if (!ratingVal || ratingVal < 1) {
-        alert("Please select a star rating for your review.");
+      if (!ratingVal || ratingVal < 1 || ratingVal > 5) {
+        alert("Please select a star rating between 1 and 5.");
         return false;
       }
-      if (!titleVal || !textVal) {
-        alert("Please fill in both the review title and review text.");
+      if (!titleVal || titleVal.length < 2) {
+        alert("Please provide a title for your review (minimum 2 characters).");
+        return false;
+      }
+      if (!textVal || textVal.length < 5) {
+        alert("Please write your review feedback (minimum 5 characters).");
         return false;
       }
 
-      // Extract user name directly from logged-in account
-      let authorVal = "Verified Customer";
-      try {
-        const uStr = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
-        if (uStr) {
-          const u = JSON.parse(uStr);
-          authorVal = u.name || u.username || u.displayName || (u.email ? u.email.split('@')[0] : "Verified Customer");
-        }
-      } catch (e) { }
+      const activeToken = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+      if (!activeToken) {
+        alert("Please log in to submit your review.");
+        window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.href);
+        return false;
+      }
 
-      const newRev = {
-        id: "rev_" + Date.now(),
-        author: authorVal,
-        rating: ratingVal,
-        date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-        title: titleVal,
-        text: textVal,
-        helpfulCount: 0
-      };
+      if (reviewSubmitBtn) {
+        reviewSubmitBtn.disabled = true;
+        reviewSubmitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
+      }
 
       try {
-        const key = "user_reviews_" + product.id;
-        let list = [];
-        const raw = localStorage.getItem(key);
-        if (raw) list = JSON.parse(raw);
-        list.unshift(newRev);
-        localStorage.setItem(key, JSON.stringify(list));
+        const isEditing = currentEligibilityData && currentEligibilityData.alreadyReviewed && currentEligibilityData.existingReview;
+        const endpoint = isEditing ? `/api/reviews/${currentEligibilityData.existingReview.id}` : `/api/products/${encodeURIComponent(product.id)}/reviews`;
+        const method = isEditing ? "PUT" : "POST";
 
-        // Global master review log for Admin Panel tracking
-        let masterLog = [];
-        const masterRaw = localStorage.getItem("site_master_reviews_log");
-        if (masterRaw) masterLog = JSON.parse(masterRaw);
-        masterLog.unshift({
-          id: newRev.id,
-          user: authorVal,
-          rating: ratingVal,
-          title: titleVal,
-          text: textVal,
-          productId: product.id,
-          productName: product.name,
-          date: newRev.date,
-          status: "Published"
+        const res = await fetch(endpoint, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${activeToken}`
+          },
+          body: JSON.stringify({
+            rating: ratingVal,
+            title: titleVal,
+            text: textVal
+          })
         });
-        localStorage.setItem("site_master_reviews_log", JSON.stringify(masterLog));
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.error || "Failed to submit review. Please try again.");
+          if (reviewSubmitBtn) {
+            reviewSubmitBtn.disabled = false;
+            reviewSubmitBtn.textContent = isEditing ? "Save Changes" : "Submit Review";
+          }
+          return false;
+        }
+
+        closeModal();
+
+        if (window.showAuthToast) {
+          window.showAuthToast(data.message || (isEditing ? "Your review has been updated!" : "Your review has been published!"));
+        } else {
+          showToastNotice(data.message || (isEditing ? "Your review has been updated!" : "Your review has been published!"));
+        }
+
+        // Refresh reviews list & eligibility
+        await renderReviewsSection(product);
+        await initReviewModal(product);
+
       } catch (err) {
-        console.error("Failed saving review to localStorage:", err);
+        console.error("Review submission error:", err);
+        alert("A network error occurred. Please check your connection and try again.");
+      } finally {
+        if (reviewSubmitBtn) {
+          reviewSubmitBtn.disabled = false;
+          reviewSubmitBtn.textContent = (currentEligibilityData && currentEligibilityData.alreadyReviewed) ? "Save Changes" : "Submit Review";
+        }
       }
 
-      renderReviewsSection(product);
-
-      closeModal();
-
-      if (window.showAuthToast) {
-        window.showAuthToast("Thank you! Your review has been published.");
-      } else {
-        alert("Thank you! Your review has been published.");
-      }
       return false;
     };
   }
 }
+
+

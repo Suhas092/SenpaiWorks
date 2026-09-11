@@ -3,7 +3,7 @@
 const animeData = {
   deadpool: {
     title: "Deadpool Animation",
-    cover: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp",
+    cover: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp",
     genres: ["Action", "Adventure", "Superhero", "Fan-Animation"],
     watchUrl: "https://www.youtube.com/watch?v=SsoV6Mdjr6A",
     synonyms: "Deadpool Action Animation",
@@ -45,7 +45,7 @@ const animeData = {
         software: ["Photoshop", "PureRef"],
         notes: "Studied comic suit stitch seams, tactical leather webbing, and katana action timing for Deadpool, Wolverine, and Colossus.",
         gallery: [
-          { url: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp", caption: "Deadpool Visual Moodboard & Reference Study" }
+          { url: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp", caption: "Deadpool Visual Moodboard & Reference Study" }
         ]
       },
       {
@@ -59,7 +59,7 @@ const animeData = {
         software: ["Clip Studio Paint", "Photoshop"],
         notes: "Designed suit variations balancing comic-book accuracy with high-tech tactical gear for Deadpool and Wolverine.",
         gallery: [
-          { url: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp", caption: "Character Concept & Color Key Sheet" }
+          { url: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp", caption: "Character Concept & Color Key Sheet" }
         ]
       },
       {
@@ -229,7 +229,7 @@ const animeData = {
         software: ["Premiere Pro", "After Effects"],
         notes: "Released as a tribute animation short by SenpaiWorks celebrating the Marvel X-Men universe.",
         gallery: [
-          { url: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp", caption: "Final Render Release Key Art" }
+          { url: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp", caption: "Final Render Release Key Art" }
         ]
       }
     ]
@@ -237,7 +237,7 @@ const animeData = {
 
   suzens: {
     title: "Suzens: The First Bloom",
-    cover: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp",
+    cover: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp",
     genres: ["Pop", "Digital Band", "Music", "Fantasy"],
     watchUrl: "#",
     synonyms: "Suzens: The First Bloom",
@@ -264,7 +264,7 @@ const animeData = {
     ],
 
     pipelineStages: [
-      { id: "research", number: "01", title: "Research", icon: "fa-solid fa-magnifying-glass", progress: 100, status: "Completed", desc: "K-pop stage choreography research, fashion moodboards, and digital band visual references.", software: ["Photoshop", "PureRef"], notes: "Analyzed idol lightshow stages, stage outfit drapery, and anime hair physics.", gallery: [{ url: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp", caption: "Suzens Concept Key Art" }] },
+      { id: "research", number: "01", title: "Research", icon: "fa-solid fa-magnifying-glass", progress: 100, status: "Completed", desc: "K-pop stage choreography research, fashion moodboards, and digital band visual references.", software: ["Photoshop", "PureRef"], notes: "Analyzed idol lightshow stages, stage outfit drapery, and anime hair physics.", gallery: [{ url: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp", caption: "Suzens Concept Key Art" }] },
       { id: "concept-art", number: "02", title: "Concept Art", icon: "fa-solid fa-palette", progress: 100, status: "Completed", desc: "Character costume designs, color keys, and group logo branding created.", software: ["Clip Studio Paint"], notes: "Explored idol techwear dresses and glowing stage mic props.", gallery: [] },
       { id: "story-development", number: "03", title: "Story Development", icon: "fa-solid fa-book-bookmark", progress: 100, status: "Completed", desc: "Music video storyboard animatic and lore background written.", software: ["Photoshop"], notes: "Mapped beat-by-beat camera movements to song breakdown.", gallery: [] },
       { id: "character-design", number: "04", title: "Character Design", icon: "fa-solid fa-user-gear", progress: 100, status: "Completed", desc: "Model sheets and expression sheets finalized for all 4 band members.", software: ["Clip Studio Paint"], notes: "Detailed turnarounds for Suzen, Kira, Mei, and Rin.", gallery: [] },
@@ -285,7 +285,7 @@ const animeData = {
 
   zoro: {
     title: "Roronoa Zoro",
-    cover: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp",
+    cover: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp",
     genres: ["Action", "Drama", "Fan-Animation"],
     watchUrl: "https://www.instagram.com/reel/Cvt4tO7h0eg/",
     synonyms: "Itachi / Zoro Tribute",
@@ -310,7 +310,7 @@ const animeData = {
     ],
 
     pipelineStages: [
-      { id: "research", number: "01", title: "Research", icon: "fa-solid fa-magnifying-glass", progress: 100, status: "Completed", desc: "Gathered anime reference shots, sword slash timing, and emotional lighting studies.", software: ["Photoshop"], notes: "Analyzed Wano arc Zoro sword effects and Itachi crow motifs.", gallery: [{ url: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp", caption: "Zoro Cinematic Poster Art" }] },
+      { id: "research", number: "01", title: "Research", icon: "fa-solid fa-magnifying-glass", progress: 100, status: "Completed", desc: "Gathered anime reference shots, sword slash timing, and emotional lighting studies.", software: ["Photoshop"], notes: "Analyzed Wano arc Zoro sword effects and Itachi crow motifs.", gallery: [{ url: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp", caption: "Zoro Cinematic Poster Art" }] },
       { id: "concept-art", number: "02", title: "Concept Art", icon: "fa-solid fa-palette", progress: 100, status: "Completed", desc: "Green demon slash effects, sword design concept key art.", software: ["Clip Studio Paint"], notes: "Designed green Haki energy aura and katana geometry.", gallery: [] },
       { id: "story-development", number: "03", title: "Story Development", icon: "fa-solid fa-book-bookmark", progress: 100, status: "Completed", desc: "Cinematic storyboard animatic completed.", software: ["Photoshop"], notes: "Drafted emotional climax and sword clash choreography.", gallery: [] },
       { id: "character-design", number: "04", title: "Character Design", icon: "fa-solid fa-user-gear", progress: 100, status: "Completed", desc: "Zoro kimono and 3-sword prop model sheets finalized.", software: ["Clip Studio Paint"], notes: "Modeled Wado Ichimonji, Sandai Kitetsu, and Enma katanas.", gallery: [] },

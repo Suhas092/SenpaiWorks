@@ -1,3 +1,39 @@
+window.handleProfileButtonClick = function (e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  let currentUser = null;
+  if (window.Auth && window.Auth.getCurrentUser) {
+    currentUser = window.Auth.getCurrentUser();
+  }
+  if (!currentUser) {
+    const isLoggedOut = localStorage.getItem("userLoggedOut") === "true" || localStorage.getItem("isLoggedIn") === "false";
+    if (!isLoggedOut) {
+      const user = localStorage.getItem("currentUser");
+      if (user) {
+        try { currentUser = JSON.parse(user); } catch (err) { currentUser = null; }
+      }
+    }
+  }
+
+  const dropCardElem = document.getElementById("profile-dropdown-card");
+  const isMobileNav = e && e.target && (e.target.id === "mobile-nav-auth" || e.target.closest("#mobile-bottom-nav"));
+
+  if (currentUser) {
+    if (isMobileNav) {
+      window.location.href = "profile.html";
+    } else if (dropCardElem) {
+      dropCardElem.classList.toggle("active");
+    } else {
+      window.location.href = "profile.html";
+    }
+  } else {
+    if (dropCardElem) dropCardElem.classList.remove("active");
+    window.location.href = "login.html";
+  }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const placeholder = document.getElementById("header-placeholder");
   if (!placeholder) return;
@@ -12,18 +48,40 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPage = pathPop ? pathPop.toLowerCase().replace(/\.html$/, "") : "";
     if (!currentPage) currentPage = "index";
 
+    // Section mapping for child/detail pages to their main navigation item
+    // e.g. when inside course-detail.html, the LEARN nav button stays active
+    const sectionMap = {
+      "course-detail": "learn",
+      "course-details": "learn",
+      "course": "learn",
+      "courses": "learn",
+      "learn": "learn",
+      "product-detail": "store",
+      "product-details": "store",
+      "cart": "store",
+      "checkout": "store",
+      "order-confirmation": "store",
+      "news-detail": "news",
+      "article": "news",
+      "motion-player": "motion",
+      "index": "home"
+    };
+
+    const targetSection = sectionMap[currentPage] || currentPage;
+
     links.forEach(link => {
       const hrefAttr = link.getAttribute("href");
       if (!hrefAttr) return;
 
-      const linkHref = hrefAttr.toLowerCase().replace(/\.html$/, "");
+      const linkHref = hrefAttr.toLowerCase().replace(/\.html$/, "").replace(/^\//, "");
 
-      if (linkHref === currentPage) {
+      if (linkHref === targetSection || linkHref === currentPage) {
         link.classList.add("active");
       } else {
         link.classList.remove("active");
       }
     });
+
 
     // 1.5 Ticker animation delay sync
     const tickerTrack = placeholder.querySelector(".header-ticker-track");
@@ -48,6 +106,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof window.fetchUnreadCount === "function") {
       window.fetchUnreadCount();
     }
+  }
+
+  // If placeholder already has pre-rendered or cached markup, activate immediately
+  if (placeholder.children.length > 0) {
+    setupHeader();
   }
 
   // Populate placeholder
@@ -117,7 +180,7 @@ function initHeaderInteractions() {
       let lastUser = {};
       try { lastUser = JSON.parse(lastUserStr); } catch (e) { }
 
-      const avatarUrl = lastUser.avatar || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp";
+      const avatarUrl = (lastUser.avatar && !lastUser.avatar.includes('rem_happy_evhesz.webp')) ? lastUser.avatar : "assets/default-avatar.svg";
       const displayName = lastUser.name || lastUser.username || "senpai";
       const email = lastUser.email || "suhassenpai@gmail.com";
 
@@ -183,7 +246,7 @@ function initHeaderInteractions() {
     if (currentUser) {
       const displayName = currentUser.name || currentUser.username || "Member";
       const userEmail = currentUser.email || "";
-      const avatarSrc = currentUser.avatar || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp";
+      const avatarSrc = (currentUser.avatar && !currentUser.avatar.includes('rem_happy_evhesz.webp')) ? currentUser.avatar : "assets/default-avatar.svg";
 
       authTexts.forEach(txt => txt.textContent = displayName);
       authBtns.forEach(btn => btn.classList.add("logged-in"));
@@ -401,7 +464,7 @@ function initHeaderInteractions() {
         id: item.id || ("ITEM-" + Date.now()),
         name: item.name || "SenpaiWorks Product",
         price: item.price || 0,
-        img: item.img || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
+        img: item.img || "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp",
         type: item.type || "physical",
         quantity: qtyToAdd,
         variant: item.variant || "Standard Edition"
@@ -449,11 +512,11 @@ function initHeaderInteractions() {
     }
 
     // Close dropdown on click outside
-    const navAuthBtn = document.getElementById("nav-auth-btn");
-    const mobileNavAuth = document.getElementById("mobile-nav-auth");
     const dropCardElem = document.getElementById("profile-dropdown-card");
     if (dropCardElem && dropCardElem.classList.contains("active")) {
-      if (!dropCardElem.contains(e.target) && navAuthBtn && !navAuthBtn.contains(e.target) && mobileNavAuth && !mobileNavAuth.contains(e.target)) {
+      const isClickInsideCard = dropCardElem.contains(e.target);
+      const isClickOnAuthBtn = e.target.closest("#nav-auth-btn, #mobile-nav-auth");
+      if (!isClickInsideCard && !isClickOnAuthBtn) {
         dropCardElem.classList.remove("active");
       }
     }
@@ -588,28 +651,125 @@ function initHeaderInteractions() {
     btnFbSignup.addEventListener("click", () => fbBtn.click());
   }
 
+  const otpWrapper = document.getElementById("otp-form-wrapper");
+  const forgotWrapper = document.getElementById("forgot-form-wrapper");
+  const forgotLink = document.getElementById("forgot-password-link");
+  const otpBackSignup = document.getElementById("otp-back-signup-link");
+  const forgotBackSignin = document.getElementById("forgot-back-signin-link");
+
+  function switchAuthView(viewName) {
+    if (signinWrapper) signinWrapper.style.display = viewName === "signin" ? "block" : "none";
+    if (signupWrapper) signupWrapper.style.display = viewName === "signup" ? "block" : "none";
+    if (otpWrapper) otpWrapper.style.display = viewName === "otp" ? "block" : "none";
+    if (forgotWrapper) forgotWrapper.style.display = viewName === "forgot" ? "block" : "none";
+
+    const msgs = document.querySelectorAll(".auth-error-msg, .auth-success-msg");
+    msgs.forEach(m => { m.style.display = "none"; m.textContent = ""; });
+  }
+
   if (showSignupBtn) {
     showSignupBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      if (signinWrapper) signinWrapper.style.display = "none";
-      if (signupWrapper) signupWrapper.style.display = "block";
-      if (signupError) signupError.style.display = "none";
+      switchAuthView("signup");
     });
   }
 
   if (showSigninBtn) {
     showSigninBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      if (signupWrapper) signupWrapper.style.display = "none";
-      if (signinWrapper) signinWrapper.style.display = "block";
-      if (signinError) signinError.style.display = "none";
+      switchAuthView("signin");
     });
   }
 
-  async function loginUserAndRedirect(userData, token = null, skipFetch = false) {
+  if (forgotLink) {
+    forgotLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchAuthView("forgot");
+      const fStep1 = document.getElementById("forgot-step-1");
+      const fStep2 = document.getElementById("forgot-step-2");
+      if (fStep1) fStep1.style.display = "block";
+      if (fStep2) fStep2.style.display = "none";
+    });
+  }
+
+  if (otpBackSignup) {
+    otpBackSignup.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchAuthView("signup");
+    });
+  }
+
+  if (forgotBackSignin) {
+    forgotBackSignin.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchAuthView("signin");
+    });
+  }
+
+  let otpTimerInterval = null;
+  let pendingOtpEmail = "";
+
+  function startOtpCountdown(seconds = 60) {
+    if (otpTimerInterval) clearInterval(otpTimerInterval);
+    const countdownText = document.getElementById("otp-countdown-text");
+    const secondsSpan = document.getElementById("otp-seconds");
+    const resendBtn = document.getElementById("btn-resend-otp");
+
+    if (countdownText) countdownText.style.display = "inline";
+    if (resendBtn) resendBtn.style.display = "none";
+    if (secondsSpan) secondsSpan.textContent = seconds;
+
+    let remaining = seconds;
+    otpTimerInterval = setInterval(() => {
+      remaining--;
+      if (secondsSpan) secondsSpan.textContent = remaining;
+      if (remaining <= 0) {
+        clearInterval(otpTimerInterval);
+        if (countdownText) countdownText.style.display = "none";
+        if (resendBtn) resendBtn.style.display = "inline-block";
+      }
+    }, 1000);
+  }
+
+  // 6-digit OTP Input Behavior
+  const otpInputs = document.querySelectorAll(".otp-digit-input");
+  otpInputs.forEach((input, index) => {
+    input.addEventListener("input", (e) => {
+      const val = e.target.value;
+      if (val && !/^[0-9]$/.test(val)) {
+        e.target.value = "";
+        return;
+      }
+      if (val && index < otpInputs.length - 1) {
+        otpInputs[index + 1].focus();
+      }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !e.target.value && index > 0) {
+        otpInputs[index - 1].focus();
+      }
+    });
+
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData).getData("text").trim();
+      if (/^\d{6}$/.test(pasted)) {
+        pasted.split("").forEach((char, idx) => {
+          if (otpInputs[idx]) otpInputs[idx].value = char;
+        });
+        if (otpInputs[5]) otpInputs[5].focus();
+      }
+    });
+  });
+
+  async function loginUserAndRedirect(userData, token = null, skipFetch = false, deviceToken = null) {
     if (token) {
       localStorage.setItem("userToken", token);
       localStorage.setItem("lastUserToken", token);
+    }
+    if (deviceToken) {
+      localStorage.setItem("senpai_device_token", deviceToken);
     }
     
     // Save to local storage for immediate UI access
@@ -636,6 +796,7 @@ function initHeaderInteractions() {
         const res = await fetch("/api/auth/oauth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: 'include',
           body: JSON.stringify({
             email: userData.email,
             username: userData.username,
@@ -669,8 +830,8 @@ function initHeaderInteractions() {
   if (googleBtn) {
     googleBtn.addEventListener("click", () => {
       if (window.Auth && window.Auth.triggerGoogleLogin) {
-        window.Auth.triggerGoogleLogin((userData) => {
-          loginUserAndRedirect(userData);
+        window.Auth.triggerGoogleLogin((userData, token) => {
+          loginUserAndRedirect(userData, token, true);
         });
       }
     });
@@ -680,35 +841,47 @@ function initHeaderInteractions() {
   if (fbBtn) {
     fbBtn.addEventListener("click", () => {
       if (window.Auth && window.Auth.triggerFacebookLogin) {
-        window.Auth.triggerFacebookLogin((userData) => {
-          loginUserAndRedirect(userData);
+        window.Auth.triggerFacebookLogin((userData, token) => {
+          loginUserAndRedirect(userData, token, true);
         });
       }
     });
   }
 
+  // Customer Sign In
   if (signinForm) {
     signinForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const loginVal = document.getElementById("signin-email").value.trim();
       const passwordVal = document.getElementById("signin-password").value;
+      const deviceToken = localStorage.getItem("senpai_device_token") || null;
 
       if (signinError) signinError.style.display = "none";
       const submitBtn = signinForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn ? submitBtn.innerText : "Sign In";
+      const originalText = submitBtn ? submitBtn.innerText : "Get Started";
       if (submitBtn) submitBtn.innerText = "Signing in...";
 
       try {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: loginVal, username: loginVal, password: passwordVal })
+          credentials: 'include',
+          body: JSON.stringify({ email: loginVal, username: loginVal, password: passwordVal, deviceToken })
         });
         const data = await res.json();
         
-        if (res.ok && data.success) {
+        if (data.requireOtp) {
+          // Unverified email or unrecognized device -> Switch to OTP view
+          pendingOtpEmail = data.email || loginVal;
+          const targetEmailEl = document.getElementById("otp-target-email");
+          if (targetEmailEl) targetEmailEl.textContent = pendingOtpEmail;
+          switchAuthView("otp");
+          startOtpCountdown(60);
+          otpInputs.forEach(i => { i.value = ""; });
+          if (otpInputs[0]) otpInputs[0].focus();
+        } else if (res.ok && data.success && data.token && data.user) {
           signinForm.reset();
-          loginUserAndRedirect(data.user, data.token, true);
+          loginUserAndRedirect(data.user, data.token, true, data.deviceToken);
         } else {
           if (signinError) {
             signinError.textContent = data.error || "Invalid credentials.";
@@ -726,6 +899,7 @@ function initHeaderInteractions() {
     });
   }
 
+  // Customer Sign Up (Generates OTP and opens OTP verification modal)
   if (signupForm) {
     signupForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -735,29 +909,46 @@ function initHeaderInteractions() {
 
       if (signupError) signupError.style.display = "none";
 
-      if (passwordVal.length < 6) {
+      const isStrongPass = passwordVal.length >= 8 &&
+        /[A-Z]/.test(passwordVal) &&
+        /[a-z]/.test(passwordVal) &&
+        /[0-9]/.test(passwordVal) &&
+        /[^A-Za-z0-9]/.test(passwordVal);
+
+      if (!isStrongPass) {
         if (signupError) {
-          signupError.textContent = "Password must be at least 6 characters.";
+          signupError.textContent = "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.";
           signupError.style.display = "block";
         }
         return;
       }
 
       const submitBtn = signupForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn ? submitBtn.innerText : "Create Account";
-      if (submitBtn) submitBtn.innerText = "Creating...";
+      const originalText = submitBtn ? submitBtn.innerText : "Get Started";
+      if (submitBtn) submitBtn.innerText = "Creating account...";
 
       try {
         const res = await fetch('/api/auth/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ email: emailVal, username: usernameVal, password: passwordVal })
         });
         const data = await res.json();
         
-        if (res.ok && data.success) {
+        if (data.requireOtp || (res.ok && data.success && !data.token)) {
+          // Gated signup -> Switch to OTP view
+          pendingOtpEmail = data.email || emailVal;
+          const targetEmailEl = document.getElementById("otp-target-email");
+          if (targetEmailEl) targetEmailEl.textContent = pendingOtpEmail;
+          
+          switchAuthView("otp");
+          startOtpCountdown(60);
+          otpInputs.forEach(i => { i.value = ""; });
+          if (otpInputs[0]) otpInputs[0].focus();
+        } else if (res.ok && data.success && data.token && data.user) {
           signupForm.reset();
-          loginUserAndRedirect(data.user, data.token, true);
+          loginUserAndRedirect(data.user, data.token, true, data.deviceToken);
         } else {
           if (signupError) {
             signupError.textContent = data.error || "Signup failed.";
@@ -774,7 +965,307 @@ function initHeaderInteractions() {
       }
     });
   }
+
+  // OTP Form Submission
+  const otpForm = document.getElementById("otp-form");
+  const otpError = document.getElementById("otp-error");
+  const otpSuccess = document.getElementById("otp-success");
+  const btnResendOtp = document.getElementById("btn-resend-otp");
+
+  if (otpForm) {
+    otpForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const digits = Array.from(otpInputs).map(i => i.value.trim()).join("");
+      if (digits.length !== 6) {
+        if (otpError) {
+          otpError.textContent = "Please enter the complete 6-digit verification code.";
+          otpError.style.display = "block";
+        }
+        return;
+      }
+
+      const verifyBtn = document.getElementById("btn-verify-otp");
+      const originalText = verifyBtn ? verifyBtn.innerText : "Verify & Continue";
+      if (verifyBtn) verifyBtn.innerText = "Verifying...";
+      if (otpError) otpError.style.display = "none";
+
+      try {
+        const res = await fetch('/api/auth/verify-signup-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email: pendingOtpEmail, otp: digits })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          if (otpSuccess) {
+            otpSuccess.textContent = "✓ Email verified successfully! Redirecting...";
+            otpSuccess.style.display = "block";
+          }
+          setTimeout(() => {
+            loginUserAndRedirect(data.user, data.token, true, data.deviceToken);
+          }, 800);
+        } else {
+          if (otpError) {
+            otpError.textContent = data.error || "Invalid verification code.";
+            otpError.style.display = "block";
+          }
+        }
+      } catch (err) {
+        if (otpError) {
+          otpError.textContent = "Server error. Please try again.";
+          otpError.style.display = "block";
+        }
+      } finally {
+        if (verifyBtn) verifyBtn.innerText = originalText;
+      }
+    });
+  }
+
+  // Resend OTP Button
+  if (btnResendOtp) {
+    btnResendOtp.addEventListener("click", async () => {
+      if (!pendingOtpEmail) return;
+      btnResendOtp.innerText = "Sending...";
+
+      try {
+        const res = await fetch('/api/auth/resend-signup-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: pendingOtpEmail })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          startOtpCountdown(60);
+          if (otpSuccess) {
+            otpSuccess.textContent = `A new 6-digit code was sent to ${pendingOtpEmail}`;
+            otpSuccess.style.display = "block";
+            setTimeout(() => { if (otpSuccess) otpSuccess.style.display = "none"; }, 5000);
+          }
+        } else {
+          if (otpError) {
+            otpError.textContent = data.error || "Failed to resend code.";
+            otpError.style.display = "block";
+          }
+        }
+      } catch (err) {
+        if (otpError) {
+          otpError.textContent = "Server error. Please try again.";
+          otpError.style.display = "block";
+        }
+      } finally {
+        btnResendOtp.innerText = "Resend Code";
+      }
+    });
+  }
+
+  // Forgot Password: Step 1 (Request Code)
+  const forgotReqForm = document.getElementById("forgot-request-form");
+  const forgotError = document.getElementById("forgot-error");
+  const forgotSuccess = document.getElementById("forgot-success");
+  const forgotOtpForm = document.getElementById("forgot-otp-form");
+  const forgotStep2Error = document.getElementById("forgot-step2-error");
+  const forgotResetForm = document.getElementById("forgot-reset-form");
+  const resetError = document.getElementById("reset-error");
+  const resetSuccess = document.getElementById("reset-success");
+
+  let pendingResetEmail = "";
+  let pendingResetOtp = "";
+
+  if (forgotReqForm) {
+    forgotReqForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById("forgot-email").value.trim();
+      const sendBtn = document.getElementById("btn-forgot-send");
+      const origText = sendBtn ? sendBtn.innerText : "Send Reset Code";
+      if (sendBtn) sendBtn.innerText = "Sending code...";
+      if (forgotError) forgotError.style.display = "none";
+
+      try {
+        const res = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailInput })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          pendingResetEmail = emailInput;
+          const fStep1 = document.getElementById("forgot-step-1");
+          const fStep2 = document.getElementById("forgot-step-2");
+          const fStep3 = document.getElementById("forgot-step-3");
+          if (fStep1) fStep1.style.display = "none";
+          if (fStep3) fStep3.style.display = "none";
+          if (fStep2) fStep2.style.display = "block";
+          const targetEl = document.getElementById("forgot-target-email");
+          if (targetEl) targetEl.textContent = emailInput;
+          const otpInput = document.getElementById("reset-otp-code");
+          if (otpInput) {
+            otpInput.value = "";
+            otpInput.focus();
+          }
+        } else {
+          if (forgotError) {
+            forgotError.textContent = data.error || "Failed to process request.";
+            forgotError.style.display = "block";
+          }
+        }
+      } catch (err) {
+        if (forgotError) {
+          forgotError.textContent = "Server error. Please try again.";
+          forgotError.style.display = "block";
+        }
+      } finally {
+        if (sendBtn) sendBtn.innerText = origText;
+      }
+    });
+  }
+
+  // Forgot Password: Step 2 (Verify OTP Code)
+  if (forgotOtpForm) {
+    forgotOtpForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const otpVal = document.getElementById("reset-otp-code").value.trim();
+      const verifyBtn = document.getElementById("btn-verify-reset-otp");
+      const origText = verifyBtn ? verifyBtn.innerText : "Verify Code & Continue";
+      if (verifyBtn) verifyBtn.innerText = "Verifying code...";
+      if (forgotStep2Error) forgotStep2Error.style.display = "none";
+
+      if (otpVal.length !== 6) {
+        if (forgotStep2Error) {
+          forgotStep2Error.textContent = "Please enter the complete 6-digit code.";
+          forgotStep2Error.style.display = "block";
+        }
+        if (verifyBtn) verifyBtn.innerText = origText;
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/verify-reset-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: pendingResetEmail, otp: otpVal })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          pendingResetOtp = otpVal;
+          const fStep2 = document.getElementById("forgot-step-2");
+          const fStep3 = document.getElementById("forgot-step-3");
+          if (fStep2) fStep2.style.display = "none";
+          if (fStep3) fStep3.style.display = "block";
+          const newPassInput = document.getElementById("reset-new-password");
+          if (newPassInput) {
+            newPassInput.value = "";
+            newPassInput.focus();
+          }
+          const confirmPassInput = document.getElementById("reset-confirm-password");
+          if (confirmPassInput) confirmPassInput.value = "";
+        } else {
+          if (forgotStep2Error) {
+            forgotStep2Error.textContent = data.error || "Invalid or expired code.";
+            forgotStep2Error.style.display = "block";
+          }
+        }
+      } catch (err) {
+        if (forgotStep2Error) {
+          forgotStep2Error.textContent = "Server error. Please try again.";
+          forgotStep2Error.style.display = "block";
+        }
+      } finally {
+        if (verifyBtn) verifyBtn.innerText = origText;
+      }
+    });
+  }
+
+  // Forgot Password: Step 3 (Set New Password + Confirm Password)
+  if (forgotResetForm) {
+    forgotResetForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const newPassVal = document.getElementById("reset-new-password").value.trim();
+      const confirmPassVal = document.getElementById("reset-confirm-password").value.trim();
+      const resetBtn = document.getElementById("btn-submit-reset");
+      const origText = resetBtn ? resetBtn.innerText : "Update Password & Sign In";
+      if (resetBtn) resetBtn.innerText = "Updating password...";
+      if (resetError) resetError.style.display = "none";
+
+      const isStrongPass = newPassVal.length >= 8 &&
+        /[A-Z]/.test(newPassVal) &&
+        /[a-z]/.test(newPassVal) &&
+        /[0-9]/.test(newPassVal) &&
+        /[^A-Za-z0-9]/.test(newPassVal);
+
+      if (!isStrongPass) {
+        if (resetError) {
+          resetError.textContent = "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.";
+          resetError.style.display = "block";
+        }
+        if (resetBtn) resetBtn.innerText = origText;
+        return;
+      }
+
+      if (newPassVal !== confirmPassVal) {
+        if (resetError) {
+          resetError.textContent = "Passwords do not match. Please re-enter identical passwords.";
+          resetError.style.display = "block";
+        }
+        if (resetBtn) resetBtn.innerText = origText;
+        return;
+      }
+
+      try {
+        const deviceToken = localStorage.getItem("senpai_device_token") || null;
+        const res = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: pendingResetEmail, otp: pendingResetOtp, newPassword: newPassVal, deviceToken })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          if (data.deviceToken) {
+            localStorage.setItem("senpai_device_token", data.deviceToken);
+          }
+          if (resetSuccess) {
+            resetSuccess.textContent = "✓ Password reset successfully! Switching to sign in...";
+            resetSuccess.style.display = "block";
+          }
+          setTimeout(() => {
+            switchAuthView("signin");
+            if (signinError) {
+              signinError.textContent = "Password reset successful. Please sign in with your new password.";
+              signinError.className = "auth-success-msg";
+              signinError.style.display = "block";
+            }
+          }, 1200);
+        } else {
+          if (resetError) {
+            resetError.textContent = data.error || "Failed to reset password.";
+            resetError.style.display = "block";
+          }
+        }
+      } catch (err) {
+        if (resetError) {
+          resetError.textContent = "Server error. Please try again.";
+          resetError.style.display = "block";
+        }
+      } finally {
+        if (resetBtn) resetBtn.innerText = origText;
+      }
+    });
+  }
 }
+
+window.togglePasswordVisibility = function (inputId, btnEl) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const isPassword = input.type === "password";
+  input.type = isPassword ? "text" : "password";
+  if (btnEl) {
+    btnEl.innerHTML = isPassword ? '<i class="fa-regular fa-eye"></i>' : '<i class="fa-regular fa-eye-slash"></i>';
+  }
+};
 
 // ── TOP SCROLL PROGRESS INDICATOR BAR ──────────────────────────────────────
 (function initGlobalScrollProgressBar() {
@@ -866,7 +1357,7 @@ function initHeaderInteractions() {
     let html = `
       <div class="${isDropdown ? 'dropdown-notif-item' : 'notification-row'}" 
            ${isDropdown ? `data-id="${n.id}" data-link="${n.link || '#'}"` : ''}
-           style="display: flex; align-items: flex-start; padding: ${isDropdown ? '14px 20px' : '16px'}; border-bottom: 1px solid #e2e8f0; background: ${bg}; cursor: ${isDropdown ? 'pointer' : 'default'}; transition: all 0.2s; position: relative;" 
+           style="display: flex; align-items: flex-start; padding: ${isDropdown ? '14px 20px' : '16px'}; border-bottom: 1px solid #e2e8f0; background: ${bg}; cursor: pointer; transition: all 0.2s; position: relative;" 
            ${!isDropdown ? `onclick="window.openNotificationPreview(window.notificationDataStore[${n.id}])"` : ''}>
     `;
 
@@ -888,14 +1379,28 @@ function initHeaderInteractions() {
     const titleFontSize = isDropdown ? '0.85rem' : '0.95rem';
     const msgFontSize = isDropdown ? '0.75rem' : '0.85rem';
     
+    function escapeNotifHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    const safeTitle = escapeNotifHtml(n.title);
+    const safeMsg = escapeNotifHtml(n.message);
+    const safeCat = escapeNotifHtml(n.category || 'System');
+
     // Add category badge
-    const catBadge = isDropdown ? `<span style="font-size: 0.65rem; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #475569; margin-left: 8px;">${n.category || 'System'}</span>` : '';
+    const catBadge = isDropdown ? `<span style="font-size: 0.65rem; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #475569; margin-left: 8px;">${safeCat}</span>` : '';
 
     html += `
         <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%;">
             <span style="font-size: ${titleFontSize}; font-weight: ${titleWeight}; color: ${titleColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; flex: 1; min-width: 0;">
-              <span style="overflow: hidden; text-overflow: ellipsis;">${n.title}</span>
+              <span style="overflow: hidden; text-overflow: ellipsis;">${safeTitle}</span>
               ${catBadge}
             </span>
             <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; position: relative;">
@@ -912,7 +1417,7 @@ function initHeaderInteractions() {
                ` : ''}
             </div>
           </div>
-          <span style="font-size: ${msgFontSize}; color: #64748b; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: ${lineClamp}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">${n.message}</span>
+          <span style="font-size: ${msgFontSize}; color: #64748b; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: ${lineClamp}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">${safeMsg}</span>
         </div>
     `;
     html += `</div>`;
@@ -938,7 +1443,7 @@ function initHeaderInteractions() {
     }
 
     try {
-      const res = await fetch("/api/notifications/unread-count", {
+      const res = await fetch(`/api/notifications/unread-count?t=${new Date().getTime()}`, {
         headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
       });
       if (res.status === 401) {
@@ -1038,7 +1543,7 @@ function initHeaderInteractions() {
 
       // Populate category counts below header
       try {
-        const cRes = await fetch('/api/notifications/unread-count', {
+        const cRes = await fetch(`/api/notifications/unread-count?t=${new Date().getTime()}`, {
           headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
         });
         if (cRes.ok) {
@@ -1075,7 +1580,7 @@ function initHeaderInteractions() {
 
       listContainer.innerHTML = html;
 
-      // Attach click events to deep link & mark read
+      // Attach click events to open specific notification directly in preview
       listContainer.querySelectorAll('.dropdown-notif-item').forEach(el => {
         el.addEventListener('click', async (e) => {
           e.preventDefault();
@@ -1087,9 +1592,21 @@ function initHeaderInteractions() {
             });
             fetchUnreadCount();
           } catch(e) {}
-          // Navigate to notifications page, close dropdown
-          document.getElementById('notifications-dropdown').style.display = 'none';
-          window.location.href = 'profile.html#notifications';
+          
+          // Close dropdown
+          const dropdown = document.getElementById('notifications-dropdown');
+          if (dropdown) dropdown.style.display = 'none';
+
+          const isProfilePage = window.location.pathname.endsWith('profile.html') || window.location.pathname.endsWith('profile');
+          if (isProfilePage && typeof window.openDirectNotificationById === 'function') {
+            if (typeof window.switchAccountTab === 'function') {
+              window.switchAccountTab('notifications');
+            }
+            window.openDirectNotificationById(id);
+          } else {
+            sessionStorage.setItem('pending_open_notif_id', id);
+            window.location.href = 'profile.html#notifications';
+          }
         });
       });
 

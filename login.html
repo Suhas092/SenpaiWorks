@@ -24,7 +24,60 @@
 
 <body>
 
-  <script src="scripts/auth.js"></script>
+  <!-- Early auth check: redirect immediately if already logged in, or if returning from OAuth -->
+  <script>
+    (function() {
+      // Check if already logged in
+      var isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      var notLoggedOut = localStorage.getItem("userLoggedOut") !== "true";
+      var hasUser = !!localStorage.getItem("currentUser");
+      if (isLoggedIn && notLoggedOut && hasUser) {
+        window.location.replace("/home");
+        return;
+      }
+
+      // If returning from OAuth redirect (hash has tokens), hide page until processed
+      var hash = window.location.hash || "";
+      if (hash.includes("access_token") || hash.includes("id_token")) {
+        window.__oauthHashPending = true;
+        document.documentElement.style.visibility = "hidden";
+        // Safety timeout: if auth.js doesn't redirect within 8 seconds, show the page
+        setTimeout(function() {
+          document.documentElement.style.visibility = "";
+          window.__oauthHashPending = false;
+        }, 8000);
+      }
+
+      // Cross-tab sync: when popup finishes login, redirect this parent tab immediately
+      window.addEventListener("storage", function(e) {
+        if (e.key === "isLoggedIn" && e.newValue === "true") {
+          window.location.replace("/home");
+        }
+      });
+      if (typeof BroadcastChannel !== "undefined") {
+        var authChannel = new BroadcastChannel("senpai_oauth_sync");
+        authChannel.onmessage = function(ev) {
+          if (ev.data && ev.data.type === "LOGIN_SUCCESS") {
+            window.location.replace("/home");
+          }
+        };
+      }
+
+      // When user switches back to this tab, check if they're now logged in
+      document.addEventListener("visibilitychange", function() {
+        if (!document.hidden) {
+          var nowLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+          var nowNotLoggedOut = localStorage.getItem("userLoggedOut") !== "true";
+          var nowHasUser = !!localStorage.getItem("currentUser");
+          if (nowLoggedIn && nowNotLoggedOut && nowHasUser) {
+            window.location.replace("/home");
+          }
+        }
+      });
+    })();
+  </script>
+
+  <script src="scripts/auth.js?v=113"></script>
 
   <!-- AUTH PAGE MAIN CONTAINER -->
   <main class="auth-page-wrapper">
@@ -44,49 +97,153 @@
         <i class="fa-solid fa-arrow-right-to-bracket"></i>
       </div>
 
-      <h1 class="auth-title-center">Sign in to SenpaiWorks</h1>
-      <p class="auth-subtitle-center">Bring your digital art, 3D assets, and orders together in one place.</p>
-
       <div id="signin-error" class="auth-error-msg" style="display: none;"></div>
 
-      <form id="signin-form">
-        <div class="input-icon-group">
-          <i class="fa-solid fa-envelope input-leading-icon"></i>
-          <input type="text" id="signin-email" placeholder="Email or Username" required autocomplete="username">
+      <!-- MAIN SIGN IN VIEW -->
+      <div id="signin-main-view">
+        <h1 class="auth-title-center">Sign in to SenpaiWorks</h1>
+        <p class="auth-subtitle-center">Bring your digital art, 3D assets, and orders together in one place.</p>
+
+        <form id="signin-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-envelope input-leading-icon"></i>
+            <input type="text" id="signin-email" placeholder="Email or Username" required autocomplete="username">
+          </div>
+
+          <div class="input-icon-group">
+            <i class="fa-solid fa-lock input-leading-icon"></i>
+            <input type="password" id="signin-password" placeholder="Password" required autocomplete="current-password">
+            <button type="button" class="toggle-password-btn" id="toggle-signin-pass" title="Toggle Password Visibility">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+
+          <div class="auth-forgot-wrap">
+            <a href="#" class="forgot-password-link" id="forgot-password-link">Forgot password?</a>
+          </div>
+
+          <button type="submit" id="btn-submit-signin" class="auth-submit-pill">Sign In</button>
+        </form>
+
+        <!-- Dotted Line Divider -->
+        <div class="auth-dotted-divider">
+          <span>Or sign in with</span>
         </div>
 
-        <div class="input-icon-group">
-          <i class="fa-solid fa-lock input-leading-icon"></i>
-          <input type="password" id="signin-password" placeholder="Password" required autocomplete="current-password">
-          <button type="button" class="toggle-password-btn" id="toggle-signin-pass" title="Toggle Password Visibility">
-            <i class="fa-regular fa-eye-slash"></i>
+        <!-- Social Sign-In Buttons -->
+        <div class="social-auth-bottom-row">
+          <button type="button" class="social-auth-card fb-card" id="btn-fb-login" title="Sign in with Facebook">
+            <i class="fa-brands fa-facebook" style="color: #ffffff; font-size: 1.35rem;"></i>
+          </button>
+          <button type="button" class="social-auth-card google-card" id="btn-google-login" title="Sign in with Google">
+            <img src="assets/google-g-logo.svg" alt="Google Logo">
           </button>
         </div>
 
-        <div class="auth-forgot-wrap">
-          <a href="#" class="forgot-password-link" id="forgot-password-link">Forgot password?</a>
+        <div class="auth-footer-center">
+          Don't have an account yet? <a href="register.html">Sign up</a>
         </div>
-
-        <button type="submit" class="auth-submit-pill">Sign In</button>
-      </form>
-
-      <!-- Dotted Line Divider -->
-      <div class="auth-dotted-divider">
-        <span>Or sign in with</span>
       </div>
 
-      <!-- Social Sign-In Buttons -->
-      <div class="social-auth-bottom-row">
-        <button type="button" class="social-auth-card fb-card" id="btn-fb-login" title="Sign in with Facebook">
-          <i class="fa-brands fa-facebook" style="color: #ffffff; font-size: 1.35rem;"></i>
-        </button>
-        <button type="button" class="social-auth-card google-card" id="btn-google-login" title="Sign in with Google">
-          <img src="assets/google-g-logo.svg" alt="Google Logo">
-        </button>
+      <!-- DEVICE 2FA / UNVERIFIED OTP VIEW -->
+      <div id="signin-otp-view" style="display: none;">
+        <h1 class="auth-title-center" style="font-size: 1.5rem; text-align: left; margin-bottom: 8px;">Security Verification</h1>
+        <p class="auth-subtitle-center" style="text-align: left; max-width: 100%; margin-bottom: 22px; line-height: 1.5;">
+          A 6-digit verification code was sent to <strong id="signin-otp-email" style="color: #ffffff;">user@gmail.com</strong>.
+        </p>
+
+        <form id="signin-otp-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-shield-halved input-leading-icon"></i>
+            <input type="text" id="signin-otp-code" placeholder="Enter 6-digit code" required maxlength="6" style="letter-spacing: 4px; font-weight: 700; font-size: 1.1rem; text-align: center;" autocomplete="one-time-code">
+          </div>
+
+          <button type="submit" id="btn-verify-signin-otp" class="auth-submit-pill">Verify Device & Sign In</button>
+        </form>
+
+        <div class="auth-footer-center" style="margin-top: 18px;">
+          <a href="#" id="signin-otp-back" class="auth-edit-link">&larr; Back to sign in</a>
+        </div>
       </div>
 
-      <div class="auth-footer-center">
-        Don't have an account yet? <a href="register.html">Sign up</a>
+      <!-- FORGOT PASSWORD STEP 1: ENTER EMAIL -->
+      <div id="forgot-step-1-view" style="display: none;">
+        <h1 class="auth-title-center" style="font-size: 1.5rem; text-align: left; margin-bottom: 8px;">Reset your password</h1>
+        <p class="auth-subtitle-center" style="text-align: left; max-width: 100%; margin-bottom: 22px; line-height: 1.5;">
+          Enter your registered email and we'll send you a 6-digit code to reset your password.
+        </p>
+
+        <form id="login-forgot-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-envelope input-leading-icon"></i>
+            <input type="email" id="login-forgot-email" placeholder="Email Address" required autocomplete="email">
+          </div>
+
+          <button type="submit" id="btn-login-forgot-send" class="auth-submit-pill">Send Reset Code</button>
+        </form>
+
+        <div class="auth-footer-center" style="margin-top: 18px;">
+          <a href="#" id="login-forgot-back" class="auth-edit-link">&larr; Back to sign in</a>
+        </div>
+      </div>
+
+      <!-- FORGOT PASSWORD STEP 2: ENTER OTP -->
+      <div id="forgot-step-2-view" style="display: none;">
+        <h1 class="auth-title-center" style="font-size: 1.5rem; text-align: left; margin-bottom: 8px;">Verify Reset Code</h1>
+        <p class="auth-subtitle-center" style="text-align: left; max-width: 100%; margin-bottom: 22px; line-height: 1.5;">
+          Enter the 6-digit code sent to <strong id="login-forgot-otp-email" style="color: #ffffff;">user@gmail.com</strong>.
+        </p>
+
+        <form id="login-forgot-otp-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-key input-leading-icon"></i>
+            <input type="text" id="login-reset-otp" placeholder="Enter 6-digit code" required maxlength="6" style="letter-spacing: 4px; font-weight: 700; font-size: 1.1rem; text-align: center;" autocomplete="one-time-code">
+          </div>
+
+          <button type="submit" id="btn-login-verify-otp" class="auth-submit-pill">Verify Code & Continue</button>
+        </form>
+
+        <div class="auth-footer-center" style="margin-top: 18px;">
+          <a href="#" id="login-forgot-otp-back" class="auth-edit-link">&larr; Back to sign in</a>
+        </div>
+      </div>
+
+      <!-- FORGOT PASSWORD STEP 3: ENTER NEW PASSWORD & CONFIRM PASSWORD -->
+      <div id="forgot-step-3-view" style="display: none;">
+        <h1 class="auth-title-center" style="font-size: 1.5rem; text-align: left; margin-bottom: 8px;">Create new password</h1>
+        <p class="auth-subtitle-center" style="text-align: left; max-width: 100%; margin-bottom: 22px; line-height: 1.5;">
+          Enter and confirm your new password below.
+        </p>
+
+        <div id="login-reset-error" class="auth-error-msg" style="display: none; margin-bottom: 14px;"></div>
+        <div id="login-reset-success" class="auth-success-msg" style="display: none; margin-bottom: 14px; background: rgba(16, 185, 129, 0.12); color: #10b981; padding: 12px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-align: center; border: 1px solid rgba(16, 185, 129, 0.25);"></div>
+
+        <form id="login-reset-form">
+          <div class="input-icon-group" style="margin-bottom: 6px;">
+            <i class="fa-solid fa-lock input-leading-icon"></i>
+            <input type="password" id="login-reset-newpass" placeholder="New Password (min 8 chars)" minlength="8" required autocomplete="new-password">
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('login-reset-newpass', this)" title="Toggle Password Visibility">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+          <div class="password-requirements-hint" style="font-size: 0.78rem; color: #64748b; margin: 0 0 12px 4px; text-align: left; line-height: 1.4;">
+            <i class="fa-solid fa-circle-info" style="color: #3b82f6; margin-right: 4px;"></i>At least 8 characters with uppercase, lowercase, number & special character.
+          </div>
+
+          <div class="input-icon-group">
+            <i class="fa-solid fa-shield-halved input-leading-icon"></i>
+            <input type="password" id="login-reset-confirmpass" placeholder="Re-enter New Password" minlength="8" required autocomplete="new-password">
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('login-reset-confirmpass', this)" title="Toggle Password Visibility">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+
+          <button type="submit" id="btn-login-submit-reset" class="auth-submit-pill">Update Password & Sign In</button>
+        </form>
+
+        <div class="auth-footer-center" style="margin-top: 18px;">
+          <a href="#" id="login-reset-back" class="auth-edit-link">&larr; Back to sign in</a>
+        </div>
       </div>
 
     </div>
@@ -94,13 +251,13 @@
     <!-- Standalone Minimal Footer -->
     <footer class="auth-minimal-footer">
       <div class="auth-minimal-links">
-        <a href="contact.html">Support</a>
+        <a href="/contact">Support</a>
         <span class="sep">•</span>
-        <a href="privacy.html">Privacy Notice</a>
+        <a href="/privacy">Privacy Notice</a>
         <span class="sep">•</span>
-        <a href="terms.html">Terms of Service</a>
+        <a href="/terms">Terms of Service</a>
         <span class="sep">•</span>
-        <a href="privacy.html#cookies">Cookie Preferences</a>
+        <a href="/privacy#cookies">Cookie Preferences</a>
       </div>
       <div class="auth-recaptcha-text">
         This site is protected by Google reCAPTCHA and its <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
@@ -110,16 +267,104 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Redirect if already logged in
-      if (window.Auth && window.Auth.isLoggedIn()) {
-        window.Auth.handlePostLoginRedirect("home.html");
+      // If OAuth hash tokens are being processed by auth.js, don't show login form
+      if (window.__oauthHashPending) {
+        console.log("[Login] OAuth hash pending — skipping login form setup");
         return;
       }
 
+      // Redirect if already logged in
+      if (window.Auth && window.Auth.isLoggedIn()) {
+        window.location.replace("/home");
+        return;
+      }
+
+      const mainView = document.getElementById("signin-main-view");
+      const otpView = document.getElementById("signin-otp-view");
       const form = document.getElementById("signin-form");
+      const otpForm = document.getElementById("signin-otp-form");
+      const otpBack = document.getElementById("signin-otp-back");
+      const otpEmailDisplay = document.getElementById("signin-otp-email");
       const errBox = document.getElementById("signin-error");
       const togglePass = document.getElementById("toggle-signin-pass");
 
+      const forgotLink = document.getElementById("forgot-password-link");
+      const forgotStep1View = document.getElementById("forgot-step-1-view");
+      const forgotStep2View = document.getElementById("forgot-step-2-view");
+      const forgotStep3View = document.getElementById("forgot-step-3-view");
+      const forgotStep1Form = document.getElementById("login-forgot-form");
+      const forgotStep2Form = document.getElementById("login-forgot-otp-form");
+      const forgotStep3Form = document.getElementById("login-reset-form");
+      const forgotStep1Back = document.getElementById("login-forgot-back");
+      const forgotStep2Back = document.getElementById("login-forgot-otp-back");
+      const forgotStep3Back = document.getElementById("login-reset-back");
+      const forgotOtpEmailDisplay = document.getElementById("login-forgot-otp-email");
+
+      // ── State persistence helpers (survive livereload / tab-switch) ──
+      const LOGIN_STATE_KEY = "sw_login_view_state";
+      function saveViewState(step, email) {
+        try {
+          sessionStorage.setItem(LOGIN_STATE_KEY, JSON.stringify({ step, email, ts: Date.now() }));
+        } catch (_) {}
+      }
+      function loadViewState() {
+        try {
+          const raw = sessionStorage.getItem(LOGIN_STATE_KEY);
+          if (!raw) return null;
+          const state = JSON.parse(raw);
+          // Expire after 10 minutes
+          if (Date.now() - state.ts > 10 * 60 * 1000) {
+            sessionStorage.removeItem(LOGIN_STATE_KEY);
+            return null;
+          }
+          return state;
+        } catch (_) { return null; }
+      }
+      function clearViewState() {
+        sessionStorage.removeItem(LOGIN_STATE_KEY);
+      }
+
+      function showView(viewToShow) {
+        [mainView, otpView, forgotStep1View, forgotStep2View, forgotStep3View].forEach(v => {
+          if (v) v.style.display = "none";
+        });
+        if (viewToShow) viewToShow.style.display = "block";
+        if (errBox) errBox.style.display = "none";
+      }
+
+      // ── Restore persisted view on page reload ──
+      let currentEmail = "";
+      let pendingForgotEmail = "";
+      let pendingForgotOtp = "";
+
+      const savedState = loadViewState();
+      if (savedState) {
+        currentEmail = savedState.email || "";
+        pendingForgotEmail = savedState.email || "";
+        switch (savedState.step) {
+          case "otp":
+            showView(otpView);
+            if (otpEmailDisplay) otpEmailDisplay.textContent = currentEmail;
+            break;
+          case "forgot-1":
+            showView(forgotStep1View);
+            const fEmailInput = document.getElementById("login-forgot-email");
+            if (fEmailInput) fEmailInput.value = pendingForgotEmail;
+            break;
+          case "forgot-2":
+            showView(forgotStep2View);
+            if (forgotOtpEmailDisplay) forgotOtpEmailDisplay.textContent = pendingForgotEmail;
+            break;
+          case "forgot-3":
+            showView(forgotStep3View);
+            break;
+          default:
+            showView(mainView);
+            break;
+        }
+      }
+
+      // ── Toggle password visibility ──
       if (togglePass) {
         togglePass.addEventListener("click", () => {
           const passInput = document.getElementById("signin-password");
@@ -131,24 +376,362 @@
         });
       }
 
-      if (form) {
-        form.addEventListener("submit", (e) => {
+      // ── OTP Back Button ──
+      if (otpBack) {
+        otpBack.addEventListener("click", (e) => {
           e.preventDefault();
-          const email = document.getElementById("signin-email").value.trim();
-          const password = document.getElementById("signin-password").value.trim();
+          showView(mainView);
+          clearViewState();
+        });
+      }
 
-          const result = window.Auth.login(email, password);
-          if (result.success) {
-            if (errBox) errBox.style.display = "none";
-            window.Auth.handlePostLoginRedirect("home.html");
-          } else {
+      // ── Sign-In Form Submit ──
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          currentEmail = document.getElementById("signin-email").value.trim();
+          const password = document.getElementById("signin-password").value.trim();
+          const deviceToken = localStorage.getItem("senpai_device_token") || null;
+
+          const submitBtn = document.getElementById("btn-submit-signin");
+          const originalText = submitBtn ? submitBtn.innerText : "Sign In";
+          if (submitBtn) submitBtn.innerText = "Signing in...";
+          if (errBox) errBox.style.display = "none";
+
+          try {
+            const res = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email: currentEmail, username: currentEmail, password, deviceToken })
+            });
+
+            const data = await res.json();
+
+            if (data.requireOtp) {
+              // Unrecognized Device / Unverified Email -> OTP Challenge
+              currentEmail = data.email || currentEmail;
+              if (otpEmailDisplay) otpEmailDisplay.textContent = currentEmail;
+              showView(otpView);
+              saveViewState("otp", currentEmail);
+              const otpInput = document.getElementById("signin-otp-code");
+              if (otpInput) {
+                otpInput.value = "";
+                otpInput.focus();
+              }
+            } else if (res.ok && data.success && data.token) {
+              localStorage.setItem("userToken", data.token);
+              localStorage.setItem("currentUser", JSON.stringify(data.user));
+              if (data.deviceToken) {
+                localStorage.setItem("senpai_device_token", data.deviceToken);
+              }
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.removeItem("userLoggedOut");
+              clearViewState();
+              window.location.replace("/home");
+            } else {
+              if (errBox) {
+                errBox.textContent = data.error || "Invalid credentials.";
+                errBox.style.display = "block";
+              }
+            }
+          } catch (err) {
             if (errBox) {
-              errBox.textContent = result.message || "Invalid credentials.";
+              errBox.textContent = "Server error. Please try again.";
               errBox.style.display = "block";
             }
+          } finally {
+            if (submitBtn) submitBtn.innerText = originalText;
           }
         });
       }
+
+      // ── OTP Verify Form Submit ──
+      if (otpForm) {
+        otpForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const otpVal = document.getElementById("signin-otp-code").value.trim();
+          if (otpVal.length !== 6) {
+            if (errBox) {
+              errBox.textContent = "Please enter the 6-digit code.";
+              errBox.style.display = "block";
+            }
+            return;
+          }
+
+          const verifyBtn = document.getElementById("btn-verify-signin-otp");
+          const originalText = verifyBtn ? verifyBtn.innerText : "Verify Device & Sign In";
+          if (verifyBtn) verifyBtn.innerText = "Verifying...";
+          if (errBox) errBox.style.display = "none";
+
+          try {
+            const res = await fetch('/api/auth/verify-otp', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email: currentEmail, otp: otpVal })
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success && data.token) {
+              localStorage.setItem("userToken", data.token);
+              localStorage.setItem("currentUser", JSON.stringify(data.user));
+              if (data.deviceToken) {
+                localStorage.setItem("senpai_device_token", data.deviceToken);
+              }
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.removeItem("userLoggedOut");
+              clearViewState();
+              window.location.replace("/home");
+            } else {
+              if (errBox) {
+                errBox.textContent = data.error || "Invalid verification code.";
+                errBox.style.display = "block";
+              }
+            }
+          } catch (err) {
+            if (errBox) {
+              errBox.textContent = "Server error. Please try again.";
+              errBox.style.display = "block";
+            }
+          } finally {
+            if (verifyBtn) verifyBtn.innerText = originalText;
+          }
+        });
+      }
+
+      // ── Forgot Password Flow ──
+
+      if (forgotLink) {
+        forgotLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          showView(forgotStep1View);
+          saveViewState("forgot-1", document.getElementById("signin-email")?.value.trim() || "");
+          const fEmail = document.getElementById("login-forgot-email");
+          if (fEmail) {
+            fEmail.value = document.getElementById("signin-email")?.value.trim() || "";
+            fEmail.focus();
+          }
+        });
+      }
+
+      if (forgotStep1Back) {
+        forgotStep1Back.addEventListener("click", (e) => {
+          e.preventDefault();
+          showView(mainView);
+          clearViewState();
+        });
+      }
+
+      if (forgotStep2Back) {
+        forgotStep2Back.addEventListener("click", (e) => {
+          e.preventDefault();
+          showView(forgotStep1View);
+          saveViewState("forgot-1", pendingForgotEmail);
+        });
+      }
+
+      if (forgotStep3Back) {
+        forgotStep3Back.addEventListener("click", (e) => {
+          e.preventDefault();
+          showView(mainView);
+          clearViewState();
+        });
+      }
+
+      // Step 1: Send Reset Code
+      if (forgotStep1Form) {
+        forgotStep1Form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          pendingForgotEmail = document.getElementById("login-forgot-email").value.trim().toLowerCase();
+          const sendBtn = document.getElementById("btn-login-forgot-send");
+          const origText = sendBtn ? sendBtn.innerText : "Send Reset Code";
+          if (sendBtn) sendBtn.innerText = "Sending code...";
+          if (errBox) errBox.style.display = "none";
+
+          try {
+            const res = await fetch('/api/auth/forgot-password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: pendingForgotEmail })
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+              showView(forgotStep2View);
+              saveViewState("forgot-2", pendingForgotEmail);
+              if (forgotOtpEmailDisplay) forgotOtpEmailDisplay.textContent = pendingForgotEmail;
+              const otpInput = document.getElementById("login-reset-otp");
+              if (otpInput) {
+                otpInput.value = "";
+                otpInput.focus();
+              }
+            } else {
+              if (errBox) {
+                errBox.textContent = data.error || "Failed to process request.";
+                errBox.style.display = "block";
+              }
+            }
+          } catch (err) {
+            if (errBox) {
+              errBox.textContent = "Server error. Please try again.";
+              errBox.style.display = "block";
+            }
+          } finally {
+            if (sendBtn) sendBtn.innerText = origText;
+          }
+        });
+      }
+
+      // Step 2: Verify OTP Code
+      if (forgotStep2Form) {
+        forgotStep2Form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const otpVal = document.getElementById("login-reset-otp").value.trim();
+          const verifyBtn = document.getElementById("btn-login-verify-otp");
+          const origText = verifyBtn ? verifyBtn.innerText : "Verify Code & Continue";
+          if (verifyBtn) verifyBtn.innerText = "Verifying code...";
+          if (errBox) errBox.style.display = "none";
+
+          if (otpVal.length !== 6) {
+            if (errBox) {
+              errBox.textContent = "Please enter the complete 6-digit code.";
+              errBox.style.display = "block";
+            }
+            if (verifyBtn) verifyBtn.innerText = origText;
+            return;
+          }
+
+          try {
+            const res = await fetch('/api/auth/verify-reset-otp', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: pendingForgotEmail, otp: otpVal })
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+              pendingForgotOtp = otpVal;
+              showView(forgotStep3View);
+              saveViewState("forgot-3", pendingForgotEmail);
+              const newPassInput = document.getElementById("login-reset-newpass");
+              if (newPassInput) {
+                newPassInput.value = "";
+                newPassInput.focus();
+              }
+              const confPassInput = document.getElementById("login-reset-confirmpass");
+              if (confPassInput) confPassInput.value = "";
+            } else {
+              if (errBox) {
+                errBox.textContent = data.error || "Invalid or expired code.";
+                errBox.style.display = "block";
+              }
+            }
+          } catch (err) {
+            if (errBox) {
+              errBox.textContent = "Server error. Please try again.";
+              errBox.style.display = "block";
+            }
+          } finally {
+            if (verifyBtn) verifyBtn.innerText = origText;
+          }
+        });
+      }
+
+      // Step 3: Set New Password & Confirm Password
+      if (forgotStep3Form) {
+        forgotStep3Form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const newPassVal = document.getElementById("login-reset-newpass").value.trim();
+          const confPassVal = document.getElementById("login-reset-confirmpass").value.trim();
+          const submitBtn = document.getElementById("btn-login-submit-reset");
+          const origText = submitBtn ? submitBtn.innerText : "Update Password & Sign In";
+          const resetErr = document.getElementById("login-reset-error");
+          const resetSucc = document.getElementById("login-reset-success");
+          if (submitBtn) submitBtn.innerText = "Updating password...";
+          if (resetErr) resetErr.style.display = "none";
+          if (resetSucc) resetSucc.style.display = "none";
+
+          const isStrongPass = newPassVal.length >= 8 &&
+            /[A-Z]/.test(newPassVal) &&
+            /[a-z]/.test(newPassVal) &&
+            /[0-9]/.test(newPassVal) &&
+            /[^A-Za-z0-9]/.test(newPassVal);
+
+          if (!isStrongPass) {
+            if (resetErr) {
+              resetErr.textContent = "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.";
+              resetErr.style.display = "block";
+            }
+            if (submitBtn) submitBtn.innerText = origText;
+            return;
+          }
+
+          if (newPassVal !== confPassVal) {
+            if (resetErr) {
+              resetErr.textContent = "Passwords do not match. Please re-enter identical passwords.";
+              resetErr.style.display = "block";
+            }
+            if (submitBtn) submitBtn.innerText = origText;
+            return;
+          }
+
+          try {
+            const deviceToken = localStorage.getItem("senpai_device_token") || null;
+            const res = await fetch('/api/auth/reset-password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: pendingForgotEmail, otp: pendingForgotOtp, newPassword: newPassVal, deviceToken })
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+              if (data.deviceToken) {
+                localStorage.setItem("senpai_device_token", data.deviceToken);
+              }
+              clearViewState();
+              if (resetSucc) {
+                resetSucc.textContent = "✓ Password reset successfully! Redirecting to sign in...";
+                resetSucc.style.display = "block";
+              }
+              setTimeout(() => {
+                showView(mainView);
+                const passInput = document.getElementById("signin-password");
+                if (passInput) passInput.value = "";
+                const emailInput = document.getElementById("signin-email");
+                if (emailInput) emailInput.value = pendingForgotEmail;
+                if (resetSucc) resetSucc.style.display = "none";
+              }, 1400);
+            } else {
+              if (resetErr) {
+                resetErr.textContent = data.error || "Invalid code or failed to reset.";
+                resetErr.style.display = "block";
+              }
+            }
+          } catch (err) {
+            if (resetErr) {
+              resetErr.textContent = "Server error. Please try again.";
+              resetErr.style.display = "block";
+            }
+          } finally {
+            if (submitBtn) submitBtn.innerText = origText;
+          }
+        });
+      }
+
+      window.togglePasswordVisibility = function (inputId, btnEl) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        const isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        if (btnEl) {
+          btnEl.innerHTML = isPassword ? '<i class="fa-regular fa-eye"></i>' : '<i class="fa-regular fa-eye-slash"></i>';
+        }
+      };
 
       const googleBtn = document.getElementById("btn-google-login");
       const fbBtn = document.getElementById("btn-fb-login");
@@ -156,7 +739,11 @@
       if (googleBtn) {
         googleBtn.addEventListener("click", () => {
           if (window.Auth && window.Auth.triggerGoogleLogin) {
-            window.Auth.triggerGoogleLogin(() => window.Auth.handlePostLoginRedirect("home.html"));
+            window.Auth.triggerGoogleLogin(() => {
+              console.log("[SenpaiWorks] Google login onSuccess callback fired — redirecting to /home");
+              clearViewState();
+              window.location.href = "/home";
+            });
           }
         });
       }
@@ -164,7 +751,11 @@
       if (fbBtn) {
         fbBtn.addEventListener("click", () => {
           if (window.Auth && window.Auth.triggerFacebookLogin) {
-            window.Auth.triggerFacebookLogin(() => window.Auth.handlePostLoginRedirect("home.html"));
+            window.Auth.triggerFacebookLogin(() => {
+              console.log("[SenpaiWorks] Facebook login onSuccess callback fired — redirecting to /home");
+              clearViewState();
+              window.location.href = "/home";
+            });
           }
         });
       }

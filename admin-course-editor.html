@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Editor - SenpaiWorks Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="admin.css?v=4.0">
+
+  <style>
+    /* Course Editor Specific Styles */
+    .editor-layout {
+      min-height: 100vh;
+      background: var(--bg-primary, #0b0f19);
+      color: var(--text-primary, #ffffff);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Sticky Header */
+    .editor-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .editor-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .btn-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-back-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      transform: translateX(-2px);
+    }
+
+    .editor-title-wrap h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .editor-title-wrap small {
+      color: #94a3b8;
+      font-size: 12px;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .editor-topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-preview-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      background: #1e293b;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-preview-link:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+    }
+
+    .btn-save-course-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-save-course-main:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
+    }
+    .btn-save-course-main:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Main 2-Column Content Layout */
+    .editor-container {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 32px 60px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 1080px) {
+      .editor-container {
+        grid-template-columns: 1fr;
+        padding: 20px 16px;
+      }
+    }
+
+    /* Panels & Cards */
+    .editor-card {
+      background: #111726;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .editor-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+
+    .editor-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .editor-card-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .form-label small {
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: none;
+      color: #94a3b8;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      background: #0b0f19;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #f8fafc;
+      font-size: 13.5px;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: all 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+      background: #0d1322;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 720px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Visual Curriculum Section Builder */
+    .section-card {
+      background: #0b0f19;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .section-card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .section-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-card-badge {
+      background: #1e3a5f;
+      color: #38bdf8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .section-title-input {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    .btn-remove-section {
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-remove-section:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+    }
+
+    .lectures-list {
+      margin-left: 20px;
+      padding-left: 14px;
+      border-left: 2px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .lecture-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 110px 100px 38px;
+      gap: 10px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 6px 10px;
+    }
+
+    .lecture-preview-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #cbd5e1;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn-remove-lecture {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    .btn-remove-lecture:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .btn-add-lecture {
+      margin-top: 10px;
+      align-self: flex-start;
+      background: transparent;
+      border: 1px dashed rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-add-lecture:hover {
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .btn-add-section-big {
+      width: 100%;
+      background: #111726;
+      border: 2px dashed rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+    .btn-add-section-big:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.04);
+    }
+
+    /* Live Media Previews */
+    .preview-box {
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #000;
+      max-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .preview-box img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    /* Toast Container */
+    .admin-toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body class="editor-layout">
+
+  <!-- TOP STICKY HEADER -->
+  <header class="editor-topbar">
+    <div class="editor-topbar-left">
+      <a href="admin.html#courses" class="btn-back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Courses</span>
+      </a>
+      <div class="editor-title-wrap">
+        <h1 id="page-heading-title">
+          <i class="fa-solid fa-graduation-cap" style="color:#38bdf8;"></i>
+          <span id="page-title-text">Course Details Editor</span>
+        </h1>
+        <small id="page-subtitle-text">Manage all syllabus items, video previews, pricing, and curriculum lectures.</small>
+      </div>
+    </div>
+
+    <div class="editor-topbar-actions">
+      <a href="course-detail.html?id=zbrush" id="btn-public-preview" target="_blank" class="btn-preview-link">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span>View Public Course</span>
+      </a>
+      <button type="button" id="btn-save-course" class="btn-save-course-main" onclick="window.saveCourseDetails()">
+        <i class="fa-solid fa-floppy-disk"></i>
+        <span>Save All Changes</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN 2-COLUMN LAYOUT -->
+  <main class="editor-container">
+    <input type="hidden" id="edit-course-id" value="">
+
+    <!-- LEFT COLUMN: Main Course Syllabus & Curriculum -->
+    <div class="editor-left-col">
+
+      <!-- CARD 1: Basic Information -->
+      <section class="editor-card">
+        <div class="editor-card-header">
+          <div>
+            <h2 class="editor-card-title"><i class="fa-solid fa-circle-info" style="color:#38bdf8;"></i> 1. Course Information</h2>
+            <div class="editor-card-subtitle">Primary title, URL slug, hero tags, and short teaser overview.</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-title">Course Title *</label>
+          <input type="text" id="field-title" required placeholder="e.g. ZBrush Character Sculpting: Sculpt Anime Characters from Scratch" class="form-input">
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="field-slug">
+              URL Slug *
+              <small>Accessible via course-detail.html?id=...</small>
+            </label>
+            <input type="text" id="field-slug" required placeholder="e.g. zbrush or blender" class="form-input" style="font-family:'JetBrains Mono',monospace;">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-tag">Category Tag</label>
+            <input type="text" id="field-tag" placeholder="e.g. 3D Digital Sculpting" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-subtitle">Hero Subtitle / Tagline</label>
+          <input type="text" id="field-subtitle" placeholder="e.g. Learn anatomy, facial features, hair sculpting, and secondary detail pass for 3D anime characters" class="form-input">
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="field-badge">Header Badge Tag</label>
+            <input type="text" id="field-badge" placeholder="e.g. Bestseller, Highest Rated, Trending" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-status">Production Status</label>
+            <select id="field-status" class="form-select">
+              <option value="In Production">In Production</option>
+              <option value="In Planning">In Planning</option>
+              <option value="Available">Available / Live</option>
+              <option value="Coming Soon">Coming Soon</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-description">Teaser Description</label>
+          <textarea id="field-description" rows="3" placeholder="Brief summary shown on Learn cards and previews..." class="form-textarea"></textarea>
+        </div>
+      </section>
+
+      <!-- CARD 2: What You'll Learn -->
+      <section class="editor-card">
+        <div class="editor-card-header">
+          <div>
+            <h2 class="editor-card-title"><i class="fa-solid fa-square-check" style="color:#22c55e;"></i> 2. What You'll Learn</h2>
+            <div class="editor-card-subtitle">Key learning outcomes displayed with checkmarks on the course page.</div>
+          </div>
+          <span id="learn-count-pill" style="font-size:11px; color:#22c55e; font-weight:700;">0 items</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-learn">
+            Learning Outcomes
+            <small>Enter 1 bullet point per line</small>
+          </label>
+          <textarea id="field-learn" rows="6" class="form-textarea" style="line-height:1.6;" placeholder="Anatomy and forms of human head and face for anime styling&#10;Sculpting anime head from sphere with digital clay techniques&#10;Creating stylized anime hair using custom ZBrush curves&#10;Secondary detail pass, facial planes, and polypainting"></textarea>
+        </div>
+      </section>
+
+      <!-- CARD 3: Course Content / Curriculum Builder -->
+      <section class="editor-card">
+        <div class="editor-card-header">
+          <div>
+            <h2 class="editor-card-title"><i class="fa-solid fa-layer-group" style="color:#f59e0b;"></i> 3. Course Content &amp; Curriculum</h2>
+            <div class="editor-card-subtitle">Full syllabus accordion with sections, lectures, durations, and free previews.</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span id="curriculum-counter-badge" style="font-size:12px; font-weight:700; color:#f59e0b;">0 sections • 0 lectures</span>
+            <button type="button" class="btn-back-link" style="padding:4px 10px; font-size:11px;" onclick="window.toggleCurriculumMode()">
+              <i class="fa-solid fa-code"></i> <span id="json-toggle-label">Raw JSON</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual Builder View -->
+        <div id="curriculum-visual-container">
+          <div id="sections-wrapper">
+            <!-- Populated dynamically with section cards -->
+          </div>
+
+          <button type="button" class="btn-add-section-big" onclick="window.addVisualSection()">
+            <i class="fa-solid fa-plus-circle"></i>
+            <span>Add New Section to Curriculum</span>
+          </button>
+        </div>
+
+        <!-- Raw JSON View (Collapsible) -->
+        <div id="curriculum-raw-container" style="display:none; margin-top:12px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <small style="color:#94a3b8;">Direct JSON Editor for power users:</small>
+            <button type="button" onclick="window.prettifyCurriculumJson()" style="background:#1e293b; color:#a855f7; border:1px solid rgba(168,85,247,0.3); border-radius:6px; padding:3px 8px; font-size:11px; cursor:pointer;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Prettify
+            </button>
+          </div>
+          <textarea id="field-curriculum-raw" rows="12" class="form-textarea" style="font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.4; background:#0b0f19;"></textarea>
+        </div>
+      </section>
+
+      <!-- CARD 4: Requirements & Related Topics -->
+      <section class="editor-card">
+        <div class="editor-card-header">
+          <div>
+            <h2 class="editor-card-title"><i class="fa-solid fa-list-ul" style="color:#06b6d4;"></i> 4. Prerequisites &amp; Related Topics</h2>
+            <div class="editor-card-subtitle">Recommended software/equipment and searchable topic tags.</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-requirements">
+            Requirements &amp; Prerequisites
+            <small>Enter 1 requirement per line</small>
+          </label>
+          <textarea id="field-requirements" rows="4" class="form-textarea" style="line-height:1.5;" placeholder="Basic understanding of 3D software navigation.&#10;A graphics tablet or pen display is recommended.&#10;No prior anatomical expertise required—we start from zero!"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-topics">
+            Explore Related Topics
+            <small>Comma-separated list of tags</small>
+          </label>
+          <input type="text" id="field-topics" placeholder="e.g. 3D Sculpting, Anatomy, ZBrush, 3D &amp; Animation, Character Design" class="form-input">
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT COLUMN: Sticky Settings, Pricing & Media Sidebar -->
+    <aside class="editor-right-col">
+
+      <!-- SIDEBAR CARD 1: Status & Visibility -->
+      <div class="editor-card">
+        <div class="editor-card-header">
+          <h3 class="editor-card-title"><i class="fa-solid fa-eye" style="color:#38bdf8;"></i> Visibility &amp; Ordering</h3>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-published">Publishing Status</label>
+          <select id="field-published" class="form-select">
+            <option value="true">Published (Visible Live)</option>
+            <option value="false">Hidden / Draft</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-order">Display Sequence Order</label>
+          <input type="number" id="field-order" value="1" min="0" class="form-input">
+          <small style="color:#94a3b8; font-size:11px; margin-top:4px; display:block;">Lower numbers appear first in the Learn catalog.</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-release">Release Date Label</label>
+          <input type="text" id="field-release" placeholder="e.g. Release 2026 or In Planning" class="form-input">
+        </div>
+      </div>
+
+      <!-- SIDEBAR CARD 2: Pricing & Subscription -->
+      <div class="editor-card">
+        <div class="editor-card-header">
+          <h3 class="editor-card-title"><i class="fa-solid fa-indian-rupee-sign" style="color:#22c55e;"></i> Pricing &amp; Plans</h3>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-price">One-Time Purchase Price *</label>
+          <input type="text" id="field-price" placeholder="e.g. ₹489.00" class="form-input" style="font-weight:700; color:#4ade80;">
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="field-originalPrice">Original Strike</label>
+            <input type="text" id="field-originalPrice" placeholder="e.g. ₹3,199.00" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-discount">Discount Badge</label>
+            <input type="text" id="field-discount" placeholder="e.g. 84% off" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.06); padding-top:14px; margin-top:8px;">
+          <label class="form-label" for="field-monthlyPrice">Monthly Subscription Tier</label>
+          <input type="text" id="field-monthlyPrice" placeholder="e.g. ₹375.00" class="form-input">
+        </div>
+      </div>
+
+      <!-- SIDEBAR CARD 3: Media & Video Preview -->
+      <div class="editor-card">
+        <div class="editor-card-header">
+          <h3 class="editor-card-title"><i class="fa-solid fa-photo-film" style="color:#a855f7;"></i> Media Showcase</h3>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-thumbnail">Thumbnail URL / Path</label>
+          <input type="text" id="field-thumbnail" placeholder="assets/courses/zbrush-course.png" class="form-input" oninput="window.updateMediaPreview()">
+          <div id="thumb-preview-box" class="preview-box">
+            <span style="color:#64748b; font-size:12px;">No image preview</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-videoUrl">
+            Preview Video URL
+            <small>YouTube embed URL</small>
+          </label>
+          <input type="text" id="field-videoUrl" placeholder="https://www.youtube.com/embed/..." class="form-input">
+        </div>
+      </div>
+
+      <!-- SIDEBAR CARD 4: Instructor & Social Proof -->
+      <div class="editor-card">
+        <div class="editor-card-header">
+          <h3 class="editor-card-title"><i class="fa-solid fa-certificate" style="color:#f59e0b;"></i> Instructor &amp; Social Proof</h3>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-author">Instructor Name</label>
+          <input type="text" id="field-author" placeholder="SenpaiWorks Studio" class="form-input">
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label" for="field-rating">Rating</label>
+            <input type="text" id="field-rating" placeholder="4.9" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-ratingCount">Reviews</label>
+            <input type="text" id="field-ratingCount" placeholder="(1,004 ratings)" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-learnersCount">Learners</label>
+            <input type="text" id="field-learnersCount" placeholder="5,892" class="form-input">
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="admin-toast-container" class="admin-toast-container"></div>
+
+  <!-- EDITOR CONTROLLER SCRIPT -->
+  <script src="scripts/admin/admin-core.js?v=4.0"></script>
+  <script src="scripts/admin/admin-course-editor.js?v=1.0"></script>
+</body>
+</html>

@@ -1,52 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="icon" href="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" type="image/png">
+  <link rel="icon"
+    href="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"
+    type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Control Center - SenpaiWorks</title>
-  <link rel="stylesheet" href="header.css">
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=4.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
   <!-- Dynamic Header (Hidden in Admin Console but kept to prevent header.js crashes) -->
-  <div id="header-placeholder" style="display: none;"></div>
-  <div class="top-bg-strip" style="display: none;"></div>
+  <div id="header-placeholder" class="display-none"></div>
+  <div class="top-bg-strip display-none"></div>
 
   <!-- Dynamic Cart/Menu Drawer (Hidden in Admin Console but kept for drawer.js compatibility) -->
-  <div id="drawer-container" style="display: none;"></div>
+  <div id="drawer-container" class="display-none"></div>
   <script src="scripts/drawer.js?v=6"></script>
 
   <!-- Admin Layout Wrapper -->
   <div class="admin-layout-wrapper">
-    
+
     <!-- LEFT SIDEBAR NAVIGATION -->
     <aside class="admin-sidebar">
       <div class="sidebar-brand">
         <a href="index.html" class="brand-link">
-          <img src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="SenpaiWorks Admin" class="sidebar-logo">
+          <img
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"
+            alt="SenpaiWorks Admin" class="sidebar-logo">
           <div class="brand-text">
             <h2>SenpaiWorks</h2>
             <span>Admin Control Center</span>
           </div>
         </a>
       </div>
-      
+
       <nav class="sidebar-nav">
         <a href="#" class="sidebar-link active" data-tab="tab-dashboard">
           <i class="fa-solid fa-chart-pie"></i>
           <span>Dashboard</span>
         </a>
+        <a href="#" class="sidebar-link" data-tab="tab-homepage">
+          <i class="fa-solid fa-house"></i>
+          <span>Home Page Manager</span>
+        </a>
         <a href="#" class="sidebar-link" data-tab="tab-store">
           <i class="fa-solid fa-store"></i>
           <span>Store / Products</span>
         </a>
+        <a href="#" class="sidebar-link" data-tab="tab-reviews">
+          <i class="fa-solid fa-star-half-stroke"></i>
+          <span>Product Reviews</span>
+        </a>
         <a href="#" class="sidebar-link" data-tab="tab-orders">
           <i class="fa-solid fa-cart-flatbed"></i>
           <span>Customer Orders</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-replacements">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Replacements</span>
         </a>
         <a href="#" class="sidebar-link" data-tab="tab-art">
           <i class="fa-solid fa-palette"></i>
@@ -76,15 +93,29 @@
           <i class="fa-solid fa-bell"></i>
           <span>Notifications</span>
         </a>
+        <a href="#" class="sidebar-link" data-tab="tab-courses">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Courses</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-faq">
+          <i class="fa-solid fa-circle-question"></i>
+          <span>FAQ Management</span>
+        </a>
         <a href="#" class="sidebar-link" data-tab="tab-account">
           <i class="fa-solid fa-user-gear"></i>
           <span>Account Settings</span>
         </a>
+        <a href="#" class="sidebar-link" data-tab="tab-trash">
+          <i class="fa-solid fa-trash-can" style="color: #f87171;"></i>
+          <span>Trash & Recovery</span>
+        </a>
       </nav>
-      
+
       <div class="sidebar-profile">
         <div class="profile-avatar-wrap">
-          <img id="sidebar-user-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Admin Avatar" class="profile-avatar">
+          <img id="sidebar-user-avatar"
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"
+            alt="Admin Avatar" class="profile-avatar">
           <div class="avatar-status-dot"></div>
         </div>
         <div class="profile-info">
@@ -100,33 +131,57 @@
 
     <!-- RIGHT MAIN CONTENT PANEL -->
     <main class="admin-main-pane">
-      
+
       <!-- Horizontal Header Bar -->
       <header class="main-header">
         <div class="header-left">
           <button id="sidebar-toggle" class="header-action-btn"><i class="fa-solid fa-bars"></i></button>
           <h1 id="page-title">Dashboard</h1>
         </div>
-        
+
         <div class="header-right">
           <!-- Theme Toggle Button -->
-          <button id="theme-toggle-btn" class="header-action-btn" title="Toggle Theme" style="display: flex;">
+          <button id="theme-toggle-btn" class="header-action-btn display-flex" title="Toggle Theme">
             <i class="fa-solid fa-moon" id="theme-icon"></i>
           </button>
+
+          <!-- Admin Notification Bell & Dropdown -->
+          <div class="admin-notif-wrap" style="position: relative;">
+            <button id="admin-notif-bell" class="header-action-btn display-flex" title="Admin Alerts"
+              style="position: relative;">
+              <i class="fa-solid fa-bell"></i>
+              <span id="admin-notif-badge"
+                style="display: none; position: absolute; top: -4px; right: -4px; background: #ef4444; color: #fff; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 10px; min-width: 16px; text-align: center; border: 2px solid var(--bg-card, #1e293b);">0</span>
+            </button>
+            <div id="admin-notif-dropdown" class="admin-notif-dropdown-menu"
+              style="display: none; position: absolute; top: 48px; right: 0; width: 340px; background: var(--bg-card, #1e293b); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.4); z-index: 1000; overflow: hidden;">
+              <div
+                style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.1));">
+                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-main, #f8fafc);"><i
+                    class="fa-solid fa-bell" style="color: #3b82f6;"></i> System Alerts</span>
+                <button type="button" id="btn-admin-mark-read"
+                  style="background: none; border: none; font-size: 0.75rem; color: #3b82f6; cursor: pointer; font-weight: 600;">Mark
+                  all read</button>
+              </div>
+              <div id="admin-notif-list" style="max-height: 320px; overflow-y: auto; padding: 6px 0;">
+                <!-- Loaded dynamically -->
+              </div>
+            </div>
+          </div>
 
           <!-- Live Status Indicator -->
           <div class="status-indicator">
             <div class="status-pulse-green"></div>
             <span>Studio Engine Online</span>
           </div>
-          
+
           <a href="index.html" class="view-site-btn" target="_blank" title="Go to Website">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
             <span>View Site</span>
           </a>
         </div>
       </header>
-      
+
       <!-- Sub-pages View Container -->
       <div class="pane-content-wrapper">
 
@@ -134,7 +189,7 @@
         <!-- SUBPAGE 1: DASHBOARD                       -->
         <!-- ========================================== -->
         <section class="admin-subpage active" id="tab-dashboard">
-          
+
           <!-- KPI Stats Grid -->
           <div class="stats-grid" id="stats-grid">
             <div class="stat-card">
@@ -142,46 +197,46 @@
                 <i class="fa-solid fa-palette"></i>
               </div>
               <div class="stat-body">
-                <span class="stat-value" id="stat-artworks">48</span>
+                <span class="stat-value" id="stat-artworks">0</span>
                 <span class="stat-label">Total Artworks</span>
               </div>
               <span class="stat-trend trend-up" id="stat-artworks-trend">
                 <i class="fa-solid fa-arrow-trend-up"></i> +12%
               </span>
             </div>
-            
+
             <div class="stat-card">
               <div class="stat-icon stat-icon-green">
                 <i class="fa-solid fa-box-open"></i>
               </div>
               <div class="stat-body">
-                <span class="stat-value" id="stat-products">24</span>
+                <span class="stat-value" id="stat-products">0</span>
                 <span class="stat-label">Store Products</span>
               </div>
               <span class="stat-trend trend-up" id="stat-products-trend">
                 <i class="fa-solid fa-arrow-trend-up"></i> +8%
               </span>
             </div>
-            
+
             <div class="stat-card">
               <div class="stat-icon stat-icon-purple">
                 <i class="fa-solid fa-indian-rupee-sign"></i>
               </div>
               <div class="stat-body">
-                <span class="stat-value" id="stat-revenue">₹1,48,900</span>
+                <span class="stat-value" id="stat-revenue">₹0</span>
                 <span class="stat-label">Total Sales Revenue</span>
               </div>
               <span class="stat-trend trend-up" id="stat-revenue-trend">
                 <i class="fa-solid fa-arrow-trend-up"></i> +24%
               </span>
             </div>
-            
+
             <div class="stat-card">
               <div class="stat-icon stat-icon-amber">
                 <i class="fa-solid fa-eye"></i>
               </div>
               <div class="stat-body">
-                <span class="stat-value" id="stat-views">18,420</span>
+                <span class="stat-value" id="stat-views">0</span>
                 <span class="stat-label">Monthly Page Views</span>
               </div>
               <span class="stat-trend trend-neutral" id="stat-views-trend">
@@ -193,13 +248,19 @@
           <!-- Charts Section -->
           <div class="charts-grid">
             <div class="admin-card chart-card">
-              <h2><i class="fa-solid fa-chart-line"></i> Store Sales & Analytics Overview</h2>
+              <div class="chart-header-wrap">
+                <h2><i class="fa-solid fa-chart-line"></i> Store Sales & Analytics Overview</h2>
+                <span class="chart-subtitle">7-Day Realized Revenue</span>
+              </div>
               <div class="chart-canvas-wrap">
                 <canvas id="chart-timeline"></canvas>
               </div>
             </div>
             <div class="admin-card chart-card">
-              <h2><i class="fa-solid fa-chart-pie"></i> Catalog Breakdown by Category</h2>
+              <div class="chart-header-wrap">
+                <h2><i class="fa-solid fa-chart-pie"></i> Product Sales by Category</h2>
+                <span class="chart-subtitle" id="category-chart-subtitle">Gross Merchandise Value (GMV)</span>
+              </div>
               <div class="chart-canvas-wrap chart-canvas-doughnut">
                 <canvas id="chart-categories"></canvas>
               </div>
@@ -208,7 +269,7 @@
 
           <!-- Bottom Grid: Recent Activity & Admin Tasks -->
           <div class="dashboard-bottom-grid">
-            
+
             <!-- Recent Database Activity Table -->
             <div class="admin-card recent-items-card">
               <h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Studio Activity</h2>
@@ -224,7 +285,7 @@
                     </tr>
                   </thead>
                   <tbody id="recent-activity-body">
-                    <!-- Populated dynamically via admin.js -->
+                    <!-- Populated dynamically -->
                   </tbody>
                 </table>
               </div>
@@ -236,7 +297,7 @@
                 <h2><i class="fa-solid fa-square-check"></i> Studio Tasks</h2>
                 <button class="task-add-btn" id="task-add-trigger"><i class="fa-solid fa-plus"></i> Add</button>
               </div>
-              <div class="task-input-container" id="task-input-wrapper" style="display: none;">
+              <div class="task-input-container display-none" id="task-input-wrapper">
                 <input type="text" id="task-new-title" placeholder="Enter task objective...">
                 <button id="task-new-submit">Add Task</button>
               </div>
@@ -253,7 +314,7 @@
         <!-- SUBPAGE 2: STORE PRODUCTS                  -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-store">
-          
+
           <div class="subpage-controls">
             <div class="inner-tabs">
               <button class="inner-tab-btn active" data-subtab="store-list">
@@ -269,11 +330,38 @@
           <div class="inner-tab-content active" id="store-list">
             <div class="admin-card list-card">
               <h2><i class="fa-solid fa-list"></i> Store Products Database</h2>
-              <div class="table-toolbar">
-                <div class="table-search-wrap">
-                  <i class="fa-solid fa-search"></i>
-                  <input type="text" id="product-search" class="table-search-input" placeholder="Search product name or category...">
+              <div class="table-toolbar"
+                style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; flex: 1;">
+                  <div class="table-search-wrap" style="flex: 1; min-width: 220px;">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="product-search" class="table-search-input"
+                      placeholder="Search product name, SKU, ID...">
+                  </div>
+
+                  <!-- Category Filter -->
+                  <div class="table-filter-wrap">
+                    <select id="product-filter-category" class="table-select-filter"
+                      style="background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer;">
+                      <option value="all">📁 All Categories</option>
+                      <option value="Merchandise">Merchandise</option>
+                      <option value="Digital Courses">Digital Courses</option>
+                      <option value="3D Assets">3D Assets</option>
+                      <option value="Materials & Textures">Materials & Textures</option>
+                    </select>
+                  </div>
+
+                  <!-- Product Type Filter (Physical vs Digital) -->
+                  <div class="table-filter-wrap">
+                    <select id="product-filter-type" class="table-select-filter"
+                      style="background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer;">
+                      <option value="all">⚡ All Types</option>
+                      <option value="physical">📦 Physical (Shipped)</option>
+                      <option value="digital">⚡ Digital (Instant)</option>
+                    </select>
+                  </div>
                 </div>
+
                 <span class="table-count" id="product-table-count">Showing items...</span>
               </div>
               <div class="table-responsive">
@@ -355,8 +443,22 @@
                   </div>
                 </div>
 
+                <!-- Digital-Only: Download URL Field -->
+                <div class="form-group" id="prod-download-url-group"
+                  style="display: none; background: rgba(6, 182, 212, 0.05); padding: 16px; border-radius: 12px; border: 1px solid rgba(6, 182, 212, 0.2); margin-bottom: 20px;">
+                  <label for="prod-download-url" style="color: #06b6d4; font-weight: 700;">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> File Download URL * (Instant Asset Delivery)
+                  </label>
+                  <input type="url" id="prod-download-url"
+                    placeholder="https://assets.senpaiworks.com/downloads/package.zip">
+                  <small style="color: #94a3b8; font-size: 0.75rem; margin-top: 6px; display: block;">
+                    Customers who purchase this product will immediately receive this secure download link upon order
+                    placement.
+                  </small>
+                </div>
+
                 <div class="form-row-3">
-                  <div class="form-group">
+                  <div class="form-group" id="prod-stock-group">
                     <label for="prod-stock">Stock Quantity</label>
                     <input type="number" id="prod-stock" min="0" step="1" value="50">
                   </div>
@@ -394,70 +496,83 @@
                   </div>
                   <div class="form-group">
                     <label for="prod-img">Primary Image URL *</label>
-                    <input type="url" id="prod-img" required placeholder="https://res.cloudinary.com/...">
+                    <input type="url" id="prod-img" required placeholder="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/...">
                   </div>
                 </div>
 
-                <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
-                  <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="form-group form-group-boxed">
+                  <label class="form-header-flex">
                     Additional Image URLs
-                    <button type="button" id="btn-add-additional-url" style="background: #3b82f6; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;"><i class="fa-solid fa-plus"></i> Add Image</button>
+                    <button type="button" id="btn-add-additional-url" class="btn-add-inline"><i
+                        class="fa-solid fa-plus"></i> Add Image</button>
                   </label>
                   <div id="additional-urls-container"></div>
                 </div>
 
                 <div class="form-group">
                   <label for="prod-description">Description *</label>
-                  <textarea id="prod-description" rows="3" required placeholder="Provide a detailed description of the product..."></textarea>
+                  <textarea id="prod-description" rows="3" required
+                    placeholder="Provide a detailed description of the product..."></textarea>
                 </div>
 
-                <div class="form-row-2">
-                  <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
-                    <label>Print Types</label>
-                    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;">
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-bw-half"> B&W Half</label>
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-bw-full"> B&W Full</label>
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-col-half"> Col Half</label>
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-print-col-full"> Col Full</label>
+                <!-- Physical-Only Variant & Manufacturing Sections -->
+                <div id="physical-only-fields">
+                  <div class="form-row-2">
+                    <div class="form-group form-group-boxed">
+                      <label>Print Types</label>
+                      <div class="options-checkbox-group">
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-print-bw-half"> B&W
+                          Half</label>
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-print-bw-full"> B&W
+                          Full</label>
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-print-col-half"> Col
+                          Half</label>
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-print-col-full"> Col
+                          Full</label>
+                      </div>
+                    </div>
+                    <div class="form-group form-group-boxed">
+                      <label>Apparel Sizes</label>
+                      <div class="options-checkbox-group">
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-size-s"> S</label>
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-size-m"> M</label>
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-size-l"> L</label>
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-size-xl"> XL</label>
+                        <label class="options-checkbox-label"><input type="checkbox" id="v-size-xxl"> XXL</label>
+                      </div>
                     </div>
                   </div>
-                  <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
-                    <label>Apparel Sizes</label>
-                    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;">
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-s"> S</label>
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-m"> M</label>
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-l"> L</label>
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-xl"> XL</label>
-                      <label style="font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="v-size-xxl"> XXL</label>
-                    </div>
+
+                  <div class="form-group form-group-boxed">
+                    <label class="form-header-flex">
+                      Color Variants
+                      <button type="button" id="btn-add-color-variant" class="btn-add-inline"><i
+                          class="fa-solid fa-plus"></i> Add Color</button>
+                    </label>
+                    <div id="color-variants-container"></div>
                   </div>
-                </div>
 
-                <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
-                  <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    Color Variants
-                    <button type="button" id="btn-add-color-variant" style="background: #3b82f6; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;"><i class="fa-solid fa-plus"></i> Add Color</button>
-                  </label>
-                  <div id="color-variants-container"></div>
-                </div>
-
-                <div class="form-group" style="background: rgba(30, 41, 59, 0.5); padding: 16px; border-radius: 8px;">
-                  <label style="margin-bottom: 12px;">Feature Highlights</label>
-                  <div class="form-row-3">
-                    <div>
-                      <input type="text" id="feat-1-title" placeholder="Feature 1 Title" style="margin-bottom: 8px;">
-                      <textarea id="feat-1-desc" rows="2" placeholder="Feature 1 Desc" style="margin-bottom: 8px;"></textarea>
-                      <input type="url" id="feat-1-img" placeholder="Feature 1 Image URL">
-                    </div>
-                    <div>
-                      <input type="text" id="feat-2-title" placeholder="Feature 2 Title" style="margin-bottom: 8px;">
-                      <textarea id="feat-2-desc" rows="2" placeholder="Feature 2 Desc" style="margin-bottom: 8px;"></textarea>
-                      <input type="url" id="feat-2-img" placeholder="Feature 2 Image URL">
-                    </div>
-                    <div>
-                      <input type="text" id="feat-3-title" placeholder="Feature 3 Title" style="margin-bottom: 8px;">
-                      <textarea id="feat-3-desc" rows="2" placeholder="Feature 3 Desc" style="margin-bottom: 8px;"></textarea>
-                      <input type="url" id="feat-3-img" placeholder="Feature 3 Image URL">
+                  <div class="form-group form-group-boxed">
+                    <label class="feature-col-input">Feature Highlights</label>
+                    <div class="form-row-3">
+                      <div>
+                        <input type="text" id="feat-1-title" placeholder="Feature 1 Title" class="feature-col-input">
+                        <textarea id="feat-1-desc" rows="2" placeholder="Feature 1 Desc"
+                          class="feature-col-input"></textarea>
+                        <input type="url" id="feat-1-img" placeholder="Feature 1 Image URL">
+                      </div>
+                      <div>
+                        <input type="text" id="feat-2-title" placeholder="Feature 2 Title" class="feature-col-input">
+                        <textarea id="feat-2-desc" rows="2" placeholder="Feature 2 Desc"
+                          class="feature-col-input"></textarea>
+                        <input type="url" id="feat-2-img" placeholder="Feature 2 Image URL">
+                      </div>
+                      <div>
+                        <input type="text" id="feat-3-title" placeholder="Feature 3 Title" class="feature-col-input">
+                        <textarea id="feat-3-desc" rows="2" placeholder="Feature 3 Desc"
+                          class="feature-col-input"></textarea>
+                        <input type="url" id="feat-3-img" placeholder="Feature 3 Image URL">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -472,6 +587,195 @@
         </section>
 
         <!-- ========================================== -->
+        <!-- SUBPAGE: PRODUCT REVIEWS & HEALTH          -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-reviews">
+
+          <div class="subpage-controls">
+            <div class="inner-tabs">
+              <button class="inner-tab-btn active" data-subtab="reviews-moderation"
+                onclick="switchReviewsSubtab('reviews-moderation')">
+                <i class="fa-solid fa-triangle-exclamation"></i> Moderation Queue
+                <span id="reviews-reported-badge-count"
+                  style="margin-left: 6px; background: #ef4444; color: #fff; padding: 2px 7px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; display: none;">0</span>
+              </button>
+              <button class="inner-tab-btn" data-subtab="reviews-health"
+                onclick="switchReviewsSubtab('reviews-health')">
+                <i class="fa-solid fa-chart-line"></i> Ratings Overview (Health)
+              </button>
+              <button class="inner-tab-btn" data-subtab="reviews-all" onclick="switchReviewsSubtab('reviews-all')">
+                <i class="fa-solid fa-database"></i> All Reviews Database
+              </button>
+            </div>
+          </div>
+
+          <!-- Subtab 1: Moderation Queue (Reported Reviews by Default) -->
+          <div class="inner-tab-content active" id="reviews-moderation">
+            <div class="admin-card list-card">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+                <div>
+                  <h2><i class="fa-solid fa-flag" style="color: #ef4444;"></i> Moderation Queue (Reported Reviews)</h2>
+                  <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">Reviews flagged by
+                    customers requiring human administrator triage and moderation decisions.</p>
+                </div>
+                <button onclick="loadReportedModerationQueue()" class="btn-refresh"
+                  style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                  <i class="fa-solid fa-rotate"></i> Refresh Queue
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Reviewer</th>
+                      <th>Rating</th>
+                      <th>Review Content</th>
+                      <th>Flags & Reported Reasons</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th style="text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-reported-reviews-table-body">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Catalog Ratings Health Overview -->
+          <div class="inner-tab-content" id="reviews-health">
+            <div class="admin-card list-card">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+                <div>
+                  <h2><i class="fa-solid fa-chart-line" style="color: #3b82f6;"></i> Product Ratings Overview (Health
+                    Ranking)</h2>
+                  <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">Surfacing lowest-rated
+                    products first to immediately identify customer quality or fulfillment issues.</p>
+                </div>
+                <button onclick="loadProductHealthOverview()" class="btn-refresh"
+                  style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                  <i class="fa-solid fa-rotate"></i> Refresh Health
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th>Average Rating</th>
+                      <th>Total Reviews</th>
+                      <th>Health Status</th>
+                      <th style="text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-product-health-table-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 3: All Reviews Database Search -->
+          <div class="inner-tab-content" id="reviews-all">
+            <div class="admin-card list-card">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+                <div>
+                  <h2><i class="fa-solid fa-database"></i> All Reviews Database</h2>
+                  <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">Search and filter across
+                    every review published across the SenpaiWorks catalog.</p>
+                </div>
+                <span id="admin-reviews-total-badge"
+                  style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;">0
+                  Reviews</span>
+              </div>
+
+              <!-- Toolbar & Filters -->
+              <div class="table-toolbar"
+                style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; flex: 1;">
+                  <div class="table-search-wrap" style="flex: 1; min-width: 220px;">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="admin-reviews-search" class="table-search-input"
+                      placeholder="Search review title, text, user, product..." onkeyup="handleAdminReviewsSearch()">
+                  </div>
+
+                  <!-- Rating Filter -->
+                  <div class="table-filter-wrap">
+                    <select id="admin-reviews-filter-rating" class="table-select-filter"
+                      onchange="loadAllAdminReviews()"
+                      style="background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer;">
+                      <option value="">⭐ All Ratings</option>
+                      <option value="5">5 Stars</option>
+                      <option value="4">4 Stars</option>
+                      <option value="3">3 Stars</option>
+                      <option value="2">2 Stars</option>
+                      <option value="1">1 Star</option>
+                    </select>
+                  </div>
+
+                  <!-- Status Filter -->
+                  <div class="table-filter-wrap">
+                    <select id="admin-reviews-filter-status" class="table-select-filter"
+                      onchange="loadAllAdminReviews()"
+                      style="background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer;">
+                      <option value="">📌 All Statuses</option>
+                      <option value="Published">Published</option>
+                      <option value="Hidden">Hidden</option>
+                    </select>
+                  </div>
+
+                  <!-- Verified Purchases Filter -->
+                  <label
+                    style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; user-select: none;">
+                    <input type="checkbox" id="admin-reviews-filter-verified" onchange="loadAllAdminReviews()"
+                      style="accent-color: #3b82f6; width: 16px; height: 16px; cursor: pointer;">
+                    <span>Verified Only</span>
+                  </label>
+                </div>
+
+                <button onclick="loadAllAdminReviews()" class="btn-refresh"
+                  style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                  <i class="fa-solid fa-rotate"></i> Refresh
+                </button>
+              </div>
+
+              <!-- Reviews Table -->
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Reviewer</th>
+                      <th>Rating</th>
+                      <th>Review Content</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Helpful</th>
+                      <th>Reports</th>
+                      <th>Date</th>
+                      <th style="text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-reviews-table-body">
+                    <!-- Dynamically populated by scripts/admin/admin-reviews.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
         <!-- SUBPAGE 3: CUSTOMER ORDERS                 -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-orders">
@@ -480,7 +784,8 @@
             <div class="table-toolbar">
               <div class="table-search-wrap">
                 <i class="fa-solid fa-search"></i>
-                <input type="text" id="orders-search" class="table-search-input" placeholder="Search order ID, customer name, email...">
+                <input type="text" id="orders-search" class="table-search-input"
+                  placeholder="Search order ID, customer name, email...">
               </div>
               <span class="table-count" id="orders-table-count">Showing orders...</span>
             </div>
@@ -488,10 +793,13 @@
               <table class="admin-table" id="orders-table">
                 <thead>
                   <tr>
-                    <th>Order ID</th>
+                    <th onclick="window.toggleOrdersSort('id')">Order ID <i class="fa-solid fa-sort"
+                        id="orders-sort-icon-id"></i></th>
                     <th>Customer</th>
-                    <th>Date</th>
-                    <th>Total</th>
+                    <th onclick="window.toggleOrdersSort('date')">Date <i class="fa-solid fa-sort"
+                        id="orders-sort-icon-date"></i></th>
+                    <th onclick="window.toggleOrdersSort('total')">Total <i class="fa-solid fa-sort"
+                        id="orders-sort-icon-total"></i></th>
                     <th>Payment</th>
                     <th>Fulfillment Status</th>
                     <th>Actions</th>
@@ -506,10 +814,43 @@
         </section>
 
         <!-- ========================================== -->
+        <!-- SUBPAGE: REPLACEMENT REQUESTS              -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-replacements">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Replacement Requests</h1>
+              <p class="page-subtitle">Review and approve replacement requests from customers.</p>
+            </div>
+          </div>
+
+          <div class="admin-card table-card table-card-spaced">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Item Replaced</th>
+                    <th>Reason & Notes</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="replacements-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
         <!-- SUBPAGE 4: ART LIBRARY                     -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-art">
-          
+
           <div class="subpage-controls">
             <div class="inner-tabs">
               <button class="inner-tab-btn active" data-subtab="art-list">
@@ -528,7 +869,8 @@
               <div class="table-toolbar">
                 <div class="table-search-wrap">
                   <i class="fa-solid fa-search"></i>
-                  <input type="text" id="artwork-search" class="table-search-input" placeholder="Search character or anime title...">
+                  <input type="text" id="artwork-search" class="table-search-input"
+                    placeholder="Search character or anime title...">
                 </div>
                 <span class="table-count" id="artwork-table-count"></span>
               </div>
@@ -591,12 +933,13 @@
 
                 <div class="form-group">
                   <label for="art-img">Image URL *</label>
-                  <input type="url" id="art-img" required placeholder="https://res.cloudinary.com/...">
+                  <input type="url" id="art-img" required placeholder="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/...">
                 </div>
 
                 <div class="form-group">
                   <label for="art-description">Description *</label>
-                  <textarea id="art-description" rows="3" required placeholder="Describe the illustration style, lighting, and theme..."></textarea>
+                  <textarea id="art-description" rows="3" required
+                    placeholder="Describe the illustration style, lighting, and theme..."></textarea>
                 </div>
 
                 <button type="submit" class="admin-submit-btn">
@@ -638,23 +981,657 @@
         <!-- SUBPAGE 6: NEWS & ARTICLES                 -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-news">
-          <div class="admin-card list-card">
-            <h2><i class="fa-solid fa-newspaper"></i> Studio News & Release Articles</h2>
-            <div class="table-responsive">
-              <table class="admin-table" id="news-table">
-                <thead>
-                  <tr>
-                    <th>Article ID</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Author</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="news-list-body">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
+          <div class="subpage-controls">
+            <div class="inner-tabs">
+              <button class="inner-tab-btn active" data-subtab="news-list">
+                <i class="fa-solid fa-newspaper"></i> News Articles Database
+              </button>
+              <button class="inner-tab-btn" data-subtab="news-add">
+                <i class="fa-solid fa-plus-circle"></i> Publish News Article
+              </button>
+            </div>
+          </div>
+
+          <!-- Subtab 1: News Articles Database -->
+          <div class="inner-tab-content active" id="news-list">
+            <div class="admin-card list-card">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+                <div>
+                  <h2><i class="fa-solid fa-newspaper"></i> Studio News & Release Articles</h2>
+                  <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">Articles marked as
+                    "Featured" reflect live on the Homepage Featured News & News Stories.</p>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <button type="button" class="btn-refresh" onclick="window.loadNewsArticles()"
+                    style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    <i class="fa-solid fa-rotate"></i> Refresh
+                  </button>
+                  <button type="button" class="admin-submit-btn"
+                    style="padding: 8px 16px; margin: 0; font-size: 0.85rem;"
+                    onclick="document.querySelector('.inner-tab-btn[data-subtab=\'news-add\']').click()">
+                    <i class="fa-solid fa-plus"></i> New Article
+                  </button>
+                </div>
+              </div>
+
+              <!-- Toolbar / Search -->
+              <div class="table-toolbar"
+                style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; flex: 1;">
+                  <div class="table-search-wrap" style="flex: 1; max-width: 380px;">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="news-search-input" class="table-search-input"
+                      placeholder="Search by title, topic, or category...">
+                  </div>
+                  <select id="news-category-filter" class="table-filter-select"
+                    style="padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.88rem;">
+                    <option value="">All Categories</option>
+                    <option value="Platform Core">Platform Core</option>
+                    <option value="3D Animation">3D Animation</option>
+                    <option value="Web Dev">Web Dev</option>
+                    <option value="Art Library">Art Library</option>
+                    <option value="Design">Design</option>
+                    <option value="Merchandise">Merchandise</option>
+                  </select>
+                  <select id="news-featured-filter" class="table-filter-select"
+                    style="padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.88rem;">
+                    <option value="">All Articles</option>
+                    <option value="featured">Featured / Highlighted Only</option>
+                    <option value="standard">Standard Only</option>
+                  </select>
+                </div>
+                <span class="table-count" id="news-table-count"
+                  style="font-weight: 700; color: var(--text-secondary); font-size: 0.88rem;">0 Articles</span>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table" id="news-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 70px;">Cover</th>
+                      <th>Title</th>
+                      <th>Category</th>
+                      <th>Author & Date</th>
+                      <th>Homepage Placement</th>
+                      <th>Featured</th>
+                      <th style="text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="news-list-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Publish News Article Form -->
+          <div class="inner-tab-content" id="news-add">
+            <div class="admin-card form-card">
+              <h2><i class="fa-solid fa-pen-nib"></i> Publish New News Article</h2>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 20px;">Upload an official
+                studio story, release breakdown, or project announcement. Featured articles are prioritized on the
+                Homepage.</p>
+
+              <form id="form-add-news" class="admin-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="news-title">Article Title *</label>
+                    <input type="text" id="news-title" required
+                      placeholder="e.g. SENPAIWORKS 2.0 Architectural Overhaul & Platform Release Notes">
+                  </div>
+                  <div class="form-group">
+                    <label for="news-category">Category *</label>
+                    <select id="news-category" required>
+                      <option value="Platform Core">Platform Core</option>
+                      <option value="3D Animation">3D Animation</option>
+                      <option value="Web Dev">Web Dev</option>
+                      <option value="Art Library">Art Library</option>
+                      <option value="Design">Design</option>
+                      <option value="Merchandise">Merchandise</option>
+                      <option value="Community">Community</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="news-author">Author</label>
+                    <input type="text" id="news-author" value="Team SenpaiWorks" placeholder="e.g. Team SenpaiWorks">
+                  </div>
+                  <div class="form-group">
+                    <label for="news-date">Publication Date</label>
+                    <input type="text" id="news-date" placeholder="e.g. July 2026 or Today">
+                  </div>
+                  <div class="form-group">
+                    <label for="news-readtime">Estimated Read Time</label>
+                    <input type="text" id="news-readtime" value="5 mins read" placeholder="e.g. 5 mins read">
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="news-placement">Homepage Placement Target</label>
+                    <select id="news-placement">
+                      <option value="main_feature">Main Feature Card (Left Big Card)</option>
+                      <option value="recommended">Recommended Card (Right Top Wide Card)</option>
+                      <option value="list">Recommended List Item (Right 3-item list)</option>
+                      <option value="standard" selected>Standard News Story</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                    <label
+                      style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 12px; font-weight: 700;">
+                      <input type="checkbox" id="news-is-featured"
+                        style="width: 18px; height: 18px; accent-color: #6366f1;">
+                      <span>Highlight in Homepage Featured News</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="news-img">Cover / Thumbnail Image URL *</label>
+                  <div style="display: flex; gap: 10px;">
+                    <input type="url" id="news-img" required placeholder="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/..."
+                      style="flex: 1;">
+                    <label for="news-file-upload" class="btn-refresh"
+                      style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 9px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                      <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                    </label>
+                    <input type="file" id="news-file-upload" accept="image/*" style="display: none;">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="news-hashtags">Hashtags</label>
+                  <input type="text" id="news-hashtags" placeholder="#PlatformUpdate, #Web3D, #LuxuryAesthetics">
+                </div>
+
+                <div class="form-group">
+                  <label for="news-summary">Brief Summary (Displays on cards) *</label>
+                  <textarea id="news-summary" rows="2" required
+                    placeholder="Short 1-2 sentence teaser for cards and search results..."></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="news-content">Full Article Body (HTML / Markdown supported) *</label>
+                  <textarea id="news-content" rows="8" required
+                    placeholder="Write or paste your article body here. Supports standard HTML like <p>, <h3>, <ul>, <li>, <strong>, <code>..."></textarea>
+                </div>
+
+                <button type="submit" class="admin-submit-btn">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Publish News Article
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE: HOME PAGE MANAGER                -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-homepage">
+          <div class="courses-top-header">
+            <div>
+              <h1 style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <i class="fa-solid fa-house"></i> Home Page Manager
+              </h1>
+              <p class="section-desc">Manage hero spotlight slides, featured news showcases, and promo banners across the SenpaiWorks homepage.</p>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" class="btn-refresh" onclick="window.loadHomepageManager()">
+                <i class="fa-solid fa-rotate"></i> Refresh
+              </button>
+              <button type="button" class="btn-add-course-premium" onclick="window.openHeroSlideModal()">
+                <i class="fa-solid fa-plus"></i> Add Hero Slide
+              </button>
+            </div>
+          </div>
+
+          <!-- Inner Subtabs -->
+          <div class="inner-tabs-bar" style="margin-bottom: 20px;">
+            <button type="button" class="inner-tab-btn active" data-subtab="home-tab-slides" onclick="window.switchHomeSubtab('home-tab-slides')">
+              <i class="fa-solid fa-images"></i> Starting Hero Slides
+            </button>
+            <button type="button" class="inner-tab-btn" data-subtab="home-tab-showcase" onclick="window.switchHomeSubtab('home-tab-showcase')">
+              <i class="fa-solid fa-layer-group"></i> Things You Might Like
+            </button>
+            <button type="button" class="inner-tab-btn" data-subtab="home-tab-shorts" onclick="window.switchHomeSubtab('home-tab-shorts')">
+              <i class="fa-solid fa-film"></i> Shorts &amp; Entertainment
+            </button>
+            <button type="button" class="inner-tab-btn" data-subtab="home-tab-merch" onclick="window.switchHomeSubtab('home-tab-merch')">
+              <i class="fa-solid fa-trophy"></i> Merch Spotlight (Auto &amp; Override)
+            </button>
+            <button type="button" class="inner-tab-btn" data-subtab="home-tab-news" onclick="window.switchHomeSubtab('home-tab-news')">
+              <i class="fa-solid fa-bullhorn"></i> Featured News Overview
+            </button>
+          </div>
+
+          <!-- SUBTAB 1: Hero Slides -->
+          <div class="inner-tab-content active" id="home-tab-slides">
+            <!-- Breadcrumb Navigation Path -->
+            <div id="hero-slides-breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-bottom: 18px; color: var(--text-secondary);">
+              <span id="hero-crumb-root" style="color: var(--text-primary); font-weight: 600; cursor: pointer;" onclick="window.showHeroSlidesList()">
+                <i class="fa-solid fa-images"></i> Starting Hero Slides
+              </span>
+              <span id="hero-crumb-sep" style="display: none; color: var(--text-secondary); opacity: 0.6;">
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+              </span>
+              <span id="hero-crumb-current" style="display: none; color: #60a5fa; font-weight: 600;">
+                Hero Slide Editor
+              </span>
+            </div>
+
+            <!-- 1A: Directory Table View -->
+            <div id="hero-slides-list-view">
+              <div class="admin-card list-card">
+                <div class="table-toolbar">
+                  <span class="table-count" id="hero-slides-count">Loading slides...</span>
+                  <button type="button" class="admin-submit-btn" onclick="window.openHeroSlideEditor()" style="margin-left:auto;padding:8px 16px;margin-top:0;margin-bottom:0;font-size:0.85rem;">
+                    <i class="fa-solid fa-plus"></i> Add Hero Slide
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 80px;">Media</th>
+                        <th>Spotlight & Title</th>
+                        <th>Description</th>
+                        <th>Action Buttons</th>
+                        <th>Order</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="hero-slides-table-body">
+                      <!-- Loaded dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1B: Full-Page Editor View -->
+            <div id="hero-slides-editor-view" style="display: none;">
+              <div class="admin-card form-card">
+                <div class="form-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                  <div>
+                    <h2 id="hero-slide-editor-title"><i class="fa-solid fa-plus-circle"></i> Create Hero Spotlight Slide</h2>
+                    <p id="hero-slide-editor-subtitle" style="font-size: 0.86rem; color: var(--text-secondary); margin-top: 4px;">Customize title, spotlight tag, background media, and action buttons for the hero carousel.</p>
+                  </div>
+                  <button type="button" class="btn-refresh" onclick="window.showHeroSlidesList()">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Slides
+                  </button>
+                </div>
+
+                <form id="form-hero-slide" class="admin-form">
+                  <input type="hidden" id="hero-slide-id">
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="hero-slide-spotlight">Spotlight Tag *</label>
+                      <input type="text" id="hero-slide-spotlight" required placeholder="e.g. #1 Spotlight">
+                    </div>
+                    <div class="form-group">
+                      <label for="hero-slide-order">Display Priority / Order *</label>
+                      <input type="number" id="hero-slide-order" value="1" min="0">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="hero-slide-title">Slide Headline / Title *</label>
+                    <input type="text" id="hero-slide-title" required placeholder="e.g. SenpaiWorks 2.0">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="hero-slide-desc">Slide Description / Teaser</label>
+                    <textarea id="hero-slide-desc" rows="3" placeholder="Teaser summary describing the featured release..."></textarea>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="hero-slide-bgtype">Media Type *</label>
+                      <select id="hero-slide-bgtype">
+                        <option value="image">Image (WebP / PNG / JPG)</option>
+                        <option value="video">MP4 Video</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="hero-slide-bgurl">Media URL / Cloudflare R2 *</label>
+                      <div style="display: flex; gap: 8px;">
+                        <input type="text" id="hero-slide-bgurl" required placeholder="assets/... or https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/..." style="flex: 1;">
+                        <label for="hero-slide-file-upload" class="btn-refresh" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                          <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                        </label>
+                        <input type="file" id="hero-slide-file-upload" accept="image/*,video/*" style="display: none;">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="hero-slide-btn1-text">Primary Button Text</label>
+                      <input type="text" id="hero-slide-btn1-text" placeholder="e.g. Watch Video or ▶ Watch Now">
+                    </div>
+                    <div class="form-group">
+                      <label for="hero-slide-btn1-link">Primary Button Link</label>
+                      <input type="text" id="hero-slide-btn1-link" placeholder="e.g. news.html or https://youtube.com/...">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="hero-slide-btn2-text">Secondary Button Text</label>
+                      <input type="text" id="hero-slide-btn2-text" placeholder="e.g. Details or Read News">
+                    </div>
+                    <div class="form-group">
+                      <label for="hero-slide-btn2-link">Secondary Button Link</label>
+                      <input type="text" id="hero-slide-btn2-link" placeholder="e.g. detail.html?id=deadpool">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700;">
+                      <input type="checkbox" id="hero-slide-published" checked style="width: 18px; height: 18px; accent-color: #6366f1;">
+                      <span>Visible on Home Page (Active in carousel)</span>
+                    </label>
+                  </div>
+
+                  <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button type="submit" class="admin-submit-btn" id="hero-slide-submit-btn">
+                      <i class="fa-solid fa-save"></i> Save Hero Slide
+                    </button>
+                    <button type="button" class="btn-refresh" onclick="window.showHeroSlidesList()">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 2: Showcase Items -->
+          <div class="inner-tab-content" id="home-tab-showcase">
+            <!-- Breadcrumb Navigation Path -->
+            <div id="showcase-breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-bottom: 18px; color: var(--text-secondary);">
+              <span id="showcase-crumb-root" style="color: var(--text-primary); font-weight: 600; cursor: pointer;" onclick="window.showShowcaseList()">
+                <i class="fa-solid fa-layer-group"></i> Things You Might Like
+              </span>
+              <span id="showcase-crumb-sep" style="display: none; color: var(--text-secondary); opacity: 0.6;">
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+              </span>
+              <span id="showcase-crumb-current" style="display: none; color: #60a5fa; font-weight: 600;">
+                Showcase Card Editor
+              </span>
+            </div>
+
+            <!-- 2A: Directory Table View -->
+            <div id="showcase-list-view">
+              <div class="admin-card list-card">
+                <div class="table-toolbar">
+                  <span class="table-count" id="showcase-items-count">Things You Might Like</span>
+                  <button type="button" class="admin-submit-btn" onclick="window.openShowcaseEditor()" style="margin-left:auto;padding:8px 16px;margin-top:0;margin-bottom:0;font-size:0.85rem;">
+                    <i class="fa-solid fa-plus"></i> Add Showcase Card
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 70px;">Image</th>
+                        <th>Title & Subtitle</th>
+                        <th>Description</th>
+                        <th>Button & Link</th>
+                        <th>Order</th>
+                        <th style="text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="showcase-items-table-body">
+                      <!-- Loaded dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2B: Full-Page Showcase Card Editor -->
+            <div id="showcase-editor-view" style="display: none;">
+              <div class="admin-card form-card">
+                <div class="form-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                  <div>
+                    <h2 id="showcase-editor-title"><i class="fa-solid fa-layer-group"></i> Create Showcase Card</h2>
+                    <p id="showcase-editor-subtitle" style="font-size: 0.86rem; color: var(--text-secondary); margin-top: 4px;">Configure cards in the "Things You Might Like" homepage showcase.</p>
+                  </div>
+                  <button type="button" class="btn-refresh" onclick="window.showShowcaseList()">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Showcase List
+                  </button>
+                </div>
+
+                <form id="form-showcase-item" class="admin-form">
+                  <input type="hidden" id="showcase-item-id">
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="showcase-title">Card Headline / Title *</label>
+                      <input type="text" id="showcase-title" required placeholder="e.g. Master 2D & 3D Creative Tech">
+                    </div>
+                    <div class="form-group">
+                      <label for="showcase-subtitle">Subtitle / Category Tag</label>
+                      <input type="text" id="showcase-subtitle" placeholder="e.g. COURSES & LEARNING">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="showcase-desc">Card Description / Teaser</label>
+                    <textarea id="showcase-desc" rows="3" placeholder="Card teaser description..."></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="showcase-imgurl">Card Cover Image URL *</label>
+                    <div style="display: flex; gap: 8px;">
+                      <input type="text" id="showcase-imgurl" required placeholder="assets/... or https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/..." style="flex: 1;">
+                      <label for="showcase-file-upload" class="btn-refresh" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                      </label>
+                      <input type="file" id="showcase-file-upload" accept="image/*" style="display: none;">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="showcase-btntext">Button Text</label>
+                      <input type="text" id="showcase-btntext" placeholder="Explore Courses">
+                    </div>
+                    <div class="form-group">
+                      <label for="showcase-linkurl">Button Link URL</label>
+                      <input type="text" id="showcase-linkurl" placeholder="learn.html">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="showcase-order">Display Priority / Order</label>
+                      <input type="number" id="showcase-order" value="1" min="0">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center; padding-top: 24px;">
+                      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700;">
+                        <input type="checkbox" id="showcase-published" checked style="width: 18px; height: 18px; accent-color: #6366f1;">
+                        <span>Visible on Home Page</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button type="submit" class="admin-submit-btn" id="showcase-submit-btn">
+                      <i class="fa-solid fa-save"></i> Save Showcase Card
+                    </button>
+                    <button type="button" class="btn-refresh" onclick="window.showShowcaseList()">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 3: Shorts & Entertainment -->
+          <div class="inner-tab-content" id="home-tab-shorts">
+            <!-- Breadcrumb Navigation Path -->
+            <div id="shorts-breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-bottom: 18px; color: var(--text-secondary);">
+              <span id="shorts-crumb-root" style="color: var(--text-primary); font-weight: 600; cursor: pointer;" onclick="window.showShortsList()">
+                <i class="fa-solid fa-film"></i> Shorts &amp; Entertainment
+              </span>
+              <span id="shorts-crumb-sep" style="display: none; color: var(--text-secondary); opacity: 0.6;">
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+              </span>
+              <span id="shorts-crumb-current" style="display: none; color: #60a5fa; font-weight: 600;">
+                Short Video / Reel Editor
+              </span>
+            </div>
+
+            <!-- 3A: Directory Table View -->
+            <div id="shorts-list-view">
+              <div class="admin-card list-card">
+                <div class="table-toolbar">
+                  <span class="table-count" id="shorts-items-count">Loading shorts...</span>
+                  <button type="button" class="admin-submit-btn" onclick="window.openShortsEditor()" style="margin-left:auto;padding:8px 16px;margin-top:0;margin-bottom:0;font-size:0.85rem;">
+                    <i class="fa-solid fa-plus"></i> Add Short / Reel
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 70px;">Poster</th>
+                        <th>Title & Description</th>
+                        <th>Action Button & Watch Link</th>
+                        <th>Order</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="shorts-items-table-body">
+                      <!-- Loaded dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3B: Full-Page Short Card Editor -->
+            <div id="shorts-editor-view" style="display: none;">
+              <div class="admin-card form-card">
+                <div class="form-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                  <div>
+                    <h2 id="shorts-editor-title"><i class="fa-solid fa-film"></i> Create Short / Entertainment Card</h2>
+                    <p id="shorts-editor-subtitle" style="font-size: 0.86rem; color: var(--text-secondary); margin-top: 4px;">Configure videos and animations in the "Shorts &amp; Entertainment" homepage carousel.</p>
+                  </div>
+                  <button type="button" class="btn-refresh" onclick="window.showShortsList()">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Shorts List
+                  </button>
+                </div>
+
+                <form id="form-shorts-item" class="admin-form">
+                  <input type="hidden" id="shorts-item-id">
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="shorts-title">Video / Short Title *</label>
+                      <input type="text" id="shorts-title" required placeholder="e.g. Deadpool Animation">
+                    </div>
+                    <div class="form-group">
+                      <label for="shorts-subtitle">Short Teaser / Subtitle</label>
+                      <input type="text" id="shorts-subtitle" placeholder="e.g. Experience Deadpool in Action">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="shorts-imgurl">Poster Image URL *</label>
+                    <div style="display: flex; gap: 8px;">
+                      <input type="text" id="shorts-imgurl" required placeholder="assets/... or https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/..." style="flex: 1;">
+                      <label for="shorts-file-upload" class="btn-refresh" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                      </label>
+                      <input type="file" id="shorts-file-upload" accept="image/*" style="display: none;">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="shorts-btntext">Hover Button Label</label>
+                      <input type="text" id="shorts-btntext" placeholder="e.g. Start Watching or See Details">
+                    </div>
+                    <div class="form-group">
+                      <label for="shorts-linkurl">Watch / Target URL *</label>
+                      <input type="text" id="shorts-linkurl" required placeholder="e.g. https://youtube.com/... or suzens.html">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="shorts-order">Display Priority / Order</label>
+                      <input type="number" id="shorts-order" value="1" min="0">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center; padding-top: 24px;">
+                      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700;">
+                        <input type="checkbox" id="shorts-published" checked style="width: 18px; height: 18px; accent-color: #6366f1;">
+                        <span>Visible on Home Page</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button type="submit" class="admin-submit-btn" id="shorts-submit-btn">
+                      <i class="fa-solid fa-save"></i> Save Short Card
+                    </button>
+                    <button type="button" class="btn-refresh" onclick="window.showShortsList()">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 4: Featured News Highlights -->
+          <div class="inner-tab-content" id="home-tab-news">
+            <div class="admin-card" style="padding: 24px;">
+              <h3 style="margin-top:0;margin-bottom:12px;color:var(--text-primary);">
+                <i class="fa-solid fa-newspaper" style="color:#60a5fa;"></i> Live Home Page News Placements
+              </h3>
+              <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:20px;">
+                These are the highlighted stories currently streaming into the Home Page Featured News section.
+              </p>
+              <div id="home-featured-news-preview-wrap">
+                <!-- Loaded dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 5: Merch Spotlight & Ranking Inspector -->
+          <div class="inner-tab-content" id="home-tab-merch">
+            <div class="admin-card" style="padding: 24px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                <div>
+                  <h3 style="margin-top:0;margin-bottom:6px;color:var(--text-primary);display:flex;align-items:center;gap:8px;">
+                    <i class="fa-solid fa-trophy" style="color:#facc15;"></i> Homepage Merch Spotlight &amp; Ranking Inspector
+                  </h3>
+                  <p style="color:var(--text-secondary);font-size:0.9rem;margin:0;">
+                    Automated rating &amp; review popularity ranking engine with manual override controls for the homepage "New Merch on Store" showcase.
+                  </p>
+                </div>
+                <button type="button" class="btn-refresh" onclick="window.loadHomeMerchOverview()">
+                  <i class="fa-solid fa-rotate"></i> Refresh Rankings
+                </button>
+              </div>
+              <div id="home-merch-preview-wrap">
+                <!-- Loaded dynamically -->
+              </div>
             </div>
           </div>
         </section>
@@ -663,17 +1640,32 @@
         <!-- SUBPAGE 7: DISCOUNTS & COUPONS             -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-coupons">
+          <div class="faq-header-container">
+            <div class="faq-header-titles">
+              <h1><i class="fa-solid fa-ticket"></i> Discounts &amp; Coupons</h1>
+              <p>Create, manage, and deactivate promotional coupon codes.</p>
+            </div>
+            <button class="btn-add-faq-premium" onclick="window.openAddCouponModal()">
+              <i class="fa-solid fa-plus"></i> Add Coupon
+            </button>
+          </div>
+
           <div class="admin-card list-card">
-            <h2><i class="fa-solid fa-ticket"></i> Active Discount Coupons & Promos</h2>
+            <div class="table-toolbar">
+              <span></span>
+              <span class="table-count" id="coupons-table-count">Loading...</span>
+            </div>
             <div class="table-responsive">
               <table class="admin-table" id="coupons-table">
                 <thead>
                   <tr>
-                    <th>Coupon Code</th>
+                    <th>Code</th>
                     <th>Discount</th>
-                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Usage</th>
+                    <th>Expiry</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th class="text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="coupons-list-body">
@@ -688,9 +1680,9 @@
         <!-- SUBPAGE 8: COMMUNITY REVIEWS & SUGGESTIONS -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-community">
-          
+
           <!-- 1. Customer Reviews Card -->
-          <div class="admin-card list-card" style="margin-bottom: 28px;">
+          <div class="admin-card list-card list-card-spaced">
             <h2><i class="fa-solid fa-comments"></i> Customer Product Reviews Log</h2>
             <div class="table-responsive">
               <table class="admin-table" id="community-table">
@@ -737,15 +1729,16 @@
         <!-- SUBPAGE: USER FEEDBACK                     -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-feedback">
-          <div class="admin-card list-card" style="margin-bottom: 28px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-              <h2 style="margin-bottom: 0; flex-grow: 1;"><i class="fa-solid fa-comment-dots"></i> User Feedback Logs</h2>
-              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <div class="table-search-wrap" style="margin: 0;">
+          <div class="admin-card list-card list-card-spaced">
+            <div class="feedback-filter-toolbar">
+              <h2><i class="fa-solid fa-comment-dots"></i> User Feedback Logs</h2>
+              <div class="feedback-filter-group">
+                <div class="table-search-wrap feedback-search-box">
                   <i class="fa-solid fa-search"></i>
-                  <input type="text" id="feedback-search-input" class="table-search-input" placeholder="Search user, content..." style="padding: 8px 12px 8px 32px;">
+                  <input type="text" id="feedback-search-input" class="table-search-input"
+                    placeholder="Search user, content...">
                 </div>
-                <select id="feedback-category-filter" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
+                <select id="feedback-category-filter" class="feedback-select-filter">
                   <option value="All">All Categories</option>
                   <option value="Order Issue">Order Issue</option>
                   <option value="Bug / Technical Issue">Bug / Technical Issue</option>
@@ -755,7 +1748,7 @@
                   <option value="General Website">General Website</option>
                   <option value="Other">Other</option>
                 </select>
-                <select id="feedback-status-filter" style="padding: 8px 12px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; outline: none; cursor: pointer;">
+                <select id="feedback-status-filter" class="feedback-select-filter">
                   <option value="All">All Statuses</option>
                   <option value="Pending">Pending</option>
                   <option value="Reviewed">Reviewed</option>
@@ -765,21 +1758,27 @@
               </div>
             </div>
             <div class="table-responsive">
-              <div id="feedback-bulk-actions" style="display: none; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; margin-bottom: 16px; align-items: center; gap: 12px;">
-                <span id="feedback-bulk-count" style="font-weight: 600; color: #f8fafc; font-size: 0.9rem;">0 selected</span>
-                <button type="button" onclick="bulkMarkAsReviewedFeedback()" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-check"></i> Mark as Reviewed</button>
-                <button type="button" onclick="bulkDeleteFeedback()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-trash"></i> Bulk Delete</button>
+              <div id="feedback-bulk-actions" class="feedback-bulk-toolbar">
+                <span id="feedback-bulk-count" class="feedback-bulk-count-text">0 selected</span>
+                <button type="button" onclick="bulkMarkAsReviewedFeedback()" class="btn-bulk-review"><i
+                    class="fa-solid fa-check"></i> Mark as Reviewed</button>
+                <button type="button" onclick="bulkDeleteFeedback()" class="btn-bulk-delete"><i
+                    class="fa-solid fa-trash"></i> Bulk Delete</button>
               </div>
               <table class="admin-table" id="feedback-admin-table">
                 <thead>
                   <tr>
-                    <th style="width: 40px; text-align: center;"><input type="checkbox" id="feedback-select-all" onchange="toggleAllFeedback(this)"></th>
-                    <th style="cursor: pointer;" onclick="toggleFeedbackSort('author')">User <i class="fa-solid fa-sort" id="sort-icon-author"></i></th>
-                    <th style="cursor: pointer;" onclick="toggleFeedbackSort('rating')">Rating <i class="fa-solid fa-sort" id="sort-icon-rating"></i></th>
+                    <th class="td-checkbox"><input type="checkbox" id="feedback-select-all"
+                        onchange="toggleAllFeedback(this)"></th>
+                    <th onclick="toggleFeedbackSort('author')">User <i class="fa-solid fa-sort"
+                        id="sort-icon-author"></i></th>
+                    <th onclick="toggleFeedbackSort('rating')">Rating <i class="fa-solid fa-sort"
+                        id="sort-icon-rating"></i></th>
                     <th>Review Content</th>
                     <th>Category</th>
                     <th>Status</th>
-                    <th style="cursor: pointer;" onclick="toggleFeedbackSort('date')">Date <i class="fa-solid fa-sort" id="sort-icon-date"></i></th>
+                    <th onclick="toggleFeedbackSort('date')">Date <i class="fa-solid fa-sort" id="sort-icon-date"></i>
+                    </th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -787,10 +1786,12 @@
                   <!-- Populated dynamically -->
                 </tbody>
               </table>
-              <div id="feedback-pagination" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 16px;">
-                <button type="button" id="feedback-prev-btn" onclick="feedbackChangePage(-1)" style="padding: 6px 12px; background: #334155; border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 0.85rem;" disabled>Prev</button>
-                <span id="feedback-page-info" style="color: #94a3b8; font-size: 0.85rem;">Page 1</span>
-                <button type="button" id="feedback-next-btn" onclick="feedbackChangePage(1)" style="padding: 6px 12px; background: #334155; border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 0.85rem;" disabled>Next</button>
+              <div id="feedback-pagination" class="feedback-pagination-bar">
+                <button type="button" id="feedback-prev-btn" onclick="feedbackChangePage(-1)" class="btn-pagination-nav"
+                  disabled>Prev</button>
+                <span id="feedback-page-info">Page 1</span>
+                <button type="button" id="feedback-next-btn" onclick="feedbackChangePage(1)" class="btn-pagination-nav"
+                  disabled>Next</button>
               </div>
             </div>
           </div>
@@ -801,7 +1802,7 @@
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-account">
           <div class="admin-grid-layout">
-            
+
             <!-- Edit Profile Form Card -->
             <div class="admin-card form-card">
               <h2><i class="fa-solid fa-user-pen"></i> Admin Account Credentials</h2>
@@ -816,23 +1817,26 @@
                     <input type="email" id="profile-email-input" required value="admin@senpaiworks.com">
                   </div>
                 </div>
-                
+
                 <div class="form-group">
                   <label for="profile-avatar-input">Avatar Image URL</label>
-                  <input type="url" id="profile-avatar-input" value="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp">
+                  <input type="url" id="profile-avatar-input"
+                    value="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp">
                 </div>
-                
+
                 <div class="form-row-2">
                   <div class="form-group">
                     <label for="profile-password-input">New Password</label>
-                    <input type="password" id="profile-password-input" placeholder="Keep blank to retain current password">
+                    <input type="password" id="profile-password-input"
+                      placeholder="Keep blank to retain current password">
                   </div>
                   <div class="form-group">
                     <label for="profile-role-display">Access Privileges</label>
-                    <input type="text" id="profile-role-display" readonly value="Super Administrator" style="opacity: 0.75; cursor: not-allowed;">
+                    <input type="text" id="profile-role-display" readonly value="Super Administrator"
+                      class="field-readonly">
                   </div>
                 </div>
-                
+
                 <button type="submit" class="admin-submit-btn">
                   <i class="fa-solid fa-floppy-disk"></i> Save Admin Credentials
                 </button>
@@ -843,13 +1847,15 @@
             <div class="admin-card list-card profile-details-card">
               <div class="profile-details-hero">
                 <div class="profile-detail-avatar-wrap">
-                  <img id="detail-profile-avatar" src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp" alt="Avatar">
+                  <img id="detail-profile-avatar"
+                    src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"
+                    alt="Avatar">
                 </div>
                 <h2 id="detail-profile-name">Suhas H</h2>
                 <p id="detail-profile-email">admin@senpaiworks.com</p>
                 <span class="role-badge">Super Admin</span>
               </div>
-              
+
               <div class="profile-meta-list">
                 <div class="meta-item">
                   <span class="meta-label">System Rights</span>
@@ -857,7 +1863,8 @@
                 </div>
                 <div class="meta-item">
                   <span class="meta-label">Session Status</span>
-                  <span class="meta-value text-blue"><i class="fa-solid fa-circle-check"></i> Encrypted Active Session</span>
+                  <span class="meta-value text-blue"><i class="fa-solid fa-circle-check"></i> Encrypted Active
+                    Session</span>
                 </div>
                 <div class="meta-item">
                   <span class="meta-label">Ecosystem Platform</span>
@@ -873,7 +1880,7 @@
         <!-- SUBPAGE 12: NOTIFICATIONS                  -->
         <!-- ========================================== -->
         <section class="admin-subpage" id="tab-notifications">
-          <div class="subpage-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div class="subpage-controls notif-subpage-header">
             <div class="header-titles">
               <h1 class="tab-title">Notifications & Broadcasts</h1>
               <p class="tab-subtitle">Manage automated notification triggers or schedule manual broadcasts.</p>
@@ -883,7 +1890,7 @@
             </button>
           </div>
 
-          <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 24px;">
+          <div class="stats-grid notif-stats-grid">
             <div class="stat-card">
               <div class="stat-icon"><i class="fa-solid fa-paper-plane"></i></div>
               <div class="stat-info">
@@ -900,14 +1907,14 @@
             </div>
           </div>
 
-          <div class="inner-tabs" style="margin-bottom: 20px;">
+          <div class="inner-tabs inner-tabs-spaced">
             <button class="inner-tab-btn active" data-target="notif-history">Broadcast History</button>
             <button class="inner-tab-btn" data-target="notif-triggers">Auto-Trigger Settings</button>
           </div>
 
           <div class="inner-tab-content active" id="notif-history">
             <div class="admin-card list-card">
-              <h2 style="margin-bottom: 16px;"><i class="fa-solid fa-clock-rotate-left"></i> Broadcast History</h2>
+              <h2><i class="fa-solid fa-clock-rotate-left"></i> Broadcast History</h2>
               <div class="table-responsive">
                 <table class="admin-table">
                   <thead>
@@ -929,13 +1936,139 @@
             </div>
           </div>
 
-          <div class="inner-tab-content" id="notif-triggers" style="display: none;">
-            <div class="admin-card list-card" style="max-width: 600px;">
-              <h3 style="margin-bottom: 16px;">Automated Trigger Toggles</h3>
-              <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 24px;">Enable or disable system-wide automatic notifications.</p>
-              <div id="triggers-list" style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="inner-tab-content display-none" id="notif-triggers">
+            <div class="admin-card list-card admin-card-max-600">
+              <h3>Automated Trigger Toggles</h3>
+              <p class="mb-24">Enable or disable system-wide automatic notifications.</p>
+              <div id="triggers-list" class="triggers-list-container">
                 <!-- Rendered via JS -->
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE 13: FAQ MANAGEMENT                 -->
+        <!-- ========================================== -->
+        <!-- ========================================== -->
+        <!-- SUBPAGE: COURSES MANAGEMENT               -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-courses">
+          <div class="faq-header-container">
+            <div class="faq-header-titles">
+              <h1><i class="fa-solid fa-graduation-cap"></i> Courses Management</h1>
+              <p>Add, edit, reorder, and publish courses shown on the Learn page.</p>
+            </div>
+            <a href="admin-course-editor.html" class="btn-add-faq-premium" style="text-decoration:none;">
+              <i class="fa-solid fa-plus"></i> Add New Course
+            </a>
+          </div>
+
+          <div class="admin-card list-card">
+            <div class="table-toolbar">
+              <div class="table-search-wrap">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="courses-admin-search" class="table-search-input" placeholder="Search courses...">
+              </div>
+              <span class="table-count" id="courses-admin-table-count">Loading courses...</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table" id="courses-admin-table">
+                <thead>
+                  <tr>
+                    <th>Thumbnail</th>
+                    <th>Title</th>
+                    <th>Category / Tag</th>
+                    <th>Status</th>
+                    <th>Release Date</th>
+                    <th>Visibility</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="courses-admin-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-subpage" id="tab-faq">
+          <div class="faq-header-container">
+            <div class="faq-header-titles">
+              <h1><i class="fa-solid fa-circle-question"></i> FAQ Management</h1>
+              <p>Create, edit, prioritize order, and delete dynamic frequently asked questions.</p>
+            </div>
+            <button class="btn-add-faq-premium" onclick="openAddFaqModal()">
+              <i class="fa-solid fa-plus"></i> Add New FAQ
+            </button>
+          </div>
+
+          <div class="admin-card list-card">
+            <div class="table-toolbar">
+              <div class="table-search-wrap">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="faq-admin-search" class="table-search-input" placeholder="Search questions...">
+              </div>
+              <div class="faq-admin-cat-pills" id="faq-admin-pills-wrap">
+                <button type="button" class="faq-admin-pill active" data-cat="all">All</button>
+                <button type="button" class="faq-admin-pill" data-cat="store">Store</button>
+                <button type="button" class="faq-admin-pill" data-cat="merch">Apparel</button>
+                <button type="button" class="faq-admin-pill" data-cat="assets">3D Assets</button>
+                <button type="button" class="faq-admin-pill" data-cat="account">Accounts</button>
+                <button type="button" class="faq-admin-pill" data-cat="general">Studio</button>
+              </div>
+              <span class="table-count" id="faq-admin-table-count">Loading FAQs...</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table" id="faq-admin-table">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Question</th>
+                    <th>Category</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="faq-admin-list-body">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE: TRASH & RECOVERY                  -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-trash">
+          <div class="subpage-header">
+            <div>
+              <h1><i class="fa-solid fa-trash-can" style="color: #ef4444;"></i> Trash & Recovery</h1>
+              <p>Items deleted across SenpaiWorks are preserved in a 14-day grace period before permanent R2 purge.</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <button class="btn-add-faq-premium" id="btn-refresh-trash" onclick="window.loadAdminTrash()" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color, rgba(255,255,255,0.1)); color: var(--text-main, #f8fafc);">
+                <i class="fa-solid fa-arrow-rotate-right"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-card list-card" style="padding: 24px;">
+            <div style="margin-bottom: 24px; padding: 16px 20px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; display: flex; align-items: center; gap: 16px;">
+              <i class="fa-solid fa-shield-halved" style="color: #60a5fa; font-size: 1.6rem; flex-shrink: 0;"></i>
+              <div style="font-size: 0.875rem; color: var(--text-muted, #94a3b8); line-height: 1.6;">
+                <strong style="color: var(--text-main, #f8fafc);">14-Day Dual-Engine Safety:</strong>
+                Deleted artworks, news articles, hero slides, and showcase items are soft-deleted in the database and safely quarantined in <code style="color: #f472b6; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">trash/</code> on Cloudflare R2.
+                Restoring an item immediately resurrects the database row and moves the image back to its live directory.
+                After 14 days, the automated purge engine permanently cleans up expired records.
+              </div>
+            </div>
+
+            <div id="trash-list-container">
+              <!-- Rendered dynamically by scripts/admin/admin-trash.js -->
             </div>
           </div>
         </section>
@@ -945,16 +2078,136 @@
 
   </div>
 
+  <!-- ========================================== -->
+  <!-- ========================================== -->
+  <!-- ADD COUPON MODAL                          -->
+  <!-- ========================================== -->
+  <div id="admin-coupon-modal" class="edit-modal-overlay" style="display:none;">
+    <div class="faq-modal-card" style="max-width:520px;width:100%;">
+      <div class="faq-modal-header-styled">
+        <h2 id="coupon-modal-title"><i class="fa-solid fa-ticket"></i> Add New Coupon</h2>
+        <button class="edit-modal-close" onclick="window.closeCouponModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="admin-coupon-form" class="faq-form-body">
+
+        <div class="faq-form-group">
+          <label class="faq-form-label" for="coupon-input-code">Coupon Code * <small
+              style="color:#94a3b8;">(auto-uppercased)</small></label>
+          <input type="text" id="coupon-input-code" required placeholder="e.g. SENPAI2026" class="faq-form-input"
+            style="text-transform:uppercase;">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="faq-form-group">
+            <label class="faq-form-label" for="coupon-input-type">Discount Type *</label>
+            <select id="coupon-input-type" class="faq-form-select" required>
+              <option value="percentage">Percentage (%)</option>
+              <option value="flat">Flat Amount (₹)</option>
+            </select>
+          </div>
+          <div class="faq-form-group">
+            <label class="faq-form-label" for="coupon-input-value">Discount Value *</label>
+            <input type="number" id="coupon-input-value" required placeholder="e.g. 20 or 100" min="0.01" step="0.01"
+              class="faq-form-input">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="faq-form-group">
+            <label class="faq-form-label" for="coupon-input-maxuses">Max Uses <small style="color:#94a3b8;">(blank =
+                unlimited)</small></label>
+            <input type="number" id="coupon-input-maxuses" placeholder="e.g. 100" min="1" class="faq-form-input">
+          </div>
+          <div class="faq-form-group">
+            <label class="faq-form-label" for="coupon-input-expiry">Expiry Date <small style="color:#94a3b8;">(blank =
+                never)</small></label>
+            <input type="date" id="coupon-input-expiry" class="faq-form-input">
+          </div>
+        </div>
+
+        <div class="faq-form-group">
+          <label class="faq-form-label" for="coupon-input-status">Status</label>
+          <select id="coupon-input-status" class="faq-form-select">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="faq-modal-footer">
+          <button type="button" class="faq-btn-cancel" onclick="window.closeCouponModal()">Cancel</button>
+          <button type="submit" id="coupon-modal-submit-btn" class="faq-btn-save">
+            <i class="fa-solid fa-floppy-disk"></i> Save Coupon
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <!-- ========================================== -->
+  <!-- MODALS SECTION                             -->
+  <!-- ========================================== -->
+
+  <!-- GLOBAL CONFIRM DIALOG OVERLAY -->
+  <div class="admin-dialog-overlay" id="admin-dialog-overlay">
+    <div class="admin-dialog-box">
+      <div class="admin-dialog-icon icon-danger" id="admin-dialog-icon">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="admin-dialog-title" id="admin-dialog-title">Confirm Action</h3>
+      <p class="admin-dialog-msg" id="admin-dialog-msg">Are you sure you want to perform this action?</p>
+      <div class="admin-dialog-actions">
+        <button type="button" class="btn-dialog-cancel" id="admin-dialog-cancel-btn">Cancel</button>
+        <button type="button" class="btn-dialog-confirm btn-confirm-danger"
+          id="admin-dialog-confirm-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT QUICK-VIEW MODAL -->
+  <div class="edit-modal-overlay" id="admin-product-view-modal">
+    <div class="edit-modal modal-max-600">
+      <div class="edit-modal-header">
+        <h2 id="product-view-modal-title"><i class="fa-solid fa-box-open"></i> Product Details</h2>
+        <button class="edit-modal-close"
+          onclick="document.getElementById('admin-product-view-modal').style.display='none'"><i
+            class="fa-solid fa-times"></i></button>
+      </div>
+      <div id="product-view-modal-body" class="order-modal-body-wrapper"></div>
+    </div>
+  </div>
+
+  <!-- MANAGE CATEGORIES MODAL -->
+  <div class="edit-modal-overlay" id="admin-category-modal">
+    <div class="edit-modal modal-max-600">
+      <div class="edit-modal-header">
+        <h2><i class="fa-solid fa-tags"></i> Manage Product Categories</h2>
+        <button class="edit-modal-close"
+          onclick="document.getElementById('admin-category-modal').style.display='none'"><i
+            class="fa-solid fa-times"></i></button>
+      </div>
+      <div class="order-modal-body-wrapper">
+        <div id="category-manager-list" class="triggers-list-container"></div>
+        <div class="form-header-flex form-header-spaced">
+          <input type="text" id="new-category-name-input" placeholder="New Category Name..." class="faq-form-input">
+          <button type="button" id="btn-save-new-category" class="btn-add-inline"><i class="fa-solid fa-plus"></i>
+            Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- COMPOSE BROADCAST MODAL -->
-  <div id="compose-broadcast-modal" class="edit-modal-overlay" style="display: none;">
-    <div class="edit-modal" style="max-width: 500px; width: 92%;">
+  <div id="compose-broadcast-modal" class="edit-modal-overlay">
+    <div class="edit-modal modal-max-500">
       <div class="edit-modal-header">
         <h2><i class="fa-solid fa-paper-plane"></i> Compose Broadcast</h2>
         <button class="edit-modal-close" onclick="closeComposeBroadcastModal()">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <form id="form-compose-broadcast" class="admin-form" style="padding: 20px;">
+      <form id="form-compose-broadcast" class="admin-form modal-form-padded">
         <div class="form-group">
           <label for="broadcast-title">Notification Title *</label>
           <input type="text" id="broadcast-title" required placeholder="e.g. 50% Off Everything!">
@@ -984,27 +2237,27 @@
         </div>
         <div class="form-group">
           <label for="broadcast-audience">Target Audience</label>
-          <select id="broadcast-audience" onchange="document.getElementById('broadcast-email-group').style.display = this.value === 'specific' ? 'block' : 'none'">
+          <select id="broadcast-audience">
             <option value="all">All Users</option>
             <option value="specific">Specific User (Email)</option>
           </select>
         </div>
-        <div class="form-group" id="broadcast-email-group" style="display: none;">
+        <div class="form-group display-none" id="broadcast-email-group">
           <label for="broadcast-email">User Email *</label>
           <input type="email" id="broadcast-email" placeholder="user@example.com">
         </div>
         <div class="form-group">
           <label for="broadcast-send-type">Send Timing</label>
-          <select id="broadcast-send-type" onchange="document.getElementById('broadcast-schedule-group').style.display = this.value === 'schedule' ? 'block' : 'none'">
+          <select id="broadcast-send-type">
             <option value="now">Send Now</option>
             <option value="schedule">Schedule for Later</option>
           </select>
         </div>
-        <div class="form-group" id="broadcast-schedule-group" style="display: none;">
+        <div class="form-group display-none" id="broadcast-schedule-group">
           <label for="broadcast-send-at">Schedule Date & Time *</label>
           <input type="datetime-local" id="broadcast-send-at">
         </div>
-        <div class="edit-modal-actions" style="padding: 16px 0 0 0; background: transparent; border: none;">
+        <div class="edit-modal-actions modal-actions-clean">
           <button type="button" class="btn-cancel" onclick="closeComposeBroadcastModal()">Cancel</button>
           <button type="submit" class="admin-submit-btn"><i class="fa-solid fa-paper-plane"></i> Send/Schedule</button>
         </div>
@@ -1012,32 +2265,33 @@
     </div>
   </div>
 
-  <!-- EDIT MODAL -->
-  <!-- Feedback Detail Modal -->
-  <div class="edit-modal-overlay" id="modal-feedback-detail" style="display: none;">
-    <div class="edit-modal" style="max-width: 600px;">
+  <!-- FEEDBACK DETAIL MODAL -->
+  <div class="edit-modal-overlay" id="modal-feedback-detail">
+    <div class="edit-modal modal-max-600">
       <div class="edit-modal-header">
         <h2>Feedback Detail</h2>
-        <button class="edit-modal-close" onclick="document.getElementById('modal-feedback-detail').classList.remove('active')"><i class="fa-solid fa-times"></i></button>
+        <button class="edit-modal-close"
+          onclick="document.getElementById('modal-feedback-detail').style.display='none'"><i
+            class="fa-solid fa-times"></i></button>
       </div>
-      <form class="admin-form" style="padding: 20px;">
+      <form class="admin-form modal-form-padded">
         <input type="hidden" id="detail-modal-id">
-        <div style="margin-bottom: 20px; padding: 16px; background: rgba(30, 41, 59, 0.5); border-radius: 8px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <strong style="color: #f8fafc;" id="detail-modal-user"></strong>
-            <span style="color: #94a3b8; font-size: 0.85rem;" id="detail-modal-date"></span>
+        <div class="feedback-detail-preview-box">
+          <div class="feedback-detail-preview-header">
+            <strong id="detail-modal-user"></strong>
+            <span id="detail-modal-date"></span>
           </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem;">
-            <span style="color: #38bdf8;" id="detail-modal-category"></span>
-            <span style="color: #eab308;" id="detail-modal-rating"></span>
+          <div class="feedback-detail-preview-meta">
+            <span id="detail-modal-category"></span>
+            <span id="detail-modal-rating"></span>
           </div>
-          <div style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.5;" id="detail-modal-content"></div>
+          <div class="feedback-detail-preview-body" id="detail-modal-content"></div>
         </div>
 
         <div class="form-row-2">
           <div class="form-group">
             <label for="detail-modal-status">Status</label>
-            <select id="detail-modal-status" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc;">
+            <select id="detail-modal-status" class="feedback-detail-select">
               <option value="Pending">Pending</option>
               <option value="Reviewed">Reviewed</option>
               <option value="Resolved">Resolved</option>
@@ -1046,32 +2300,34 @@
           </div>
           <div class="form-group">
             <label for="detail-modal-priority">Priority</label>
-            <select id="detail-modal-priority" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc;">
+            <select id="detail-modal-priority" class="feedback-detail-select">
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
             </select>
           </div>
         </div>
-        
-        <div class="form-group" style="margin-top: 16px;">
+
+        <div class="form-group">
           <label for="detail-modal-internal-notes">Internal Notes (Admin Only)</label>
-          <textarea id="detail-modal-internal-notes" rows="3" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc; font-family: inherit; resize: vertical;"></textarea>
+          <textarea id="detail-modal-internal-notes" rows="3" class="feedback-detail-textarea"></textarea>
         </div>
 
-        <div class="form-group" style="margin-top: 16px;">
+        <div class="form-group">
           <label for="detail-modal-admin-reply">Official Reply</label>
-          <textarea id="detail-modal-admin-reply" rows="3" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc; font-family: inherit; resize: vertical;"></textarea>
+          <textarea id="detail-modal-admin-reply" rows="3" class="feedback-detail-textarea"></textarea>
         </div>
 
-        <div class="edit-modal-actions" style="margin-top: 24px; padding: 0;">
-          <button type="button" class="btn-cancel" onclick="document.getElementById('modal-feedback-detail').classList.remove('active')">Cancel</button>
+        <div class="edit-modal-actions modal-actions-clean">
+          <button type="button" class="btn-cancel"
+            onclick="document.getElementById('modal-feedback-detail').style.display='none'">Cancel</button>
           <button type="button" class="btn-save" onclick="saveFeedbackDetail()">Save Changes</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- GENERIC EDIT MODAL -->
   <div class="edit-modal-overlay" id="edit-modal-overlay">
     <div class="edit-modal">
       <div class="edit-modal-header">
@@ -1092,8 +2348,231 @@
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="scripts/admin.js?v=2"></script>
+  <!-- ORDER DETAILS MODAL -->
+  <div class="edit-modal-overlay" id="admin-order-details-modal" style="display: none;">
+    <div class="edit-modal modal-max-700 order-details-modal-box">
+      <div class="edit-modal-header order-details-modal-header">
+        <h2 id="order-modal-title" class="order-details-modal-title">
+          <i class="fa-solid fa-receipt"></i> Order Details
+        </h2>
+        <button class="edit-modal-close" onclick="window.closeAdminOrderDetailsModal()" type="button">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="order-modal-body" class="order-modal-body-wrapper">
+        <!-- Content injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT FAQ MODAL -->
+  <div id="admin-faq-modal" class="edit-modal-overlay">
+    <div class="faq-modal-card">
+      <div class="faq-modal-header-styled">
+        <h2 id="faq-modal-title"><i class="fa-solid fa-circle-question"></i> Add New FAQ</h2>
+        <button class="edit-modal-close" onclick="closeFaqModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="admin-faq-form" class="faq-form-body">
+        <input type="hidden" id="faq-edit-id" value="">
+
+        <div>
+          <label class="faq-form-label" for="faq-input-question">Question *</label>
+          <input type="text" id="faq-input-question" required placeholder="e.g. How long does shipping take?"
+            class="faq-form-input">
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <label class="faq-form-label" for="faq-input-category">Category *</label>
+            <select id="faq-input-category" required class="faq-form-select">
+              <option value="store">Store & Orders</option>
+              <option value="merch">Apparel & Merch</option>
+              <option value="assets">3D Assets & Rigs</option>
+              <option value="account">Accounts & Notifs</option>
+              <option value="general">Studio & Art</option>
+            </select>
+          </div>
+          <div>
+            <label class="faq-form-label" for="faq-input-order">Display Priority / Order</label>
+            <input type="number" id="faq-input-order" value="0" min="0" class="faq-form-input">
+          </div>
+        </div>
+
+        <div>
+          <label class="faq-form-label" for="faq-input-answer">Answer Content *</label>
+          <textarea id="faq-input-answer" required rows="5"
+            placeholder="Enter detailed answer here (e.g. You can track orders anytime on My Orders)..."
+            class="faq-form-textarea"></textarea>
+        </div>
+
+        <div class="faq-modal-footer">
+          <button type="button" class="faq-btn-cancel" onclick="closeFaqModal()">Cancel</button>
+          <button type="submit" id="faq-modal-submit-btn" class="faq-btn-save">
+            <i class="fa-solid fa-save"></i> Save Question
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT NEWS ARTICLE MODAL -->
+  <div id="admin-news-modal" class="edit-modal-overlay">
+    <div class="faq-modal-card" style="max-width: 720px;">
+      <div class="faq-modal-header-styled">
+        <h2 id="news-modal-title"><i class="fa-solid fa-newspaper"></i> Edit News Article</h2>
+        <button type="button" class="edit-modal-close" onclick="window.closeNewsModal()"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="admin-edit-news-form" class="faq-form-body">
+        <input type="hidden" id="news-edit-id" value="">
+
+        <div class="form-row-2">
+          <div>
+            <label class="faq-form-label" for="news-edit-title">Article Title *</label>
+            <input type="text" id="news-edit-title" required class="faq-form-input">
+          </div>
+          <div>
+            <label class="faq-form-label" for="news-edit-category">Category *</label>
+            <select id="news-edit-category" required class="faq-form-select">
+              <option value="Platform Core">Platform Core</option>
+              <option value="3D Animation">3D Animation</option>
+              <option value="Web Dev">Web Dev</option>
+              <option value="Art Library">Art Library</option>
+              <option value="Design">Design</option>
+              <option value="Merchandise">Merchandise</option>
+              <option value="Community">Community</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div>
+            <label class="faq-form-label" for="news-edit-author">Author</label>
+            <input type="text" id="news-edit-author" class="faq-form-input">
+          </div>
+          <div>
+            <label class="faq-form-label" for="news-edit-date">Date</label>
+            <input type="text" id="news-edit-date" class="faq-form-input">
+          </div>
+          <div>
+            <label class="faq-form-label" for="news-edit-readtime">Read Time</label>
+            <input type="text" id="news-edit-readtime" class="faq-form-input">
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <label class="faq-form-label" for="news-edit-placement">Homepage Placement Target</label>
+            <select id="news-edit-placement" class="faq-form-select">
+              <option value="main_feature">Main Feature Card (Left Big Card)</option>
+              <option value="recommended">Recommended Card (Right Top Wide Card)</option>
+              <option value="list">Recommended List Item (Right 3-item list)</option>
+              <option value="standard">Standard News Story</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; padding-top: 24px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700;">
+              <input type="checkbox" id="news-edit-is-featured"
+                style="width: 18px; height: 18px; accent-color: #6366f1;">
+              <span>Highlight on Homepage</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="faq-form-label" for="news-edit-img">Cover Image URL *</label>
+          <input type="url" id="news-edit-img" required class="faq-form-input">
+        </div>
+
+        <div>
+          <label class="faq-form-label" for="news-edit-hashtags">Hashtags</label>
+          <input type="text" id="news-edit-hashtags" class="faq-form-input">
+        </div>
+
+        <div>
+          <label class="faq-form-label" for="news-edit-summary">Summary *</label>
+          <textarea id="news-edit-summary" rows="2" required class="faq-form-textarea"></textarea>
+        </div>
+
+        <div>
+          <label class="faq-form-label" for="news-edit-content">Full Body Content *</label>
+          <textarea id="news-edit-content" rows="6" required class="faq-form-textarea"></textarea>
+        </div>
+
+        <div class="faq-modal-footer">
+          <button type="button" class="faq-btn-cancel" onclick="window.closeNewsModal()">Cancel</button>
+          <button type="submit" class="faq-btn-save">
+            <i class="fa-solid fa-save"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN AUTH OVERLAY -->
+  <div class="admin-auth-overlay" id="admin-auth-overlay">
+    <div class="auth-card-container">
+      <div class="auth-square-badge">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <h2 class="auth-title-center">Admin Gateway</h2>
+      <p class="auth-subtitle">Restricted Access - SenpaiWorks Staff Only</p>
+
+      <form id="admin-login-form">
+        <div id="admin-login-error" class="auth-error-msg"></div>
+
+        <div class="auth-form-group">
+          <label for="admin-username" class="auth-input-label">Admin Username</label>
+          <div class="auth-input-wrap">
+            <i class="fa-solid fa-user auth-input-icon"></i>
+            <input type="text" id="admin-username" required placeholder="Enter Admin ID" class="auth-input-field">
+          </div>
+        </div>
+
+        <div class="auth-form-group mb-24">
+          <label for="admin-password" class="auth-input-label">Passcode</label>
+          <div class="auth-input-wrap">
+            <i class="fa-solid fa-lock auth-input-icon"></i>
+            <input type="password" id="admin-password" required placeholder="Enter Passcode"
+              class="auth-input-field with-eye">
+            <button type="button" id="toggle-admin-pass" class="auth-toggle-pass-btn">
+              <i class="fa-regular fa-eye" id="toggle-pass-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="admin-login-btn" class="auth-submit-button">
+          <i class="fa-solid fa-lock-open"></i> Unlock Admin Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODULAR SCRIPTS LOADER                     -->
+  <!-- ========================================== -->
+  <script src="scripts/admin/admin-core.js?v=5.0"></script>
+  <script src="scripts/admin/admin-auth.js?v=4.0"></script>
+  <script src="scripts/admin/admin-dashboard.js?v=4.0"></script>
+  <script src="scripts/admin/admin-products.js?v=4.0"></script>
+  <script src="scripts/admin/admin-reviews.js?v=4.0"></script>
+  <script src="scripts/admin/admin-orders.js?v=4.0"></script>
+  <script src="scripts/admin/admin-replacements.js?v=4.0"></script>
+  <script src="scripts/admin/admin-art-library.js?v=4.0"></script>
+  <script src="scripts/admin/admin-motion-rigs.js?v=4.0"></script>
+  <script src="scripts/admin/admin-news.js?v=5.0"></script>
+  <script src="scripts/admin/admin-homepage.js?v=6.0"></script>
+  <script src="scripts/admin/admin-coupons.js?v=5.0"></script>
+  <script src="scripts/admin/admin-community.js?v=4.0"></script>
+  <script src="scripts/admin/admin-feedback.js?v=4.0"></script>
+  <script src="scripts/admin/admin-notifications.js?v=4.0"></script>
+  <script src="scripts/admin/admin-courses.js?v=2.0"></script>
+  <script src="scripts/admin/admin-faq.js?v=4.0"></script>
+  <script src="scripts/admin/admin-account.js?v=4.0"></script>
+  <script src="scripts/admin/admin-donations.js?v=4.0"></script>
+  <script src="scripts/admin/admin-users.js?v=4.0"></script>
+  <script src="scripts/admin/admin-trash.js?v=1.0"></script>
 
 </body>
+
 </html>

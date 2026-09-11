@@ -2,55 +2,131 @@
 //  SenpaiWorks - 2D World Art Library (Pinterest UI & Lightbox Zoom)
 // ============================================================
 
-// Legacy helper functions
-function scrollDigitalArt(direction) {
-  const container = document.getElementById('digital-art-scroll');
-  if (!container) return;
-  const card = container.querySelector('.trending-item');
-  if (!card) return;
-  const scrollAmount = card.offsetWidth + parseInt(getComputedStyle(container).gap || 0);
-  container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-}
-
-function scrollInsaneArt(direction) {
-  const container = document.getElementById('insane-scroll');
-  if (!container) return;
-  const card = container.querySelector('.trending-item');
-  if (!card) return;
-  const scrollAmount = card.offsetWidth + parseInt(getComputedStyle(container).gap || 0);
-  container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-}
-
-function scrollPortraits(direction) {
-  const container = document.getElementById('portrait-scroll');
-  if (!container) return;
-  const card = container.querySelector('.trending-item');
-  if (!card) return;
-  const scrollAmount = card.offsetWidth + parseInt(getComputedStyle(container).gap || 0);
-  container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-}
-
-function scrollcharcoal(direction) {
-  const container = document.getElementById('charcoal-scroll');
-  if (!container) return;
-  const card = container.querySelector('.trending-item');
-  if (!card) return;
-  const scrollAmount = card.offsetWidth + parseInt(getComputedStyle(container).gap || 0);
-  container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-}
 
 // ── State & Helpers ─────────────────────────────────────────
+let activeArtworkId = null;
 let activeReplyParentId = null;
+let activeEditingCommentId = null;
+let pendingReportCommentId = null;
+let pendingBlockUsername = null;
 
-function getCurrentUserKey() {
+function setEditingComment(commentId, text) {
+  cancelReplyingToComment();
+  activeEditingCommentId = commentId;
+
+  const input = document.getElementById("detail-comment-text");
+  const indicator = document.getElementById("edit-comment-indicator");
+
+  if (indicator) {
+    indicator.classList.add("active");
+    indicator.style.display = "flex";
+  }
+  if (input) {
+    input.value = text || "";
+    input.placeholder = "Edit your comment...";
+    input.focus();
+    const len = input.value.length;
+    input.setSelectionRange(len, len);
+  }
+}
+
+function cancelEditingComment() {
+  activeEditingCommentId = null;
+  const input = document.getElementById("detail-comment-text");
+  const indicator = document.getElementById("edit-comment-indicator");
+  if (indicator) {
+    indicator.classList.remove("active");
+    indicator.style.display = "none";
+  }
+  if (input) {
+    input.value = "";
+    input.placeholder = "Add a comment to start the conversation...";
+  }
+}
+
+function setReplyingToComment(commentId, username) {
+  cancelEditingComment();
+  activeReplyParentId = parseInt(commentId, 10);
+
+  const indicator = document.getElementById("reply-comment-indicator");
+  const targetUserEl = document.getElementById("reply-target-username");
+  const input = document.getElementById("detail-comment-text");
+
+  if (targetUserEl) targetUserEl.textContent = `@${username}`;
+  if (indicator) {
+    indicator.classList.add("active");
+    indicator.style.display = "flex";
+  }
+
+  if (input) {
+    input.placeholder = `Reply to @${username}...`;
+    input.value = `@${username} `;
+    input.focus();
+    const len = input.value.length;
+    input.setSelectionRange(len, len);
+  }
+}
+
+function cancelReplyingToComment() {
+  activeReplyParentId = null;
+  const indicator = document.getElementById("reply-comment-indicator");
+  const input = document.getElementById("detail-comment-text");
+  if (indicator) {
+    indicator.classList.remove("active");
+    indicator.style.display = "none";
+  }
+  if (input) {
+    if (input.value.startsWith('@')) input.value = "";
+    input.placeholder = "Add a comment to start the conversation...";
+  }
+}
+
+function openReportDialog(commentId) {
+  pendingReportCommentId = commentId;
+  const modal = document.getElementById("report-dialog-overlay");
+  if (modal) modal.classList.add("active");
+}
+
+function closeReportDialog() {
+  pendingReportCommentId = null;
+  const modal = document.getElementById("report-dialog-overlay");
+  if (modal) modal.classList.remove("active");
+}
+
+function openBlockDialog(username) {
+  pendingBlockUsername = username;
+  const modal = document.getElementById("block-dialog-overlay");
+  const title = document.getElementById("block-dialog-title");
+  if (title) title.textContent = `Block @${username}?`;
+  if (modal) modal.classList.add("active");
+}
+
+function closeBlockDialog() {
+  pendingBlockUsername = null;
+  const modal = document.getElementById("block-dialog-overlay");
+  if (modal) modal.classList.remove("active");
+}
+
+function getCurrentUser() {
   try {
     const raw = localStorage.getItem("currentUser");
-    if (!raw) return "";
-    const user = JSON.parse(raw);
-    return user ? (user.username || user.email || "") : "";
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function getAuthToken() {
+  try {
+    return localStorage.getItem("userToken") || sessionStorage.getItem("userToken") || "";
   } catch (e) {
     return "";
   }
+}
+
+function getCurrentUserKey() {
+  const user = getCurrentUser();
+  return user ? (user.username || user.email || "") : "";
 }
 
 function formatCompactNumber(num) {
@@ -82,7 +158,6 @@ function escapeHTML2D(str) {
 let currentIndex2D = 0;
 let modalImageList = [];
 let originalPinterestItems = [];
-let activeArtworkId = "";
 let activeCardEl = null;
 
 let activeCategory = 'all';
@@ -377,6 +452,8 @@ function updateVisibleItems() {
     if (matchCategory && matchSearch) {
       if (item === activeCardEl) {
         item.style.display = 'none'; // Temporarily removed from collection while open in detail view
+      } else if (visibleLimit > 0 && visibleCount >= visibleLimit) {
+        item.style.display = 'none';
       } else {
         item.style.display = '';
         visibleCount++;
@@ -429,7 +506,7 @@ async function fetchAndRenderDatabaseArtworks(grid) {
       item.setAttribute("data-created-at", art.createdAt || "");
 
       item.innerHTML = `
-        <img src="${escapeHTML2D(art.img)}" alt="${escapeHTML2D(art.charname)}" />
+        <img src="${escapeHTML2D(art.img)}" alt="${escapeHTML2D(art.charname)}" loading="lazy" />
         <div class="pinterest-info">
           <p class="pinterest-title">${escapeHTML2D(art.charname)}</p>
           <p class="pinterest-category">${escapeHTML2D(art.category.replace("-", " ").replace(/\b\w/g, c => c.toUpperCase()))}</p>
@@ -450,7 +527,8 @@ async function fetchAndRenderDatabaseArtworks(grid) {
     clearTimeout(timeoutId);
 
     if (!res.ok) throw new Error("Failed to fetch artworks");
-    const artworks = await res.json();
+    const resData = await res.json();
+    const artworks = Array.isArray(resData) ? resData : (resData.artworks || []);
     
     try {
       localStorage.setItem("cached_artworks", JSON.stringify(artworks));
@@ -546,6 +624,8 @@ function openDetailCard(img, cardEl, addToHistory = true) {
   if (cardBody) {
     cardBody.classList.remove("comments-open");
   }
+  cancelEditingComment();
+  cancelReplyingToComment();
   commentsVisibleLimit = 15;
 
   const detailImg = document.getElementById('detail-main-img');
@@ -612,6 +692,10 @@ function openDetailCard(img, cardEl, addToHistory = true) {
   parent.classList.add('is-active');
   activeCardEl = parent;
 
+  cancelReplyingToComment();
+  cancelEditingComment();
+  document.getElementById("art-emoji-picker-popover")?.classList.remove("active");
+
   loadDetailInteractions(artworkId);
   initDetailCardListeners();
   updateDownloadButtonStates();
@@ -654,60 +738,14 @@ function goToPreviousDetailView() {
   return false;
 }
 
-// ── Offline / Mock Seed Helpers ──────────────────────────────
-function getBaseLikesCount(artworkId) {
-  let hash = 0;
-  for (let i = 0; i < artworkId.length; i++) {
-    hash = artworkId.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash % 15) + 3;
-}
-
-function getInitialComments(artworkId) {
-  const charname = artworkId.replace("2d_", "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-  if (artworkId.includes("kaori")) {
-    return [
-      { username: "AnimeFan", text: "Her expression is so emotional! Truly captures the spirit of the show.", createdAt: new Date(Date.now() - 3600000 * 2).toISOString() },
-      { username: "MusicLover", text: "Beautiful violin details, love this art style!", createdAt: new Date(Date.now() - 3600000 * 24).toISOString() },
-      { username: "ArtStudent", text: "The lighting gradient on Kaori's hair is breathtaking.", createdAt: new Date(Date.now() - 3600000 * 30).toISOString() },
-      { username: "Violinist", text: "Super accurate posture on the violin grip!", createdAt: new Date(Date.now() - 3600000 * 45).toISOString() },
-      { username: "SenpaiFan", text: "One of my absolute favorite prints from SenpaiWorks.", createdAt: new Date(Date.now() - 3600000 * 60).toISOString() },
-      { username: "Kousei", text: "Music speaks louder than words.", createdAt: new Date(Date.now() - 3600000 * 90).toISOString() }
-    ];
-  }
-  if (artworkId.includes("zoro")) {
-    return [
-      { username: "Swordsman", text: "Three-sword style is legendary. Awesome hatching on the swords!", createdAt: new Date(Date.now() - 3600000 * 5).toISOString() },
-      { username: "PirateKing", text: "The green aura looks so epic!", createdAt: new Date(Date.now() - 3600000 * 12).toISOString() },
-      { username: "MangaReader", text: "Cleanest Zoro artwork on the web.", createdAt: new Date(Date.now() - 3600000 * 18).toISOString() },
-      { username: "WanoArc", text: "King of Hell form when?", createdAt: new Date(Date.now() - 3600000 * 24).toISOString() },
-      { username: "StrawHat", text: "Nothing happened...", createdAt: new Date(Date.now() - 3600000 * 36).toISOString() },
-      { username: "OnePieceFan", text: "Needs 10 stars!", createdAt: new Date(Date.now() - 3600000 * 48).toISOString() }
-    ];
-  }
-  if (artworkId.includes("miku")) {
-    return [
-      { username: "NakanoFan", text: "Best girl Miku! The headphones and shading are perfect.", createdAt: new Date(Date.now() - 3600000 * 8).toISOString() },
-      { username: "Quintuplets", text: "Team Miku forever!", createdAt: new Date(Date.now() - 3600000 * 16).toISOString() },
-      { username: "MatchaLover", text: "The soft color palette is amazing.", createdAt: new Date(Date.now() - 3600000 * 22).toISOString() },
-      { username: "AnimeWaifu", text: "Ordered this print immediately!", createdAt: new Date(Date.now() - 3600000 * 32).toISOString() },
-      { username: "Otaku33", text: "So cute and elegant.", createdAt: new Date(Date.now() - 3600000 * 40).toISOString() },
-      { username: "Suhas", text: "Outstanding depth on the background lighting.", createdAt: new Date(Date.now() - 3600000 * 50).toISOString() }
-    ];
-  }
-  return [
-    { username: "Guest", text: `Stunning artwork of ${charname}! Very clean lines.`, createdAt: new Date(Date.now() - 3600000 * 12).toISOString() },
-    { username: "Collector", text: "High quality piece for any anime room.", createdAt: new Date(Date.now() - 3600000 * 20).toISOString() },
-    { username: "StudioMember", text: "Love the contrast and brush technique.", createdAt: new Date(Date.now() - 3600000 * 28).toISOString() },
-    { username: "ProArtist", text: "Dynamic pose and excellent balance.", createdAt: new Date(Date.now() - 3600000 * 35).toISOString() },
-    { username: "SenpaiSupporter", text: "SenpaiWorks never disappoints!", createdAt: new Date(Date.now() - 3600000 * 50).toISOString() },
-    { username: "VibeChecker", text: "10/10 aesthetic.", createdAt: new Date(Date.now() - 3600000 * 70).toISOString() }
-  ];
-}
-
 // ── Fetch & Render Likes and Comments ──────────────────────
 async function loadDetailInteractions(artworkId) {
   activeArtworkId = artworkId;
+
+  const container = document.getElementById("detail-comments-container");
+  if (container) {
+    container.dataset.artworkId = artworkId;
+  }
 
   // Strict check: Keep comments column drawer closed unless explicitly opened by user
   const cardBody = document.getElementById("detail-card-body");
@@ -735,6 +773,20 @@ async function loadDetailInteractions(artworkId) {
     }
   });
 
+  if (!isUserSignedIn()) {
+    // Logged-out: blank out both counts and show the lock card — no data exposed
+    if (likeCount) likeCount.textContent = "";
+    if (mobileLikeCount) mobileLikeCount.textContent = "";
+    const commentsCountLabel = document.getElementById("detail-comments-count-label");
+    const commentsShortcutCount = document.getElementById("detail-comments-shortcut-count");
+    const mobileCommentsShortcutCount = document.getElementById("mobile-detail-comments-shortcut-count");
+    if (commentsCountLabel) commentsCountLabel.textContent = "";
+    if (commentsShortcutCount) commentsShortcutCount.textContent = "";
+    if (mobileCommentsShortcutCount) mobileCommentsShortcutCount.textContent = "";
+    renderCommentsList([]);
+    return;
+  }
+
   let rawCount = 0;
 
   try {
@@ -746,20 +798,14 @@ async function loadDetailInteractions(artworkId) {
     if (res.ok) {
       const data = await res.json();
       rawCount = typeof data.count === 'number' ? data.count : parseInt(data.count || 0, 10);
-      localStorage.setItem(`mock_likes_count_${artworkId}`, rawCount.toString());
       if (typeof data.userHasLiked === 'boolean') {
         updateLikedUI(data.userHasLiked);
       }
     } else {
-      throw new Error("HTTP error");
+      rawCount = 0;
     }
   } catch (err) {
-    let count = localStorage.getItem(`mock_likes_count_${artworkId}`);
-    if (count === null) {
-      count = getBaseLikesCount(artworkId).toString();
-      localStorage.setItem(`mock_likes_count_${artworkId}`, count);
-    }
-    rawCount = parseInt(count || 0, 10);
+    rawCount = 0;
   }
 
   const formattedCount = formatCompactNumber(rawCount);
@@ -767,26 +813,23 @@ async function loadDetailInteractions(artworkId) {
   if (mobileLikeCount) mobileLikeCount.textContent = formattedCount;
 
   try {
-    const userKey = getCurrentUserKey();
-    const commentsUrl = `/api/anime/comments?animeId=${artworkId}` + (userKey ? `&userKey=${encodeURIComponent(userKey)}` : '');
-    const res = await fetch(commentsUrl, { credentials: 'include' });
+    const token = getAuthToken();
+    const commentsUrl = `/api/anime/comments?animeId=${artworkId}`;
+    const res = await fetch(commentsUrl, {
+      credentials: 'include',
+      headers: {
+        ...(token ? { "Authorization": `Bearer ${token}` } : {})
+      }
+    });
     if (res.ok) {
-      const comments = await res.json();
-      localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
+      const data = await res.json();
+      const comments = Array.isArray(data) ? data : (data.comments || []);
       renderCommentsList(comments);
     } else {
-      throw new Error("HTTP error");
+      renderCommentsList([]);
     }
   } catch (err) {
-    let commentsRaw = localStorage.getItem(`mock_comments_${artworkId}`);
-    let comments = [];
-    if (commentsRaw) {
-      try { comments = JSON.parse(commentsRaw); } catch (e) { }
-    } else {
-      comments = getInitialComments(artworkId);
-      localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
-    }
-    renderCommentsList(comments);
+    renderCommentsList([]);
   }
 }
 
@@ -883,12 +926,14 @@ function renderSingleCommentHTML(c, isChild = false) {
     `
     : '';
 
-  const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
+  const currentUser = getCurrentUser();
   const currentUsername = currentUser ? (currentUser.username || currentUser.email || currentUser.name || "").toLowerCase().trim() : "";
+  const currentUserId = currentUser ? currentUser.id : null;
   const commentUsername = (c.username || "").toLowerCase().trim();
   const commentUserKey = (c.userKey || "").toLowerCase().trim();
 
   const isMyComment = Boolean(currentUser && (
+    (c.userId && currentUserId && c.userId === currentUserId) ||
     (currentUsername && commentUsername === currentUsername) ||
     (currentUsername && commentUserKey === currentUsername) ||
     (currentUser.email && commentUserKey === currentUser.email.toLowerCase().trim()) ||
@@ -906,7 +951,7 @@ function renderSingleCommentHTML(c, isChild = false) {
     `;
 
   return `
-    <div class="detail-comment-item-box" data-comment-id="${c.id}" data-username="${escapeHTML2D(c.username)}">
+    <div class="detail-comment-item-box ${isChild ? 'is-reply-item' : ''}" data-comment-id="${c.id}" data-username="${escapeHTML2D(c.username)}">
       ${avatarHTML}
       <div class="detail-comment-body" style="flex: 1;">
         
@@ -934,14 +979,8 @@ function renderSingleCommentHTML(c, isChild = false) {
         <!-- Third Row: TimeAgo | Likes Label | Reply -->
         <div class="comment-sub-row">
           <span class="comment-time-ago">${timeAgoStr}</span>
-          ${likeCount > 0 ? `<span class="comment-likes-label">${formatCompactNumber(likeCount)} ${likeCount === 1 ? 'like' : 'likes'}</span>` : ''}
+          <span class="comment-likes-label" data-count="${likeCount}" style="${likeCount > 0 ? '' : 'display:none;'}">${formatCompactNumber(likeCount)} ${likeCount === 1 ? 'like' : 'likes'}</span>
           <button type="button" class="comment-action-btn comment-reply-toggle-btn" data-comment-id="${c.id}" data-username="${escapeHTML2D(c.username)}">Reply</button>
-        </div>
-
-        <!-- Fourth Row: Inline Reply Box -->
-        <div class="comment-reply-box" id="reply-box-${c.id}">
-          <input type="text" class="comment-reply-input" id="reply-input-${c.id}" value="@${escapeHTML2D(c.username)} " placeholder="Write a reply..." />
-          <button type="button" class="comment-reply-submit-btn" data-comment-id="${c.id}" data-username="${escapeHTML2D(c.username)}">Reply</button>
         </div>
 
         <!-- Instagram-style View Replies Toggle Line -->
@@ -962,38 +1001,39 @@ function renderCommentsList(comments) {
   const commentForm = document.getElementById("detail-comment-form");
 
   const totalCount = currentCommentsList.length;
-  if (commentsCountLabel) commentsCountLabel.textContent = `${totalCount}`;
-  if (commentsShortcutCount) commentsShortcutCount.textContent = `${totalCount}`;
-  if (mobileCommentsShortcutCount) mobileCommentsShortcutCount.textContent = `${totalCount}`;
+  if (isUserSignedIn()) {
+    if (commentsCountLabel) commentsCountLabel.textContent = `${totalCount}`;
+    if (commentsShortcutCount) commentsShortcutCount.textContent = `${totalCount}`;
+    if (mobileCommentsShortcutCount) mobileCommentsShortcutCount.textContent = `${totalCount}`;
+  }
 
-  // Auth check for commenting
-  const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
-  let authPromptBox = document.getElementById("detail-comment-auth-prompt");
+  // Auth check for commenting and viewing comments
+  const currentUser = getCurrentUser();
 
   if (!currentUser) {
     if (commentForm) commentForm.style.display = "none";
-    if (!authPromptBox) {
-      authPromptBox = document.createElement("div");
-      authPromptBox.id = "detail-comment-auth-prompt";
-      authPromptBox.style.cssText = "background: rgba(2, 132, 199, 0.05); border: 1.5px dashed rgba(2, 132, 199, 0.3); border-radius: 12px; padding: 14px; text-align: center; margin: 12px 0 16px 0; font-family: 'Plus Jakarta Sans', sans-serif;";
-      authPromptBox.innerHTML = `
-        <div style="font-size: 0.88rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
-          <i class="fa-solid fa-lock" style="color: #0284c7;"></i> Sign in to leave a comment
+    const quickEmojiBar = document.getElementById("comment-quick-emojis-bar");
+    if (quickEmojiBar) quickEmojiBar.style.display = "none";
+    if (loadMoreCommentsBtn) loadMoreCommentsBtn.style.display = "none";
+    if (commentsList) {
+      commentsList.innerHTML = `
+        <div class="comments-auth-lock-card" style="background: rgba(15, 23, 42, 0.03); border: 1.5px dashed rgba(15, 23, 42, 0.2); border-radius: 14px; padding: 28px 16px; text-align: center; margin: 12px 0;">
+          <div style="width: 44px; height: 44px; background: rgba(15, 23, 42, 0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; color: #0f172a; font-size: 1.1rem;">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0 0 6px 0;">Sign in to view comments</h4>
+          <p style="font-size: 0.8rem; color: #64748b; margin: 0 0 14px 0; line-height: 1.4;">Comments are visible only to verified members.</p>
+          <button type="button" onclick="showAuthRequiredModal('view and post comments')" style="background: #0f172a; color: #fff; border: none; border-radius: 20px; padding: 7px 20px; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;">Sign In</button>
         </div>
-        <a href="login.html" style="display: inline-block; background: #0f172a; color: #ffffff; padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; text-decoration: none; box-shadow: 0 4px 12px rgba(15,23,42,0.15);">
-          Sign In to Comment
-        </a>
       `;
-      if (commentForm && commentForm.parentNode) {
-        commentForm.parentNode.insertBefore(authPromptBox, commentForm);
-      }
-    } else {
-      authPromptBox.style.display = "block";
     }
-  } else {
-    if (commentForm) commentForm.style.display = "block";
-    if (authPromptBox) authPromptBox.style.display = "none";
+    layoutMasonry();
+    return;
   }
+
+  if (commentForm) commentForm.style.display = "flex";
+  const quickEmojiBar = document.getElementById("comment-quick-emojis-bar");
+  if (quickEmojiBar) quickEmojiBar.style.display = "flex";
 
   if (!commentsList) return;
 
@@ -1023,36 +1063,62 @@ function renderCommentsList(comments) {
 }
 
 function attachCommentSocialListeners(container) {
-  // 1. Comment Liking (Supports both Guests & Logged-in Users)
+  // 1. Comment Liking (Instant optimistic count & heart icon update on click)
   container.querySelectorAll(".comment-like-btn").forEach(btn => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
-      const commentId = btn.dataset.commentId;
-      const isLiked = btn.classList.contains("liked");
-      const action = isLiked ? 'unlike' : 'like';
-      const userKey = currentUser ? (currentUser.username || currentUser.email) : '';
+      const currentUser = getCurrentUser();
+      if (!currentUser) {
+        showAuthRequiredModal("like comments");
+        return;
+      }
 
-      // Optimistic UI update
+      const commentId = btn.dataset.commentId;
+      const wasLiked = btn.classList.contains("liked");
+      const action = wasLiked ? 'unlike' : 'like';
+
+      // Instant optimistic UI update on heart icon
       const icon = btn.querySelector("i");
-      const countSpan = btn.querySelector(".comment-like-count");
-      btn.classList.toggle("liked");
-      if (icon) icon.className = !isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart";
+      btn.classList.toggle("liked", !wasLiked);
+      if (icon) icon.className = !wasLiked ? "fa-solid fa-heart" : "fa-regular fa-heart";
+
+      // Instant optimistic update on like count label
+      const commentBox = btn.closest(".detail-comment-item-box");
+      const countLabel = commentBox ? commentBox.querySelector(".comment-likes-label") : null;
+      let currentCount = countLabel ? parseInt(countLabel.dataset.count || "0", 10) : 0;
+      if (isNaN(currentCount)) currentCount = 0;
+
+      const newCount = !wasLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
+      if (countLabel) {
+        countLabel.dataset.count = newCount;
+        countLabel.textContent = `${formatCompactNumber(newCount)} ${newCount === 1 ? 'like' : 'likes'}`;
+        countLabel.style.display = newCount > 0 ? "inline" : "none";
+      }
 
       try {
+        const token = getAuthToken();
         const res = await fetch(`/api/anime/comments/like`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { "Authorization": `Bearer ${token}` } : {})
+          },
           credentials: 'include',
-          body: JSON.stringify({ commentId, userKey, action })
+          body: JSON.stringify({ commentId, action })
         });
         if (res.ok) {
           const data = await res.json();
-          if (countSpan) {
-            countSpan.textContent = data.likeCount > 0 ? formatCompactNumber(data.likeCount) : '';
+          if (countLabel && typeof data.likeCount === 'number') {
+            countLabel.dataset.count = data.likeCount;
+            countLabel.textContent = `${formatCompactNumber(data.likeCount)} ${data.likeCount === 1 ? 'like' : 'likes'}`;
+            countLabel.style.display = data.likeCount > 0 ? "inline" : "none";
           }
+        } else if (res.status === 401) {
+          btn.classList.toggle("liked", wasLiked);
+          if (icon) icon.className = wasLiked ? "fa-solid fa-heart" : "fa-regular fa-heart";
+          showAuthRequiredModal("like comments");
         }
       } catch (err) {
         console.warn("Error liking comment:", err);
@@ -1060,110 +1126,25 @@ function attachCommentSocialListeners(container) {
     });
   });
 
-  // 2. Reply Toggle Button (Opens inline reply box under comment)
+  // 2. Reply Toggle Button (Activates reply mode in the bottom conversation bar)
   container.querySelectorAll(".comment-reply-toggle-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
+      const currentUser = getCurrentUser();
       if (!currentUser) {
         showAuthRequiredModal("reply to comments");
         return;
       }
 
       const commentId = btn.dataset.commentId;
-      const targetUsername = btn.dataset.username;
-      activeReplyParentId = commentId;
-
-      const replyBox = document.getElementById(`reply-box-${commentId}`);
-      if (replyBox) {
-        replyBox.classList.toggle("active");
-        if (replyBox.classList.contains("active")) {
-          const input = replyBox.querySelector(".comment-reply-input");
-          if (input) {
-            if (!input.value.trim()) input.value = `@${targetUsername} `;
-            input.focus();
-            const len = input.value.length;
-            input.setSelectionRange(len, len);
-          }
-        }
-      }
-
-      // Also sync top input box
-      const textInput = document.getElementById("detail-comment-text");
-      if (textInput) {
-        textInput.value = `@${targetUsername} `;
-      }
+      const targetUsername = btn.dataset.username || "user";
+      setReplyingToComment(commentId, targetUsername);
     });
   });
 
-  // 3. Submit Inline Reply Button
-  container.querySelectorAll(".comment-reply-submit-btn").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
-      if (!currentUser) {
-        showAuthRequiredModal("post replies");
-        return;
-      }
-
-      const parentId = btn.dataset.commentId;
-      const replyBox = document.getElementById(`reply-box-${parentId}`);
-      const input = replyBox ? replyBox.querySelector(".comment-reply-input") : null;
-      const text = input ? input.value.trim() : '';
-      const targetArtworkId = activeArtworkId || document.getElementById("detail-comments-container")?.dataset.artworkId || "2d_artwork";
-
-      if (!text) return;
-
-      btn.disabled = true;
-      const authorName = (currentUser.name && currentUser.name.trim()) ||
-        (currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : '') ||
-        (currentUser.username && currentUser.username.trim()) ||
-        (currentUser.email ? currentUser.email.split('@')[0] : '') ||
-        "Member";
-      const userKey = currentUser.username || currentUser.email || authorName;
-      const userAvatar = currentUser.avatar || null;
-
-      const payload = {
-        animeId: targetArtworkId,
-        username: authorName,
-        userKey,
-        text,
-        parentId: parseInt(parentId, 10)
-      };
-
-      try {
-        const res = await fetch(`/api/anime/comments`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: 'include',
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          if (input) input.value = "";
-          if (replyBox) replyBox.classList.remove("active");
-          await loadDetailInteractions(targetArtworkId);
-        } else {
-          appendLocalCommentFallback(targetArtworkId, authorName, text, parentId, userAvatar);
-          if (input) input.value = "";
-          if (replyBox) replyBox.classList.remove("active");
-        }
-      } catch (err) {
-        console.warn("Error submitting inline reply, performing local fallback:", err);
-        appendLocalCommentFallback(targetArtworkId, authorName, text, parentId, userAvatar);
-        if (input) input.value = "";
-        if (replyBox) replyBox.classList.remove("active");
-      } finally {
-        btn.disabled = false;
-      }
-    });
-  });
-
-  // 4. Toggle Reply Container (Instagram View Replies Toggle)
+  // 3. Toggle Reply Container (Instagram View Replies Toggle)
   container.querySelectorAll(".comment-replies-toggle-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -1183,7 +1164,7 @@ function attachCommentSocialListeners(container) {
     });
   });
 
-  // 5. Three-Dot Options Dropdown Toggle
+  // 4. Three-Dot Options Dropdown Toggle
   container.querySelectorAll(".comment-options-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -1201,176 +1182,107 @@ function attachCommentSocialListeners(container) {
     document.querySelectorAll(".comment-options-dropdown.active").forEach(d => d.classList.remove("active"));
   });
 
-  // 6. Report Comment Button
+  // 5. Report Comment Button (Opens custom report modal)
   container.querySelectorAll(".comment-report-btn").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-
-      const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
-      const userKey = currentUser ? (currentUser.username || currentUser.email) : 'guest';
+      document.querySelectorAll(".comment-options-dropdown.active").forEach(d => d.classList.remove("active"));
       const commentId = btn.dataset.commentId;
-
-      const reason = prompt("Report Comment:\nPlease enter a reason (e.g. Spam, Harassment, Inappropriate text):", "Inappropriate content");
-      if (reason === null) return;
-
-      try {
-        const res = await fetch(`/api/anime/comments/report`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: 'include',
-          body: JSON.stringify({ commentId, reason, userKey })
-        });
-        const data = await res.json();
-        alert(data.message || "Thank you! Comment reported.");
-      } catch (err) {
-        console.warn("Error reporting comment:", err);
-      }
+      openReportDialog(commentId);
     });
   });
 
-  // 7. Block User Button
+  // 6. Block User Button (Opens custom block confirmation modal)
   container.querySelectorAll(".comment-block-btn").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-
-      const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
-      if (!currentUser) {
-        showAuthRequiredModal("block users");
-        return;
-      }
-
+      document.querySelectorAll(".comment-options-dropdown.active").forEach(d => d.classList.remove("active"));
       const blockedUserKey = btn.dataset.username;
-      const userKey = currentUser.username || currentUser.email;
-
-      if (!confirm(`Are you sure you want to block @${blockedUserKey}? Their comments will be hidden for you.`)) {
-        return;
-      }
-
-      try {
-        const res = await fetch(`/api/users/block`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: 'include',
-          body: JSON.stringify({ userKey, blockedUserKey })
-        });
-        const data = await res.json();
-        alert(data.message || `@${blockedUserKey} blocked.`);
-        await loadDetailInteractions(activeArtworkId);
-      } catch (err) {
-        console.warn("Error blocking user:", err);
-      }
+      openBlockDialog(blockedUserKey);
     });
   });
 
-  // 8. Edit Comment Button
+  // 7. Edit Comment Button (Switches bottom conversation input into edit mode)
   container.querySelectorAll(".comment-edit-btn").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
+
+      // Close open dropdown menus
+      document.querySelectorAll(".comment-options-dropdown.active").forEach(d => d.classList.remove("active"));
 
       const commentId = btn.dataset.commentId;
       const oldText = btn.dataset.text || "";
-      const commentItem = btn.closest(".detail-comment-item-box");
-      const textRow = commentItem ? commentItem.querySelector(".comment-text-row") : null;
-
-      if (!textRow) return;
-      if (textRow.querySelector(".inline-comment-edit-form")) return;
-
-      const originalHTML = textRow.innerHTML;
-      textRow.innerHTML = `
-        <div class="inline-comment-edit-form" style="margin-top: 6px;">
-          <input type="text" class="inline-edit-input" value="${escapeHTML2D(oldText)}" style="width:100%; padding:6px 10px; border-radius:10px; border:1px solid #cbd5e1; font-size:0.85rem; outline:none; box-sizing:border-box;" />
-          <div style="display:flex; gap:6px; margin-top:6px; justify-content:flex-end;">
-            <button type="button" class="inline-edit-cancel-btn" style="background:#f1f5f9; color:#475569; border:none; border-radius:8px; padding:4px 10px; font-size:0.78rem; font-weight:700; cursor:pointer;">Cancel</button>
-            <button type="button" class="inline-edit-save-btn" style="background:#0284c7; color:#fff; border:none; border-radius:8px; padding:4px 12px; font-size:0.78rem; font-weight:700; cursor:pointer;">Save</button>
-          </div>
-        </div>
-      `;
-
-      const input = textRow.querySelector(".inline-edit-input");
-      const cancelBtn = textRow.querySelector(".inline-edit-cancel-btn");
-      const saveBtn = textRow.querySelector(".inline-edit-save-btn");
-
-      if (input) {
-        input.focus();
-        const len = input.value.length;
-        input.setSelectionRange(len, len);
-      }
-
-      if (cancelBtn) {
-        cancelBtn.addEventListener("click", (ev) => {
-          ev.preventDefault();
-          textRow.innerHTML = originalHTML;
-        });
-      }
-
-      if (saveBtn) {
-        saveBtn.addEventListener("click", async (ev) => {
-          ev.preventDefault();
-          const newText = input ? input.value.trim() : '';
-          if (!newText) return;
-
-          const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
-          const userKey = currentUser ? (currentUser.username || currentUser.email) : '';
-          const targetArtworkId = activeArtworkId || "2d_artwork";
-
-          try {
-            const res = await fetch(`/api/anime/comments/edit`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: 'include',
-              body: JSON.stringify({ commentId, text: newText, userKey })
-            });
-            if (res.ok) {
-              showArtToast("Comment updated!", "fa-solid fa-pen-to-square");
-            } else {
-              updateLocalCommentText(targetArtworkId, commentId, newText);
-              showArtToast("Comment updated!", "fa-solid fa-pen-to-square");
-            }
-          } catch (err) {
-            updateLocalCommentText(targetArtworkId, commentId, newText);
-            showArtToast("Comment updated!", "fa-solid fa-pen-to-square");
-          } finally {
-            await loadDetailInteractions(targetArtworkId);
-          }
-        });
-      }
+      setEditingComment(commentId, oldText);
     });
   });
 
-  // 9. Delete Comment Button
+  // 8. Delete Comment Button (Instant deletion with smooth UI animation, no confirmation prompt)
   container.querySelectorAll(".comment-delete-btn").forEach(btn => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
       e.stopPropagation();
 
       const commentId = btn.dataset.commentId;
-      if (!confirm("Are you sure you want to delete this comment?")) return;
+      const commentBox = btn.closest(".detail-comment-item-box");
 
-      const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
-      const userKey = currentUser ? (currentUser.username || currentUser.email) : '';
-      const targetArtworkId = activeArtworkId || "2d_artwork";
+      // Immediate UI deletion animation (no browser confirm popup)
+      if (commentBox) {
+        commentBox.classList.add("comment-deleting");
+      }
+
+      const currentUser = getCurrentUser();
+      const targetArtworkId = activeArtworkId || document.getElementById("detail-comments-container")?.dataset.artworkId || "2d_artwork";
 
       try {
         const res = await fetch(`/api/anime/comments/delete`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(getAuthToken() ? { "Authorization": `Bearer ${getAuthToken()}` } : {})
+          },
           credentials: 'include',
-          body: JSON.stringify({ commentId, userKey })
+          body: JSON.stringify({ commentId })
         });
-        if (res.ok) {
-          showArtToast("Comment deleted", "fa-solid fa-trash-can");
-        } else {
-          deleteLocalComment(targetArtworkId, commentId);
-          showArtToast("Comment deleted", "fa-solid fa-trash-can");
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          showArtToast(errData.error || "Failed to delete comment");
+          if (commentBox) commentBox.classList.remove("comment-deleting");
+          return;
         }
-      } catch (err) {
+
+        if (commentBox) {
+          commentBox.style.maxHeight = commentBox.offsetHeight + "px";
+          commentBox.style.overflow = "hidden";
+          commentBox.style.transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+          requestAnimationFrame(() => {
+            commentBox.style.maxHeight = "0px";
+            commentBox.style.opacity = "0";
+            commentBox.style.paddingTop = "0px";
+            commentBox.style.paddingBottom = "0px";
+            commentBox.style.marginTop = "0px";
+            commentBox.style.marginBottom = "0px";
+          });
+
+          setTimeout(() => {
+            commentBox.remove();
+            updateCommentCountsUI(-1);
+          }, 320);
+        }
+
         deleteLocalComment(targetArtworkId, commentId);
-        showArtToast("Comment deleted", "fa-solid fa-trash-can");
-      } finally {
-        await loadDetailInteractions(targetArtworkId);
+        showArtToast("Comment deleted");
+      } catch (err) {
+        console.warn("Delete comment error:", err);
+        if (commentBox) {
+          commentBox.remove();
+          updateCommentCountsUI(-1);
+        }
+        deleteLocalComment(targetArtworkId, commentId);
+        showArtToast("Comment deleted");
       }
     });
   });
@@ -1425,21 +1337,86 @@ function deleteLocalComment(artworkId, commentId) {
   } catch (e) { }
 }
 
+function updateCommentCountsUI(delta) {
+  const countEls = [
+    document.getElementById("detail-comments-count-label"),
+    document.getElementById("detail-comments-shortcut-count"),
+    document.getElementById("mobile-detail-comments-shortcut-count")
+  ];
+  countEls.forEach(el => {
+    if (el) {
+      const current = parseInt(el.textContent || "0", 10);
+      const next = Math.max(0, current + delta);
+      el.textContent = `${next}`;
+    }
+  });
+}
+
+function appendLocalCommentFallback(artworkId, username, text, parentId, userAvatar) {
+  const newComment = {
+    id: Date.now(),
+    animeId: artworkId,
+    username,
+    userAvatar: userAvatar || null,
+    text,
+    parentId: parentId ? parseInt(parentId, 10) : null,
+    createdAt: new Date().toISOString(),
+    likeCount: 0,
+    userHasLiked: false,
+    replies: []
+  };
+
+  let comments = [];
+  try {
+    const raw = localStorage.getItem(`mock_comments_${artworkId}`);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      comments = Array.isArray(parsed) ? parsed : (parsed.comments || []);
+    }
+  } catch (e) { }
+
+  if (!newComment.parentId) {
+    comments.unshift(newComment);
+  } else {
+    const parent = comments.find(c => c.id === newComment.parentId);
+    if (parent) {
+      if (!parent.replies) parent.replies = [];
+      parent.replies.push(newComment);
+    } else {
+      comments.unshift(newComment);
+    }
+  }
+
+  localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
+  renderCommentsList(comments);
+  updateCommentCountsUI(1);
+}
+
 // ── Art Toast Notification Helper ────────────────────────────
-function showArtToast(message, iconClass = 'fa-solid fa-circle-check') {
+function showArtToast(message, iconClass = null) {
   const toast = document.getElementById("art-toast-notification");
   const icon = document.getElementById("toast-icon");
   const msg = document.getElementById("toast-message");
   if (!toast || !msg) return;
 
-  msg.textContent = message;
-  if (icon) icon.className = iconClass;
+  // Strip any emoji characters if present
+  const cleanMsg = (message || '').replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+  msg.textContent = cleanMsg;
+
+  if (icon) {
+    if (iconClass) {
+      icon.className = iconClass;
+      icon.style.display = "inline-block";
+    } else {
+      icon.style.display = "none";
+    }
+  }
 
   toast.classList.add("active");
   if (window.artToastTimeout) clearTimeout(window.artToastTimeout);
   window.artToastTimeout = setTimeout(() => {
     toast.classList.remove("active");
-  }, 3000);
+  }, 2500);
 }
 
 // ── Interested Preference Logic ──────────────────────────────
@@ -1509,9 +1486,9 @@ function toggleArtworkInterested(artworkId, categoryName) {
 
   const charName = document.getElementById("detail-charname")?.textContent || "this artwork";
   if (newState) {
-    showArtToast(`✨ Marked as Interested! We'll recommend more ${categoryName || 'similar'} art to you.`, 'fa-solid fa-star');
+    showArtToast("Marked as Interested");
   } else {
-    showArtToast(`Removed "${charName}" from your Interested art preferences.`, 'fa-solid fa-circle-info');
+    showArtToast("Removed from Interested");
   }
 }
 
@@ -1529,7 +1506,7 @@ function isUserSignedIn() {
 // ── Download Image Helper ────────────────────────────────────
 function downloadCurrentArtwork() {
   if (!isUserSignedIn()) {
-    showArtToast(`Please sign in to download artwork images!`, 'fa-solid fa-lock');
+    showArtToast("Please sign in to download artwork images");
     return;
   }
 
@@ -1550,7 +1527,7 @@ function downloadCurrentArtwork() {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  showArtToast(`Downloading high quality artwork image...`, 'fa-solid fa-download');
+  showArtToast("Downloading high quality artwork image...");
 }
 
 function updateDownloadButtonStates() {
@@ -1731,7 +1708,7 @@ function initDetailCardListeners() {
           window.toggleSharePopover(shareBtn, shareTitle, shareText, shareUrl);
         } else {
           navigator.clipboard.writeText(shareUrl);
-          showArtToast("Artwork link copied to clipboard!", "fa-solid fa-link");
+          showArtToast("Artwork link copied to clipboard");
         }
       });
     }
@@ -1801,34 +1778,75 @@ function initDetailCardListeners() {
     });
   }
 
-  // Interactive Emoji Picker Handler
+  // Full Emoji Picker Library Handler (emoji-picker-element)
   const emojiBtn = document.getElementById("comment-emoji-btn");
-  const emojiPicker = document.getElementById("emoji-picker-box");
-  if (emojiBtn && emojiPicker && textInput) {
-    emojiBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const isHidden = getComputedStyle(emojiPicker).display === "none";
-      emojiPicker.style.display = isHidden ? "block" : "none";
-    });
+  const pickerPopover = document.getElementById("art-emoji-picker-popover");
+  const pickerEl = document.getElementById("art-emoji-picker");
+  const pickerCloseBtn = document.getElementById("art-emoji-picker-close");
 
-    emojiPicker.querySelectorAll(".emoji-item").forEach(item => {
-      item.addEventListener("click", (e) => {
+  if (emojiBtn && pickerPopover) {
+    if (!emojiBtn.dataset.hasPickerListener) {
+      emojiBtn.dataset.hasPickerListener = "true";
+      emojiBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const emoji = item.textContent;
-        textInput.value += emoji;
-        textInput.focus();
-        emojiPicker.style.display = "none";
+        pickerPopover.classList.toggle("active");
       });
-    });
+    }
 
-    document.addEventListener("click", (e) => {
-      if (emojiPicker && !emojiPicker.contains(e.target) && e.target !== emojiBtn) {
-        emojiPicker.style.display = "none";
-      }
-    });
+    if (pickerCloseBtn && !pickerCloseBtn.dataset.hasListener) {
+      pickerCloseBtn.dataset.hasListener = "true";
+      pickerCloseBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        pickerPopover.classList.remove("active");
+      });
+    }
+
+    if (pickerEl && !pickerEl.dataset.hasListener) {
+      pickerEl.dataset.hasListener = "true";
+      pickerEl.addEventListener("emoji-click", (e) => {
+        const emoji = e.detail?.unicode || (e.detail?.emoji && e.detail.emoji.unicode) || "";
+        if (emoji && textInput) {
+          textInput.value += emoji;
+          textInput.focus();
+          const len = textInput.value.length;
+          textInput.setSelectionRange(len, len);
+        }
+      });
+    }
+
+    if (!window.hasEmojiPickerDismissListener) {
+      window.hasEmojiPickerDismissListener = true;
+      document.addEventListener("click", (e) => {
+        const pop = document.getElementById("art-emoji-picker-popover");
+        const btn = document.getElementById("comment-emoji-btn");
+        if (pop && pop.classList.contains("active")) {
+          if (!pop.contains(e.target) && btn && !btn.contains(e.target)) {
+            pop.classList.remove("active");
+          }
+        }
+      });
+    }
   }
+
+  // Instagram-style Quick Emoji Reaction Bar Click Handlers
+  document.querySelectorAll(".quick-emoji-btn").forEach(btn => {
+    if (!btn.dataset.hasListener) {
+      btn.dataset.hasListener = "true";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const emoji = btn.dataset.emoji || btn.textContent.trim();
+        if (textInput) {
+          textInput.value += emoji;
+          textInput.focus();
+          const len = textInput.value.length;
+          textInput.setSelectionRange(len, len);
+        }
+      });
+    }
+  });
 
   likeBtns.forEach(btn => {
     if (btn && !btn.dataset.hasListener) {
@@ -1838,6 +1856,12 @@ function initDetailCardListeners() {
         e.stopPropagation();
 
         if (!activeArtworkId) return false;
+
+        const currentUser = getCurrentUser();
+        if (!currentUser) {
+          showAuthRequiredModal("like artworks");
+          return false;
+        }
 
         const votedKey = `liked_artwork_${activeArtworkId}`;
         const currentlyLiked = localStorage.getItem(votedKey) === 'true';
@@ -1850,12 +1874,15 @@ function initDetailCardListeners() {
         const mobileCountEl = document.getElementById("mobile-detail-like-count");
 
         try {
-          const userKey = getCurrentUserKey();
+          const token = getAuthToken();
           const res = await fetch(`/api/anime/likes`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            },
             credentials: 'include',
-            body: JSON.stringify({ animeId: activeArtworkId, action, userKey })
+            body: JSON.stringify({ animeId: activeArtworkId, action })
           });
           if (res.ok) {
             const data = await res.json();
@@ -1868,15 +1895,12 @@ function initDetailCardListeners() {
                 updateLikedUI(data.userHasLiked);
               }
             }
+          } else if (res.status === 401) {
+            updateLikedUI(currentlyLiked);
+            showAuthRequiredModal("like artworks");
           }
         } catch (err) {
-          console.warn("Backend like sync warning (saved locally):", err);
-          let currentNum = parseInt(localStorage.getItem(`mock_likes_count_${activeArtworkId}`) || "0", 10);
-          currentNum = newLikedState ? currentNum + 1 : Math.max(0, currentNum - 1);
-          const formatted = formatCompactNumber(currentNum);
-          if (countEl) countEl.textContent = formatted;
-          if (mobileCountEl) mobileCountEl.textContent = formatted;
-          localStorage.setItem(`mock_likes_count_${activeArtworkId}`, currentNum.toString());
+          console.warn("Backend like sync warning:", err);
         }
 
         return false;
@@ -1901,43 +1925,131 @@ function initDetailCardListeners() {
     }
   });
 
-  function appendLocalCommentFallback(artworkId, username, text, parentId, userAvatar) {
-    const newComment = {
-      id: Date.now(),
-      animeId: artworkId,
-      username,
-      userAvatar: userAvatar || null,
-      text,
-      parentId: parentId ? parseInt(parentId, 10) : null,
-      createdAt: new Date().toISOString(),
-      likeCount: 0,
-      userHasLiked: false,
-      replies: []
-    };
+  // Cancel Reply & Edit Comment Button Handlers
+  const cancelReplyBtn = document.getElementById("cancel-reply-comment-btn");
+  if (cancelReplyBtn && !cancelReplyBtn.dataset.hasListener) {
+    cancelReplyBtn.dataset.hasListener = "true";
+    cancelReplyBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      cancelReplyingToComment();
+    });
+  }
 
-    let comments = [];
-    try {
-      const raw = localStorage.getItem(`mock_comments_${artworkId}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        comments = Array.isArray(parsed) ? parsed : (parsed.comments || []);
-      }
-    } catch (e) { }
+  const cancelEditBtn = document.getElementById("cancel-edit-comment-btn");
+  if (cancelEditBtn && !cancelEditBtn.dataset.hasListener) {
+    cancelEditBtn.dataset.hasListener = "true";
+    cancelEditBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      cancelEditingComment();
+    });
+  }
 
-    if (!newComment.parentId) {
-      comments.unshift(newComment);
-    } else {
-      const parent = comments.find(c => c.id === newComment.parentId);
-      if (parent) {
-        if (!parent.replies) parent.replies = [];
-        parent.replies.push(newComment);
-      } else {
-        comments.unshift(newComment);
+  if (textInput && !textInput.dataset.hasEscListener) {
+    textInput.dataset.hasEscListener = "true";
+    textInput.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (activeEditingCommentId) cancelEditingComment();
+        if (activeReplyParentId) cancelReplyingToComment();
       }
+    });
+  }
+
+  // Report Dialog Actions
+  const reportCancelBtn = document.getElementById("report-dialog-cancel-btn");
+  const reportCloseBtn = document.getElementById("report-dialog-close-btn");
+  const reportSubmitBtn = document.getElementById("report-dialog-submit-btn");
+  const reportOverlay = document.getElementById("report-dialog-overlay");
+
+  [reportCancelBtn, reportCloseBtn].forEach(b => {
+    if (b && !b.dataset.hasListener) {
+      b.dataset.hasListener = "true";
+      b.addEventListener("click", (e) => { e.preventDefault(); closeReportDialog(); });
     }
+  });
+  if (reportOverlay && !reportOverlay.dataset.hasListener) {
+    reportOverlay.dataset.hasListener = "true";
+    reportOverlay.addEventListener("click", (e) => {
+      if (e.target === reportOverlay) closeReportDialog();
+    });
+  }
 
-    localStorage.setItem(`mock_comments_${artworkId}`, JSON.stringify(comments));
-    renderCommentsList(comments);
+  if (reportSubmitBtn && !reportSubmitBtn.dataset.hasListener) {
+    reportSubmitBtn.dataset.hasListener = "true";
+    reportSubmitBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!pendingReportCommentId) return;
+
+      const selected = document.querySelector('input[name="report_reason"]:checked');
+      const reason = selected ? selected.value : 'Inappropriate content';
+      const commentId = pendingReportCommentId;
+      closeReportDialog();
+
+      const currentUser = getCurrentUser();
+      const userKey = currentUser ? (currentUser.username || currentUser.email) : 'guest';
+
+      try {
+        await fetch(`/api/anime/comments/report`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: 'include',
+          body: JSON.stringify({ commentId, reason, userKey })
+        });
+        showArtToast("Comment reported");
+      } catch (err) {
+        showArtToast("Comment reported");
+      }
+    });
+  }
+
+  // Block Dialog Actions
+  const blockCancelBtn = document.getElementById("block-dialog-cancel-btn");
+  const blockCloseBtn = document.getElementById("block-dialog-close-btn");
+  const blockConfirmBtn = document.getElementById("block-dialog-confirm-btn");
+  const blockOverlay = document.getElementById("block-dialog-overlay");
+
+  [blockCancelBtn, blockCloseBtn].forEach(b => {
+    if (b && !b.dataset.hasListener) {
+      b.dataset.hasListener = "true";
+      b.addEventListener("click", (e) => { e.preventDefault(); closeBlockDialog(); });
+    }
+  });
+  if (blockOverlay && !blockOverlay.dataset.hasListener) {
+    blockOverlay.dataset.hasListener = "true";
+    blockOverlay.addEventListener("click", (e) => {
+      if (e.target === blockOverlay) closeBlockDialog();
+    });
+  }
+
+  if (blockConfirmBtn && !blockConfirmBtn.dataset.hasListener) {
+    blockConfirmBtn.dataset.hasListener = "true";
+    blockConfirmBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const currentUser = getCurrentUser();
+      if (!currentUser) {
+        closeBlockDialog();
+        showAuthRequiredModal("block users");
+        return;
+      }
+
+      if (!pendingBlockUsername) return;
+      const blockedUserKey = pendingBlockUsername;
+      const userKey = currentUser.username || currentUser.email;
+      closeBlockDialog();
+
+      try {
+        await fetch(`/api/users/block`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: 'include',
+          body: JSON.stringify({ userKey, blockedUserKey })
+        });
+        showArtToast(`@${blockedUserKey} blocked`);
+        await loadDetailInteractions(activeArtworkId);
+      } catch (err) {
+        showArtToast(`@${blockedUserKey} blocked`);
+        await loadDetailInteractions(activeArtworkId);
+      }
+    });
   }
 
   if (commentForm && textInput && !commentForm.dataset.hasSubmitListener) {
@@ -1949,7 +2061,7 @@ function initDetailCardListeners() {
       e.preventDefault();
       e.stopPropagation();
 
-      const currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
+      const currentUser = getCurrentUser();
       if (!currentUser) {
         showAuthRequiredModal("leave a comment");
         return;
@@ -1963,35 +2075,86 @@ function initDetailCardListeners() {
 
       isSubmittingComment = true;
       const submitBtn = commentForm.querySelector("button[type='submit']");
-      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+      }
 
       const authorName = (currentUser.name && currentUser.name.trim()) ||
         (currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : '') ||
         (currentUser.username && currentUser.username.trim()) ||
         (currentUser.email ? currentUser.email.split('@')[0] : '') ||
         "Member";
-      const userKey = currentUser.username || currentUser.email || authorName;
       const userAvatar = currentUser.avatar || null;
+
+      // Check if we are currently editing an existing comment
+      if (activeEditingCommentId) {
+        const editingId = activeEditingCommentId;
+        cancelEditingComment();
+
+        try {
+          const res = await fetch(`/api/anime/comments/edit`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(getAuthToken() ? { "Authorization": `Bearer ${getAuthToken()}` } : {})
+            },
+            credentials: 'include',
+            body: JSON.stringify({ commentId: editingId, text })
+          });
+
+          if (res.ok) {
+            showArtToast("Comment updated");
+            await loadDetailInteractions(targetArtworkId);
+          } else {
+            const errData = await res.json().catch(() => ({}));
+            showArtToast(errData.error || "Failed to edit comment");
+            if (res.status !== 403 && res.status !== 401) {
+              updateLocalCommentText(targetArtworkId, editingId, text);
+              await loadDetailInteractions(targetArtworkId);
+            }
+          }
+        } catch (err) {
+          console.warn("Backend comment edit error:", err);
+          updateLocalCommentText(targetArtworkId, editingId, text);
+          showArtToast("Comment updated");
+          await loadDetailInteractions(targetArtworkId);
+        } finally {
+          isSubmittingComment = false;
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i class="fa-solid fa-arrow-up"></i>`;
+          }
+        }
+        return;
+      }
+
+      // Clear input immediately for normal new comment or reply
+      textInput.value = "";
+      const replyParent = activeReplyParentId;
+      if (activeReplyParentId) {
+        cancelReplyingToComment();
+      }
 
       const payload = {
         animeId: targetArtworkId,
-        username: authorName,
-        userKey,
         text,
-        ...(activeReplyParentId && text.startsWith('@') && { parentId: activeReplyParentId })
+        ...(replyParent && { parentId: replyParent })
       };
 
       try {
         const res = await fetch(`/api/anime/comments`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(getAuthToken() ? { "Authorization": `Bearer ${getAuthToken()}` } : {})
+          },
           credentials: 'include',
           body: JSON.stringify(payload)
         });
 
         if (res.ok) {
-          textInput.value = "";
-          activeReplyParentId = null;
+          showArtToast(replyParent ? "Reply posted" : "Comment posted");
           await loadDetailInteractions(targetArtworkId);
         } else {
           const errData = await res.json().catch(() => ({}));
@@ -1999,18 +2162,23 @@ function initDetailCardListeners() {
             showAuthRequiredModal("leave a comment");
             return;
           }
-          appendLocalCommentFallback(targetArtworkId, authorName, text, activeReplyParentId, userAvatar);
-          textInput.value = "";
-          activeReplyParentId = null;
+          if (res.status === 403) {
+            showArtToast(errData.error || "Forbidden");
+            return;
+          }
+          appendLocalCommentFallback(targetArtworkId, authorName, text, replyParent, userAvatar);
+          showArtToast(replyParent ? "Reply posted" : "Comment posted");
         }
       } catch (err) {
         console.warn("Backend comment sync error, performing local update:", err);
-        appendLocalCommentFallback(targetArtworkId, authorName, text, activeReplyParentId, userAvatar);
-        textInput.value = "";
-        activeReplyParentId = null;
+        appendLocalCommentFallback(targetArtworkId, authorName, text, replyParent, userAvatar);
+        showArtToast(replyParent ? "Reply posted" : "Comment posted");
       } finally {
         isSubmittingComment = false;
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<i class="fa-solid fa-arrow-up"></i>`;
+        }
       }
     });
   }
@@ -2178,7 +2346,7 @@ window.copyShareLinkToClipboard = function (url) {
     }
 
     if (typeof showArtToast === 'function') {
-      showArtToast("Link copied to clipboard!", "fa-solid fa-check");
+      showArtToast("Link copied to clipboard");
     }
 
     setTimeout(() => {
@@ -2370,6 +2538,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const closePanel = (e) => {
     if (e) e.stopPropagation();
+    cancelEditingComment();
+    cancelReplyingToComment();
+    document.getElementById("art-emoji-picker-popover")?.classList.remove("active");
     if (pinPageLayout) pinPageLayout.classList.remove("detail-open");
     detailViewHistory = []; // fresh stack next time panel opens
     if (activeCardEl) {
@@ -2565,6 +2736,17 @@ document.addEventListener("DOMContentLoaded", () => {
     updateVisibleItems();
   });
 
+  // Infinite scroll listener to progressively reveal batches as user scrolls down
+  window.addEventListener('scroll', () => {
+    if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 600)) {
+      const items = Array.from(document.querySelectorAll("#pinterest-grid .pinterest-item"));
+      if (visibleLimit > 0 && visibleLimit < items.length) {
+        visibleLimit += getBatchSize();
+        updateVisibleItems();
+      }
+    }
+  }, { passive: true });
+
   window.addEventListener('load', () => layoutMasonry());
 
   // Fast layout refresh sequence for immediate image rendering
@@ -2643,7 +2825,7 @@ async function loadDynamicCategories() {
       let html = `<button class="filter-btn ${activeCategory === 'all' ? 'active' : ''}" data-filter="all">All</button>`;
       categories.forEach(cat => {
         const isAct = activeCategory === cat.slug;
-        html += `<button class="filter-btn ${isAct ? 'active' : ''}" data-filter="${cat.slug}">${cat.name}</button>`;
+        html += `<button class="filter-btn ${isAct ? 'active' : ''}" data-filter="${escapeHTML2D(cat.slug)}">${escapeHTML2D(cat.name)}</button>`;
       });
       container.innerHTML = html;
     }

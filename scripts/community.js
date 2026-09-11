@@ -95,6 +95,16 @@ document.addEventListener("DOMContentLoaded", () => {
       likedReviews = [];
     }
 
+    function escapeHtml(text) {
+      if (!text) return "";
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     let html = "";
     reviewsToRender.forEach(review => {
       // Generate stars HTML
@@ -113,19 +123,19 @@ document.addEventListener("DOMContentLoaded", () => {
       html += `
         <div class="review-card">
           <div class="review-card-header">
-            <span class="review-author"><i class="fa-solid fa-user-circle"></i> ${review.author}</span>
+            <span class="review-author"><i class="fa-solid fa-user-circle"></i> ${escapeHtml(review.author || 'Anonymous')}</span>
             <div class="review-stars">
               ${starsHTML}
             </div>
           </div>
           <div class="review-meta">
-            <span class="review-category">${review.category}</span>
+            <span class="review-category">${escapeHtml(review.category || 'General')}</span>
           </div>
-          <h3>${review.title}</h3>
-          <p title="${review.text}">${review.text}</p>
+          <h3>${escapeHtml(review.title || '')}</h3>
+          <p title="${escapeHtml(review.text || '')}">${escapeHtml(review.text || '')}</p>
           <div class="review-card-footer">
-            <span class="review-date">${review.date}</span>
-            <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${review.id}">
+            <span class="review-date">${escapeHtml(review.date || '')}</span>
+            <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${escapeHtml(review.id)}">
               <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
               <span class="like-count">${likesCount}</span>
             </button>
@@ -593,7 +603,7 @@ document.addEventListener("DOMContentLoaded", () => {
         originalPrice: selectedAmount,
         displayPriceFormatted: currentCurrency === 'USD' ? `$${selectedAmount}` : `₹${selectedAmount}`,
         quantity: 1,
-        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
+        img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp",
         type: "digital",
         isDonation: true,
         currency: currentCurrency,

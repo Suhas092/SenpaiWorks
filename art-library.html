@@ -9,9 +9,11 @@
   <title>2D Art Library - SenpaiWorks</title>
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="header.css">
-  <link rel="stylesheet" href="art-library.css?v=37">
+  <link rel="stylesheet" href="art-library.css?v=43">
   <!-- FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Full Emoji Picker Web Component Library -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"></script>
 </head>
 
 <body>
@@ -93,11 +95,11 @@
               <div class="top-bar-right">
                 <button type="button" class="top-bar-icon-btn" id="detail-like-btn" title="Like Artwork">
                   <i class="fa-regular fa-heart" id="detail-like-icon"></i>
-                  <span id="detail-like-count" class="top-bar-count">0</span>
+                  <span id="detail-like-count" class="top-bar-count"></span>
                 </button>
                 <button type="button" class="top-bar-icon-btn" id="detail-comment-shortcut-btn" title="Toggle Comments">
                   <i class="fa-regular fa-comment"></i>
-                  <span id="detail-comments-shortcut-count" class="top-bar-count">0</span>
+                  <span id="detail-comments-shortcut-count" class="top-bar-count"></span>
                 </button>
                 <button type="button" class="top-bar-icon-btn" id="detail-share-btn" title="Share Artwork">
                   <i class="fa-solid fa-arrow-up-from-bracket"></i>
@@ -150,11 +152,11 @@
                     <div class="ig-action-left">
                       <button type="button" class="ig-icon-btn" id="mobile-detail-like-btn" title="Like Artwork">
                         <i class="fa-regular fa-heart" id="mobile-detail-like-icon"></i>
-                        <span id="mobile-detail-like-count" class="ig-count">0</span>
+                        <span id="mobile-detail-like-count" class="ig-count"></span>
                       </button>
                       <button type="button" class="ig-icon-btn" id="mobile-detail-comment-shortcut-btn" title="Toggle Comments">
                         <i class="fa-regular fa-comment"></i>
-                        <span id="mobile-detail-comments-shortcut-count" class="ig-count">0</span>
+                        <span id="mobile-detail-comments-shortcut-count" class="ig-count"></span>
                       </button>
                       <button type="button" class="ig-icon-btn" id="mobile-detail-share-btn" title="Share Artwork">
                         <i class="fa-solid fa-arrow-up-from-bracket"></i>
@@ -207,7 +209,7 @@
               <div class="detail-comments-col detail-interactions-section" id="detail-comments-container">
                 <div class="comment-header-row">
                   <span class="comment-header-title">Comments</span>
-                  <span id="detail-comments-count-label" class="comment-count-badge">0</span>
+                  <span id="detail-comments-count-label" class="comment-count-badge"></span>
                 </div>
 
                 <!-- Middle Comments List Section -->
@@ -218,38 +220,62 @@
                   <i class="fa-solid fa-chevron-down"></i>
                 </button>
 
-                <!-- Bottom Anchored Comment Input Form -->
-                <form id="detail-comment-form" class="comment-form">
-                  <button type="button" class="comment-emoji-btn" id="comment-emoji-btn" title="Add Emoji">
-                    <i class="fa-regular fa-face-smile"></i>
-                  </button>
-                  <input type="text" id="detail-comment-text" placeholder="Add a comment to start the conversation..." required />
-                  <button type="submit" class="comment-submit-btn" id="comment-submit-btn" title="Send Comment">
-                    <i class="fa-solid fa-arrow-up"></i>
-                  </button>
-
-                  <!-- Emoji Picker Popover Box -->
-                  <div class="emoji-picker-box" id="emoji-picker-box" style="display: none;">
-                    <div class="emoji-grid">
-                      <span class="emoji-item">😊</span>
-                      <span class="emoji-item">❤️</span>
-                      <span class="emoji-item">🔥</span>
-                      <span class="emoji-item">👏</span>
-                      <span class="emoji-item">😍</span>
-                      <span class="emoji-item">😂</span>
-                      <span class="emoji-item">✨</span>
-                      <span class="emoji-item">🎉</span>
-                      <span class="emoji-item">🚀</span>
-                      <span class="emoji-item">💯</span>
-                      <span class="emoji-item">👍</span>
-                      <span class="emoji-item">🎨</span>
-                      <span class="emoji-item">🌟</span>
-                      <span class="emoji-item">🙌</span>
-                      <span class="emoji-item">💡</span>
-                      <span class="emoji-item">🤩</span>
+                <!-- Fixed Bottom Section: Indicators + Quick Emojis + Input Form -->
+                <div class="detail-comment-footer-wrapper" id="detail-comment-footer-wrapper">
+                  <!-- Replying to Comment Banner Indicator -->
+                  <div id="reply-comment-indicator" class="reply-comment-indicator" style="display: none;">
+                    <div class="reply-comment-info">
+                      <i class="fa-solid fa-reply"></i>
+                      <span>Replying to <strong id="reply-target-username">@user</strong></span>
                     </div>
+                    <button type="button" id="cancel-reply-comment-btn" class="cancel-reply-comment-btn" title="Cancel reply">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
                   </div>
-                </form>
+
+                  <!-- Editing Comment Banner Indicator -->
+                  <div id="edit-comment-indicator" class="edit-comment-indicator" style="display: none;">
+                    <div class="edit-comment-info">
+                      <i class="fa-solid fa-pen"></i>
+                      <span>Editing comment</span>
+                    </div>
+                    <button type="button" id="cancel-edit-comment-btn" class="cancel-edit-comment-btn" title="Cancel edit">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+
+                  <!-- Quick Emojis Reaction Bar (Instagram Style) -->
+                  <div class="comment-quick-emojis-bar" id="comment-quick-emojis-bar">
+                    <button type="button" class="quick-emoji-btn" data-emoji="❤️" title="Heart">❤️</button>
+                    <button type="button" class="quick-emoji-btn" data-emoji="🙌" title="Hands Up">🙌</button>
+                    <button type="button" class="quick-emoji-btn" data-emoji="🔥" title="Fire">🔥</button>
+                    <button type="button" class="quick-emoji-btn" data-emoji="👏" title="Clap">👏</button>
+                    <button type="button" class="quick-emoji-btn" data-emoji="😢" title="Sad">😢</button>
+                    <button type="button" class="quick-emoji-btn" data-emoji="😍" title="Heart Eyes">😍</button>
+                    <button type="button" class="quick-emoji-btn" data-emoji="😮" title="Surprised">😮</button>
+                    <button type="button" class="quick-emoji-btn" data-emoji="😂" title="Laughing">😂</button>
+                  </div>
+
+                  <!-- Bottom Anchored Comment Input Form -->
+                  <form id="detail-comment-form" class="comment-form">
+                    <button type="button" class="comment-emoji-btn" id="comment-emoji-btn" title="Add Emoji">
+                      <i class="fa-regular fa-face-smile"></i>
+                    </button>
+                    <input type="text" id="detail-comment-text" placeholder="Add a comment to start the conversation..." required />
+                    <button type="submit" class="comment-submit-btn" id="comment-submit-btn" title="Send Comment">
+                      <i class="fa-solid fa-arrow-up"></i>
+                    </button>
+                  </form>
+
+                  <!-- Full Library Emoji Picker Popover Box -->
+                  <div class="art-emoji-picker-popover" id="art-emoji-picker-popover">
+                    <div class="art-emoji-picker-header">
+                      <span class="art-emoji-picker-title">Emojis</span>
+                      <button type="button" class="art-emoji-picker-close" id="art-emoji-picker-close" aria-label="Close emoji picker">&times;</button>
+                    </div>
+                    <emoji-picker id="art-emoji-picker" class="light"></emoji-picker>
+                  </div>
+                </div>
               </div>
 
             </div><!-- /.detail-card-body -->
@@ -268,13 +294,13 @@
   <div id="contact-container"></div>
   <script src="scripts/contact.js"></script>
   <script>
-    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630820/to_love_ru_copy_sthzsw.webp");
+    loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/to_love_ru_copy_sthzsw.webp");
   </script>
 
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 
-  <script src="scripts/art-library.js?v=44"></script>
+  <script src="scripts/art-library.js?v=51"></script>
 
   <!-- Full-page refresh transition overlay -->
   <div class="page-refresh-overlay" id="page-refresh-overlay"></div>
@@ -369,10 +395,62 @@
     </div>
   </div>
 
-  <!-- Art Feedback / Interest Toast Notification -->
+  <!-- Art Feedback / Toast Notification (Clean Black & White) -->
   <div class="art-toast-notification" id="art-toast-notification">
-    <i class="fa-solid fa-circle-check" id="toast-icon"></i>
+    <i class="fa-solid fa-circle-check" id="toast-icon" style="display: none;"></i>
     <span id="toast-message">Notification message</span>
+  </div>
+
+  <!-- Report Comment Custom Modal -->
+  <div class="art-custom-dialog-overlay" id="report-dialog-overlay">
+    <div class="art-custom-dialog-card">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Report Comment</h3>
+        <button type="button" class="dialog-close-btn" id="report-dialog-close-btn" aria-label="Close">&times;</button>
+      </div>
+      <p class="dialog-subtitle">Select a reason for reporting this comment:</p>
+      <div class="dialog-options-list" id="report-options-list">
+        <label class="dialog-radio-item">
+          <input type="radio" name="report_reason" value="Spam or misleading" checked />
+          <span>Spam or misleading</span>
+        </label>
+        <label class="dialog-radio-item">
+          <input type="radio" name="report_reason" value="Harassment or bullying" />
+          <span>Harassment or bullying</span>
+        </label>
+        <label class="dialog-radio-item">
+          <input type="radio" name="report_reason" value="Hate speech" />
+          <span>Hate speech</span>
+        </label>
+        <label class="dialog-radio-item">
+          <input type="radio" name="report_reason" value="Inappropriate content" />
+          <span>Inappropriate content</span>
+        </label>
+        <label class="dialog-radio-item">
+          <input type="radio" name="report_reason" value="Other" />
+          <span>Other</span>
+        </label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="dialog-btn secondary" id="report-dialog-cancel-btn">Cancel</button>
+        <button type="button" class="dialog-btn primary" id="report-dialog-submit-btn">Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block User Custom Modal -->
+  <div class="art-custom-dialog-overlay" id="block-dialog-overlay">
+    <div class="art-custom-dialog-card">
+      <div class="dialog-header">
+        <h3 class="dialog-title" id="block-dialog-title">Block User?</h3>
+        <button type="button" class="dialog-close-btn" id="block-dialog-close-btn" aria-label="Close">&times;</button>
+      </div>
+      <p class="dialog-subtitle" id="block-dialog-desc">They will not be able to interact with your comments, and their comments will be hidden from your view across SenpaiWorks.</p>
+      <div class="dialog-actions">
+        <button type="button" class="dialog-btn secondary" id="block-dialog-cancel-btn">Cancel</button>
+        <button type="button" class="dialog-btn danger" id="block-dialog-confirm-btn">Block</button>
+      </div>
+    </div>
   </div>
 
 </body>

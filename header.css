@@ -183,6 +183,7 @@ body>div:first-of-type,
   align-items: center;
   gap: 18px;
   z-index: 10;
+  position: relative;
 }
 
 .header-control-btn {
@@ -351,20 +352,21 @@ body>div:first-of-type,
   top: calc(100% + 8px);
   right: 0;
   width: 275px;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-top: 2px solid #0066cc;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-top: 2px solid #0066cc !important;
   border-radius: 16px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
   padding: 18px;
-  z-index: 1050;
+  z-index: 99999 !important;
   text-align: left;
 }
 
 .profile-dropdown-card.active {
-  display: block;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
   animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -763,6 +765,77 @@ body>div:first-of-type,
 .auth-footer-center a:hover {
   text-decoration: underline;
 }
+
+/* OTP 6-Digit Verification Inputs */
+.otp-input-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 20px 0 24px 0;
+}
+
+.otp-digit-input {
+  width: 46px;
+  height: 54px;
+  border-radius: 14px;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
+}
+
+.otp-digit-input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+  transform: translateY(-2px);
+}
+
+.otp-timer-wrap {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.otp-timer-wrap span {
+  color: #0284c7;
+  font-weight: 700;
+}
+
+.btn-link-resend {
+  background: none;
+  border: none;
+  color: #0284c7;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.btn-link-resend:hover {
+  color: #0369a1;
+}
+
+.auth-success-msg {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
 
 
 /* Sign Out Confirmation Modal Card & Overlay */

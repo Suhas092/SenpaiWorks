@@ -57,7 +57,7 @@ const SUGGESTED_STORE_PRODUCTS = [
     badge: "Official",
     discount: "25% OFF",
     variant: "A2 Glossy Print",
-    img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp"
+    img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp"
   }
 ];
 
@@ -202,11 +202,13 @@ function renderCartPage() {
     itemsHtml += `
       <div class="cart-item-card">
         <div class="cart-item-img-wrap">
-          <img src="${item.img}" alt="${item.name}">
+          <a href="store-detail.html?id=${item.id}">
+            <img src="${item.img}" alt="${item.name}">
+          </a>
         </div>
 
         <div class="cart-item-details-col">
-          <div class="cart-item-name-txt">${item.name}</div>
+          <div class="cart-item-name-txt"><a href="store-detail.html?id=${item.id}" style="color: inherit; text-decoration: none;">${item.name}</a></div>
           <div class="cart-item-variant-badge"><i class="fa-solid fa-tag"></i> ${item.variant || item.size || 'Standard Edition'}</div>
           <div class="cart-item-unit-price">Unit Price: ${formatINR(unitPrice)}</div>
         </div>

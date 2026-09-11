@@ -70,6 +70,9 @@ function initCheckoutPage() {
 
   // Check if cart contains donation items (No delivery address required for donations!)
   const isDonationMode = cartData.some(i => i && i.isDonation);
+  const hasPhysical = cartData.some(i => i.type === 'physical');
+  const isDigitalOnly = !hasPhysical && !isDonationMode;
+
   const deliveryCardBox = document.getElementById("delivery-address-card-box");
   const codOptionCard = document.getElementById("pay-card-cod");
   const submitBtn = document.getElementById("chk-submit-btn");
@@ -80,6 +83,7 @@ function initCheckoutPage() {
   const promoMsg = document.getElementById("promo-message");
   const cartHeaderLink = document.querySelector(".chk-header-cart-link");
   const newsOptinWrap = document.getElementById("chk-news-optin")?.closest(".chk-checkbox-wrap");
+  let digitalNoticeBanner = document.getElementById("chk-digital-banner");
 
   if (isDonationMode) {
     // Hide delivery address, COD, order summary sidebar, promo code, cart link
@@ -90,6 +94,7 @@ function initCheckoutPage() {
     if (promoMsg) promoMsg.style.display = "none";
     if (cartHeaderLink) cartHeaderLink.style.display = "none";
     if (newsOptinWrap) newsOptinWrap.style.display = "none";
+    if (digitalNoticeBanner) digitalNoticeBanner.style.display = "none";
 
     // Make layout full-width single column
     if (layoutGrid) layoutGrid.classList.add("donation-mode-layout");
@@ -123,15 +128,46 @@ function initCheckoutPage() {
     const headerTitle = document.querySelector(".chk-secure-txt");
     if (headerTitle) headerTitle.textContent = "Secure Donation";
 
+  } else if (isDigitalOnly) {
+    // Hide delivery address card & hide COD payment method
+    if (deliveryCardBox) deliveryCardBox.style.display = "none";
+    if (codOptionCard) {
+      codOptionCard.style.display = "none";
+      if (selectedPaymentMethod === "cod") {
+        selectedPaymentMethod = "razorpay";
+      }
+    }
+    if (rightSummaryCol) rightSummaryCol.style.display = "";
+    if (donationSummaryBar) donationSummaryBar.style.display = "none";
+
+    // Inject/Show Digital Notice Banner above payment options
+    if (!digitalNoticeBanner && deliveryCardBox) {
+      digitalNoticeBanner = document.createElement("div");
+      digitalNoticeBanner.id = "chk-digital-banner";
+      digitalNoticeBanner.style.cssText = "background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.25); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 14px; color: #06b6d4;";
+      digitalNoticeBanner.innerHTML = `
+        <i class="fa-solid fa-bolt" style="font-size: 1.4rem; color: #06b6d4; flex-shrink: 0;"></i>
+        <div>
+          <strong style="display: block; font-size: 0.95rem; color: #f8fafc; margin-bottom: 2px;">Instant Digital Asset Delivery</strong>
+          <span style="font-size: 0.84rem; color: #94a3b8; line-height: 1.4;">Your files will be unlocked for download immediately upon checkout. No shipping address needed.</span>
+        </div>
+      `;
+      deliveryCardBox.parentNode.insertBefore(digitalNoticeBanner, deliveryCardBox);
+    } else if (digitalNoticeBanner) {
+      digitalNoticeBanner.style.display = "flex";
+    }
+
   } else {
+    // Physical or Mixed cart: full delivery address and COD option active
     if (deliveryCardBox) deliveryCardBox.style.display = "block";
     if (codOptionCard) codOptionCard.style.display = "block";
     if (rightSummaryCol) rightSummaryCol.style.display = "";
     if (donationSummaryBar) donationSummaryBar.style.display = "none";
+    if (digitalNoticeBanner) digitalNoticeBanner.style.display = "none";
   }
 
   // Populate State dropdown dynamically for default country
-  if (!isDonationMode) onCountryChange();
+  if (!isDonationMode && !isDigitalOnly) onCountryChange();
 
   // Check logged-in user state & load saved address
   const currentUser = getCurrentUser();
@@ -163,7 +199,7 @@ function initCheckoutPage() {
   }
 
   // Load Saved Address selector if available
-  if (!isDonationMode) {
+  if (!isDonationMode && !isDigitalOnly) {
     loadSavedAddressCard();
   }
 
@@ -257,11 +293,32 @@ window.onCountryChange = function () {
 // 2. SAVED DELIVERY ADDRESS CARD & CONDITIONAL FORM VISIBILITY
 let selectedSavedAddressId = null;
 
+function getSavedAddressesStorageKey() {
+  let currentUser = null;
+  try {
+    currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  } catch (e) {}
+  if (currentUser && currentUser.email) {
+    return "savedUserAddresses_" + encodeURIComponent(currentUser.email.toLowerCase().trim());
+  }
+  return "savedUserAddresses";
+}
+
 function getSavedAddressesList() {
+  const key = getSavedAddressesStorageKey();
   let addrs = [];
   try {
-    addrs = JSON.parse(localStorage.getItem("savedUserAddresses")) || [];
+    addrs = JSON.parse(localStorage.getItem(key)) || [];
   } catch (e) { addrs = []; }
+
+  // Filter out any legacy hardcoded dummy placeholder addresses
+  addrs = (addrs || []).filter(a => {
+    if (!a) return false;
+    if (a.id === "ADDR-DEF-1") return false;
+    if (a.flat && typeof a.flat === 'string' && a.flat.includes("SenpaiWorks Studio, High Street")) return false;
+    return true;
+  });
+
   return addrs;
 }
 
@@ -632,6 +689,24 @@ function initPaymentSelection() {
       }
     });
   });
+
+  const hasPhysical = cartData.some(i => i.type === 'physical');
+  const isDonationMode = cartData.some(i => i && i.isDonation);
+  if (!hasPhysical || isDonationMode) {
+    const codCard = document.getElementById("pay-card-cod");
+    if (codCard) {
+      codCard.classList.remove("active");
+      const codRadio = codCard.querySelector("input[type='radio']");
+      if (codRadio) codRadio.checked = false;
+    }
+    const razorpayCard = document.getElementById("pay-card-razorpay") || document.querySelector(".payment-method-card:not(#pay-card-cod)");
+    if (razorpayCard) {
+      razorpayCard.classList.add("active");
+      const rzRadio = razorpayCard.querySelector("input[type='radio']");
+      if (rzRadio) rzRadio.checked = true;
+      selectedPaymentMethod = rzRadio ? rzRadio.value : "razorpay";
+    }
+  }
 }
 
 window.selectPayOption = function (method) {
@@ -651,6 +726,10 @@ window.handleCheckoutSubmit = function (e) {
   let finalAddressObj = null;
 
   const isDonationMode = cartData.some(i => i && i.isDonation);
+  const hasPhysical = cartData.some(i => i.type === 'physical');
+  const isDigitalOnly = !hasPhysical && !isDonationMode;
+
+  const currentUser = getCurrentUser() || { username: "Collector", email: email };
 
   if (isDonationMode) {
     const donorNameInput = document.getElementById("chk-donor-name");
@@ -668,6 +747,19 @@ window.handleCheckoutSubmit = function (e) {
       state: "Online",
       pincode: "000000",
       phone: ""
+    };
+  } else if (isDigitalOnly) {
+    const defaultName = (currentUser && (currentUser.name || currentUser.username)) || (email.split('@')[0]) || "Collector";
+    finalAddressObj = {
+      firstName: defaultName,
+      lastName: "",
+      address: "Instant Digital Delivery",
+      apartment: "",
+      city: "Online",
+      country: "IN",
+      state: "Digital",
+      pincode: "000000",
+      phone: document.getElementById("chk-phone")?.value.trim() || ""
     };
   } else if (isUsingSavedAddress) {
     const addrs = getSavedAddressesList();
@@ -720,10 +812,8 @@ window.handleCheckoutSubmit = function (e) {
     }
   }
 
-  const currentUser = getCurrentUser() || { username: "Guest Collector", email: email };
   const subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
   const discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;
-  const hasPhysical = cartData.some(i => i.type === 'physical');
   const shipping = hasPhysical ? (subtotal > 999 ? 0 : 99) : 0;
   const grandTotal = Math.max(0, subtotal - discountAmount + shipping);
   const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
@@ -771,7 +861,7 @@ function triggerRazorpaySDKPayment(orderData) {
         currency: "INR",
         name: "SenpaiWorks Studio",
         description: `Order ${orderData.orderId} - Official Merchandise & Assets`,
-        image: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
+        image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp",
         handler: function (response) {
           processVerifiedOrderSuccess({
             ...orderData,
@@ -814,7 +904,7 @@ window.closeRazorpayModal = function () {
   if (rzpModal) rzpModal.classList.remove("active");
 };
 
-function processVerifiedOrderSuccess(orderData) {
+async function processVerifiedOrderSuccess(orderData) {
   const currentUser = getCurrentUser() || { username: orderData.address ? orderData.address.firstName : "Collector", email: orderData.email };
 
   // Sync donation records to backend if order contains a donation item
@@ -850,14 +940,40 @@ function processVerifiedOrderSuccess(orderData) {
     }
   }
 
-  // Save order object to localStorage for order confirmation & admin/profile history
-  let existingOrders = localStorage.getItem("user_orders");
-  existingOrders = existingOrders ? JSON.parse(existingOrders) : [];
-  existingOrders.unshift(orderData);
-  localStorage.setItem("user_orders", JSON.stringify(existingOrders));
+  // Sync order to backend and use the real DB order for confirmation
+  let finalOrder = orderData;
+  console.log("Checking token before order fetch:", localStorage.getItem("userToken"));
+  const headers = {
+    "Content-Type": "application/json"
+  };
+  const token = localStorage.getItem("userToken");
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+    console.log("Added Authorization header to order request");
+  } else {
+    console.warn("No userToken found in localStorage for order request");
+  }
 
-  // Store latest order for receipt display
-  localStorage.setItem("latestOrder", JSON.stringify(orderData));
+  try {
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(orderData)
+    });
+    
+    if (res.ok) {
+      finalOrder = await res.json();
+    } else {
+      const errorData = await res.json().catch(() => ({}));
+      const errorMessage = errorData.error || `Server returned status ${res.status}`;
+      console.error("Order API sync returned non-OK status:", errorMessage);
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    console.error("Order API sync failed:", e);
+    alert("Checkout failed: Could not save order. " + e.message);
+    return; // STOP! Do not clear cart or redirect to fake success page
+  }
 
   // Clear shopping cart or just the checked out single item
   const singleStr = sessionStorage.getItem("checkoutSingleItem");
@@ -877,8 +993,12 @@ function processVerifiedOrderSuccess(orderData) {
     localStorage.removeItem("shoppingCart");
   }
 
-  // Redirect to Order Confirmation Page
-  window.location.href = `order-confirmation.html?orderId=${orderData.orderId}`;
+  // Redirect to Order Confirmation Page with the real DB orderNumber
+  const finalId = finalOrder.orderNumber || finalOrder.orderId || finalOrder.id;
+  
+  // order-confirmation page uses query params for lookup now
+  const emailParam = finalOrder.email ? `&email=${encodeURIComponent(finalOrder.email)}` : '';
+  window.location.href = `order-confirmation.html?orderId=${finalId}${emailParam}`;
 }
 
 window.processTestPayment = function (paymentType) {

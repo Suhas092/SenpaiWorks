@@ -70,3 +70,30 @@ node_modules/
 
 # Local JavaScript backups containing credentials
 js_backup/
+bin/
+
+
+# Databases, backups and dumps
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.db.bak
+*.neon_migration_backup
+backend/prisma/*.db*
+sqlite_dump.json
+backend/sqlite_dump.json
+migration_map.json
+backend/migration_map.json
+
+# Scratch & Dev Test Scripts
+scratch/
+backend/scratch/
+backend/test_*.js
+backend/verify_*.js
+backend/scan_*.js
+backend/cleanup_*.js
+backend/list_users.js
+backend/orders_routes_snippet.js
+backend/migrate_cloudinary_to_r2.js
+

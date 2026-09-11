@@ -50,48 +50,51 @@
      * @param {string} password 
      * @returns {{ success: boolean, message?: string, user?: Object }}
      */
-    login: function (emailOrUsername, password) {
+    /**
+     * Authenticates a user with email/username and password via backend.
+     * @param {string} emailOrUsername 
+     * @param {string} password 
+     * @returns {Promise<{ success: boolean, requireOtp?: boolean, message?: string, user?: Object, token?: string }>}
+     */
+    login: async function (emailOrUsername, password) {
       if (!emailOrUsername || !password) {
         return { success: false, message: "Please fill in all required fields." };
       }
 
-      const input = emailOrUsername.trim().toLowerCase();
-      const users = this.getRegisteredUsers();
-      let user = users.find(u =>
-        (u.email && u.email.toLowerCase() === input) ||
-        (u.username && u.username.toLowerCase() === input)
-      );
+      const cleanInput = emailOrUsername.trim();
+      const deviceToken = localStorage.getItem("senpai_device_token") || null;
 
-      if (!user) {
-        // Fallback demo user creation for seamless experience
-        const username = input.includes("@") ? input.split("@")[0] : input;
-        user = {
-          username: username,
-          email: input.includes("@") ? input : `${username}@example.com`,
-          avatar: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
-          profile_completed: true
-        };
-      } else {
-        if (user.profile_completed === undefined) {
-          user.profile_completed = true;
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email: cleanInput, username: cleanInput, password, deviceToken })
+        });
+
+        const data = await res.json();
+
+        if (data.requireOtp) {
+          return { success: false, requireOtp: true, email: data.email || cleanInput, message: data.message };
         }
-      }
 
-      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
-      localStorage.setItem(STORAGE_KEYS.LAST_USER, JSON.stringify(user));
-      localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, "true");
-      localStorage.removeItem(STORAGE_KEYS.USER_LOGGED_OUT);
+        if (res.ok && data.success && data.token) {
+          localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(data.user));
+          localStorage.setItem(STORAGE_KEYS.LAST_USER, JSON.stringify(data.user));
+          localStorage.setItem("userToken", data.token);
+          if (data.deviceToken) {
+            localStorage.setItem("senpai_device_token", data.deviceToken);
+          }
+          localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, "true");
+          localStorage.removeItem(STORAGE_KEYS.USER_LOGGED_OUT);
 
-      // Restore account-specific cart
-      if (user && user.email) {
-        const userKey = `userCart_${user.email.toLowerCase()}`;
-        const savedCartRaw = localStorage.getItem(userKey);
-        if (savedCartRaw !== null) {
-          localStorage.setItem("shoppingCart", savedCartRaw);
+          return { success: true, user: data.user, token: data.token };
         }
-      }
 
-      return { success: true, user: user };
+        return { success: false, message: data.error || "Invalid credentials." };
+      } catch (err) {
+        return { success: false, message: "Server error. Please try again." };
+      }
     },
 
     syncUserCart: function (cartData) {
@@ -129,9 +132,13 @@
       localStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(users));
 
       try {
+        const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+        const headers = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         await fetch("/api/users/profile", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify(updatedUser)
         });
       } catch (err) {
@@ -141,62 +148,84 @@
     },
 
     /**
-     * Registers a new user.
+     * Registers a new user via backend with OTP challenge.
      * @param {string} username 
      * @param {string} email 
      * @param {string} password 
-     * @returns {{ success: boolean, message?: string, user?: Object }}
+     * @returns {Promise<{ success: boolean, requireOtp?: boolean, message?: string }>}
      */
-    register: function (username, email, password) {
+    register: async function (username, email, password) {
       if (!username || !email || !password) {
         return { success: false, message: "Please complete all registration fields." };
       }
 
-      if (password.length < 6) {
-        return { success: false, message: "Password must be at least 6 characters long." };
+      const isStrongPass = password.length >= 8 &&
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password) &&
+        /[^A-Za-z0-9]/.test(password);
+
+      if (!isStrongPass) {
+        return { success: false, message: "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character." };
       }
 
-      const users = this.getRegisteredUsers();
-      const existing = users.find(u =>
-        (u.email && u.email.toLowerCase() === email.trim().toLowerCase()) ||
-        (u.username && u.username.toLowerCase() === username.trim().toLowerCase())
-      );
+      try {
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.trim(), username: username.trim(), password })
+        });
 
-      if (existing) {
-        return { success: false, message: "An account with this email or username already exists." };
+        const data = await res.json();
+
+        if (data.requireOtp || (res.ok && data.success)) {
+          return { success: true, requireOtp: true, email: data.email || email.trim(), message: data.message };
+        }
+
+        return { success: false, message: data.error || "Registration failed." };
+      } catch (err) {
+        return { success: false, message: "Server error. Please try again." };
       }
-
-      const newUser = {
-        username: username.trim(),
-        email: email.trim(),
-        password: password,
-        avatar: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
-        joinedDate: new Date().toISOString(),
-        profile_completed: false
-      };
-
-      users.push(newUser);
-      localStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(users));
-
-      // Auto login after registration
-      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(newUser));
-      localStorage.setItem(STORAGE_KEYS.LAST_USER, JSON.stringify(newUser));
-      localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, "true");
-      localStorage.removeItem(STORAGE_KEYS.USER_LOGGED_OUT);
-
-      return { success: true, user: newUser };
     },
 
     /**
      * Completes initial profile setup onboarding for new accounts.
-     * @param {Object} profileData 
-     * @returns {{ success: boolean, message?: string, user?: Object }}
+     * @param {Object} [profileData] 
+     * @param {string} [redirectUrl]
+     * @returns {Promise<{ success: boolean, message?: string, user?: Object }>}
      */
-    completeProfileSetup: function (profileData) {
+    completeProfileSetup: async function (profileData, redirectUrl) {
       const curUser = this.getCurrentUser();
       if (!curUser) {
         window.location.href = "login.html";
         return { success: false, message: "Not authenticated" };
+      }
+
+      const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+      const payload = {
+        name: profileData?.name || curUser.name || curUser.username,
+        phone: profileData?.phone || curUser.phone || "",
+        avatar: profileData?.avatar || curUser.avatar,
+        countryCode: profileData?.countryCode || curUser.countryCode
+      };
+
+      try {
+        if (token) {
+          const res = await fetch("/api/user/complete-profile-setup", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (res.ok && data.success && data.user) {
+            Object.assign(curUser, data.user);
+          }
+        }
+      } catch (err) {
+        console.warn("[Auth] Backend complete-profile-setup sync notice:", err.message);
       }
 
       if (profileData) {
@@ -207,10 +236,11 @@
       }
 
       curUser.profile_completed = true;
+      curUser.profileCompleted = true;
 
       this.saveUserProfile(curUser);
 
-      this.handlePostLoginRedirect("home.html");
+      this.handlePostLoginRedirect(redirectUrl || "home.html");
       return { success: true, user: curUser };
     },
 
@@ -269,19 +299,38 @@
      * @param {string} [defaultRedirect="home.html"]
      */
     handlePostLoginRedirect: function (defaultRedirect) {
-      const curUser = this.getCurrentUser();
-      if (curUser && curUser.profile_completed === false) {
-        window.location.href = "profile-setup.html";
-        return;
+      const params = new URLSearchParams(window.location.search);
+      let redirectTarget = params.get("redirect");
+      if (redirectTarget) {
+        redirectTarget = decodeURIComponent(redirectTarget).trim();
+        const lower = redirectTarget.toLowerCase();
+        if (
+          lower === "login" ||
+          lower === "/login" ||
+          lower === "login.html" ||
+          lower === "/login.html" ||
+          lower.includes("login") ||
+          lower === "register" ||
+          lower === "/register" ||
+          lower === "register.html" ||
+          lower === "/register.html" ||
+          lower.includes("register") ||
+          lower.includes("signin") ||
+          lower.includes("signup") ||
+          lower.includes("profile-setup")
+        ) {
+          redirectTarget = null;
+        }
       }
 
-      const params = new URLSearchParams(window.location.search);
-      const redirectTarget = params.get("redirect");
-      if (redirectTarget) {
-        window.location.href = decodeURIComponent(redirectTarget);
-      } else {
-        window.location.href = defaultRedirect || "home.html";
+      let destination = redirectTarget || defaultRedirect || "/home";
+      if (destination.endsWith(".html") && !destination.startsWith("http")) {
+        destination = "/" + destination.replace(/\.html$/, "");
       }
+      if (!destination.startsWith("/") && !destination.startsWith("http")) {
+        destination = "/" + destination;
+      }
+      window.location.replace(destination);
     },
 
     /**
@@ -304,6 +353,7 @@
      * Complete Social OAuth login, save session, sync backend, and trigger callback/redirect.
      */
     completeOAuthLogin: async function (userData, onSuccess) {
+      console.log("[Auth] completeOAuthLogin called for:", userData.email, "provider:", userData.provider);
       const users = this.getRegisteredUsers();
       const existingUser = users.find(u => u.email && u.email.toLowerCase() === userData.email.toLowerCase());
       if (existingUser) {
@@ -323,6 +373,7 @@
         const res = await fetch("/api/auth/oauth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: 'include',
           body: JSON.stringify({
             email: userData.email,
             username: userData.username,
@@ -337,6 +388,7 @@
           localStorage.setItem("userToken", data.token);
           userData._token = data.token;
         }
+        console.log("[Auth] Backend OAuth sync complete, token:", !!data.token);
       } catch (err) {
         console.warn("Backend database sync notice:", err.message);
       }
@@ -344,74 +396,83 @@
       this.closeOAuthModals();
 
       if (typeof onSuccess === "function") {
-        onSuccess(userData, userData._token);
+        console.log("[Auth] Calling onSuccess callback...");
+        try {
+          onSuccess(userData, userData._token);
+        } catch (cbErr) {
+          console.error("[Auth] onSuccess callback error:", cbErr);
+          window.location.href = "/home";
+        }
       } else {
-        this.handlePostLoginRedirect("home.html");
+        console.log("[Auth] No onSuccess callback, redirecting directly to /home");
+        window.location.href = "/home";
       }
+
+      // Safety net: if still on a login/register page after 2 seconds, force redirect
+      setTimeout(() => {
+        const path = window.location.pathname.toLowerCase();
+        if (path.includes("login") || path.includes("register") || path.includes("signin")) {
+          console.log("[Auth] Safety-net redirect triggered — still on auth page after OAuth login");
+          window.location.href = "/home";
+        }
+      }, 2000);
     },
 
     /**
      * Trigger Google OAuth login flow directly on accounts.google.com
      */
     triggerGoogleLogin: function (onSuccess) {
+      console.log("[Auth] triggerGoogleLogin invoked. Client ID:", window.GOOGLE_CLIENT_ID);
       const clientId = (window.GOOGLE_CLIENT_ID && window.GOOGLE_CLIENT_ID.trim()) ? window.GOOGLE_CLIENT_ID.trim() : "681420178068-lpf5lcl98dfj560p9od15f7t12k4fcqa.apps.googleusercontent.com";
 
-      if (window.google && window.google.accounts && window.google.accounts.id) {
-        try {
-          google.accounts.id.initialize({
-            client_id: clientId,
-            callback: (response) => {
-              try {
-                const base64Url = response.credential.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-                const payload = JSON.parse(jsonPayload);
+      const width = 520;
+      const height = 650;
+      const left = Math.max(0, Math.floor(window.screenX + (window.outerWidth - width) / 2));
+      const top = Math.max(0, Math.floor(window.screenY + (window.outerHeight - height) / 2));
 
-                const gUser = {
-                  username: payload.email ? payload.email.split('@')[0] : "google_user",
-                  name: payload.name || "Google User",
-                  email: payload.email || "google@example.com",
-                  avatar: payload.picture || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
-                  provider: "google",
-                  providerId: payload.sub,
-                  profile_completed: true
-                };
-                Auth.completeOAuthLogin(gUser, onSuccess);
-              } catch (e) {
-                console.error("Failed Google OAuth token parse:", e);
-                alert("Google Login failed. Please try again.");
-              }
-            }
-          });
-          google.accounts.id.prompt((notification) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-              console.warn("Google One-Tap prompt dismissed or blocked.");
-            }
-          });
-          return;
-        } catch (err) {
-          console.warn("Google GSI prompt warning:", err);
-        }
-      }
+      const redirectUri = window.location.origin + window.location.pathname;
+      const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=openid%20email%20profile&prompt=select_account&state=google_oauth`;
 
-      // Direct OAuth 2.0 popup with fallback
+      console.log("[Auth] Opening centered Google OAuth popup...");
+      let popup = null;
       try {
-        const redirectUri = window.location.origin + window.location.pathname;
-        const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}`;
-
-        const width = 520, height = 650;
-        const left = Math.max(0, (window.innerWidth - width) / 2);
-        const top = Math.max(0, (window.innerHeight - height) / 2);
-        const popup = window.open(oauthUrl, "GoogleOAuthPopup", `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
-
-        if (!popup || popup.closed) {
-          console.error("Google OAuth popup was blocked.");
-          alert("Login popup blocked. Please allow popups for this site.");
-        }
-      } catch (err) {
-        console.error("Google OAuth Error:", err);
-        alert("Google Login failed. Please try again.");
+        popup = window.open(
+          oauthUrl,
+          "GoogleSignInWindow",
+          `width=${width},height=${height},left=${left},top=${top},status=no,toolbar=no,menubar=no,location=no,resizable=yes,scrollbars=yes`
+        );
+      } catch (e) {
+        console.warn("[Auth] window.open failed, falling back to direct navigation:", e);
       }
+
+      // If browser blocked popup window, navigate in same tab
+      if (!popup || popup.closed || typeof popup.closed === "undefined") {
+        console.log("[Auth] Popup blocked by browser — navigating same window to Google...");
+        window.location.href = oauthUrl;
+        return;
+      }
+
+      try { popup.focus(); } catch (_) {}
+
+      // Listen for storage changes & poll popup status
+      const checkInterval = setInterval(() => {
+        if (Auth.isLoggedIn()) {
+          clearInterval(checkInterval);
+          try {
+            if (popup && !popup.closed) popup.close();
+          } catch (_) {}
+          console.log("[Auth] Login detected from popup — redirecting parent to /home");
+          window.location.replace("/home");
+        } else if (!popup || popup.closed) {
+          clearInterval(checkInterval);
+          setTimeout(() => {
+            if (Auth.isLoggedIn()) {
+              window.location.replace("/home");
+            }
+          }, 300);
+          console.log("[Auth] Popup window closed.");
+        }
+      }, 300);
     },
 
     /**
@@ -430,7 +491,7 @@
                   username: (profile.name || "fb_user").toLowerCase().replace(/\s+/g, "_"),
                   name: profile.name || "Facebook User",
                   email: profile.email || `${userCleanName}@facebook.com`,
-                  avatar: profile.picture?.data?.url || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
+                  avatar: profile.picture?.data?.url || "assets/default-avatar.svg",
                   provider: "facebook",
                   providerId: profile.id,
                   profile_completed: true
@@ -438,8 +499,7 @@
                 Auth.completeOAuthLogin(fbUser, onSuccess);
               });
             } else {
-              console.error("Facebook SDK Login failed or was cancelled.");
-              alert("Facebook Login failed.");
+              console.error("Facebook SDK Login cancelled.");
             }
           }, { scope: 'public_profile' });
           return;
@@ -450,17 +510,10 @@
 
       try {
         const redirectUri = window.location.origin + window.location.pathname;
-        const fbUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${encodeURIComponent(appId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=public_profile`;
+        const fbUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${encodeURIComponent(appId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=public_profile&state=facebook_oauth`;
 
-        const width = 580, height = 650;
-        const left = Math.max(0, (window.innerWidth - width) / 2);
-        const top = Math.max(0, (window.innerHeight - height) / 2);
-        const popup = window.open(fbUrl, "FacebookOAuthPopup", `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
-
-        if (!popup || popup.closed) {
-          console.error("Facebook OAuth popup was blocked.");
-          alert("Login popup blocked. Please allow popups for this site.");
-        }
+        // Direct same-window redirect
+        window.location.href = fbUrl;
       } catch (err) {
         console.error("Facebook OAuth Error:", err);
         alert("Facebook Login failed. Please try again.");
@@ -475,35 +528,127 @@
     }
   };
 
+  // Helper to decode JWT payload safely
+  function parseJwtPayload(jwtToken) {
+    try {
+      const base64Url = jwtToken.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      try {
+        return JSON.parse(atob(jwtToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+      } catch (err) {
+        return null;
+      }
+    }
+  }
+
   // Check URL Hash for return token from accounts.google.com or facebook.com
   if (window.location.hash && (window.location.hash.includes("id_token") || window.location.hash.includes("access_token"))) {
+    console.log("[Auth] OAuth hash tokens detected in URL");
     try {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const idToken = hashParams.get("id_token");
       const accessToken = hashParams.get("access_token");
+      const state = hashParams.get("state") || "";
+      const scope = hashParams.get("scope") || "";
 
-      if (idToken) {
-        const base64Url = idToken.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const payload = JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-        const gUser = {
-          username: payload.email ? payload.email.split('@')[0] : "google_user",
-          name: payload.name || "Google User",
-          email: payload.email || "google@example.com",
-          avatar: payload.picture || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
-          provider: "google",
-          providerId: payload.sub,
-          profile_completed: true
-        };
+      const isGoogle = idToken || state === "google_oauth" || scope.includes("googleapis.com") || scope.includes("openid");
+      console.log("[Auth] Hash analysis — isGoogle:", isGoogle, "hasIdToken:", !!idToken, "hasAccessToken:", !!accessToken, "state:", state);
 
-        if (window.opener && window.opener.Auth) {
-          window.opener.Auth.completeOAuthLogin(gUser);
-          window.close();
-        } else {
-          history.replaceState(null, document.title, window.location.pathname + window.location.search);
-          Auth.completeOAuthLogin(gUser);
+      // Clean hash from URL immediately
+      history.replaceState(null, document.title, window.location.pathname + window.location.search);
+
+      function finishOAuthAndRedirect(user) {
+        Auth.completeOAuthLogin(user).then(function() {
+          console.log("[Auth] completeOAuthLogin resolved");
+          document.documentElement.style.visibility = "";
+          window.__oauthHashPending = false;
+
+          // Cross-tab broadcast to parent tab
+          try {
+            if (typeof BroadcastChannel !== "undefined") {
+              const ch = new BroadcastChannel("senpai_oauth_sync");
+              ch.postMessage({ type: "LOGIN_SUCCESS" });
+            }
+          } catch (_) {}
+
+          // If this is a popup window, close self and command opener to redirect
+          const isPopup = !!(window.opener || window.name === "GoogleSignInWindow" || (window.outerWidth && window.outerWidth < 600));
+          if (isPopup) {
+            if (window.opener && !window.opener.closed) {
+              try {
+                window.opener.location.replace("/home");
+              } catch (_) {}
+            }
+            try {
+              window.close();
+              setTimeout(() => {
+                window.location.replace("/home");
+              }, 400);
+              return;
+            } catch (_) {}
+          }
+          window.location.replace("/home");
+        }).catch(function(err) {
+          console.error("[Auth] completeOAuthLogin error:", err);
+          document.documentElement.style.visibility = "";
+          window.__oauthHashPending = false;
+          window.location.replace("/home");
+        });
+      }
+
+      if (isGoogle) {
+        if (idToken) {
+          const payload = parseJwtPayload(idToken);
+          console.log("[Auth] Parsed Google id_token payload:", payload ? payload.email : "FAILED");
+          if (payload) {
+            const gUser = {
+              username: payload.email ? payload.email.split('@')[0] : "google_user",
+              name: payload.name || "Google User",
+              email: payload.email || "google@example.com",
+              avatar: payload.picture || "assets/default-avatar.svg",
+              provider: "google",
+              providerId: payload.sub,
+              profile_completed: true
+            };
+            finishOAuthAndRedirect(gUser);
+          }
+        } else if (accessToken) {
+          console.log("[Auth] Using Google access_token to fetch userinfo...");
+          fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          })
+            .then(res => res.json())
+            .then(profile => {
+              console.log("[Auth] Google userinfo response:", profile ? profile.email : "NO PROFILE");
+              if (profile && (profile.email || profile.sub)) {
+                const gUser = {
+                  username: profile.email ? profile.email.split('@')[0] : "google_user",
+                  name: profile.name || "Google User",
+                  email: profile.email || "google@example.com",
+                  avatar: profile.picture || "assets/default-avatar.svg",
+                  provider: "google",
+                  providerId: profile.sub,
+                  profile_completed: true
+                };
+                finishOAuthAndRedirect(gUser);
+              }
+            })
+            .catch(err => {
+              console.error("Error fetching Google profile from access token:", err);
+              document.documentElement.style.visibility = "";
+              window.__oauthHashPending = false;
+            });
         }
       } else if (accessToken) {
+        // Facebook Access Token -> Fetch Facebook Profile
         fetch(`https://graph.facebook.com/v18.0/me?fields=id,name,email,picture&access_token=${encodeURIComponent(accessToken)}`)
           .then(res => res.json())
           .then(profile => {
@@ -513,29 +658,24 @@
                 username: (profile.name || "fb_user").toLowerCase().replace(/\s+/g, "_"),
                 name: profile.name || "Facebook User",
                 email: profile.email || `${userCleanName}@facebook.com`,
-                avatar: profile.picture?.data?.url || "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp",
+                avatar: profile.picture?.data?.url || "assets/default-avatar.svg",
                 provider: "facebook",
                 providerId: profile.id,
                 profile_completed: true
               };
-              if (window.opener && window.opener.Auth) {
-                window.opener.Auth.completeOAuthLogin(fbUser);
-                window.close();
-              } else {
-                history.replaceState(null, document.title, window.location.pathname + window.location.search);
-                Auth.completeOAuthLogin(fbUser);
-              }
+              finishOAuthAndRedirect(fbUser);
             }
           })
           .catch(err => {
             console.error("Error fetching Facebook user profile:", err);
-            if (window.opener && window.opener.Auth) {
-              window.close();
-            }
+            document.documentElement.style.visibility = "";
+            window.__oauthHashPending = false;
           });
       }
     } catch (e) {
       console.warn("OAuth Hash token detection warning:", e);
+      document.documentElement.style.visibility = "";
+      window.__oauthHashPending = false;
     }
   }
 

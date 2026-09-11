@@ -538,11 +538,11 @@ body.cart-page-body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
 }
 
 .product-card:hover {
-  transform: translateY(-4px);
+  transform: none;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
 

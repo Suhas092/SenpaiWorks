@@ -32,8 +32,8 @@
       })();
     </script>
   </div>
-  <script src="scripts/auth.js"></script>
-  <script src="scripts/header.js?v=11"></script>
+  <script src="scripts/auth.js?v=113"></script>
+  <script src="scripts/header.js?v=100"></script>
 
   <div class="top-bg-strip"></div>
 
@@ -46,9 +46,7 @@
     <div class="account-hero-inner">
       <div class="account-user-summary">
         <div class="account-avatar-wrap" id="banner-avatar-trigger" title="Profile Avatar">
-          <img id="acc-banner-avatar"
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-            alt="User Avatar">
+          <img id="acc-banner-avatar" src="assets/default-avatar.svg" alt="User Avatar">
         </div>
         <div class="account-user-meta">
           <div class="user-meta-name-row">
@@ -88,13 +86,8 @@
 
         <button class="account-nav-btn" data-tab="orders" onclick="switchAccountTab('orders')">
           <i class="fa-solid fa-box-archive"></i>
-          <span>Orders & Replacements</span>
+          <span>Your Orders</span>
           <span class="nav-count-badge" id="nav-orders-count">0</span>
-        </button>
-
-        <button class="account-nav-btn" data-tab="feedback" onclick="switchAccountTab('feedback')">
-          <i class="fa-solid fa-comment-dots"></i>
-          <span>Feedback & Support</span>
         </button>
 
         <button class="account-nav-btn" data-tab="notifications" onclick="switchAccountTab('notifications')">
@@ -108,12 +101,24 @@
           <span>Saved Addresses</span>
         </button>
 
-        <button class="account-nav-btn" data-tab="wishlist" onclick="switchAccountTab('wishlist')" style="display: flex; align-items: center; justify-content: space-between;">
+        <button class="account-nav-btn" data-tab="wishlist" onclick="switchAccountTab('wishlist')"
+          style="display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <i class="fa-regular fa-heart"></i>
-            <span>Wishlist & Saved</span>
+            <span>Wishlist</span>
           </div>
-          <span id="profile-wishlist-dot" style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; display: none;"></span>
+          <span id="profile-wishlist-dot"
+            style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; display: none;"></span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="my-reviews" onclick="switchAccountTab('my-reviews')">
+          <i class="fa-solid fa-star"></i>
+          <span>Product Reviews</span>
+        </button>
+
+        <button class="account-nav-btn" data-tab="feedback" onclick="switchAccountTab('feedback')">
+          <i class="fa-solid fa-comment-dots"></i>
+          <span>Feedback</span>
         </button>
 
         <button class="account-nav-btn" data-tab="payments" onclick="switchAccountTab('payments')">
@@ -126,16 +131,17 @@
           <span>Security & Privacy</span>
         </button>
 
-        <button type="button" class="account-nav-btn signout-nav-btn" onclick="handleSignOut()">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          <span>Sign Out Account</span>
+        <button type="button" class="account-nav-btn signout-nav-btn" onclick="handleSignOut()"
+          style="color: #ef4444 !important;">
+          <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444 !important;"></i>
+          <span style="color: #ef4444 !important;">Sign Out Account</span>
         </button>
       </nav>
 
       <div class="sidebar-footer-card">
         <div class="help-box-icon"><i class="fa-solid fa-headset"></i></div>
         <div class="help-box-txt">Need assistance with an order or product?</div>
-        <a href="contact.html" class="help-box-link">Contact Support &rarr;</a>
+        <a href="/contact" class="help-box-link">Contact Support &rarr;</a>
       </div>
     </aside>
 
@@ -143,42 +149,41 @@
     <section class="account-content-area">
 
       <!-- 1. PROFILE SETTINGS TAB -->
-      <div class="account-tab-panel active" id="tab-panel-profile">
-        <div class="panel-header">
-          <h2>Profile & Personal Information</h2>
-          <p>Manage your account handle, contact email, profile picture, and password.</p>
+      <div class="account-tab-panel active" id="tab-panel-profile" style="text-align: left;">
+        <div class="panel-header" style="text-align: left;">
+          <h2 style="text-align: left;">Profile & Personal Information</h2>
+          <p style="text-align: left;">Manage your account handle, contact email, profile picture, and password.</p>
         </div>
 
-        <div class="panel-card">
-          <div class="profile-avatar-row">
+        <div class="panel-card" style="text-align: left;">
+          <div class="profile-avatar-row" style="text-align: left;">
             <div class="avatar-large-preview" id="avatar-preview-trigger" title="Edit Profile Avatar">
-              <img id="profile-avatar-preview"
-                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
-                alt="Avatar">
+              <img id="profile-avatar-preview" src="assets/default-avatar.svg" alt="Avatar">
               <div class="avatar-hover-edit-overlay">
                 <span><i class="fa-solid fa-pen"></i> Edit</span>
               </div>
             </div>
-            <div class="avatar-controls">
+            <div class="avatar-controls" style="text-align: left;">
               <button type="button" class="btn-avatar-upload" id="avatar-upload-trigger">
                 <i class="fa-solid fa-camera"></i> Upload Photo
               </button>
               <input type="file" id="profile-avatar-file" accept="image/*" style="display: none;">
-              <p class="avatar-hint"><i class="fa-solid fa-circle-info"></i> Max file size: 3MB. Drag mouse to position
+              <p class="avatar-hint" style="text-align: left;"><i class="fa-solid fa-circle-info"></i> Max file size:
+                3MB. Drag mouse to position
                 & scroll wheel or slider to zoom.</p>
             </div>
           </div>
 
-          <form id="profile-edit-form" class="account-form-grid">
-            <div class="form-row-2">
-              <div class="form-group-item">
+          <form id="profile-edit-form" class="account-form-grid" style="text-align: left;">
+            <div class="form-row-2" style="text-align: left;">
+              <div class="form-group-item" style="text-align: left;">
                 <label for="profile-firstname">First Name</label>
                 <div class="input-wrapper">
                   <i class="fa-regular fa-user input-icon"></i>
                   <input type="text" id="profile-firstname" placeholder="First name" required>
                 </div>
               </div>
-              <div class="form-group-item">
+              <div class="form-group-item" style="text-align: left;">
                 <label for="profile-lastname">Last Name</label>
                 <div class="input-wrapper">
                   <i class="fa-solid fa-id-card input-icon"></i>
@@ -187,15 +192,20 @@
               </div>
             </div>
 
-            <div class="form-row-2">
-              <div class="form-group-item">
+            <div class="form-row-2" style="text-align: left;">
+              <div class="form-group-item" style="text-align: left;">
                 <label for="profile-email">Email Address</label>
                 <div class="input-wrapper">
                   <i class="fa-regular fa-envelope input-icon"></i>
-                  <input type="email" id="profile-email" placeholder="email@example.com" required>
+                  <input type="email" id="profile-email" placeholder="email@example.com" readonly
+                    style="background: #f8fafc; cursor: default;">
+                </div>
+                <div style="margin-top: 6px; font-size: 0.8rem; color: #64748b; text-align: left;">
+                  To change your email or password, visit <a href="javascript:switchAccountTab('security')"
+                    style="color: #0284c7; font-weight: 600; text-decoration: underline;">Security & Privacy</a>.
                 </div>
               </div>
-              <div class="form-group-item">
+              <div class="form-group-item" style="text-align: left;">
                 <label for="profile-phone">Phone Number</label>
                 <div class="phone-input-group">
                   <select id="profile-country-code" class="country-code-select" aria-label="Country Code">
@@ -234,26 +244,7 @@
               </div>
             </div>
 
-            <div class="form-row-1" id="profile-password-wrapper">
-              <div class="form-group-item">
-                <label for="profile-new-password">Change Password (Optional)</label>
-                <div class="input-wrapper">
-                  <i class="fa-solid fa-lock input-icon"></i>
-                  <input type="password" id="profile-new-password" placeholder="Enter new password (min 6 characters)">
-                </div>
-              </div>
-            </div>
-
-            <div class="form-row-1" id="profile-social-auth-banner" style="display: none;">
-              <div
-                style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); padding: 14px 18px; border-radius: 12px; display: flex; align-items: center; gap: 12px; color: #0284c7; font-size: 0.92rem; font-weight: 600;">
-                <i class="fa-solid fa-shield-halved" style="font-size: 1.25rem;"></i>
-                <span id="social-auth-banner-text">Account authenticated via Google / Facebook (Password managed by
-                  provider)</span>
-              </div>
-            </div>
-
-            <div class="form-actions-bar">
+            <div class="form-actions-bar" style="text-align: left;">
               <div class="profile-message" id="profile-form-message"></div>
               <button type="submit" class="btn-save-profile">
                 <i class="fa-solid fa-floppy-disk"></i> Save Profile Details
@@ -264,20 +255,19 @@
       </div>
 
       <!-- 2. RETURNS & ORDERS TAB -->
-      <div class="account-tab-panel" id="tab-panel-orders">
-        <div class="panel-header">
-          <h2>Orders & Replacements Management</h2>
-          <p>View past order receipts, live shipment tracking, or initiate returns & replacements.</p>
+      <div class="account-tab-panel" id="tab-panel-orders" style="text-align: left;">
+        <div class="panel-header" style="text-align: left;">
+          <h2 style="text-align: left;">My Orders</h2>
+          <p style="text-align: left;">View past order receipts, live shipment tracking, or initiate returns &
+            replacements.</p>
         </div>
 
-        <div class="orders-filter-bar">
+        <div class="orders-filter-bar" style="text-align: left;">
           <div class="orders-tabs">
-            <button class="order-tab-btn active" data-tab="all" onclick="filterOrders('all')">All Orders</button>
-            <button class="order-tab-btn" data-tab="processing" onclick="filterOrders('processing')">Processing &
+            <button class="order-tab-btn active" data-tab="all" onclick="filterOrders('all')">Orders</button>
+            <button class="order-tab-btn" data-tab="buy-again" onclick="filterOrders('buy-again')">Buy Again</button>
+            <button class="order-tab-btn" data-tab="not-shipped" onclick="filterOrders('not-shipped')">Not Yet
               Shipped</button>
-            <button class="order-tab-btn" data-tab="delivered" onclick="filterOrders('delivered')">Delivered</button>
-            <button class="order-tab-btn" data-tab="returned" onclick="filterOrders('returned')">Replacements &
-              Refunds</button>
           </div>
           <div class="orders-search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -285,20 +275,50 @@
           </div>
         </div>
 
-        <div id="orders-history-list" class="orders-list-wrap">
+        <div id="orders-history-list" class="orders-list-wrap" style="text-align: left;">
           <!-- Dynamically populated -->
+        </div>
+
+        <div id="orders-pagination"
+          style="margin-top: 24px; padding-top: 14px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; align-items: center; gap: 12px; display: none;">
+          <span id="orders-page-info" style="color: #64748b; font-size: 0.88rem; font-weight: 600;"></span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button type="button" id="btn-prev-orders" onclick="changeOrdersPage(-1)" title="Previous page"
+              style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button type="button" id="btn-next-orders" onclick="changeOrdersPage(1)" title="Next page"
+              style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- 3. FEEDBACK & SUPPORT TAB -->
-      <div class="account-tab-panel" id="tab-panel-feedback">
-        <div class="panel-header">
-          <h2>Feedback & Reviews</h2>
-          <p>Share your suggestions, rate your store experience, or view support responses.</p>
+      <!-- MY REVIEWS TAB -->
+      <div class="account-tab-panel" id="tab-panel-my-reviews" style="text-align: left;">
+        <div class="panel-header" style="text-align: left;">
+          <h2 style="text-align: left;">Product Reviews</h2>
+          <p style="text-align: left;">Manage, edit, or delete all reviews you've submitted across the SenpaiWorks
+            catalog.</p>
         </div>
 
-        <div class="panel-card">
-          <h3>Submit New Feedback or Review</h3>
+        <div id="my-reviews-list-container" class="my-reviews-list-wrap"
+          style="display: flex; flex-direction: column; gap: 16px; text-align: left;">
+          <!-- Dynamically populated by scripts/profile.js -->
+        </div>
+      </div>
+
+      <!-- 3. FEEDBACK TAB -->
+      <div class="account-tab-panel" id="tab-panel-feedback" style="text-align: left;">
+        <div class="panel-header" style="text-align: left;">
+          <h2 style="text-align: left;">Feedback</h2>
+          <p style="text-align: left;">Share your suggestions, rate your store experience, or view support responses.
+          </p>
+        </div>
+
+        <div class="panel-card" style="text-align: left;">
+          <h3 style="text-align: left;">Submit New Feedback or Review</h3>
           <form id="feedback-form" onsubmit="handleAccountFeedbackSubmit(event)">
             <div class="form-row-2">
               <div class="form-group-item">
@@ -352,225 +372,349 @@
         </div>
       </div>
 
-      <!-- 4. NOTIFICATIONS & INBOX TAB -->
+      <!-- 4. NOTIFICATIONS TAB -->
       <div class="account-tab-panel" id="tab-panel-notifications" style="text-align: left;">
-          <!-- VIEW: NOTIFICATIONS INBOX -->
-          <div id="notifications-list-view">
-            <style>
-              .notif-panel-header { display: flex; flex-direction: column; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0; margin-bottom: 16px; gap: 16px; }
-              .notif-category-tabs { display: flex; gap: 12px; margin-top: 12px; padding-bottom: 4px; flex-wrap: wrap; }
-              @media (max-width: 768px) {
-                .notif-actions-toolbar { width: 100%; justify-content: space-between; }
-                .notif-category-tabs { width: 100%; }
+        <div class="panel-header" style="text-align: left;">
+          <h2 style="text-align: left;">Your Notifications</h2>
+          <p style="text-align: left;">Updates on your orders, wishlist restocks, and studio news.</p>
+        </div>
+
+        <!-- VIEW: INBOX LIST -->
+        <div id="notifications-inbox-view" class="panel-card" style="text-align: left; overflow: visible !important;">
+          <style>
+            .notif-category-tabs {
+              display: flex;
+              gap: 12px;
+              margin-top: 14px;
+              padding-bottom: 4px;
+              flex-wrap: wrap;
+            }
+
+            @media (max-width: 768px) {
+              .notif-actions-toolbar {
+                width: 100%;
+                justify-content: space-between;
               }
-            </style>
-            <div class="panel-header notif-panel-header">
-              <div style="width: 100%; max-width: 100%;">
-                <h2 style="margin: 0 0 8px 0; font-size: 1.5rem; color: #0f172a;">Your Notifications</h2>
-                <p style="margin: 0 0 16px 0; color: #64748b;">Updates on your orders, wishlist restocks, and studio news.</p>
-              </div>
-              
-              <div class="notif-actions-toolbar" style="display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; width: 100%;">
-                <!-- Checkbox + Select Dropdown Arrow -->
-                <div style="display: flex; align-items: center; gap: 4px; padding-right: 8px; border-right: 1px solid #e2e8f0;">
-                  <input type="checkbox" id="notif-select-all" style="width: 16px; height: 16px; cursor: pointer; margin: 0;">
-                  <div style="position: relative;">
-                    <button type="button" class="notif-toolbar-btn" id="notif-select-options-btn" title="Select Options" style="width: 24px; padding: 0;">
-                      <i class="fa-solid fa-caret-down" style="font-size: 0.8rem;"></i>
-                    </button>
-                    <div id="notif-select-dropdown" style="display: none; position: absolute; left: 0; top: 100%; margin-top: 4px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 160px; z-index: 10;">
-                      <button type="button" class="notif-dropdown-item" id="notif-select-all-btn">Select All</button>
-                      <button type="button" class="notif-dropdown-item" id="notif-mark-unread-selected-btn">Mark as Unread</button>
-                      <button type="button" class="notif-dropdown-item notif-move-trash-item" id="notif-move-to-trash-btn">Move to Trash</button>
-                      <button type="button" class="notif-dropdown-item notif-restore-item" id="notif-restore-dropdown-btn" style="display:none;">Restore</button>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Refresh Button (Always visible) -->
-                <button type="button" class="notif-toolbar-btn" id="notif-refresh-btn" title="Refresh">
-                  <i class="fa-solid fa-rotate-right"></i>
+
+              .notif-category-tabs {
+                width: 100%;
+              }
+            }
+          </style>
+
+          <div class="notif-actions-toolbar"
+            style="display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; width: 100%; position: relative; overflow: visible !important;">
+            <!-- Checkbox + Select Dropdown Arrow -->
+            <div
+              style="display: flex; align-items: center; gap: 4px; padding-right: 8px; border-right: 1px solid #e2e8f0; position: relative;">
+              <input type="checkbox" id="notif-select-all"
+                style="width: 16px; height: 16px; cursor: pointer; margin: 0;">
+              <div style="position: relative;">
+                <button type="button" class="notif-toolbar-btn" id="notif-select-options-btn" title="Select Options"
+                  style="width: 24px; padding: 0;">
+                  <i class="fa-solid fa-caret-down" style="font-size: 0.8rem;"></i>
                 </button>
-                
-                <!-- Selected State Actions (Hidden by default) -->
-                <div id="notif-selected-actions" style="display: none; align-items: center; gap: 4px; margin-left: 4px;">
-                  <button type="button" class="notif-toolbar-btn" id="notif-mark-read-selected-btn" title="Mark as Read">
-                    <i class="fa-regular fa-circle-check"></i>
-                  </button>
-                  <button type="button" class="notif-toolbar-btn" id="notif-delete-selected-btn" title="Delete">
-                    <i class="fa-regular fa-trash-can"></i>
-                  </button>
-                  <button type="button" class="notif-toolbar-btn" id="notif-restore-selected-btn" title="Restore" style="display: none;">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                  </button>
-                  <button type="button" class="notif-toolbar-btn" id="notif-permanent-delete-selected-btn" title="Permanently Delete" style="display: none;">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
+                <div id="notif-select-dropdown"
+                  style="display: none; position: absolute; left: 0; top: calc(100% + 4px); background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.05); width: 160px; z-index: 1000; padding: 4px 0;">
+                  <button type="button" class="notif-dropdown-item" id="notif-select-all-btn">Select All</button>
+                  <button type="button" class="notif-dropdown-item" id="notif-mark-unread-selected-btn">Mark as
+                    Unread</button>
+                  <button type="button" class="notif-dropdown-item notif-move-trash-item"
+                    id="notif-move-to-trash-btn">Move to Trash</button>
+                  <button type="button" class="notif-dropdown-item notif-restore-item" id="notif-restore-dropdown-btn"
+                    style="display:none;">Restore</button>
                 </div>
-                <button type="button" class="notif-toolbar-btn" id="notif-empty-trash-btn" title="Empty Trash" style="display: none; width: auto; padding: 6px 12px; font-weight: 500; font-size: 0.85rem; color: #ef4444; margin-left: 4px;">
-                  Empty Trash
-                </button>
-
-                <div style="position: relative; margin-left: 4px;">
-                  <button type="button" class="notif-toolbar-btn" id="notif-more-options-btn" title="More">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                  </button>
-                  <div id="notif-more-dropdown" style="display: none; position: absolute; left: 0; top: 100%; margin-top: 4px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 160px; z-index: 10;">
-                    <button type="button" class="notif-dropdown-item" id="notif-mark-all-read-btn">Mark All as Read</button>
-                  </div>
-                </div>
-
-                <div style="flex: 1;"></div>
-                <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;" id="notif-select-count"></span>
-                
-                <button type="button" class="notif-toolbar-btn notif-tab-btn-trash" id="notif-trash-tab-btn" title="Trash" data-category="Trash" style="margin-left: 8px; width: auto; padding: 6px 10px; gap: 6px; font-size: 0.82rem; font-weight: 600;">
-                  <i class="fa-solid fa-trash-can"></i> Trash
-                </button>
-              </div>
-
-              <div class="notif-category-tabs">
-                <button class="notif-tab-btn active" data-category="All">All <span class="notif-badge" style="display: none;"></span></button>
-                <button class="notif-tab-btn" data-category="Orders">Orders <span class="notif-badge" style="display: none;"></span></button>
-                <button class="notif-tab-btn" data-category="Community">Community <span class="notif-badge" style="display: none;"></span></button>
-                <button class="notif-tab-btn" data-category="Store">Store <span class="notif-badge" style="display: none;"></span></button>
-                <button class="notif-tab-btn" data-category="News">News <span class="notif-badge" style="display: none;"></span></button>
-              </div>
-            </div>
-            
-            <style>
-              .notif-toolbar-btn { background: transparent; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: background 0.2s; }
-              .notif-toolbar-btn:hover { background: #e2e8f0; color: #0f172a; }
-              .notif-toolbar-btn.active-tab { background: #e2e8f0; color: #0f172a; }
-              .notif-dropdown-item { width: 100%; text-align: left; padding: 8px 12px; background: transparent; border: none; cursor: pointer; font-size: 0.85rem; color: #334155; transition: background 0.2s; box-sizing: border-box; font-family: inherit; }
-              .notif-dropdown-item:hover { background: #f1f5f9; color: #0f172a; }
-              .notif-tab-btn { background: transparent; border: none; border-bottom: 2px solid transparent; padding: 6px 4px; font-weight: 600; font-size: 0.9rem; color: #64748b; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-              .notif-tab-btn:hover { color: #0f172a; }
-              .notif-tab-btn.active { color: #3b82f6; border-bottom-color: #3b82f6; }
-              .notification-row { cursor: pointer; }
-              .notification-row:hover .btn-hover-delete { display: flex !important; }
-              .notification-row:hover .notif-row-timestamp { opacity: 0 !important; }
-              .notif-inbox-list .notif-checkbox-container { width: 0; margin-right: 0; opacity: 0; pointer-events: none; }
-              .notif-inbox-list.selection-mode .notif-checkbox-container { width: 24px; margin-right: 12px; opacity: 1; pointer-events: auto; }
-            </style>
-            
-            <div id="notifications-inbox-list" class="notif-inbox-list" style="display: flex; flex-direction: column; gap: 0; min-height: 700px;">
-              <!-- Rendered dynamically by profile.js -->
-              <div style="padding: 40px 20px; text-align: center; color: #64748b;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i>
-                <div style="margin-top: 12px;">Loading...</div>
               </div>
             </div>
 
-            <div id="notifications-pagination" style="margin-top: 24px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; display: none;">
-               <span id="notifs-page-info" style="color: #64748b; font-size: 0.9rem; margin-right: auto; padding-left: 8px;"></span>
-               <button type="button" id="btn-prev-notifs" style="padding: 8px 24px; border-radius: 20px; border: 1px solid #cbd5e1; background: white; font-weight: 600; font-size: 0.9rem; color: #0f172a; cursor: pointer; transition: background 0.2s;">
-                 Previous
-               </button>
-               <span id="notifs-page-number" style="color: #0f172a; font-weight: 600; font-size: 0.95rem; min-width: 24px; text-align: center;">1</span>
-               <button type="button" id="btn-next-notifs" style="padding: 8px 24px; border-radius: 20px; border: 1px solid #cbd5e1; background: white; font-weight: 600; font-size: 0.9rem; color: #0f172a; cursor: pointer; transition: background 0.2s;">
-                 Next
-               </button>
-            </div>
+            <!-- Refresh Button (Always visible) -->
+            <button type="button" class="notif-toolbar-btn" id="notif-refresh-btn" title="Refresh">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
 
-            <!-- Notification Settings Section -->
-            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
-              <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-gear" style="color: #64748b;"></i> Notification Settings
-              </h3>
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
-                <div>
-                  <div style="font-weight: 600; font-size: 0.9rem; color: #0f172a;">Notification badge on header</div>
-                  <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">Show unread count on the bell icon</div>
-                </div>
-                <label style="position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer;">
-                  <input type="checkbox" id="notif-page-mute-toggle" style="opacity: 0; width: 0; height: 0;">
-                  <span id="notif-mute-slider" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #22c55e; border-radius: 24px; transition: background 0.3s;">
-                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: transform 0.3s; display: block;" id="notif-mute-knob"></span>
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
-          
-          <!-- VIEW: NOTIFICATION PREVIEW -->
-          <div id="notification-preview-view" style="display: none;" class="panel-card">
-            <div class="preview-toolbar" style="display: flex; align-items: center; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0; margin-bottom: 24px;">
-              <button type="button" class="notif-toolbar-btn" id="notif-preview-back-btn" title="Back to Notifications" style="margin-right: 8px;">
-                <i class="fa-solid fa-arrow-left"></i>
+            <!-- Selected State Actions (Hidden by default) -->
+            <div id="notif-selected-actions" style="display: none; align-items: center; gap: 4px; margin-left: 4px;">
+              <button type="button" class="notif-toolbar-btn" id="notif-mark-read-selected-btn" title="Mark as Read">
+                <i class="fa-regular fa-circle-check"></i>
               </button>
-              
-              <div style="flex: 1;"></div>
-              
-              <button type="button" class="notif-toolbar-btn" id="notif-preview-delete-btn" title="Delete">
+              <button type="button" class="notif-toolbar-btn" id="notif-delete-selected-btn" title="Delete">
                 <i class="fa-regular fa-trash-can"></i>
               </button>
-              <button type="button" class="notif-toolbar-btn" id="notif-preview-unread-btn" title="Mark as Unread">
-                <i class="fa-regular fa-envelope"></i>
+              <button type="button" class="notif-toolbar-btn" id="notif-restore-selected-btn" title="Restore"
+                style="display: none;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+              </button>
+              <button type="button" class="notif-toolbar-btn" id="notif-permanent-delete-selected-btn"
+                title="Permanently Delete" style="display: none;">
+                <i class="fa-solid fa-trash"></i>
               </button>
             </div>
-            
-            <div class="preview-content" style="padding: 0 12px;">
-              <h3 id="notif-preview-title" style="margin: 0 0 16px 0; font-size: 1.5rem; color: #0f172a;">Notification Title</h3>
-              <div id="notif-preview-meta" style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                <span id="notif-preview-date">Date</span>
-              </div>
-              <div id="notif-preview-sender" style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px;">
-                <div style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
-                  <i class="fa-solid fa-bolt"></i>
-                </div>
-                <span style="font-weight: 600; color: #334155; font-size: 0.95rem;">SenpaiWorks Team <span style="font-weight: 400; color: #94a3b8;" id="notif-preview-category-name"></span></span>
-              </div>
-              <div id="notif-preview-body" style="font-size: 1.05rem; color: #334155; line-height: 1.7; margin-bottom: 32px; min-height: 250px;">
-                Notification body goes here.
+            <button type="button" class="notif-toolbar-btn" id="notif-empty-trash-btn" title="Empty Trash"
+              style="display: none; width: auto; padding: 6px 12px; font-weight: 500; font-size: 0.85rem; color: #ef4444; margin-left: 4px;">
+              Empty Trash
+            </button>
+
+            <div style="position: relative; margin-left: 4px;">
+              <button type="button" class="notif-toolbar-btn" id="notif-more-options-btn" title="More options">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+              <div id="notif-more-dropdown"
+                style="display: none; position: absolute; left: 0; top: calc(100% + 4px); background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.05); width: 220px; z-index: 1000; padding: 6px 0;">
+                <button type="button" class="notif-dropdown-item" id="notif-mark-all-read-btn"
+                  style="padding: 10px 14px; font-size: 0.88rem; display: flex; align-items: center; gap: 10px; width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; color: #334155;">
+                  <i class="fa-solid fa-check-double" style="margin-right: 2px; width: 16px; color: #64748b;"></i>
+                  <span>Mark all as read</span>
+                </button>
+                <div style="height: 1px; background: #f1f5f9; margin: 4px 0;"></div>
+                <button type="button" class="notif-dropdown-item" id="notif-toggle-mute-btn"
+                  onclick="window.toggleNotificationMute()"
+                  style="padding: 10px 14px; font-size: 0.88rem; display: flex; align-items: center; gap: 10px; width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; color: #334155;">
+                  <i class="fa-solid fa-bell-slash" id="notif-mute-menu-icon"
+                    style="margin-right: 2px; width: 16px; color: #64748b;"></i>
+                  <span id="notif-mute-menu-text">Turn off notifications</span>
+                </button>
               </div>
             </div>
+
+            <div style="flex: 1;"></div>
+            <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;" id="notif-select-count"></span>
+
+            <button type="button" class="notif-toolbar-btn notif-tab-btn-trash" id="notif-trash-tab-btn" title="Trash"
+              data-category="Trash"
+              style="margin-left: 8px; width: auto; padding: 6px 10px; gap: 6px; font-size: 0.82rem; font-weight: 600;">
+              <i class="fa-solid fa-trash-can"></i> Trash
+            </button>
           </div>
-      </div>
+
+          <div class="notif-category-tabs" id="notif-category-tabs-container">
+            <button class="notif-tab-btn active" data-category="All">All <span class="notif-badge"
+                style="display: none;"></span></button>
+            <button class="notif-tab-btn" data-category="Orders">Orders <span class="notif-badge"
+                style="display: none;"></span></button>
+            <button class="notif-tab-btn" data-category="Community">Community <span class="notif-badge"
+                style="display: none;"></span></button>
+            <button class="notif-tab-btn" data-category="Store">Store <span class="notif-badge"
+                style="display: none;"></span></button>
+            <button class="notif-tab-btn" data-category="News">News <span class="notif-badge"
+                style="display: none;"></span></button>
+            <button class="notif-tab-btn" data-category="Other" id="notif-tab-other" style="display: none;">Other <span
+                class="notif-badge" style="display: none;"></span></button>
+          </div>
+
+          <style>
+            .notif-toolbar-btn {
+              background: transparent;
+              border: none;
+              padding: 6px;
+              border-radius: 4px;
+              cursor: pointer;
+              color: #64748b;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              transition: background 0.2s;
+            }
+
+            .notif-toolbar-btn:hover {
+              background: #e2e8f0;
+              color: #0f172a;
+            }
+
+            .notif-toolbar-btn.active-tab {
+              background: #e2e8f0;
+              color: #0f172a;
+            }
+
+            .notif-dropdown-item {
+              width: 100%;
+              text-align: left;
+              padding: 8px 12px;
+              background: transparent;
+              border: none;
+              cursor: pointer;
+              font-size: 0.85rem;
+              color: #334155;
+              transition: background 0.2s;
+              box-sizing: border-box;
+              font-family: inherit;
+            }
+
+            .notif-dropdown-item:hover {
+              background: #f1f5f9;
+              color: #0f172a;
+            }
+
+            .notif-tab-btn {
+              background: transparent;
+              border: none;
+              border-bottom: 2px solid transparent;
+              padding: 6px 4px;
+              font-weight: 600;
+              font-size: 0.9rem;
+              color: #64748b;
+              cursor: pointer;
+              transition: all 0.2s;
+              font-family: inherit;
+            }
+
+            .notif-tab-btn:hover {
+              color: #0f172a;
+            }
+
+            .notif-tab-btn.active {
+              color: #3b82f6;
+              border-bottom-color: #3b82f6;
+            }
+
+            .notification-row {
+              cursor: pointer;
+            }
+
+            .notification-row:hover .btn-hover-delete {
+              display: flex !important;
+            }
+
+            .notification-row:hover .notif-row-timestamp {
+              opacity: 0 !important;
+            }
+
+            .notif-inbox-list .notif-checkbox-container {
+              width: 0;
+              margin-right: 0;
+              opacity: 0;
+              pointer-events: none;
+            }
+
+            .notif-inbox-list.selection-mode .notif-checkbox-container {
+              width: 24px;
+              margin-right: 12px;
+              opacity: 1;
+              pointer-events: auto;
+            }
+          </style>
+
+          <div id="notifications-inbox-list" class="notif-inbox-list"
+            style="display: flex; flex-direction: column; gap: 0; min-height: 500px; text-align: left;">
+            <!-- Rendered dynamically by profile.js -->
+            <div style="padding: 40px 20px; text-align: center; color: #64748b;">
+              <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i>
+              <div style="margin-top: 12px;">Loading...</div>
+            </div>
+          </div>
+
+          <div id="notifications-pagination"
+            style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; align-items: center; gap: 12px; display: none;">
+            <span id="notifs-page-info" style="color: #64748b; font-size: 0.88rem; font-weight: 600;"></span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" id="btn-prev-notifs" title="Previous page"
+                style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button type="button" id="btn-next-notifs" title="Next page"
+                style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: NOTIFICATION PREVIEW -->
+        <div id="notification-preview-view" style="display: none; text-align: left;" class="panel-card">
+          <div class="preview-toolbar"
+            style="display: flex; align-items: center; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0; margin-bottom: 24px; text-align: left;">
+            <button type="button" class="notif-toolbar-btn" id="notif-preview-back-btn" title="Back to Notifications"
+              style="margin-right: 8px;">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+
+            <div style="flex: 1;"></div>
+
+            <button type="button" class="notif-toolbar-btn" id="notif-preview-delete-btn" title="Delete">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+            <button type="button" class="notif-toolbar-btn" id="notif-preview-unread-btn" title="Mark as Unread">
+              <i class="fa-regular fa-envelope"></i>
+            </button>
+          </div>
+
+          <div class="preview-content" style="padding: 0 12px; text-align: left;">
+            <h3 id="notif-preview-title"
+              style="margin: 0 0 16px 0; font-size: 1.5rem; color: #0f172a; text-align: left;">Notification Title</h3>
+            <div id="notif-preview-meta"
+              style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-align: left;">
+              <span id="notif-preview-date">Date</span>
+            </div>
+            <div id="notif-preview-sender"
+              style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px; text-align: left;">
+              <div
+                style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
+                <i class="fa-solid fa-bolt"></i>
+              </div>
+              <span style="font-weight: 600; color: #334155; font-size: 0.95rem; text-align: left;">SenpaiWorks Team
+                <span style="font-weight: 400; color: #94a3b8;" id="notif-preview-category-name"></span></span>
+            </div>
+            <div id="notif-preview-body"
+              style="font-size: 1.05rem; color: #334155; line-height: 1.7; margin-bottom: 32px; min-height: 250px; text-align: left;">
+              Notification body goes here.
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- 5. SAVED ADDRESSES TAB -->
-      <div class="account-tab-panel" id="tab-panel-addresses">
+      <div class="account-tab-panel" id="tab-panel-addresses" style="text-align: left;">
         <!-- VIEW 1: SAVED ADDRESSES GRID VIEW -->
-        <div id="addresses-grid-view">
-          <div class="panel-header">
-            <h2>Saved Shipping Addresses</h2>
-            <p>Manage your delivery addresses for quick checkout.</p>
+        <div id="addresses-grid-view" style="text-align: left;">
+          <div class="panel-header" style="text-align: left;">
+            <h2 style="text-align: left;">Saved Shipping Addresses</h2>
+            <p style="text-align: left;">Manage your delivery addresses for quick checkout.</p>
           </div>
 
-          <div class="addresses-grid-wrap" id="user-saved-addresses-grid">
+          <div class="addresses-grid-wrap" id="user-saved-addresses-grid" style="text-align: left;">
             <!-- Dynamically rendered by loadSavedAddresses() -->
           </div>
         </div>
 
         <!-- VIEW 2: INLINE ADD / EDIT ADDRESS FORM VIEW (SenpaiWorks Brand Colors: Blue, Black, White) -->
-        <div id="addresses-form-view" style="display: none; width: 100%; max-width: 680px; margin: 0 auto; text-align: left;">
-          <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-            <a href="javascript:void(0)" onclick="closeAddressInlineForm()" style="color: #0284c7; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+        <div id="addresses-form-view"
+          style="display: none; width: 100%; max-width: 680px; margin: 0 auto; text-align: left;">
+          <div
+            style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; text-align: left;">
+            <a href="javascript:void(0)" onclick="closeAddressInlineForm()"
+              style="color: #0284c7; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
               <i class="fa-solid fa-arrow-left"></i> Your Addresses
             </a>
             <span>&rsaquo;</span>
             <span style="color: #0f172a; font-weight: 700;" id="inline-addr-breadcrumbs">New Address</span>
           </div>
 
-          <h2 style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 20px;" id="inline-addr-title">Add a new address</h2>
+          <h2 style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 20px; text-align: left;"
+            id="inline-addr-title">Add a new address</h2>
 
           <!-- Autofill Banner with SenpaiWorks Blue & White -->
-          <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px;">
-            <div style="display: flex; align-items: center; gap: 10px; color: #0284c7; font-weight: 700; font-size: 0.92rem;">
+          <div
+            style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; text-align: left;">
+            <div
+              style="display: flex; align-items: center; gap: 10px; color: #0284c7; font-weight: 700; font-size: 0.92rem; text-align: left;">
               <i class="fa-solid fa-location-dot" style="font-size: 1.25rem; color: #0284c7;"></i>
               <span>Save time. Autofill your current location.</span>
             </div>
-            <button type="button" onclick="autofillLocation()" style="background: #ffffff; border: 1.5px solid #0284c7; color: #0284c7; padding: 7px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.88rem; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);">
+            <button type="button" onclick="autofillLocation()"
+              style="background: #ffffff; border: 1.5px solid #0284c7; color: #0284c7; padding: 7px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.88rem; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);">
               <i class="fa-solid fa-crosshairs"></i> Autofill
             </button>
           </div>
 
-          <form id="address-inline-form" onsubmit="handleSaveAddressSubmit(event)">
+          <form id="address-inline-form" onsubmit="handleSaveAddressSubmit(event)" style="text-align: left;">
             <input type="hidden" id="addr-edit-id" value="">
 
             <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
-              <label for="addr-country" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Country/Region</label>
-              <select id="addr-country" required class="acc-select-input" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #ffffff; font-weight: 600;">
+              <label for="addr-country"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Country/Region</label>
+              <select id="addr-country" required class="acc-select-input"
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #ffffff; font-weight: 600; text-align: left;">
                 <option value="India" selected>India</option>
                 <option value="United States">United States</option>
                 <option value="United Kingdom">United Kingdom</option>
@@ -584,44 +728,66 @@
             </div>
 
             <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
-              <label for="addr-fullname" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Full name (First and Last name)</label>
-              <input type="text" id="addr-fullname" required placeholder="Full Name" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+              <label for="addr-fullname"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Full
+                name (First and Last name)</label>
+              <input type="text" id="addr-fullname" required placeholder="Full Name"
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;">
             </div>
 
             <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
-              <label for="addr-phone" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 2px; color: #0f172a;">Mobile number</label>
-              <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 6px;">May be used to assist delivery</div>
-              <input type="tel" id="addr-phone" required placeholder="10-digit mobile number" maxlength="10" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+              <label for="addr-phone"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 2px; color: #0f172a; text-align: left;">Mobile
+                number</label>
+              <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 6px; text-align: left;">May be used to
+                assist delivery</div>
+              <input type="tel" id="addr-phone" required placeholder="10-digit mobile number" maxlength="10"
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;">
             </div>
 
             <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
-              <label for="addr-pincode" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Pincode</label>
-              <input type="text" id="addr-pincode" required placeholder="6 digits [0-9] PIN code" maxlength="6" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+              <label for="addr-pincode"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Pincode</label>
+              <input type="text" id="addr-pincode" required placeholder="6 digits [0-9] PIN code" maxlength="6"
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;">
             </div>
 
             <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
-              <label for="addr-flat" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Flat, House no., Building, Company, Apartment</label>
-              <input type="text" id="addr-flat" required placeholder="House / Flat No, Building name" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+              <label for="addr-flat"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Flat,
+                House no., Building, Company, Apartment</label>
+              <input type="text" id="addr-flat" required placeholder="House / Flat No, Building name"
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;">
             </div>
 
             <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
-              <label for="addr-street" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Area, Street, Sector, Village</label>
-              <input type="text" id="addr-street" required placeholder="Street address, Area, Sector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+              <label for="addr-street"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Area,
+                Street, Sector, Village</label>
+              <input type="text" id="addr-street" required placeholder="Street address, Area, Sector"
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;">
             </div>
 
             <div class="form-group-item" style="margin-bottom: 16px; text-align: left;">
-              <label for="addr-landmark" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Landmark</label>
-              <input type="text" id="addr-landmark" placeholder="E.g. near Apollo hospital" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+              <label for="addr-landmark"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Landmark</label>
+              <input type="text" id="addr-landmark" placeholder="E.g. near Apollo hospital"
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;">
             </div>
 
-            <div class="form-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div class="form-row-2"
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; text-align: left;">
               <div class="form-group-item" style="text-align: left;">
-                <label for="addr-city" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Town/City</label>
-                <input type="text" id="addr-city" required placeholder="City / Town" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff;">
+                <label for="addr-city"
+                  style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Town/City</label>
+                <input type="text" id="addr-city" required placeholder="City / Town"
+                  style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;">
               </div>
               <div class="form-group-item" style="text-align: left;">
-                <label for="addr-state" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">State</label>
-                <select id="addr-state" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #ffffff; font-weight: 600;">
+                <label for="addr-state"
+                  style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">State</label>
+                <select id="addr-state" required
+                  style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #ffffff; font-weight: 600; text-align: left;">
                   <option value="Karnataka" selected>Karnataka</option>
                   <option value="Maharashtra">Maharashtra</option>
                   <option value="Delhi">Delhi</option>
@@ -635,21 +801,29 @@
               </div>
             </div>
 
-            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-              <input type="checkbox" id="addr-is-default" style="width: 18px; height: 18px; cursor: pointer; accent-color: #0f172a;">
-              <label for="addr-is-default" style="font-weight: 700; font-size: 0.9rem; cursor: pointer; color: #0f172a;">Make this my default address</label>
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-align: left;">
+              <input type="checkbox" id="addr-is-default"
+                style="width: 18px; height: 18px; cursor: pointer; accent-color: #0f172a;">
+              <label for="addr-is-default"
+                style="font-weight: 700; font-size: 0.9rem; cursor: pointer; color: #0f172a; text-align: left;">Make
+                this my default address</label>
             </div>
 
             <div class="form-group-item" style="margin-bottom: 24px; text-align: left;">
-              <label for="addr-instructions" style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a;">Delivery instructions (optional)</label>
-              <textarea id="addr-instructions" rows="3" placeholder="Add preferences, notes, access codes and more..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; box-sizing: border-box; outline: none; background: #ffffff;"></textarea>
+              <label for="addr-instructions"
+                style="display: block; font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: #0f172a; text-align: left;">Delivery
+                instructions (optional)</label>
+              <textarea id="addr-instructions" rows="3" placeholder="Add preferences, notes, access codes and more..."
+                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; box-sizing: border-box; outline: none; background: #ffffff; text-align: left;"></textarea>
             </div>
 
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <button type="submit" id="btn-submit-address" style="background: #0f172a; color: #ffffff; border: none; padding: 12px 32px; border-radius: 24px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);">
+            <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+              <button type="submit" id="btn-submit-address"
+                style="background: #0f172a; color: #ffffff; border: none; padding: 12px 32px; border-radius: 24px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);">
                 Add address
               </button>
-              <button type="button" onclick="closeAddressInlineForm()" style="background: #ffffff; color: #0f172a; border: 1.5px solid #cbd5e1; padding: 12px 24px; border-radius: 24px; font-weight: 700; font-size: 0.95rem; cursor: pointer;">
+              <button type="button" onclick="closeAddressInlineForm()"
+                style="background: #ffffff; color: #0f172a; border: 1.5px solid #cbd5e1; padding: 12px 24px; border-radius: 24px; font-weight: 700; font-size: 0.95rem; cursor: pointer;">
                 Cancel
               </button>
             </div>
@@ -658,42 +832,42 @@
       </div>
 
       <!-- 6. WISHLIST TAB -->
-      <div class="account-tab-panel" id="tab-panel-wishlist">
-        <div class="panel-header">
-          <h2>Wishlist & Saved Items</h2>
-          <p>Your saved anime hoodies, character posters, and digital art assets.</p>
+      <div class="account-tab-panel" id="tab-panel-wishlist" style="text-align: left;">
+        <div class="panel-header" style="text-align: left;">
+          <h2 style="text-align: left;">My Wishlist</h2>
+          <p style="text-align: left;">Your saved anime hoodies, character posters, and digital art assets.</p>
         </div>
 
-        <div class="wishlist-grid" id="wishlist-items-grid">
+        <div class="wishlist-grid" id="wishlist-items-grid" style="text-align: left;">
           <!-- Dynamically populated -->
         </div>
       </div>
 
       <!-- 7. PAYMENTS & WALLET TAB -->
-      <div class="account-tab-panel" id="tab-panel-payments">
-        <div class="panel-header">
-          <h2>Payments & Registration Discount</h2>
-          <p>Check your ₹100 1-Time New Account Registration Discount coupon code.</p>
+      <div class="account-tab-panel" id="tab-panel-payments" style="text-align: left;">
+        <div class="panel-header" style="text-align: left;">
+          <h2 style="text-align: left;">Payments & Registration Discount</h2>
+          <p style="text-align: left;">Check your ₹100 1-Time New Account Registration Discount coupon code.</p>
         </div>
 
-        <div class="wallet-balance-card">
+        <div class="wallet-balance-card" style="text-align: left;">
           <div class="wallet-icon"><i class="fa-solid fa-gift"></i></div>
-          <div>
-            <div class="wallet-label">NEW ACCOUNT REGISTRATION DISCOUNT</div>
-            <div class="wallet-val">₹100.00 OFF</div>
-            <div class="wallet-sub">Use Promo Code: <strong
+          <div style="text-align: left;">
+            <div class="wallet-label" style="text-align: left;">NEW ACCOUNT REGISTRATION DISCOUNT</div>
+            <div class="wallet-val" style="text-align: left;">₹100.00 OFF</div>
+            <div class="wallet-sub" style="text-align: left;">Use Promo Code: <strong
                 style="color: #38bdf8; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 4px;">SENPAI100</strong>
               at checkout (1-time use per account).</div>
           </div>
         </div>
 
-        <div class="panel-card" style="margin-top: 24px;">
-          <h3>Saved Payment Handles</h3>
-          <div class="saved-payment-item">
+        <div class="panel-card" style="margin-top: 24px; text-align: left;">
+          <h3 style="text-align: left;">Saved Payment Handles</h3>
+          <div class="saved-payment-item" style="text-align: left;">
             <div class="payment-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
-            <div>
-              <div class="payment-title">Google Pay / UPI</div>
-              <div class="payment-sub">suhas@okaxis</div>
+            <div style="text-align: left;">
+              <div class="payment-title" style="text-align: left;">Google Pay / UPI</div>
+              <div class="payment-sub" style="text-align: left;">suhas@okaxis</div>
             </div>
             <span class="verified-tag">Verified</span>
           </div>
@@ -701,29 +875,331 @@
       </div>
 
       <!-- 8. SECURITY & PRIVACY TAB -->
-      <div class="account-tab-panel" id="tab-panel-security">
-        <div class="panel-header">
-          <h2>Security Controls</h2>
-          <p>Manage account sessions and authentication settings.</p>
+      <div class="account-tab-panel" id="tab-panel-security" style="text-align: left;">
+        <div class="panel-header" style="text-align: left;">
+          <h2>Security & Authentication</h2>
+          <p>Manage account password and email verification.</p>
         </div>
 
-        <div class="panel-card">
-          <h3>Active Logged-In Sessions</h3>
-          <div class="session-item">
-            <div class="session-icon"><i class="fa-solid fa-laptop"></i></div>
-            <div class="session-info">
-              <div class="session-title">Chrome on Windows (Current Device)</div>
-              <div class="session-sub">Active Now</div>
-            </div>
-            <span class="session-badge">This Device</span>
+        <!-- 1. Password Change Card -->
+        <div class="panel-card" id="security-password-card" style="margin-bottom: 24px; text-align: left;">
+          <div style="margin-bottom: 18px; text-align: left;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0 0 4px 0; text-align: left;">
+              Security</h3>
+            <p style="font-size: 0.88rem; color: #64748b; margin: 0; text-align: left;">Manage your account password and
+              authentication.</p>
           </div>
 
-          <hr class="panel-divider">
+          <!-- Social Login Banner (Shown for Google / Facebook users) -->
+          <div id="security-social-banner"
+            style="display: none; background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 12px; padding: 16px 20px; color: #0284c7; margin-bottom: 16px; text-align: left;">
+            <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+              <i class="fa-solid fa-shield-halved" style="font-size: 1.4rem;"></i>
+              <div style="text-align: left;">
+                <div style="font-weight: 700; font-size: 0.95rem; text-align: left;" id="security-social-title">Password
+                  Managed by Provider</div>
+                <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px; text-align: left;">Your account is
+                  authenticated via Google / Facebook. Passwords and two-factor security are managed directly by your
+                  provider.</div>
+              </div>
+            </div>
+          </div>
 
-          <h3 style="margin-top: 24px; color: #0f172a;">Account Sign Out</h3>
-          <button type="button" class="btn-order-action outline" onclick="handleSignOut()">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out Account
-          </button>
+          <!-- Password Change Section (Shown for standard registered accounts) -->
+          <div id="security-password-flow" style="text-align: left;">
+            <div id="sec-pass-message"
+              style="margin-bottom: 16px; font-size: 0.88rem; font-weight: 600; display: none; text-align: left;"></div>
+
+            <!-- Password Form View -->
+            <div id="profile-pass-fields-view" style="text-align: left;">
+              <form id="profile-pass-change-form" onsubmit="handleProfilePassChangeSubmit(event)"
+                style="text-align: left;">
+                <!-- Current Password -->
+                <div class="form-group-item" style="max-width: 480px; margin-bottom: 16px; text-align: left;">
+                  <label for="sec-current-pass"
+                    style="display: block; font-weight: 700; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; text-align: left;">Current
+                    Password</label>
+                  <p style="font-size: 0.82rem; color: #64748b; margin: 0 0 8px 0; text-align: left;">Enter your
+                    existing password to verify your identity.</p>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="sec-current-pass" placeholder="••••••••" required
+                      autocomplete="current-password">
+                    <button type="button" class="toggle-password-btn"
+                      onclick="togglePasswordVisibility('sec-current-pass', this)" title="Toggle Password Visibility">
+                      <i class="fa-regular fa-eye-slash"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-row-2" style="margin-bottom: 16px; text-align: left;">
+                  <!-- New Password -->
+                  <div class="form-group-item" style="text-align: left;">
+                    <label for="sec-new-pass"
+                      style="display: block; font-weight: 700; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; text-align: left;">New
+                      Password</label>
+                    <p style="font-size: 0.8rem; color: #64748b; margin: 0 0 8px 0; text-align: left;"><i
+                        class="fa-solid fa-circle-info" style="color: #3b82f6; margin-right: 4px;"></i>At least 8 chars
+                      with uppercase, lowercase, number & special character.</p>
+                    <div class="input-wrapper">
+                      <i class="fa-solid fa-key input-icon"></i>
+                      <input type="password" id="sec-new-pass" placeholder="Min 8 characters" minlength="8" required
+                        autocomplete="new-password">
+                      <button type="button" class="toggle-password-btn"
+                        onclick="togglePasswordVisibility('sec-new-pass', this)" title="Toggle Password Visibility">
+                        <i class="fa-regular fa-eye-slash"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Confirm New Password -->
+                  <div class="form-group-item" style="text-align: left;">
+                    <label for="sec-confirm-pass"
+                      style="display: block; font-weight: 700; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; text-align: left;">Confirm
+                      New Password</label>
+                    <p style="font-size: 0.82rem; color: #64748b; margin: 0 0 8px 0; text-align: left;">Re-enter your
+                      new password to confirm.</p>
+                    <div class="input-wrapper">
+                      <i class="fa-solid fa-shield-halved input-icon"></i>
+                      <input type="password" id="sec-confirm-pass" placeholder="••••••••" minlength="8" required
+                        autocomplete="new-password">
+                      <button type="button" class="toggle-password-btn"
+                        onclick="togglePasswordVisibility('sec-confirm-pass', this)" title="Toggle Password Visibility">
+                        <i class="fa-regular fa-eye-slash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-bottom: 18px; text-align: left;">
+                  <a href="#" id="sec-forgot-pass-link" onclick="handleProfileForgotPassword(event)"
+                    style="font-size: 0.84rem; color: #0284c7; font-weight: 600; text-decoration: underline;">
+                    Forgot your current password?
+                  </a>
+                </div>
+
+                <button type="submit" id="sec-btn-change-pass" class="btn-save-profile"
+                  style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: #ffffff;">
+                  <i class="fa-solid fa-lock"></i> Change Password
+                </button>
+              </form>
+            </div>
+
+            <!-- Step 2: OTP Verification Code For Password Change -->
+            <div id="profile-pass-otp-view" style="display: none; text-align: left;">
+              <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; text-align: left;">
+                A 6-digit verification code has been sent to your registered email. Enter it below to finalize your
+                password update.
+              </p>
+
+              <form id="profile-otp-confirm-form" onsubmit="handleProfileOtpSubmit(event)" style="text-align: left;">
+                <div
+                  style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; max-width: 480px; margin-bottom: 18px; text-align: left;">
+                  <label
+                    style="font-weight: 700; font-size: 0.9rem; color: #0f172a; display: block; margin-bottom: 8px; text-align: left;">
+                    Enter 6-Digit Verification Code
+                  </label>
+                  <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <input type="text" id="sec-otp-input" placeholder="123456" maxlength="6"
+                      style="max-width: 180px; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1.15rem; font-weight: 700; letter-spacing: 4px; text-align: center; outline: none; background: #ffffff;"
+                      autocomplete="one-time-code">
+                    <button type="button" id="sec-btn-resend-otp" onclick="resendProfilePasswordOtp()"
+                      style="background: none; border: none; color: #0284c7; font-weight: 700; font-size: 0.88rem; cursor: pointer; text-decoration: underline;">
+                      Resend Code
+                    </button>
+                    <span id="sec-otp-timer" style="font-size: 0.82rem; color: #64748b;"></span>
+                  </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <button type="submit" id="sec-btn-confirm-pass" class="btn-save-profile"
+                    style="display: inline-flex; align-items: center; gap: 8px; background: #0284c7; color: #ffffff;">
+                    <i class="fa-solid fa-check"></i> Confirm & Update Password
+                  </button>
+                  <button type="button" onclick="cancelProfilePassChange()"
+                    style="background: none; border: none; color: #64748b; font-size: 0.88rem; cursor: pointer;">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- In-Profile Forgot Password Flow -->
+            <div id="profile-forgot-flow" style="display: none; text-align: left;">
+              <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; text-align: left;">
+                We will send a 6-digit reset code to your registered email to reset your password.
+              </p>
+
+              <div id="profile-forgot-step-1" style="text-align: left;">
+                <button type="button" id="sec-btn-send-forgot-otp" onclick="sendProfileForgotOtp()"
+                  class="btn-save-profile"
+                  style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: #ffffff;">
+                  <i class="fa-solid fa-paper-plane"></i> Send Password Reset Code
+                </button>
+                <button type="button" onclick="cancelProfilePassChange()"
+                  style="margin-left: 12px; background: none; border: none; color: #64748b; font-size: 0.88rem; cursor: pointer;">
+                  Cancel
+                </button>
+              </div>
+
+              <!-- Forgot OTP & Reset Form -->
+              <div id="profile-forgot-step-2" style="display: none; margin-top: 18px; text-align: left;">
+                <form id="profile-forgot-reset-form" onsubmit="handleProfileForgotResetSubmit(event)"
+                  style="text-align: left;">
+                  <div class="form-group-item" style="max-width: 400px; margin-bottom: 14px; text-align: left;">
+                    <label for="sec-forgot-otp" style="text-align: left;">Enter 6-Digit Reset Code</label>
+                    <div class="input-wrapper">
+                      <i class="fa-solid fa-key input-icon"></i>
+                      <input type="text" id="sec-forgot-otp" placeholder="123456" maxlength="6" required
+                        style="letter-spacing: 4px; font-weight: 700; font-size: 1.1rem; text-align: center;"
+                        autocomplete="one-time-code">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2" style="text-align: left;">
+                    <div class="form-group-item" style="text-align: left;">
+                      <label for="sec-forgot-newpass" style="text-align: left;">New Password <span
+                          style="font-weight: normal; font-size: 0.78rem; color: #64748b;">(min 8 chars, uppercase,
+                          lowercase, number, symbol)</span></label>
+                      <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="sec-forgot-newpass" placeholder="Enter new password" minlength="8"
+                          required autocomplete="new-password">
+                        <button type="button" class="toggle-password-btn"
+                          onclick="togglePasswordVisibility('sec-forgot-newpass', this)"
+                          title="Toggle Password Visibility">
+                          <i class="fa-regular fa-eye-slash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="form-group-item" style="text-align: left;">
+                      <label for="sec-forgot-confirmpass" style="text-align: left;">Re-enter New Password</label>
+                      <div class="input-wrapper">
+                        <i class="fa-solid fa-shield-halved input-icon"></i>
+                        <input type="password" id="sec-forgot-confirmpass" placeholder="Re-enter new password"
+                          minlength="8" required autocomplete="new-password">
+                        <button type="button" class="toggle-password-btn"
+                          onclick="togglePasswordVisibility('sec-forgot-confirmpass', this)"
+                          title="Toggle Password Visibility">
+                          <i class="fa-regular fa-eye-slash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 18px; display: flex; align-items: center; gap: 12px;">
+                    <button type="submit" id="sec-btn-submit-forgot-reset" class="btn-save-profile"
+                      style="display: inline-flex; align-items: center; gap: 8px; background: #0284c7; color: #ffffff;">
+                      <i class="fa-solid fa-check"></i> Reset & Update Password
+                    </button>
+                    <button type="button" onclick="cancelProfilePassChange()"
+                      style="background: none; border: none; color: #64748b; font-size: 0.88rem; cursor: pointer;">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 2. Change Email Address Card -->
+        <div class="panel-card" id="security-email-card" style="margin-bottom: 24px; text-align: left;">
+          <div style="margin-bottom: 18px; text-align: left;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0 0 4px 0; text-align: left;">
+              Change Email Address</h3>
+            <p style="font-size: 0.88rem; color: #64748b; margin: 0; text-align: left;">Update the email address
+              associated with your account. You will need to verify the new email address.</p>
+          </div>
+
+          <div id="sec-email-message"
+            style="margin-bottom: 16px; font-size: 0.88rem; font-weight: 600; display: none; text-align: left;"></div>
+
+          <!-- Email Input Form View -->
+          <div id="profile-email-fields-view" style="text-align: left;">
+            <form id="profile-email-change-form" onsubmit="handleProfileEmailChangeSubmit(event)"
+              style="text-align: left;">
+              <div class="form-row-2" style="margin-bottom: 16px; text-align: left;">
+                <!-- New Email Address -->
+                <div class="form-group-item" style="text-align: left;">
+                  <label for="sec-change-new-email"
+                    style="display: block; font-weight: 700; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; text-align: left;">New
+                    Email Address</label>
+                  <p style="font-size: 0.82rem; color: #64748b; margin: 0 0 8px 0; text-align: left;">A 6-digit code
+                    will be sent to verify ownership.</p>
+                  <div class="input-wrapper">
+                    <i class="fa-regular fa-envelope input-icon"></i>
+                    <input type="email" id="sec-change-new-email" placeholder="new-email@example.com" required
+                      autocomplete="email">
+                  </div>
+                </div>
+
+                <!-- Verify Password -->
+                <div class="form-group-item" style="text-align: left;">
+                  <label for="sec-change-email-pass"
+                    style="display: block; font-weight: 700; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; text-align: left;">Verify
+                    Password</label>
+                  <p style="font-size: 0.82rem; color: #64748b; margin: 0 0 8px 0; text-align: left;">Enter your current
+                    password to authorize this email change.</p>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="sec-change-email-pass" placeholder="••••••••" required
+                      autocomplete="current-password">
+                    <button type="button" class="toggle-password-btn"
+                      onclick="togglePasswordVisibility('sec-change-email-pass', this)"
+                      title="Toggle Password Visibility">
+                      <i class="fa-regular fa-eye-slash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" id="sec-btn-change-email" class="btn-save-profile"
+                style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: #ffffff;">
+                <i class="fa-solid fa-envelope"></i> Update Email
+              </button>
+            </form>
+          </div>
+
+          <!-- Step 2: OTP Verification View For Email Change -->
+          <div id="profile-email-otp-view" style="display: none; text-align: left;">
+            <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; text-align: left;">
+              A 6-digit verification code has been sent to your new email address (<strong
+                id="sec-email-target-disp"></strong>). Enter it below to finalize updating your account email.
+            </p>
+
+            <form id="profile-email-otp-form" onsubmit="handleProfileEmailOtpSubmit(event)" style="text-align: left;">
+              <div
+                style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; max-width: 480px; margin-bottom: 18px; text-align: left;">
+                <label
+                  style="font-weight: 700; font-size: 0.9rem; color: #0f172a; display: block; margin-bottom: 8px; text-align: left;">
+                  Enter 6-Digit Verification Code
+                </label>
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                  <input type="text" id="sec-email-otp-input" placeholder="123456" maxlength="6"
+                    style="max-width: 180px; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1.15rem; font-weight: 700; letter-spacing: 4px; text-align: center; outline: none; background: #ffffff;"
+                    autocomplete="one-time-code">
+                  <button type="button" id="sec-btn-resend-email-otp" onclick="resendProfileEmailOtp()"
+                    style="background: none; border: none; color: #0284c7; font-weight: 700; font-size: 0.88rem; cursor: pointer; text-decoration: underline;">
+                    Resend Code
+                  </button>
+                  <span id="sec-email-otp-timer" style="font-size: 0.82rem; color: #64748b;"></span>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <button type="submit" id="sec-btn-confirm-email-otp" class="btn-save-profile"
+                  style="display: inline-flex; align-items: center; gap: 8px; background: #0284c7; color: #ffffff;">
+                  <i class="fa-solid fa-check"></i> Confirm & Update Email
+                </button>
+                <button type="button" onclick="cancelProfileEmailChange()"
+                  style="background: none; border: none; color: #64748b; font-size: 0.88rem; cursor: pointer;">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -756,7 +1232,7 @@
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
         <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #000000;">Crop Avatar</h3>
         <button type="button" onclick="closeCropModal()" aria-label="Close"
-          style="background: #1f1f23; border: none; color: #a1a1aa; width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">✕</button>
+          style="background: #1f1f23; border: none; color: #ffffff; width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">✕</button>
       </div>
 
       <!-- Canvas Area (Grey Cropper Frame with Green Circle & Grid) -->
@@ -794,41 +1270,27 @@
     </div>
   </div>
 
-  <!-- Shared Track Package Modal -->
+  <!-- Shared Track Package / Status Timeline Modal -->
   <div id="track-modal" class="orders-modal-overlay">
-    <div class="orders-modal-content">
+    <div class="orders-modal-content" style="max-width: 580px; width: 100%; text-align: left; padding: 26px; border-radius: 16px; background: #ffffff;">
       <button class="orders-modal-close" onclick="closeTrackModal()">&times;</button>
-      <div class="modal-header-tag"><i class="fa-solid fa-truck-fast"></i> Live Shipment Tracking</div>
-      <h3 id="track-order-id-title">Tracking Order #ORD-105010</h3>
-
-      <div class="track-info-box">
-        <div><strong>Carrier:</strong> <span id="track-carrier-name">Blue Dart Express</span></div>
-        <div><strong>AWB Tracking ID:</strong> <span id="track-awb-val"
-            style="text-decoration: underline;">BD-884920194</span></div>
-        <div><strong>Est. Delivery:</strong> <span id="track-est-date" style="color: #059669; font-weight: 800;">Thu, 30
-            Jul 2026</span></div>
-      </div>
-
-      <div class="track-timeline-stepper">
-        <div class="track-step completed">
-          <div class="step-icon"><i class="fa-solid fa-check"></i></div>
-          <div class="step-label">Order Placed</div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+        <div style="width: 40px; height: 40px; border-radius: 10px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+          <i class="fa-solid fa-truck-fast"></i>
         </div>
-        <div class="track-step active">
-          <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
-          <div class="step-label">Processing</div>
-        </div>
-        <div class="track-step">
-          <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
-          <div class="step-label">In Transit</div>
-        </div>
-        <div class="track-step">
-          <div class="step-icon"><i class="fa-solid fa-house-chimney-crack"></i></div>
-          <div class="step-label">Delivered</div>
+        <div>
+          <h3 id="track-order-id-title" style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0;">Order Status Timeline</h3>
+          <span id="track-order-number-subtitle" style="font-size: 0.82rem; color: #64748b; font-weight: 600;">#ORD-XXXXX</span>
         </div>
       </div>
 
-      <button class="btn-view-order" onclick="closeTrackModal()" style="width: 100%; margin-top: 20px;">Done</button>
+      <div id="track-modal-timeline-wrap">
+        <!-- Populated dynamically with real timeline & timestamps -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 18px;">
+        <button type="button" class="btn-view-order" onclick="closeTrackModal()" style="padding: 9px 24px;">Close</button>
+      </div>
     </div>
   </div>
 
@@ -853,17 +1315,261 @@
           </select>
         </div>
 
-        <div class="form-group-item" style="margin-bottom: 14px;">
-          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Preferred
-            Resolution</label>
-          <select id="return-resolution-select" required
-            style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
-            <option value="refund">Refund to Original Payment Method</option>
-            <option value="replacement">Free Replacement / Exchange</option>
-          </select>
+        <button type="submit" class="btn-view-order" style="width: 100%;">Submit Replacement Request</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared Order Details Modal (Amazon Style) -->
+  <div id="order-details-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content"
+      style="max-width: 680px; width: 100%; text-align: left; padding: 28px; border-radius: 16px; background: #ffffff; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1); position: relative; max-height: 90vh; overflow-y: auto;">
+      <button class="orders-modal-close" onclick="closeOrderDetailsModal()"
+        style="position: absolute; right: 18px; top: 18px; font-size: 1.4rem; background: none; border: none; cursor: pointer; color: #64748b; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">&times;</button>
+
+      <div style="border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 16px;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Order Details</h2>
+        <div style="font-size: 0.88rem; color: #64748b; display: flex; flex-wrap: wrap; gap: 16px;">
+          <div><strong>Order placed:</strong> <span id="od-modal-date">23 August 2026</span></div>
+          <div><strong>Order number:</strong> <span id="od-modal-order-number"
+              style="font-family: monospace; font-weight: 700; color: #0f172a;">#ORD-123456</span></div>
+        </div>
+      </div>
+
+      <!-- Real Status Timeline in Order Details Modal -->
+      <div id="od-modal-timeline-wrap" style="margin-bottom: 20px;"></div>
+
+      <!-- Top info boxes: Shipping Address & Payment Method -->
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <!-- Ship to Card -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+          <div
+            style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span><i class="fa-solid fa-location-dot" style="color: #0284c7; margin-right: 4px;"></i> Ship To</span>
+            <span id="od-modal-edit-addr-btn-wrap"></span>
+          </div>
+          <div id="od-modal-ship-name"
+            style="font-weight: 700; color: #0f172a; font-size: 0.95rem; margin-bottom: 4px;">Suhas H</div>
+          <div id="od-modal-ship-address"
+            style="font-size: 0.85rem; color: #475569; line-height: 1.5; white-space: pre-line;">
+            House no 08 ground floor
+            Hebbal 1st Stage, 6th Main Road
+            MYSURU, KARNATAKA 570016
+            India
+          </div>
         </div>
 
-        <button type="submit" class="btn-view-order" style="width: 100%;">Submit Replacement Request</button>
+        <!-- Payment Method Card -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+          <div
+            style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+            <i class="fa-solid fa-credit-card" style="color: #0284c7; margin-right: 4px;"></i> Payment Method
+          </div>
+          <div id="od-modal-payment-method"
+            style="font-weight: 700; color: #0f172a; font-size: 0.95rem; margin-bottom: 4px;">
+            BHIM UPI
+          </div>
+          <div style="font-size: 0.85rem; color: #475569;">Payment Status: <span id="od-modal-payment-status"
+              style="color: #16a34a; font-weight: 700;">Completed</span></div>
+        </div>
+      </div>
+
+      <!-- Items Section -->
+      <div style="margin-bottom: 24px;">
+        <div
+          style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">
+          Items in this Order
+        </div>
+        <div id="od-modal-items-list" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div
+        style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+        <div style="font-size: 0.88rem; font-weight: 800; color: #0f172a; margin-bottom: 12px;">
+          Order Summary
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem; color: #475569;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>Item(s) Subtotal:</span>
+            <span id="od-modal-subtotal" style="font-weight: 600; color: #0f172a;">₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Shipping:</span>
+            <span id="od-modal-shipping" style="font-weight: 600; color: #0f172a;">₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Marketplace Fee:</span>
+            <span id="od-modal-platform-fee" style="font-weight: 600; color: #0f172a;">₹0.00</span>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 8px; font-weight: 700; color: #0f172a;">
+            <span>Total:</span>
+            <span id="od-modal-total">₹0.00</span>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 800; color: #0f172a; border-top: 1px solid #cbd5e1; padding-top: 8px; margin-top: 4px;">
+            <span>Grand Total:</span>
+            <span id="od-modal-grand-total" style="color: #0284c7;">₹0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="button" onclick="closeOrderDetailsModal()"
+          style="background: #0f172a; color: #ffffff; border: none; padding: 10px 28px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Cancel Order Confirmation Modal -->
+  <div id="cancel-order-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content"
+      style="max-width: 480px; width: 100%; text-align: left; padding: 28px; border-radius: 16px; background: #ffffff; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1); position: relative;">
+      <button class="orders-modal-close" onclick="closeCancelOrderModal()"
+        style="position: absolute; right: 18px; top: 18px; font-size: 1.4rem; background: none; border: none; cursor: pointer; color: #64748b; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">&times;</button>
+
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px;">
+        <div
+          style="width: 46px; height: 46px; border-radius: 12px; background: #fee2e2; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.3rem; flex-shrink: 0;">
+          <i class="fa-solid fa-ban"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0 0 2px 0;">Cancel Order</h3>
+          <span id="cancel-modal-order-number" style="font-size: 0.84rem; color: #64748b; font-weight: 600;">Order
+            #ORD-759730</span>
+        </div>
+      </div>
+
+      <div
+        style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
+        <div
+          style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+          Product Details</div>
+        <div id="cancel-modal-product-name"
+          style="font-size: 0.96rem; font-weight: 700; color: #0f172a; line-height: 1.4;">
+          <!-- Product Name(s) -->
+        </div>
+      </div>
+
+      <p style="font-size: 0.88rem; color: #475569; line-height: 1.5; margin: 0 0 22px 0;">
+        Are you sure you want to cancel this order? Once cancelled, this order will not be shipped and the status will
+        be permanently updated.
+      </p>
+
+      <div
+        style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid #f1f5f9; padding-top: 18px;">
+        <button type="button" onclick="closeCancelOrderModal()"
+          style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #334155; padding: 9px 22px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+          No, Keep Order
+        </button>
+        <button type="button" id="btn-confirm-cancel-order" onclick="confirmCancelOrderAction()"
+          style="background: #ef4444; border: none; color: #ffffff; padding: 9px 24px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);">
+          Yes, Cancel Order
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Edit Order Shipping Address Modal -->
+  <div id="edit-order-address-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content"
+      style="max-width: 540px; width: 100%; text-align: left; padding: 28px; border-radius: 16px; background: #ffffff; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1); position: relative; max-height: 90vh; overflow-y: auto;">
+      <button class="orders-modal-close" onclick="closeEditOrderAddressModal()"
+        style="position: absolute; right: 18px; top: 18px; font-size: 1.4rem; background: none; border: none; cursor: pointer; color: #64748b; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">&times;</button>
+
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px;">
+        <div
+          style="width: 44px; height: 44px; border-radius: 12px; background: #e0f2fe; display: flex; align-items: center; justify-content: center; color: #0284c7; font-size: 1.25rem; flex-shrink: 0;">
+          <i class="fa-solid fa-location-dot"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0 0 2px 0;">Edit Shipping Address</h3>
+          <span id="edit-addr-modal-order-number" style="font-size: 0.84rem; color: #64748b; font-weight: 600;">Order #ORD-XXXXX</span>
+        </div>
+      </div>
+
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; font-size: 0.82rem; color: #166534; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Address updates are only allowed while the order is in Processing.</span>
+      </div>
+
+      <form id="edit-order-address-form" onsubmit="handleSaveOrderAddressSubmit(event)">
+        <input type="hidden" id="edit-order-db-id" value="">
+        <input type="hidden" id="edit-order-num-val" value="">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">First Name *</label>
+            <input type="text" id="edit-addr-first-name" required placeholder="First name"
+              style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Last Name *</label>
+            <input type="text" id="edit-addr-last-name" required placeholder="Last name"
+              style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Contact Phone *</label>
+          <input type="tel" id="edit-addr-phone" required placeholder="10-digit mobile number"
+            style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Street Address / Flat / Building *</label>
+          <input type="text" id="edit-addr-street" required placeholder="House/Flat No., Street, Area"
+            style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Apartment / Landmark (Optional)</label>
+          <input type="text" id="edit-addr-apartment" placeholder="Near landmark, suite, unit"
+            style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">City *</label>
+            <input type="text" id="edit-addr-city" required placeholder="City"
+              style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">State *</label>
+            <input type="text" id="edit-addr-state" required placeholder="State / Province"
+              style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Pincode / ZIP *</label>
+            <input type="text" id="edit-addr-pincode" required placeholder="6-digit PIN"
+              style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Country</label>
+            <input type="text" id="edit-addr-country" value="India" readonly
+              style="width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-family: inherit; background: #f8fafc; color: #64748b;">
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid #f1f5f9; padding-top: 18px;">
+          <button type="button" onclick="closeEditOrderAddressModal()"
+            style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #334155; padding: 9px 22px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+            Cancel
+          </button>
+          <button type="submit" id="btn-save-order-addr"
+            style="background: #0284c7; border: none; color: #ffffff; padding: 9px 24px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">
+            <i class="fa-solid fa-check"></i> Save Address
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -871,24 +1577,32 @@
   <!-- Amazon-Style Confirm Deletion Modal -->
   <div id="delete-address-modal" class="orders-modal-overlay">
     <div class="orders-modal-content" style="max-width: 480px; text-align: left; padding: 24px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
+      <div
+        style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
         <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0;">Confirm Deletion</h3>
-        <button class="orders-modal-close" onclick="closeDeleteAddressModal()" style="position: static; font-size: 1.25rem; background: none; border: none; cursor: pointer; color: #64748b;">&times;</button>
+        <button class="orders-modal-close" onclick="closeDeleteAddressModal()"
+          style="position: static; font-size: 1.25rem; background: none; border: none; cursor: pointer; color: #64748b;">&times;</button>
       </div>
 
       <div id="delete-addr-preview" style="font-size: 0.88rem; color: #0f172a; line-height: 1.45; margin-bottom: 16px;">
         <!-- Populated dynamically -->
       </div>
 
-      <div style="font-size: 0.8rem; color: #64748b; line-height: 1.5; margin-bottom: 20px; border-top: 1px solid #f1f5f9; padding-top: 12px;">
-        <strong style="color: #0f172a;">Please note:</strong> Deleting this address will not delete any pending orders being shipped to this address. To ensure uninterrupted fulfillment of future orders, please update any wishlists, subscribe and save settings using this address.
+      <div
+        style="font-size: 0.8rem; color: #64748b; line-height: 1.5; margin-bottom: 20px; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        <strong style="color: #0f172a;">Please note:</strong> Deleting this address will not delete any pending orders
+        being shipped to this address. To ensure uninterrupted fulfillment of future orders, please update any
+        wishlists, subscribe and save settings using this address.
       </div>
 
-      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
-        <button type="button" onclick="closeDeleteAddressModal()" style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #0f172a; padding: 8px 24px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease;">
+      <div
+        style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+        <button type="button" onclick="closeDeleteAddressModal()"
+          style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #0f172a; padding: 8px 24px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease;">
           No
         </button>
-        <button type="button" id="btn-confirm-delete-addr" onclick="confirmDeleteAddressAction()" style="background: #0f172a; border: none; color: #ffffff; padding: 8px 28px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);">
+        <button type="button" id="btn-confirm-delete-addr" onclick="confirmDeleteAddressAction()"
+          style="background: #0f172a; border: none; color: #ffffff; padding: 8px 28px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);">
           Yes
         </button>
       </div>
@@ -899,26 +1613,40 @@
   <div id="contact-container"></div>
   <script src="scripts/contact.js"></script>
   <script>
-    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630847/suzan_main_bg_zrmgwb.webp");
+    loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/suzan_main_bg_zrmgwb.webp");
   </script>
 
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 
-  <script src="scripts/orders.js?v=88"></script>
-  <script src="scripts/profile.js?v=88"></script>
+  <script src="scripts/orders.js?v=100"></script>
+  <script src="scripts/profile/profile-core.js?v=1.0"></script>
+  <script src="scripts/profile/profile-info.js?v=1.0"></script>
+  <script src="scripts/profile/profile-notifications.js?v=1.0"></script>
+  <script src="scripts/profile/profile-addresses.js?v=1.0"></script>
+  <script src="scripts/profile/profile-wishlist.js?v=1.0"></script>
+  <script src="scripts/profile/profile-reviews.js?v=1.0"></script>
+  <script src="scripts/profile/profile-feedback.js?v=1.0"></script>
+  <script src="scripts/profile/profile-security.js?v=1.0"></script>
   <!-- Custom Delete Confirmation Modal -->
-  <div class="auth-modal-overlay" id="delete-confirm-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; font-family: inherit;">
-    <div style="background: white; width: 100%; max-width: 320px; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); transform: translateY(0); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); font-family: inherit; text-align: center;">
-      <div style="width: 44px; height: 44px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+  <div class="auth-modal-overlay" id="delete-confirm-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; font-family: inherit;">
+    <div
+      style="background: white; width: 100%; max-width: 320px; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); transform: translateY(0); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); font-family: inherit; text-align: center;">
+      <div
+        style="width: 44px; height: 44px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
         <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.25rem; color: #ef4444;"></i>
       </div>
-      <h3 style="margin-bottom: 8px; font-size: 1.15rem; font-weight: 700; color: #0f172a; font-family: inherit;">Delete Notifications</h3>
-      <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.4; font-family: inherit;" id="delete-confirm-msg">Are you sure you want to delete these notifications? This action cannot be undone.</p>
-      
+      <h3 style="margin-bottom: 8px; font-size: 1.15rem; font-weight: 700; color: #0f172a; font-family: inherit;">Delete
+        Notifications</h3>
+      <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.4; font-family: inherit;"
+        id="delete-confirm-msg">Are you sure you want to delete these notifications? This action cannot be undone.</p>
+
       <div style="display: flex; gap: 10px; justify-content: center;">
-        <button id="btn-cancel-delete" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; color: #475569; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.9rem;">Cancel</button>
-        <button id="btn-confirm-delete" style="padding: 8px 16px; border-radius: 8px; border: none; background: #ef4444; color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(239,68,68,0.2); font-family: inherit; font-size: 0.9rem;">Delete</button>
+        <button id="btn-cancel-delete"
+          style="padding: 8px 16px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; color: #475569; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.9rem;">Cancel</button>
+        <button id="btn-confirm-delete"
+          style="padding: 8px 16px; border-radius: 8px; border: none; background: #ef4444; color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(239,68,68,0.2); font-family: inherit; font-size: 0.9rem;">Delete</button>
       </div>
     </div>
   </div>

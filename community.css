@@ -189,14 +189,13 @@ body {
   border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 30px;
-  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
-    border-color 0.3s ease,
+  transition: border-color 0.3s ease,
     box-shadow 0.3s ease;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .channel-card:hover {
-  transform: translateY(-4px);
+  transform: none;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
 }
 
@@ -1094,11 +1093,11 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .review-card:hover {
-  transform: translateY(-3px);
+  transform: none;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 

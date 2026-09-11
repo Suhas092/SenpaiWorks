@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="/assets/Videos/SenpaiWorks logo.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support &amp; Contact — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/header.css">
+  <link rel="stylesheet" href="/legal/legal.css?v=26">
+</head>
+
+<body>
+
+  <!-- Fixed Header Placeholder -->
+  <div id="header-placeholder">
+    <script>
+      (function() {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="/scripts/auth.js"></script>
+  <script src="/scripts/header.js"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="/scripts/drawer.js"></script>
+
+  <!-- MAIN LEGAL & SUPPORT CONTENT -->
+  <main class="legal-container">
+    <header class="legal-header">
+      <h1 class="legal-title">Support &amp; Contact</h1>
+      <p class="legal-meta">Last updated: August 30, 2026</p>
+      <p class="legal-lead">We are here to assist with store orders, 3D asset downloads, Blender compatibility, cancellations, and studio inquiries.</p>
+      <hr class="legal-divider">
+    </header>
+
+    <div class="legal-content">
+      <section class="legal-section">
+        <h2>1. Official Studio Details</h2>
+        <p>For formal communications, payment support, or order inquiries, our registered operating details are:</p>
+        <ul>
+          <li><strong>Operating Entity:</strong> SenpaiWorks Studio</li>
+          <li><strong>Operational Address:</strong> Mysuru, Karnataka &mdash; 570016, India</li>
+          <li><strong>Official Support Email:</strong> <a href="mailto:senpaiworks.official@gmail.com">senpaiworks.official@gmail.com</a></li>
+          <li><strong>Operating Hours:</strong> Monday &ndash; Saturday: 10:00 AM &ndash; 6:00 PM IST</li>
+          <li><strong>Response Turnaround:</strong> Typically within 24&ndash;48 business hours</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>2. Store &amp; Order Inquiries</h2>
+        <p>If you need assistance with an order placed through the SenpaiWorks Store (such as tracking updates, address adjustments, or parcel delivery status), please include your <strong>Order ID</strong> (e.g. <code>#ORD-1082</code>) and purchase email in your message. For carrier details and transit estimates, please consult our <a href="/shipping">Shipping Policy</a>.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>3. 3D Assets &amp; Technical Support</h2>
+        <p>For technical inquiries regarding downloaded Blender files, character geometry, texture packs, or rigging setups, our studio animators are available to troubleshoot. If an archive download was interrupted, corrupt, or inaccessible, contact us within 48 hours for a verified replacement link.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>4. Cancellations, Returns &amp; Refunds</h2>
+        <p>Physical merchandise received damaged, defective, or in the wrong size can be requested for replacement within 7 days of delivery via your <a href="/profile#orders">Account Orders Tab</a> or by emailing us. Approved refunds are credited to the original payment source within 5 to 7 business days. For full terms, read our <a href="/refunds">Cancellation &amp; Refund Policy</a>.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>5. Discord Community &amp; Collaborations</h2>
+        <p>For real-time discussions, artist feedback, and community chat, join our official Discord server at <a href="https://discord.gg/b7wrAdA2X" target="_blank" rel="noopener">discord.gg/b7wrAdA2X</a>. For commercial licensing, franchise partnerships, or custom animation commissions, email our studio directly at <code>senpaiworks.official@gmail.com</code>.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>6. Send Us a Message</h2>
+        <p>You may also reach our support desk directly by filling out the form below. Responses are sent to your registered email address.</p>
+
+        <form class="legal-form" id="support-inquiry-form" onsubmit="handleSupportFormSubmit(event)">
+          <div class="legal-form-row">
+            <div class="legal-form-group">
+              <label for="sup-name">Your Name *</label>
+              <input type="text" id="sup-name" class="legal-input" placeholder="Full name" required>
+            </div>
+            <div class="legal-form-group">
+              <label for="sup-email">Your Email Address *</label>
+              <input type="email" id="sup-email" class="legal-input" placeholder="name@example.com" required>
+            </div>
+          </div>
+
+          <div class="legal-form-row">
+            <div class="legal-form-group">
+              <label for="sup-category">Inquiry Subject *</label>
+              <select id="sup-category" class="legal-select" required>
+                <option value="Store & Order Inquiries">Store &amp; Order Inquiries</option>
+                <option value="3D Models & Technical Support">3D Models &amp; Technical Support</option>
+                <option value="Return or Replacement Request">Return or Replacement Request</option>
+                <option value="Commissions & Collaborations">Commissions &amp; Collaborations</option>
+                <option value="General Feedback & Other">General Feedback &amp; Other</option>
+              </select>
+            </div>
+            <div class="legal-form-group">
+              <label for="sup-order-id">Order ID (Optional)</label>
+              <input type="text" id="sup-order-id" class="legal-input" placeholder="e.g. ORD-1082">
+            </div>
+          </div>
+
+          <div class="legal-form-group">
+            <label for="sup-message">Message *</label>
+            <textarea id="sup-message" class="legal-textarea" placeholder="Please describe your inquiry or issue..." required></textarea>
+          </div>
+
+          <button type="submit" class="legal-submit-btn" id="sup-submit-btn">
+            Send Message
+          </button>
+
+          <div id="support-feedback-alert" class="legal-form-feedback"></div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    function handleSupportFormSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('sup-name').value.trim();
+      const email = document.getElementById('sup-email').value.trim();
+      const alertBox = document.getElementById('support-feedback-alert');
+      const submitBtn = document.getElementById('sup-submit-btn');
+
+      if (!name || !email) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      setTimeout(function() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+        
+        if (alertBox) {
+          alertBox.innerHTML = 'Thank you, ' + name + '. Your message has been received. Our team will follow up at <strong>' + email + '</strong> within 24–48 business hours.';
+          alertBox.style.display = 'block';
+        }
+
+        document.getElementById('support-inquiry-form').reset();
+      }, 500);
+    }
+  </script>
+
+  <!-- Contact Section & Footer -->
+  <div id="contact-container"></div>
+  <script src="/scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/suzan_main_bg_zrmgwb.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="/scripts/footer.js"></script>
+</body>
+
+</html>

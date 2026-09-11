@@ -18,7 +18,7 @@
 
 <body>
 
-  <script src="scripts/auth.js"></script>
+  <script src="scripts/auth.js?v=113"></script>
 
   <!-- ONBOARDING PAGE MAIN WRAPPER -->
   <main class="auth-page-wrapper">
@@ -47,7 +47,7 @@
       <div class="setup-avatar-section">
         <div class="setup-avatar-frame">
           <img id="setup-avatar-preview"
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+            src="assets/default-avatar.svg"
             alt="Profile Avatar" class="setup-avatar-img">
           <label for="setup-avatar-file" class="setup-avatar-upload-badge" title="Choose Profile Photo">
             <i class="fa-solid fa-camera"></i>
@@ -77,16 +77,6 @@
           </div>
         </div>
 
-        <div class="setup-form-group">
-          <label for="setup-interest" class="setup-form-label">Primary Interest / Collection Category</label>
-          <select id="setup-interest" class="setup-select-input">
-            <option value="3d_models">3D Character Models & Rigs</option>
-            <option value="digital_art">2D Digital Art Prints & Wallpapers</option>
-            <option value="merchandise">Apparel & Anime Physical Merchandise</option>
-            <option value="game_assets">Game Assets & VTuber Avatars</option>
-          </select>
-        </div>
-
         <button type="submit" class="auth-submit-pill" style="margin-top: 10px;">Save & Complete Setup &rarr;</button>
       </form>
 
@@ -99,13 +89,13 @@
     <!-- Standalone Minimal Footer -->
     <footer class="auth-minimal-footer">
       <div class="auth-minimal-links">
-        <a href="contact.html">Support</a>
+        <a href="/contact">Support</a>
         <span class="sep">•</span>
-        <a href="privacy.html">Privacy Notice</a>
+        <a href="/privacy">Privacy Notice</a>
         <span class="sep">•</span>
-        <a href="terms.html">Terms of Service</a>
+        <a href="/terms">Terms of Service</a>
         <span class="sep">•</span>
-        <a href="privacy.html#cookies">Cookie Preferences</a>
+        <a href="/privacy#cookies">Cookie Preferences</a>
       </div>
       <div class="auth-recaptcha-text">
         This site is protected by Google reCAPTCHA and its <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
@@ -144,22 +134,57 @@
         if (avatarPreview && curUser.avatar) avatarPreview.src = curUser.avatar;
       }
 
-      // Handle avatar photo selection
+      // Handle avatar photo selection — upload to R2 immediately on pick
       if (avatarInput) {
-        avatarInput.addEventListener("change", (e) => {
+        avatarInput.addEventListener("change", async (e) => {
           const file = e.target.files[0];
           if (!file) return;
 
+          // Client-side fast-reject (server also enforces this)
           if (file.size > 3 * 1024 * 1024) {
             alert("Please select an image smaller than 3MB.");
             avatarInput.value = "";
             return;
           }
 
+          // Show preview immediately
           const reader = new FileReader();
-          reader.onload = (event) => {
+          reader.onload = async (event) => {
             chosenAvatarBase64 = event.target.result;
             if (avatarPreview) avatarPreview.src = chosenAvatarBase64;
+
+            // Upload to R2 right away
+            try {
+              const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+              const headers = { "Content-Type": "application/json" };
+              if (token) headers["Authorization"] = `Bearer ${token}`;
+
+              const resp = await fetch("/api/user/avatar", {
+                method: "POST",
+                credentials: "include",
+                headers,
+                body: JSON.stringify({ imageBase64: chosenAvatarBase64 })
+              });
+
+              const data = await resp.json();
+
+              if (!resp.ok || !data.success) {
+                alert(data.error || "Avatar upload failed. Please try again.");
+                chosenAvatarBase64 = null;
+                if (avatarPreview) avatarPreview.src = "assets/default-avatar.svg";
+                avatarInput.value = "";
+                return;
+              }
+
+              // Store R2 URL — profile submit will send this, not the base64 blob
+              chosenAvatarBase64 = data.avatarUrl;
+              if (avatarPreview) avatarPreview.src = data.avatarUrl;
+            } catch (err) {
+              console.error("Avatar upload error:", err);
+              alert("Network error uploading avatar. Please try again.");
+              chosenAvatarBase64 = null;
+              avatarInput.value = "";
+            }
           };
           reader.readAsDataURL(file);
         });
@@ -167,35 +192,57 @@
 
       // Handle form submission
       if (form) {
-        form.addEventListener("submit", (e) => {
+        form.addEventListener("submit", async (e) => {
           e.preventDefault();
+
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const origText = submitBtn ? submitBtn.innerHTML : 'Save &amp; Complete Setup &rarr;';
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Profile...';
+          }
 
           const fullName = fullnameInput ? fullnameInput.value.trim() : "";
           const phone = phoneInput ? phoneInput.value.trim() : "";
-          const interest = document.getElementById("setup-interest") ? document.getElementById("setup-interest").value : "";
 
           const profileData = {
             name: fullName,
-            phone: phone,
-            interest: interest
+            phone: phone
           };
+          // chosenAvatarBase64 now holds an R2 URL (or null if no avatar picked)
           if (chosenAvatarBase64) {
             profileData.avatar = chosenAvatarBase64;
           }
 
-          const res = window.Auth.completeProfileSetup(profileData);
-          if (!res.success && errBox) {
-            errBox.textContent = res.message || "Failed to complete setup.";
-            errBox.style.display = "block";
+          try {
+            const res = await window.Auth.completeProfileSetup(profileData);
+            if (!res.success && errBox) {
+              errBox.textContent = res.message || "Failed to complete setup.";
+              errBox.style.display = "block";
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = origText;
+              }
+            }
+          } catch (err) {
+            if (errBox) {
+              errBox.textContent = "Server error. Please try again.";
+              errBox.style.display = "block";
+            }
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = origText;
+            }
           }
         });
       }
 
       // Handle skip button
       if (skipBtn) {
-        skipBtn.addEventListener("click", (e) => {
+        skipBtn.addEventListener("click", async (e) => {
           e.preventDefault();
-          window.Auth.completeProfileSetup(null);
+          skipBtn.textContent = "Continuing...";
+          await window.Auth.completeProfileSetup(null);
         });
       }
     });

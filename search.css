@@ -299,6 +299,8 @@ body {
 .result-type-pill.store { color: #0284c7; }
 .result-type-pill.artwork { color: #e11d48; }
 .result-type-pill.band { color: #7c3aed; }
+.result-type-pill.news { color: #f59e0b; }
+.result-type-pill.learn, .result-type-pill.course { color: #10b981; }
 
 .result-badge {
   position: absolute;

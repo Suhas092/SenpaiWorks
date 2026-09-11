@@ -16,7 +16,7 @@
       subCategory: "Digital Art",
       type: "artwork",
       desc: "Violinist girl portrait with vibrant pastel sky background inspired by Your Lie in April.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/black_kaori_copy_csr9qi.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/black_kaori_copy_csr9qi.webp",
       link: "art-library.html"
     },
     {
@@ -26,7 +26,7 @@
       subCategory: "Digital Portrait",
       type: "artwork",
       desc: "Miku Nakano third sister of Nakano quintuplets digital character illustration.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/miku_full_copy_vdritm.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/miku_full_copy_vdritm.webp",
       link: "art-library.html"
     },
     {
@@ -36,7 +36,7 @@
       subCategory: "Digital Portrait",
       type: "artwork",
       desc: "Mikasa Ackerman Attack on Titan anime digital portrait artwork.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/Mikasa_copy_jcwuga.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/Mikasa_copy_jcwuga.webp",
       link: "art-library.html"
     },
     {
@@ -46,7 +46,7 @@
       subCategory: "Digital Portrait",
       type: "artwork",
       desc: "Li Shiya mature upperclassman from The Girl Downstairs digital artwork.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/li_shiya_copy_jyopqy.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/li_shiya_copy_jyopqy.webp",
       link: "art-library.html"
     },
     {
@@ -56,7 +56,7 @@
       subCategory: "Digital Portrait",
       type: "artwork",
       desc: "Nico Robin archaeologist of Straw Hat Pirates One Piece digital art.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/nico_robin_copy_eoj6o4.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/nico_robin_copy_eoj6o4.webp",
       link: "art-library.html"
     },
     {
@@ -66,7 +66,7 @@
       subCategory: "Insane Artwork",
       type: "artwork",
       desc: "Roronoa Zoro swordsman of One Piece high intensity action artwork.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/zoro_copy_bki4to.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/zoro_copy_bki4to.webp",
       link: "art-library.html"
     },
     {
@@ -76,7 +76,7 @@
       subCategory: "Insane Artwork",
       type: "artwork",
       desc: "Itachi Uchiha Sharingan eyes & crow genjutsu anime visual masterpiece.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/itachi_copy_laotwi.webp",
       link: "art-library.html"
     },
     {
@@ -86,7 +86,7 @@
       subCategory: "Color Pencil",
       type: "artwork",
       desc: "Traditional color pencil portrait drawing of Rose.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rose_copy_hqkhss.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/rose_copy_hqkhss.webp",
       link: "art-library.html"
     },
     {
@@ -96,7 +96,7 @@
       subCategory: "Color Pencil",
       type: "artwork",
       desc: "Color pencil realistic portrait illustration of IU.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/iu_copy_cdbits.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/iu_copy_cdbits.webp",
       link: "art-library.html"
     },
 
@@ -140,7 +140,7 @@
       subCategory: "Idol Showcase",
       type: "news",
       desc: "SenpaiWorks reveals the 3D visual redesign and upcoming live concert tour for original virtual idol group Suzens.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp",
       link: "article.html?id=suzens-idol-debut"
     },
     {
@@ -150,7 +150,7 @@
       subCategory: "Dev Log",
       type: "news",
       desc: "Deep dive into building high-performance creative web portals, 3D character pipelines, and fast media rendering engines.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630849/code_copy_jq3ic6.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/code_copy_jq3ic6.webp",
       link: "news.html"
     },
 
@@ -162,7 +162,7 @@
       subCategory: "Course",
       type: "course",
       desc: "Comprehensive masterclass on 2D pattern drafting for hoodies, streetwear jackets, skirts, and custom apparel sewing.",
-      img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630823/lisa_copy_zsrdfj.webp",
+      img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/lisa_copy_zsrdfj.webp",
       link: "course-detail.html?id=2d-pattern-drafting"
     },
     {
@@ -214,9 +214,7 @@
     const storeProducts = window.PRODUCTS || (typeof PRODUCTS !== "undefined" ? PRODUCTS : []);
     if (Array.isArray(storeProducts)) {
       storeProducts.forEach((p) => {
-        // Skip if already in index
         if (allSearchItems.some((item) => item.id === p.id)) return;
-
         allSearchItems.push({
           id: p.id,
           title: p.name,
@@ -228,9 +226,171 @@
           rating: p.rating,
           badge: p.badge || (p.isNew ? "New" : ""),
           img: p.img,
-          link: `store-detail.html?id=${p.id}`
+          link: `store-detail.html?id=${encodeURIComponent(p.id)}`
         });
       });
+    }
+
+    // Dynamic Multi-Source API Hydration (Single-flight execution)
+    fetchDynamicSearchCatalog();
+  }
+
+  let isCatalogFetching = false;
+  let isCatalogFetched = false;
+
+  async function fetchDynamicSearchCatalog() {
+    if (isCatalogFetching || isCatalogFetched) return;
+    isCatalogFetching = true;
+
+    try {
+      const [productsRes, coursesRes, newsRes, artworksRes] = await Promise.allSettled([
+        fetch("/api/products"),
+        fetch("/api/courses"),
+        fetch("/api/news"),
+        fetch("/api/artworks")
+      ]);
+
+      let hasNewItems = false;
+
+      // 1. Ingest Live Database Products
+      if (productsRes.status === "fulfilled" && productsRes.value.ok) {
+        try {
+          const products = await productsRes.value.json();
+          if (Array.isArray(products)) {
+            products.forEach(p => {
+              const existingIdx = allSearchItems.findIndex(item => item.id === p.id);
+              const newItem = {
+                id: p.id,
+                title: p.name,
+                category: "Store",
+                subCategory: p.category || p.subCategory || "Merchandise",
+                type: "store",
+                desc: p.description || `${p.name} — Official SenpaiWorks release.`,
+                price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
+                rating: p.rating || 5.0,
+                badge: p.badge || (p.isNew ? "New" : ""),
+                img: p.img || "assets/SenpaiWorks logo bg.png",
+                link: `store-detail.html?id=${encodeURIComponent(p.id)}`
+              };
+              if (existingIdx > -1) {
+                allSearchItems[existingIdx] = newItem;
+              } else {
+                allSearchItems.push(newItem);
+              }
+              hasNewItems = true;
+            });
+          }
+        } catch (e) { }
+      }
+
+      // 2. Ingest Live Database Courses
+      if (coursesRes.status === "fulfilled" && coursesRes.value.ok) {
+        try {
+          const courses = await coursesRes.value.json();
+          if (Array.isArray(courses)) {
+            courses.forEach(c => {
+              const courseKey = "course-" + (c.slug || c.id);
+              const existingIdx = allSearchItems.findIndex(item => item.id === courseKey || item.id === c.id || item.id === c.slug);
+              const numPrice = c.price ? parseFloat(String(c.price).replace(/[^0-9.]/g, '')) : null;
+              const newItem = {
+                id: courseKey,
+                title: c.title,
+                category: "Learn",
+                subCategory: c.tag || "Creative Course",
+                type: "learn",
+                desc: c.subtitle || c.description || "Masterclass by SenpaiWorks Studio.",
+                price: numPrice,
+                rating: c.rating ? parseFloat(c.rating) : 4.9,
+                badge: c.badge || c.status || "Masterclass",
+                img: c.thumbnail || "assets/SenpaiWorks logo bg.png",
+                link: `course-detail.html?id=${encodeURIComponent(c.slug || c.id)}`
+              };
+              if (existingIdx > -1) {
+                allSearchItems[existingIdx] = newItem;
+              } else {
+                allSearchItems.push(newItem);
+              }
+              hasNewItems = true;
+            });
+          }
+        } catch (e) { }
+      }
+
+      // 3. Ingest Live Database News Articles
+      if (newsRes.status === "fulfilled" && newsRes.value.ok) {
+        try {
+          const newsData = await newsRes.value.json();
+          const articles = Array.isArray(newsData) ? newsData : (newsData.articles || []);
+          articles.forEach(n => {
+            const articleKey = "news-" + n.id;
+            const existingIdx = allSearchItems.findIndex(item => item.id === articleKey || item.id === n.id);
+            const newItem = {
+              id: articleKey,
+              title: n.title,
+              category: "News",
+              subCategory: n.category || "Stories & Updates",
+              type: "news",
+              desc: n.summary || (n.content ? n.content.replace(/<[^>]*>/g, '').substring(0, 160) : "") || "SenpaiWorks Studio update.",
+              price: null,
+              rating: null,
+              badge: n.isFeatured ? "Featured" : "",
+              img: n.img || "assets/SenpaiWorks logo bg.png",
+              link: `article.html?id=${encodeURIComponent(n.id)}`
+            };
+            if (existingIdx > -1) {
+              allSearchItems[existingIdx] = newItem;
+            } else {
+              allSearchItems.push(newItem);
+            }
+            hasNewItems = true;
+          });
+        } catch (e) { }
+      }
+
+      // 4. Ingest Live Database Artworks
+      if (artworksRes.status === "fulfilled" && artworksRes.value.ok) {
+        try {
+          const artData = await artworksRes.value.json();
+          const artworks = Array.isArray(artData) ? artData : (artData.artworks || []);
+          artworks.forEach(a => {
+            const artKey = "art-" + (a.id || a.charname.toLowerCase().replace(/\s+/g, '-'));
+            const existingIdx = allSearchItems.findIndex(item => item.id === artKey);
+            const newItem = {
+              id: artKey,
+              title: a.charname,
+              category: "2D Art",
+              subCategory: a.artstyle || a.category || "Digital Art",
+              type: "artwork",
+              desc: a.description || a.aboutDesc || `${a.charname} illustration by ${a.artist || 'SenpaiWorks'}.`,
+              price: null,
+              rating: null,
+              badge: a.category || "Digital Art",
+              img: a.img || "assets/SenpaiWorks logo bg.png",
+              link: `art-library.html`
+            };
+            if (existingIdx > -1) {
+              allSearchItems[existingIdx] = newItem;
+            } else {
+              allSearchItems.push(newItem);
+            }
+            hasNewItems = true;
+          });
+        } catch (e) { }
+      }
+
+      const anyEndpointSucceeded = [productsRes, coursesRes, newsRes, artworksRes].some(r => r.status === 'fulfilled' && r.value && r.value.ok);
+      if (!anyEndpointSucceeded) {
+        console.warn("[Failure Path] API catalog endpoints unavailable (HTTP outage / dead server), cleanly using pre-seeded STATIC_SEARCH_DATA baseline fallback.");
+      }
+
+      if (hasNewItems) {
+        renderResults();
+      }
+    } catch (err) {
+      console.warn("Could not complete dynamic search catalog ingestion:", err);
+    } finally {
+      isCatalogFetching = false;
+      isCatalogFetched = true;
     }
   }
 
@@ -333,7 +493,7 @@
           ? `<span class="result-badge">${escapeHTML(item.badge)}</span>`
           : "";
         const priceHTML = item.price
-          ? `<div class="result-price">$${item.price.toFixed(2)}</div>`
+          ? `<div class="result-price">₹${item.price}</div>`
           : "";
         const ratingHTML = item.rating
           ? `<div class="result-rating"><i class="fa-solid fa-star"></i> ${item.rating}</div>`
@@ -395,10 +555,30 @@
     );
   }
 
+  // ── Debounce Utility ───────────────────────────────────────
+  function debounce(fn, delay = 250) {
+    let timer = null;
+    const debounced = function (...args) {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = null;
+        fn.apply(this, args);
+      }, delay);
+    };
+    debounced.cancel = function () {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    };
+    return debounced;
+  }
+
   // ── Global Helper for Suggested Tag Click ──────────────────
   window.setSearchQuery = function (q) {
     const searchInput = document.getElementById("searchInput");
     if (searchInput) {
+      if (window._debouncedSearchRender) window._debouncedSearchRender.cancel();
       searchInput.value = q;
       searchInput.focus();
       renderResults();
@@ -414,6 +594,12 @@
     const clearBtn = document.getElementById("searchClearBtn");
     const sortSelect = document.getElementById("searchSortSelect");
 
+    // Create 250ms debounced renderer for input keystrokes
+    const debouncedRender = debounce(() => {
+      renderResults();
+    }, 250);
+    window._debouncedSearchRender = debouncedRender;
+
     // Read URL search parameter if passed (e.g. search.html?q=itachi)
     const urlParams = new URLSearchParams(window.location.search);
     const initialQuery = urlParams.get("q") || urlParams.get("query") || "";
@@ -423,13 +609,12 @@
         searchInput.value = initialQuery;
       }
 
-      searchInput.addEventListener("input", () => {
-        renderResults();
-      });
+      searchInput.addEventListener("input", debouncedRender);
     }
 
     if (clearBtn && searchInput) {
       clearBtn.addEventListener("click", () => {
+        debouncedRender.cancel();
         searchInput.value = "";
         searchInput.focus();
         renderResults();
@@ -439,6 +624,7 @@
     if (searchForm) {
       searchForm.addEventListener("submit", (e) => {
         e.preventDefault();
+        debouncedRender.cancel();
         renderResults();
       });
     }

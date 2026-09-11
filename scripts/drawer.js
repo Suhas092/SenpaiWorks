@@ -81,15 +81,15 @@ function initDrawer() {
         // Dynamic fallback for Card 2 if not explicitly specified on item
         if (!newImg2 && newImg1) {
           if (newImg1.includes('deadpool')) {
-            newImg2 = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp';
+            newImg2 = 'https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp';
             newTitle2 = 'Character Rig Assets';
             newDesc2 = 'Download production-ready 3D character rigs with facial blendshapes.';
           } else if (newImg1.includes('rem_happy')) {
-            newImg2 = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/chronos_plays_fl47xm.webp';
+            newImg2 = 'https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/chronos_plays_fl47xm.webp';
             newTitle2 = 'VFX Action Sequence';
             newDesc2 = '6 months of animation work, cloth simulations, and particle FX.';
           } else {
-            newImg2 = 'https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp';
+            newImg2 = 'https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp';
             newTitle2 = 'Deadpool VFX Breakdown';
             newDesc2 = 'Blender EEVEE toon shader node setup and fight scene choreography.';
           }

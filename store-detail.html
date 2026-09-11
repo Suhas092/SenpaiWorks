@@ -263,21 +263,25 @@
             <!-- 5, 4, 3, 2, 1 star bars loaded dynamically -->
           </div>
           <button class="write-review-btn" id="write-review-btn">Write a Review</button>
+          <p class="reviews-disclosure-text" style="font-size: 0.76rem; color: #94a3b8; margin-top: 10px; line-height: 1.4; text-align: center; font-style: italic;">
+            Rating reflects all published customer reviews, verified and unverified.
+          </p>
         </div>
 
         <!-- Right: Individual Comments and User Images -->
         <div class="reviews-comments-right">
           
           <!-- SORTING & COUNT HEADER BAR -->
-          <div class="reviews-sort-bar">
+          <div class="reviews-sort-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
             <span class="reviews-count-header" id="reviews-header-count-text">Showing reviews</span>
-            <div class="reviews-sort-group">
-              <label for="reviews-sort-select" class="reviews-sort-label"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort by:</label>
+            <div class="reviews-sort-group" style="display: inline-flex; align-items: center; gap: 8px;">
+              <label for="reviews-sort-select" class="reviews-sort-label" style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort by:</label>
               <select id="reviews-sort-select" class="reviews-sort-select" onchange="handleReviewSortChange(this.value)">
                 <option value="recent">Most Recent</option>
                 <option value="highest">Highest Rating</option>
                 <option value="lowest">Lowest Rating</option>
                 <option value="helpful">Most Helpful</option>
+                <option value="verified">Verified Purchases</option>
               </select>
             </div>
           </div>
@@ -302,7 +306,7 @@
   <div id="contact-container"></div>
   <script src="scripts/contact.js"></script>
   <script>
-    loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630824/rem_copy_rkjlfo.webp");
+    loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/rem_copy_rkjlfo.webp");
   </script>
 
   <div id="footer-container"></div>
@@ -406,7 +410,8 @@
           <img id="review-modal-product-img" src="" alt="Product Thumbnail">
         </div>
         <div class="review-product-meta">
-          <span class="review-prompt-question">How was the item?</span>
+          <span class="review-prompt-question" id="review-prompt-question">How was the item?</span>
+          <p class="review-modal-category-hint" id="review-modal-category-hint" style="font-size: 0.78rem; color: #94a3b8; margin: 2px 0 6px 0;"></p>
           <h3 class="review-product-name" id="review-modal-product-name">Product Name</h3>
         </div>
       </div>
@@ -441,6 +446,60 @@
         <div class="review-modal-actions">
           <button type="button" class="review-cancel-btn" id="review-cancel-btn">Cancel</button>
           <button type="submit" class="review-submit-btn" id="review-submit-btn">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- REPORT REVIEW MODAL -->
+  <div class="review-modal-overlay" id="report-review-modal">
+    <div class="review-modal-content" style="max-width: 480px;">
+      <button class="modal-close-btn" id="report-modal-close" onclick="closeReportReviewModal()" title="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="review-product-header">
+        <div class="review-product-meta">
+          <span class="review-prompt-question">Report Review</span>
+          <p style="font-size: 0.8rem; color: #94a3b8; margin: 4px 0 0 0;">Help us keep the SenpaiWorks community safe and authentic.</p>
+        </div>
+      </div>
+      
+      <form id="report-review-form" onsubmit="handleReportReviewSubmit(event)">
+        <input type="hidden" id="report-target-review-id" value="">
+        <div class="review-form-group">
+          <label class="review-form-label">Why are you reporting this?</label>
+          <div class="report-reasons-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #cbd5e1; cursor: pointer;">
+              <input type="radio" name="report-reason" value="Off topic" required style="accent-color: #3b82f6;"> Off topic / Irrelevant
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #cbd5e1; cursor: pointer;">
+              <input type="radio" name="report-reason" value="Inappropriate" required style="accent-color: #3b82f6;"> Inappropriate content
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #cbd5e1; cursor: pointer;">
+              <input type="radio" name="report-reason" value="Disrespectful/hateful/obscene" required style="accent-color: #3b82f6;"> Disrespectful, hateful, or obscene
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #cbd5e1; cursor: pointer;">
+              <input type="radio" name="report-reason" value="Fake" required style="accent-color: #3b82f6;"> Fake or misleading review
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #cbd5e1; cursor: pointer;">
+              <input type="radio" name="report-reason" value="Paid for/inauthentic" required style="accent-color: #3b82f6;"> Paid for / Inauthentic promotion
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #cbd5e1; cursor: pointer;">
+              <input type="radio" name="report-reason" value="Other" required style="accent-color: #3b82f6;"> Other
+            </label>
+          </div>
+        </div>
+
+        <div class="review-form-group" id="report-details-group">
+          <label for="report-details-input" class="review-form-label">Additional Details (Optional)</label>
+          <textarea id="report-details-input" class="review-form-textarea" rows="3" placeholder="Provide extra context if needed..."></textarea>
+        </div>
+
+        <p style="font-size: 0.76rem; color: #64748b; margin-bottom: 16px; line-height: 1.4;">
+          <i class="fa-solid fa-shield-halved" style="color: #3b82f6; margin-right: 4px;"></i> We'll check if this review meets our community guidelines.
+        </p>
+
+        <div class="review-modal-actions">
+          <button type="button" class="review-cancel-btn" onclick="closeReportReviewModal()">Cancel</button>
+          <button type="submit" class="review-submit-btn" id="report-submit-btn">Submit Report</button>
         </div>
       </form>
     </div>

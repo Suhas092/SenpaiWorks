@@ -97,7 +97,7 @@
       </button>
 
       <!-- Profile Button (Toggles Profile Card Dropdown) -->
-      <button class="header-control-btn sign-in-btn" id="nav-auth-btn" title="Account / Profile">
+      <button class="header-control-btn sign-in-btn" id="nav-auth-btn" onclick="window.handleProfileButtonClick(event)" title="Account / Profile">
         <i class="fa-regular fa-user" id="nav-auth-icon"></i>
         <span class="auth-text" id="nav-auth-text">Sign In</span>
       </button>
@@ -107,7 +107,7 @@
         <div class="profile-dropdown-header">
           <div class="dropdown-avatar-wrap">
             <img id="dropdown-user-avatar"
-              src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630848/rem_happy_evhesz.webp"
+              src="assets/default-avatar.svg"
               alt="Avatar" class="dropdown-avatar">
           </div>
           <div class="dropdown-user-details">
@@ -125,7 +125,7 @@
           </a>
           <a href="profile.html#orders" class="dropdown-item" id="dropdown-orders-btn">
             <i class="fa-solid fa-box" style="font-size: 0.95rem; width: 20px;"></i>
-            <span>Replacements & Orders</span>
+            <span>My Orders</span>
           </a>
           <a href="profile.html#feedback" class="dropdown-item" id="dropdown-feedback-btn">
             <i class="fa-regular fa-comment-dots" style="font-size: 0.95rem; width: 20px;"></i>
@@ -141,7 +141,7 @@
           </a>
           <a href="profile.html#wishlist" class="dropdown-item" id="dropdown-wishlist-btn">
             <i class="fa-solid fa-heart" style="font-size: 0.95rem; width: 20px;"></i>
-            <span>Wishlist & Saved</span>
+            <span>My Wishlist</span>
           </a>
           <a href="profile.html#payments" class="dropdown-item" id="dropdown-payments-btn">
             <i class="fa-solid fa-wallet" style="font-size: 0.95rem; width: 20px;"></i>
@@ -174,7 +174,6 @@
     <a href="learn.html" class="nav-link">LEARN</a>
     <a href="store.html" class="nav-link">STORE</a>
     <a href="about.html" class="nav-link">ABOUT</a>
-    <a href="faq.html" class="nav-link">FAQ</a>
   </nav>
 </div>
 
@@ -274,12 +273,15 @@
           <input type="email" id="signup-email" placeholder="Email" required>
         </div>
 
-        <div class="input-icon-group">
+        <div class="input-icon-group" style="margin-bottom: 6px;">
           <i class="fa-solid fa-lock input-leading-icon"></i>
-          <input type="password" id="signup-password" placeholder="Password (Min 6 characters)" required minlength="6">
+          <input type="password" id="signup-password" placeholder="Password (Min 8 characters)" required minlength="8">
           <button type="button" class="toggle-password-btn" id="toggle-signup-pass" title="Toggle Password Visibility">
             <i class="fa-regular fa-eye-slash"></i>
           </button>
+        </div>
+        <div class="password-requirements-hint" style="font-size: 0.78rem; color: #64748b; margin: 0 0 14px 4px; text-align: left; line-height: 1.4;">
+          <i class="fa-solid fa-circle-info" style="color: #3b82f6; margin-right: 4px;"></i>At least 8 characters with uppercase, lowercase, number & special character.
         </div>
 
         <button type="submit" class="auth-submit-pill">Get Started</button>
@@ -302,6 +304,111 @@
 
       <div class="auth-footer-center">
         Already have an account? <a href="#" id="show-signin-link">Sign in</a>
+      </div>
+    </div>
+
+    <!-- OTP Verification Wrapper (6-digit code) -->
+    <div class="auth-form-container" id="otp-form-wrapper" style="display: none;">
+      <h2 class="auth-title-center">Verify your email</h2>
+      <p class="auth-subtitle-center">Enter the 6-digit code sent to <strong id="otp-target-email" style="color:#0284c7;"></strong></p>
+
+      <div id="otp-error" class="auth-error-msg" style="display: none;"></div>
+      <div id="otp-success" class="auth-success-msg" style="display: none;"></div>
+
+      <form id="otp-form">
+        <div class="otp-input-row">
+          <input type="text" class="otp-digit-input" maxlength="1" data-index="0" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" required>
+          <input type="text" class="otp-digit-input" maxlength="1" data-index="1" inputmode="numeric" pattern="[0-9]*" required>
+          <input type="text" class="otp-digit-input" maxlength="1" data-index="2" inputmode="numeric" pattern="[0-9]*" required>
+          <input type="text" class="otp-digit-input" maxlength="1" data-index="3" inputmode="numeric" pattern="[0-9]*" required>
+          <input type="text" class="otp-digit-input" maxlength="1" data-index="4" inputmode="numeric" pattern="[0-9]*" required>
+          <input type="text" class="otp-digit-input" maxlength="1" data-index="5" inputmode="numeric" pattern="[0-9]*" required>
+        </div>
+
+        <button type="submit" class="auth-submit-pill" id="btn-verify-otp">Verify & Continue</button>
+
+        <div class="otp-timer-wrap">
+          <span id="otp-countdown-text">Resend code in <span id="otp-seconds">60</span>s</span>
+          <button type="button" class="btn-link-resend" id="btn-resend-otp" style="display: none;">Resend Code</button>
+        </div>
+      </form>
+
+      <div class="auth-footer-center">
+        Entered wrong email? <a href="#" id="otp-back-signup-link">Back to Sign Up</a>
+      </div>
+    </div>
+
+    <!-- Forgot Password Wrapper -->
+    <div class="auth-form-container" id="forgot-form-wrapper" style="display: none;">
+      <!-- Step 1: Request Code -->
+      <div id="forgot-step-1">
+        <h2 class="auth-title-center">Reset Password</h2>
+        <p class="auth-subtitle-center">Enter your email and we'll send you a 6-digit password reset code.</p>
+
+        <div id="forgot-error" class="auth-error-msg" style="display: none;"></div>
+        <div id="forgot-success" class="auth-success-msg" style="display: none;"></div>
+
+        <form id="forgot-request-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-envelope input-leading-icon"></i>
+            <input type="email" id="forgot-email" placeholder="Your registered email" required autocomplete="email">
+          </div>
+
+          <button type="submit" class="auth-submit-pill" id="btn-forgot-send">Send Reset Code</button>
+        </form>
+      </div>
+
+      <!-- Step 2: Enter 6-Digit OTP -->
+      <div id="forgot-step-2" style="display: none;">
+        <h2 class="auth-title-center">Verify Reset Code</h2>
+        <p class="auth-subtitle-center">Enter the 6-digit code sent to <strong id="forgot-target-email" style="color: #ffffff;">user@gmail.com</strong>.</p>
+
+        <div id="forgot-step2-error" class="auth-error-msg" style="display: none;"></div>
+
+        <form id="forgot-otp-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-key input-leading-icon"></i>
+            <input type="text" id="reset-otp-code" placeholder="Enter 6-digit code" required maxlength="6" style="letter-spacing: 4px; font-weight: 700; text-align: center;" autocomplete="one-time-code">
+          </div>
+
+          <button type="submit" class="auth-submit-pill" id="btn-verify-reset-otp">Verify Code & Continue</button>
+        </form>
+      </div>
+
+      <!-- Step 3: Set New Password & Confirm Password -->
+      <div id="forgot-step-3" style="display: none;">
+        <h2 class="auth-title-center">Create New Password</h2>
+        <p class="auth-subtitle-center">Enter and confirm your new password.</p>
+
+        <div id="reset-error" class="auth-error-msg" style="display: none;"></div>
+        <div id="reset-success" class="auth-success-msg" style="display: none;"></div>
+
+        <form id="forgot-reset-form">
+          <div class="input-icon-group" style="margin-bottom: 6px;">
+            <i class="fa-solid fa-lock input-leading-icon"></i>
+            <input type="password" id="reset-new-password" placeholder="New Password (Min 8 chars)" required minlength="8" autocomplete="new-password">
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reset-new-password', this)" title="Toggle Password Visibility">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+          <div class="password-requirements-hint" style="font-size: 0.78rem; color: #64748b; margin: 0 0 12px 4px; text-align: left; line-height: 1.4;">
+            <i class="fa-solid fa-circle-info" style="color: #3b82f6; margin-right: 4px;"></i>At least 8 characters with uppercase, lowercase, number & special character.
+          </div>
+
+          <div class="input-icon-group">
+            <i class="fa-solid fa-shield-halved input-leading-icon"></i>
+            <input type="password" id="reset-confirm-password" placeholder="Re-enter New Password" required minlength="8" autocomplete="new-password">
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reset-confirm-password', this)" title="Toggle Password Visibility">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+
+          <button type="submit" class="auth-submit-pill" id="btn-submit-reset">Update Password & Sign In</button>
+        </form>
+      </div>
+
+      <div class="auth-footer-center">
+        Remember your password? <a href="#" id="forgot-back-signin-link">Sign in</a>
       </div>
     </div>
   </div>

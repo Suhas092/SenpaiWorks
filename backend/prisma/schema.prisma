@@ -1,6 +1,7 @@
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -11,6 +12,8 @@ model Comment {
   id        Int      @id @default(autoincrement())
   animeId   String
   username  String
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   text      String
   parentId  Int?
   likeCount Int      @default(0)
@@ -87,7 +90,10 @@ model Product {
   stockQuantity       Int      @default(50)
   variantsData        String   @default("")
   featureHighlights   String   @default("")
+  downloadUrl         String?
   createdAt           DateTime @default(now())
+  orderItems          OrderItem[]
+  reviews             Review[]
 }
 
 model Artwork {
@@ -103,6 +109,8 @@ model Artwork {
   aboutDesc   String   @default("")
   img         String
   downloadCount Int    @default(0)
+  deletedAt   DateTime?
+  trashMeta   String?
   createdAt   DateTime @default(now())
 }
 
@@ -113,13 +121,49 @@ model ArtworkInterest {
 }
 
 model User {
+  id                  Int            @id @default(autoincrement())
+  email               String         @unique
+  passwordHash        String?
+  username            String?
+  name                String?
+  avatar              String?
+  phone               String?
+  countryCode         String?
+  profileCompleted    Boolean        @default(false)
+  provider            String         @default("local")
+  providerId          String?
+  emailVerified       Boolean        @default(false)
+  signupOtp           String?
+  signupOtpExpiresAt  DateTime?
+  resetOtp            String?
+  resetOtpExpiresAt   DateTime?
+  createdAt           DateTime       @default(now())
+  orders              Order[]
+  deviceTokens        DeviceToken[]
+  loginHistories      LoginHistory[]
+  reviews             Review[]
+  reviewHelpfulVotes  ReviewHelpfulVote[]
+  reviewReports       ReviewReport[]
+  comments            Comment[]
+}
+
+model DeviceToken {
   id         Int      @id @default(autoincrement())
-  email      String   @unique
-  username   String?
-  name       String?
-  avatar     String?
-  provider   String   @default("local")
-  providerId String?
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token      String   @unique
+  deviceInfo String?
+  lastUsedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+}
+
+model LoginHistory {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress  String?
+  deviceInfo String?
+  status     String   @default("SUCCESS")
   createdAt  DateTime @default(now())
 }
 
@@ -194,3 +238,244 @@ model NotificationTrigger {
   type      String   @unique
   enabled   Boolean  @default(true)
 }
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  orderNumber     String   @unique
+  customerId      Int?
+  customer        User?    @relation(fields: [customerId], references: [id])
+  guestName       String?
+  guestEmail      String?
+  guestPhone      String?
+  email           String   // always set, logged-in or guest
+  shippingAddress String   // store as JSON string
+  status          String   @default("Processing")
+  paymentStatus   String   @default("paid")
+  paymentGateway  String?  @default("stub")
+  paymentId       String?
+  subtotal        Float
+  shipping        Float
+  discount        Float    @default(0)
+  total           Float
+  createdAt       DateTime @default(now())
+  deliveredAt     DateTime?
+  awbNumber       String?
+  statusHistory   String?  // JSON array of { status, timestamp, note }
+  refundStatus    String?
+  reviewNudgeSentAt DateTime?
+  items               OrderItem[]
+  replacements        ReplacementRequest[] @relation("OriginalOrder")
+  isReplacementOrder  Boolean              @default(false)
+  replacementOrderFor ReplacementRequest?  @relation("ReplacementOrder")
+}
+
+model OrderItem {
+  id          Int     @id @default(autoincrement())
+  orderId     Int
+  order       Order   @relation(fields: [orderId], references: [id])
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  productName String
+  price       Float
+  img         String?
+  variant     String?
+  quantity    Int
+  replacements ReplacementRequest[]
+  reviews      Review[]
+}
+
+model ReplacementRequest {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  order      Order    @relation("OriginalOrder", fields: [orderId], references: [id])
+  orderItemId Int?
+  orderItem  OrderItem? @relation(fields: [orderItemId], references: [id])
+  reason     String?
+  status     String   @default("Requested")
+  newOrderId Int?     @unique
+  newOrder   Order?   @relation("ReplacementOrder", fields: [newOrderId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Faq {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String
+  category  String   @default("general")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Coupon {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique
+  discountType  String
+  discountValue String
+  usageCount    Int      @default(0)
+  maxUses       Int?
+  expiryDate    String?
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+}
+
+model NewsArticle {
+  id         String   @id @default(uuid())
+  title      String
+  category   String
+  author     String   @default("Team SenpaiWorks")
+  date       String
+  readTime   String   @default("5 mins read")
+  img        String?
+  summary    String?
+  content    String?
+  isFeatured Boolean  @default(false)
+  placement  String   @default("standard") // "main_feature", "recommended", "list", "standard"
+  hashtags   String?
+  views      Int      @default(0)
+  deletedAt  DateTime?
+  trashMeta  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
+model MotionRig {
+  id        Int      @id @default(autoincrement())
+  title     String
+  type      String
+  format    String
+  status    String   @default("Active")
+  img       String
+  createdAt DateTime @default(now())
+}
+
+model DesignPollSuggestion {
+  id         String   @id @default(uuid())
+  suggestion String
+  date       String
+  status     String   @default("Pending")
+  createdAt  DateTime @default(now())
+}
+
+model DashboardTask {
+  id        Int      @id @default(autoincrement())
+  text      String
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  orderItemId  Int?
+  orderItem    OrderItem? @relation(fields: [orderItemId], references: [id])
+  rating       Int
+  title        String
+  text         String
+  status       String   @default("Published") // Published | Hidden — Hidden used by admin in Batch B
+  helpfulCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  helpfulVotes ReviewHelpfulVote[]
+  reports      ReviewReport[]
+
+  @@unique([userId, productId])
+}
+
+model ReviewHelpfulVote {
+  id        Int      @id @default(autoincrement())
+  reviewId  Int
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId])
+}
+
+model ReviewReport {
+  id         Int      @id @default(autoincrement())
+  reviewId   Int
+  review     Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporterId Int
+  reporter   User     @relation(fields: [reporterId], references: [id])
+  reason     String
+  details    String?
+  createdAt  DateTime @default(now())
+
+  @@unique([reviewId, reporterId])
+}
+
+model Course {
+  id                  String   @id @default(uuid())
+  slug                String   @default("")
+  title               String
+  subtitle            String   @default("")
+  tag                 String   @default("")
+  description         String   @default("")
+  badge               String   @default("")
+  status              String   @default("In Planning")
+  authorName          String   @default("SenpaiWorks Studio")
+  authorAvatar        String   @default("assets/SenpaiWorks logo bg.png")
+  releaseDate         String   @default("")
+  thumbnail           String   @default("")
+  videoUrl            String   @default("")
+  rating              String   @default("4.9")
+  ratingCount         String   @default("(0 ratings)")
+  learnersCount       String   @default("0")
+  price               String   @default("")
+  originalPrice       String   @default("")
+  discount            String   @default("")
+  monthlyPrice        String   @default("")
+  originalMonthlyPrice String  @default("")
+  whatYouWillLearn    String   @default("[]")
+  relatedTopics       String   @default("[]")
+  requirements        String   @default("[]")
+  curriculum          String   @default("[]")
+  order               Int      @default(0)
+  published           Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model HomeHeroSlide {
+  id               String   @id @default(uuid())
+  spotlight        String   @default("#1 Spotlight")
+  title            String
+  description      String   @default("")
+  bgType           String   @default("image")
+  bgUrl            String
+  primaryBtnText   String   @default("Watch Now")
+  primaryBtnLink   String   @default("")
+  secondaryBtnText String   @default("Details")
+  secondaryBtnLink String   @default("")
+  order            Int      @default(0)
+  published        Boolean  @default(true)
+  deletedAt        DateTime?
+  trashMeta        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model HomeShowcaseItem {
+  id          String   @id @default(uuid())
+  section     String   @default("things_you_might_like")
+  title       String
+  subtitle    String   @default("")
+  description String   @default("")
+  imageUrl    String
+  linkUrl     String   @default("")
+  btnText     String   @default("Explore")
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  deletedAt   DateTime?
+  trashMeta   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+

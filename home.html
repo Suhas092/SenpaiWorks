@@ -12,10 +12,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="art-library.css">
-  <link rel="stylesheet" href="header.css">
-  <link rel="stylesheet" href="home.css?v=3">
+  <link rel="stylesheet" href="header.css?v=10">
+  <link rel="stylesheet" href="home.css?v=12">
   <link rel="stylesheet" href="mobile-navbar.css">
-  <link rel="stylesheet" href="showcase.css">
+  <link rel="stylesheet" href="showcase.css?v=2.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="scripts/showcase.js" defer></script>
 </head>
@@ -35,7 +35,7 @@
       })();
     </script>
   </div>
-  <script src="scripts/header.js?v=7"></script>
+  <script src="scripts/header.js?v=102"></script>
   <script src="scripts/drawer.js?v=7"></script>
 
 
@@ -118,7 +118,7 @@
         <div class="slide-bg">
           <video autoplay muted loop playsinline>
             <source
-              src="https://res.cloudinary.com/dmzchsqms/video/upload/f_auto,q_auto/w_600/v1757630852/slide_3_c0xcfe.mp4"
+              src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/videos/slide_3_c0xcfe.mp4"
               type="video/mp4" />
             Your browser does not support the video tag.
           </video>
@@ -235,12 +235,12 @@
       <div class="whats-happening-container">
 
         <!-- Left Big Feature Card -->
-        <a href="article.html?id=senpaiworks-2-release" class="whats-happening-feature">
+        <a href="article.html?id=senpaiworks-2-release" class="whats-happening-feature" id="home-featured-main-card">
           <div class="feature-left-content">
-            <span class="feature-badge">Best of the Week</span>
-            <div class="feature-meta">Platform Core &middot; 4 hours ago</div>
-            <h2 class="feature-title">SENPAIWORKS 2.0</h2>
-            <div class="feature-hashtags">
+            <span class="feature-badge" id="home-feature-badge">Best of the Week</span>
+            <div class="feature-meta" id="home-feature-meta">Platform Core &middot; 4 hours ago</div>
+            <h2 class="feature-title" id="home-feature-title">SENPAIWORKS 2.0</h2>
+            <div class="feature-hashtags" id="home-feature-hashtags">
               <span>#PlatformUpdate</span>
               <span>#Web3D</span>
               <span>#LuxuryAesthetics</span>
@@ -267,16 +267,17 @@
           <div class="column-label">Recommended</div>
 
           <!-- Top Wide Card -->
-          <a href="news.html" class="recommended-card">
+          <a href="news.html" class="recommended-card" id="home-recommended-card">
             <div class="recommended-card-content">
-              <span class="recommended-badge">Art Library</span>
-              <h3 class="recommended-title">US-Approved Spot Bitcoin ETFs Could Surpass Entire $50 Billion Crypto ETP
+              <span class="recommended-badge" id="home-rec-badge">Art Library</span>
+              <h3 class="recommended-title" id="home-rec-title">US-Approved Spot Bitcoin ETFs Could Surpass Entire $50
+                Billion Crypto ETP
                 Market: BitMEX</h3>
             </div>
           </a>
 
           <!-- List items -->
-          <div class="rec-list">
+          <div class="rec-list" id="home-rec-list">
 
             <!-- Item 1: Deadpool -->
             <a href="detail.html?id=deadpool" class="rec-list-item">
@@ -285,7 +286,7 @@
                 <h4 class="rec-item-title">Deadpool & Wolverine Fan Animation Released!</h4>
               </div>
               <img
-                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/deadpool_logo_wv09fw.webp"
+                src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/deadpool_logo_wv09fw.webp"
                 alt="Deadpool" class="rec-item-img">
             </a>
 
@@ -296,7 +297,7 @@
                 <h4 class="rec-item-title">Introducing SenpaiWorks v2 Website Architecture</h4>
               </div>
               <img
-                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630849/code_copy_jq3ic6.webp"
+                src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/code_copy_jq3ic6.webp"
                 alt="Web Dev" class="rec-item-img">
             </a>
 
@@ -307,7 +308,7 @@
                 <h4 class="rec-item-title">Developing the "Suzens" Original Idol Visuals</h4>
               </div>
               <img
-                src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_400/v1757630847/suzan_main_bg_zrmgwb.webp"
+                src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/suzan_main_bg_zrmgwb.webp"
                 alt="Design" class="rec-item-img">
             </a>
 
@@ -347,11 +348,6 @@
 
         <!-- Left Column: Details -->
         <div class="merch-details">
-          <div class="slide-badge-wrapper" id="slide-badge-wrapper">
-            <span class="slide-badge" id="slide-badge">
-              <i class="fa-solid fa-graduation-cap"></i> COURSES & LEARNING
-            </span>
-          </div>
           <h2 class="merch-title" id="merch-item-name">Master 2D & 3D Creative Tech</h2>
           <p class="merch-desc" id="merch-item-desc">
             SenpaiWorks offers structured courses in 2D character animation, 3D modeling, and creative workflows. Check
@@ -361,7 +357,7 @@
           <!-- Dynamic Action Buttons -->
           <div class="slide-actions" id="slide-actions">
             <a href="learn.html" class="explore-btn">
-              <i class="fa-solid fa-graduation-cap"></i> Explore Courses
+              Explore Courses
             </a>
           </div>
         </div>
@@ -372,8 +368,9 @@
 
           <div class="merch-image-card">
             <img id="main-merch"
-              src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp"
-              alt="SenpaiWorks Courses">
+              src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp"
+              alt="SenpaiWorks Courses"
+              onerror="this.onerror=null; this.src='https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp';">
           </div>
 
           <div class="dots-grid dots-bottom-right"></div>
@@ -404,7 +401,7 @@
         <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" class="movie-card"
           data-label="Start Watching">
           <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp"
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp"
             alt="Deadpool Poster">
           <div class="movie-info">
             <h3>Deadpool Animation</h3>
@@ -415,7 +412,7 @@
         <!-- Movie 2 -->
         <a href="suzens.html" class="movie-card" data-label="See Details">
           <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_godrays_jggu36.webp"
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp"
             alt="Suzens Poster">
           <div class="movie-info">
             <h3>Suzens: The First Bloom</h3>
@@ -427,7 +424,7 @@
         <a href="https://www.instagram.com/p/Cvt4tO7h0eg/" target="_blank" class="movie-card"
           data-label="Start Watching">
           <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp"
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp"
             alt="Zoro Poster">
           <div class="movie-info">
             <h3>Zoro: Forged from Legends</h3>
@@ -439,7 +436,7 @@
         <a href="https://www.instagram.com/reel/CgB_WXDJjmv/" target="_blank" class="movie-card"
           data-label="Start Watching">
           <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630820/jungkook_copy_ntfb24.webp"
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/jungkook_copy_ntfb24.webp"
             alt="Jungkook Charcoal Art">
           <div class="movie-info">
             <h3>Jungkook: Charcoal Art</h3>
@@ -452,7 +449,7 @@
         <a href="https://www.instagram.com/reel/CZu5cnLhF67/" target="_blank" class="movie-card"
           data-label="Start Watching">
           <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630822/itachi_copy_laotwi.webp"
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/itachi_copy_laotwi.webp"
             alt="Itachi Artwork">
           <div class="movie-info">
             <h3>The Legend of Itachi</h3>
@@ -464,7 +461,7 @@
         <a href="https://www.instagram.com/reel/CmyffHTj3qW/" target="_blank" class="movie-card"
           data-label="Start Watching">
           <img
-            src="https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630821/taeyung_copy_sne0b3.webp"
+            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/taeyung_copy_sne0b3.webp"
             alt="Zoro Poster">
           <div class="movie-info">
             <h3>V: the Word Art</h3>
@@ -480,20 +477,88 @@
 
 
   <script>
-    const container = document.querySelector(".movies-container");
-    const leftBtn = document.querySelector(".carousel-btn.left");
-    const rightBtn = document.querySelector(".carousel-btn.right");
+    (async function loadDynamicShorts() {
+      const container = document.querySelector(".movies-container");
+      const leftBtn = document.querySelector(".carousel-btn.left");
+      const rightBtn = document.querySelector(".carousel-btn.right");
+      if (!container) return;
 
-    const cardWidth = container.querySelector(".movie-card").offsetWidth + 5; // card + gap
-    const scrollAmount = cardWidth * 3; // move 3 at once
+      function bindScrollButtons() {
+        if (rightBtn) {
+          rightBtn.onclick = () => {
+            const firstCard = container.querySelector(".movie-card");
+            const cardWidth = firstCard ? firstCard.offsetWidth : 300;
+            const gap = 16;
+            const scrollAmount = (cardWidth + gap) * 3;
+            container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+          };
+        }
+        if (leftBtn) {
+          leftBtn.onclick = () => {
+            const firstCard = container.querySelector(".movie-card");
+            const cardWidth = firstCard ? firstCard.offsetWidth : 300;
+            const gap = 16;
+            const scrollAmount = (cardWidth + gap) * 3;
+            container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+          };
+        }
+      }
 
-    rightBtn.addEventListener("click", () => {
-      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    });
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>'"]/g, tag => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[tag] || tag));
+      }
 
-    leftBtn.addEventListener("click", () => {
-      container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    });
+      function escapeAttr(str) {
+        if (!str) return '';
+        return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function safeUrl(url) {
+        if (!url) return '#';
+        const trimmed = String(url).trim();
+        if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) {
+          return '#';
+        }
+        return trimmed;
+      }
+
+      try {
+        const res = await fetch("/api/homepage/showcase-items?section=shorts_entertainment");
+        if (res.ok) {
+          const items = await res.json();
+          if (Array.isArray(items) && items.length > 0) {
+            container.innerHTML = items.map(item => {
+              const validatedLink = safeUrl(item.linkUrl);
+              const isExternal = validatedLink.startsWith("http");
+              const target = isExternal ? 'target="_blank" rel="noopener noreferrer"' : '';
+              const label = item.btnText || "Start Watching";
+              const safeImg = safeUrl(item.imageUrl || "");
+              const safeTitle = item.title || "";
+              const safeDesc = item.subtitle || item.description || "";
+
+              return `
+                <a href="${escapeAttr(validatedLink)}" ${target} class="movie-card is-revealed" data-label="${escapeAttr(label)}">
+                  <img src="${escapeAttr(safeImg)}" alt="${escapeAttr(safeTitle)}" loading="eager" decoding="async">
+                  <div class="movie-info">
+                    <h3>${escapeHtml(safeTitle)}</h3>
+                    <p>${escapeHtml(safeDesc)}</p>
+                  </div>
+                </a>
+              `;
+            }).join("");
+          }
+        } else {
+          console.warn("[Failure Path] Could not fetch dynamic shorts (HTTP " + res.status + "), cleanly using static fallback markup.");
+        }
+      } catch (err) {
+        console.warn("[Failure Path] Could not fetch dynamic shorts, cleanly using static fallback markup:", err);
+      }
+
+      bindScrollButtons();
+    })();
   </script>
 
   <!-- ===== NEW MERCHANDISE SECTION ===== -->
@@ -503,111 +568,165 @@
       <div class="merch-grid-container">
 
         <!-- Left Feature Card (Image TOP, Info BOTTOM) -->
-        <a href="store.html" class="merch-feature-card">
+        <a href="store-detail.html?id=itachi-colored-hoodie&color=Black" class="merch-feature-card" id="home-merch-feature-card">
           <div class="feature-card-img-wrap">
-            <span class="trending-badge">Trending Now</span>
-            <img src="assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg"
-              alt="Itachi Crow Genjutsu Graphic Tee" class="feature-card-image">
+            <div class="prod-badges-row">
+              <span class="prod-badge badge-bestseller">BESTSELLER</span>
+              <span class="prod-discount-badge">38% OFF</span>
+            </div>
+            <img src="assets/Store/Hoodies/colored Itachi Hoodies/itachi_hoodie_black_colored.jpg"
+              alt="Itachi Uchiha Duo Graphic Colored Hoodie" class="feature-card-image">
           </div>
 
           <div class="merch-feature-card-content">
-            <div class="feature-card-meta">T-Shirts &middot; <span class="home-discount-badge">50% OFF</span></div>
-            <h2 class="feature-card-title">Itachi Crow Genjutsu Graphic Tee</h2>
-
-            <div class="feature-card-tags">
-              <span>#ItachiUchiha</span>
-              <span>#240GSMOrganicCotton</span>
-              <span>#AnimeStreetwear</span>
+            <div class="prod-sub-row">
+              <span class="prod-sub-text">Hoodies</span>
+              <span class="prod-rating-text"><i class="fa-solid fa-star"></i> 5.0 <span>(52)</span></span>
             </div>
-
+            <h2 class="feature-card-title">Itachi Uchiha Duo Graphic Colored Hoodie</h2>
+            <div class="prod-price-row">
+              <span class="prod-price">₹1,299</span>
+              <span class="prod-orig-price">₹2,099</span>
+            </div>
             <div class="explore-btn">Explore Store &rarr;</div>
           </div>
         </a>
 
         <!-- Right Grid and Controls -->
         <div class="merch-grid-wrapper" style="display: flex; flex-direction: column; justify-content: space-between;">
-          <div class="merch-grid">
+          <div class="merch-grid" id="home-merch-grid">
 
-            <!-- Card 1: Zoro Green T-Shirt -->
-            <a href="store.html" class="grid-card">
-              <img src="assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg"
-                alt="Zoro Three-Sword Style Tee" class="grid-card-image">
+            <!-- Card 1: Kaneki Full Color T-Shirt -->
+            <a href="store-detail.html?id=kaneki-colored-half-tshirt&color=Black" class="grid-card">
+              <div class="grid-card-img-wrap">
+                <div class="prod-badges-row">
+                  <span class="prod-badge">TOP RATED</span>
+                  <span class="prod-discount-badge">40% OFF</span>
+                </div>
+                <img src="assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg"
+                  alt="Ken Kaneki Tokyo Ghoul Full Color T-Shirt" class="grid-card-image">
+              </div>
               <div class="grid-card-content">
-                <div class="grid-card-badge">T-Shirts &middot; 35% OFF</div>
-                <h3 class="grid-card-title">Roronoa Zoro Three-Sword Style Tee</h3>
-                <div class="grid-card-tags">
-                  <span>#Zoro</span>
-                  <span>#240GSM</span>
+                <div class="prod-sub-row">
+                  <span class="prod-sub-text">T-Shirts</span>
+                  <span class="prod-rating-text"><i class="fa-solid fa-star"></i> 5.0 <span>(45)</span></span>
+                </div>
+                <h3 class="grid-card-title">Ken Kaneki Tokyo Ghoul Full Color T-Shirt</h3>
+                <div class="prod-price-row">
+                  <span class="prod-price">₹899</span>
+                  <span class="prod-orig-price">₹1,499</span>
                 </div>
               </div>
             </a>
 
-            <!-- Card 2: Kaneki Black T-Shirt -->
-            <a href="store.html" class="grid-card">
-              <img src="assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg"
-                alt="Kaneki Tokyo Ghoul Tee" class="grid-card-image">
+            <!-- Card 2: Zoro Colored Hoodie -->
+            <a href="store-detail.html?id=zoro-colored-hoodie&color=Green" class="grid-card">
+              <div class="grid-card-img-wrap">
+                <div class="prod-badges-row">
+                  <span class="prod-badge">TRENDING</span>
+                  <span class="prod-discount-badge">35% OFF</span>
+                </div>
+                <img src="assets/Store/Hoodies/colored Zoro Hoodies/zoro_hoodie_green_colored.jpg"
+                  alt="Roronoa Zoro Three-Sword Colored Hoodie" class="grid-card-image">
+              </div>
               <div class="grid-card-content">
-                <div class="grid-card-badge">T-Shirts &middot; 40% OFF</div>
-                <h3 class="grid-card-title">Kaneki Ken Tokyo Ghoul Anime Tee</h3>
-                <div class="grid-card-tags">
-                  <span>#Kaneki</span>
-                  <span>#TokyoGhoul</span>
+                <div class="prod-sub-row">
+                  <span class="prod-sub-text">Hoodies</span>
+                  <span class="prod-rating-text"><i class="fa-solid fa-star"></i> 4.9 <span>(44)</span></span>
+                </div>
+                <h3 class="grid-card-title">Roronoa Zoro Three-Sword Colored Hoodie</h3>
+                <div class="prod-price-row">
+                  <span class="prod-price">₹1,299</span>
+                  <span class="prod-orig-price">₹1,999</span>
                 </div>
               </div>
             </a>
 
-            <!-- Card 3: Itachi Purple T-Shirt -->
-            <a href="store.html" class="grid-card">
-              <img src="assets/Store/Tshirts/Colored itachi tshirts/itachi_purple_tshirt_colored.jpg"
-                alt="Itachi Purple Tee" class="grid-card-image">
+            <!-- Card 3: Zoro Colored T-Shirt -->
+            <a href="store-detail.html?id=zoro-colored-half-tshirt&color=Green" class="grid-card">
+              <div class="grid-card-img-wrap">
+                <div class="prod-badges-row">
+                  <span class="prod-discount-badge">38% OFF</span>
+                </div>
+                <img src="assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg"
+                  alt="Roronoa Zoro Three-Sword Colored T-Shirt" class="grid-card-image">
+              </div>
               <div class="grid-card-content">
-                <div class="grid-card-badge">T-Shirts &middot; 25% OFF</div>
-                <h3 class="grid-card-title">Itachi Tsukuyomi Vintage Purple Tee</h3>
-                <div class="grid-card-tags">
-                  <span>#Itachi</span>
-                  <span>#LimitedDrop</span>
+                <div class="prod-sub-row">
+                  <span class="prod-sub-text">T-Shirts</span>
+                  <span class="prod-rating-text"><i class="fa-solid fa-star"></i> 4.9 <span>(42)</span></span>
+                </div>
+                <h3 class="grid-card-title">Roronoa Zoro Three-Sword Colored T-Shirt</h3>
+                <div class="prod-price-row">
+                  <span class="prod-price">₹899</span>
+                  <span class="prod-orig-price">₹1,449</span>
                 </div>
               </div>
             </a>
 
-            <!-- Card 4: Zoro Black T-Shirt -->
-            <a href="store.html" class="grid-card">
-              <img src="assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_black_tshirt.jpg" alt="Zoro Ashura Tee"
-                class="grid-card-image">
+            <!-- Card 4: Kaneki B&W T-Shirt -->
+            <a href="store-detail.html?id=kaneki-bw-half-tshirt&color=Black" class="grid-card">
+              <div class="grid-card-img-wrap">
+                <div class="prod-badges-row">
+                  <span class="prod-badge">CLASSIC</span>
+                  <span class="prod-discount-badge">43% OFF</span>
+                </div>
+                <img src="assets/Store/Tshirts/B&W kaneki tshirts/kaneki_tshirt_black.jpg"
+                  alt="Ken Kaneki Tokyo Ghoul B&W Edition T-Shirt" class="grid-card-image">
+              </div>
               <div class="grid-card-content">
-                <div class="grid-card-badge">T-Shirts &middot; 45% OFF</div>
-                <h3 class="grid-card-title">Zoro Ashura Demon Slash Black Tee</h3>
-                <div class="grid-card-tags">
-                  <span>#OnePiece</span>
-                  <span>#WashProof</span>
+                <div class="prod-sub-row">
+                  <span class="prod-sub-text">T-Shirts</span>
+                  <span class="prod-rating-text"><i class="fa-solid fa-star"></i> 4.9 <span>(38)</span></span>
+                </div>
+                <h3 class="grid-card-title">Ken Kaneki Tokyo Ghoul B&W Edition T-Shirt</h3>
+                <div class="prod-price-row">
+                  <span class="prod-price">₹799</span>
+                  <span class="prod-orig-price">₹1,399</span>
                 </div>
               </div>
             </a>
 
-            <!-- Card 5: Kaneki White T-Shirt -->
-            <a href="store.html" class="grid-card">
-              <img src="assets/Store/Tshirts/Colored kaneki tshirts/kaneki_white_tshirt_colored.jpg"
-                alt="Kaneki Dragon Tee" class="grid-card-image">
+            <!-- Card 5: Itachi Monochrome Hoodie -->
+            <a href="store-detail.html?id=itachi-bw-hoodie&color=Black" class="grid-card">
+              <div class="grid-card-img-wrap">
+                <div class="prod-badges-row">
+                  <span class="prod-discount-badge">33% OFF</span>
+                </div>
+                <img src="assets/Store/Hoodies/B&W itachi hoodies/itachi_hoodie_black.jpg"
+                  alt="Itachi Uchiha Monochrome Edition Hoodie" class="grid-card-image">
+              </div>
               <div class="grid-card-content">
-                <div class="grid-card-badge">T-Shirts &middot; 30% OFF</div>
-                <h3 class="grid-card-title">Kaneki One-Eyed Dragon White Tee</h3>
-                <div class="grid-card-tags">
-                  <span>#KanekiWhite</span>
-                  <span>#AnimeApparel</span>
+                <div class="prod-sub-row">
+                  <span class="prod-sub-text">Hoodies</span>
+                  <span class="prod-rating-text"><i class="fa-solid fa-star"></i> 4.9 <span>(36)</span></span>
+                </div>
+                <h3 class="grid-card-title">Itachi Uchiha Monochrome Edition Hoodie</h3>
+                <div class="prod-price-row">
+                  <span class="prod-price">₹1,199</span>
+                  <span class="prod-orig-price">₹1,799</span>
                 </div>
               </div>
             </a>
 
-            <!-- Card 6: Itachi Red T-Shirt -->
-            <a href="store.html" class="grid-card">
-              <img src="assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg"
-                alt="Itachi Crimson Tee" class="grid-card-image">
+            <!-- Card 6: Itachi Monochrome T-Shirt -->
+            <a href="store-detail.html?id=itachi-bw-half-tshirt&color=Black" class="grid-card">
+              <div class="grid-card-img-wrap">
+                <div class="prod-badges-row">
+                  <span class="prod-discount-badge">40% OFF</span>
+                </div>
+                <img src="assets/Store/Tshirts/B&W itachi tshirts/itachi_black_tshirt_bw.jpg"
+                  alt="Itachi Uchiha Monochrome Edition T-Shirt" class="grid-card-image">
+              </div>
               <div class="grid-card-content">
-                <div class="grid-card-badge">T-Shirts &middot; 50% OFF</div>
-                <h3 class="grid-card-title">Itachi Akatsuki Crimson Edition Tee</h3>
-                <div class="grid-card-tags">
-                  <span>#Akatsuki</span>
-                  <span>#SpecialDrop</span>
+                <div class="prod-sub-row">
+                  <span class="prod-sub-text">T-Shirts</span>
+                  <span class="prod-rating-text"><i class="fa-solid fa-star"></i> 4.9 <span>(32)</span></span>
+                </div>
+                <h3 class="grid-card-title">Itachi Uchiha Monochrome Edition T-Shirt</h3>
+                <div class="prod-price-row">
+                  <span class="prod-price">₹799</span>
+                  <span class="prod-orig-price">₹1,349</span>
                 </div>
               </div>
             </a>
@@ -628,7 +747,6 @@
     <div class="community-intro-card">
       <!-- Left Column: Text & CTA -->
       <div class="community-intro-left">
-        <span class="community-badge">CONNECT & COLLABORATE</span>
         <h3 class="community-intro-title">Join the SenpaiWorks Creative Hub</h3>
         <p class="community-intro-desc">
           Connect with digital artists, 3D animators, and anime enthusiasts. Share your latest renders, get direct
@@ -689,8 +807,8 @@
 
 
   <script>
-    // Featured Highlights Slides Data
-    const featuredSlides = [
+    // Featured Highlights Slides Data (Defaults as fallback)
+    let featuredSlides = [
       {
         badge: "COURSES & LEARNING",
         badgeIcon: "fa-graduation-cap",
@@ -699,7 +817,7 @@
         buttons: [
           { text: "Explore Courses", href: "learn.html", icon: "fa-graduation-cap", primary: true }
         ],
-        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/zoro_green_poster_unzusa.webp",
+        img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp",
         alt: "SenpaiWorks Courses"
       },
       {
@@ -710,7 +828,7 @@
         buttons: [
           { text: "Visit Store", href: "store.html", icon: "fa-bag-shopping", primary: true }
         ],
-        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/itachi_black_t_shirt_copy_w1rb6l.webp",
+        img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/itachi_black_t_shirt_copy_w1rb6l.webp",
         alt: "SenpaiWorks Merchandise"
       },
       {
@@ -721,7 +839,7 @@
         buttons: [
           { text: "Discover About Us", href: "about.html", icon: "fa-arrow-right", primary: true }
         ],
-        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630847/suzan_main_bg_zrmgwb.webp",
+        img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_main_bg_zrmgwb.webp",
         alt: "About SenpaiWorks"
       },
       {
@@ -732,7 +850,7 @@
         buttons: [
           { text: "Explore 2D Library", href: "art-library.html", icon: "fa-palette", primary: true }
         ],
-        img: "https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_600/v1757630827/deadpool_poster_krntp0.webp",
+        img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp",
         alt: "2D Art Library"
       }
     ];
@@ -776,30 +894,42 @@
       if (!slide) return;
 
       // Animate out elements
-      const elementsToAnimate = [mainMerchImg, itemNameEl, itemDescEl, slideBadgeEl, slideActionsEl];
+      const elementsToAnimate = [mainMerchImg, itemNameEl, itemDescEl, slideActionsEl];
       elementsToAnimate.forEach(el => {
         if (el) el.style.opacity = '0.15';
       });
 
       setTimeout(() => {
         // Update Content
-        if (slideBadgeEl) {
-          slideBadgeEl.innerHTML = `<i class="fa-solid ${slide.badgeIcon}"></i> ${slide.badge}`;
-        }
         if (itemNameEl) itemNameEl.textContent = slide.title;
         if (itemDescEl) itemDescEl.textContent = slide.desc;
         if (mainMerchImg) {
-          mainMerchImg.src = slide.img;
-          mainMerchImg.alt = slide.alt;
+          mainMerchImg.onerror = function () {
+            this.onerror = null;
+            this.src = "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp";
+          };
+          mainMerchImg.src = slide.img || "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp";
+          mainMerchImg.alt = slide.alt || slide.title || "SenpaiWorks";
         }
 
-        // Render Action Buttons
+        // Render Action Buttons (clean typography without icons)
         if (slideActionsEl) {
-          slideActionsEl.innerHTML = slide.buttons.map(btn => `
-            <a href="${btn.href}" class="${btn.primary ? 'explore-btn' : 'secondary-slide-btn'}">
-              <i class="fa-solid ${btn.icon}"></i> ${btn.text}
-            </a>
-          `).join('');
+          slideActionsEl.innerHTML = (slide.buttons || []).map(btn => {
+            const rawHref = String(btn.href || '#').trim();
+            const validHref = (rawHref.startsWith('javascript:') || rawHref.startsWith('data:') || rawHref.startsWith('vbscript:')) ? '#' : rawHref;
+            const isExt = validHref.startsWith('http');
+            const targetAttr = isExt ? 'target="_blank" rel="noopener noreferrer"' : '';
+            const safeClass = btn.primary ? 'explore-btn' : 'secondary-slide-btn';
+            const safeText = String(btn.text || 'Explore').replace(/[&<>'"]/g, tag => ({
+              '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+            const safeAttrHref = validHref.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            return `
+              <a href="${safeAttrHref}" ${targetAttr} class="${safeClass}">
+                ${safeText}
+              </a>
+            `;
+          }).join('');
         }
 
         // Update Slide Counter
@@ -868,201 +998,428 @@
       sliderBox.addEventListener("mouseleave", startAutoTimer);
     }
 
-    // Initialize
+    // Initialize with fallback immediately, then hydrate from API
     initSliderDots();
     startAutoTimer();
+
+    // Async Fetch from API
+    async function loadDynamicShowcaseItems() {
+      try {
+        const res = await fetch("/api/homepage/showcase-items?section=things_you_might_like");
+        if (res.ok) {
+          const items = await res.json();
+          if (Array.isArray(items) && items.length > 0) {
+            featuredSlides = items.map(item => ({
+              badge: item.subtitle || "FEATURED",
+              badgeIcon: "fa-sparkles",
+              title: item.title,
+              desc: item.description || item.subtitle || "",
+              buttons: [
+                { text: item.btnText || "Explore", href: item.linkUrl || "#", primary: true }
+              ],
+              img: item.imageUrl || "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp",
+              alt: item.title
+            }));
+            initSliderDots();
+            renderSlide(0);
+          }
+        } else {
+          console.warn("[Failure Path] Could not fetch showcase items (HTTP " + res.status + "), cleanly using static fallback markup.");
+        }
+      } catch (err) {
+        console.warn("[Failure Path] Could not fetch showcase items, cleanly using static fallback markup:", err);
+      }
+    }
+    loadDynamicShowcaseItems();
   </script>
 
 
 
   <script>
-
+    // =========================================================================
+    // DYNAMIC HERO SLIDESHOW CONTROLLER & HYDRATION
+    // =========================================================================
     document.addEventListener('DOMContentLoaded', function () {
-      const slides = document.querySelectorAll('.slide');
-      const slideWrapper = document.querySelector('.slide-wrapper');
-      const scrollButtons = document.querySelectorAll('.slide_scroll-btn');
-      const tabs = document.querySelectorAll('.indicator-tab');
-      let currentIndex = 0;
-      let slideInterval;
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>'"]/g, tag => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[tag] || tag));
+      }
+
+      function safeUrl(url) {
+        if (!url) return '#';
+        const trimmed = String(url).trim();
+        if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) {
+          return '#';
+        }
+        return trimmed;
+      }
+
+      function escapeAttr(str) {
+        if (!str) return '';
+        return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      let slideInterval = null;
       let isPaused = false;
+      let currentIndex = 0;
 
-      // Update active, prev, and next classes
-      function updateSlideClasses(index) {
-        slides.forEach((slide, idx) => {
-          slide.classList.remove('active', 'prev', 'next');
-          if (idx === index) {
-            slide.classList.add('active');
-          } else if (idx === (index + 1) % slides.length) {
-            slide.classList.add('next');
-          } else if (idx === (index - 1 + slides.length) % slides.length) {
-            slide.classList.add('prev');
-          }
-        });
-      }
+      function setupSlideshowControls() {
+        if (slideInterval) clearInterval(slideInterval);
 
-      // Initialize slide positions
-      updateSlideClasses(currentIndex);
+        const slides = document.querySelectorAll('.slide');
+        const scrollButtons = document.querySelectorAll('.slide_scroll-btn');
+        const tabs = document.querySelectorAll('.indicator-tab');
+        const slideshowContainer = document.querySelector('.slideshow-container');
+        const playPauseBtn = document.querySelector('.slideshow-play-pause-btn');
 
-      // Auto-advance every 5 seconds (keep this)
-      function startSlideShow() {
-        if (isPaused) return;
-        slideInterval = setInterval(() => {
-          goToSlide((currentIndex + 1) % slides.length, true); // true = auto transition
-        }, 5000);
-      }
+        if (!slides || slides.length === 0) return;
 
-      // Transition handler
-      function goToSlide(index, isAutoTransition = false) {
-        // Only animate for auto transitions
-        const transitionTime = isAutoTransition ? '0.5s' : '0s';
+        currentIndex = 0;
 
-        // Apply instant transition for manual clicks
-        document.documentElement.style.setProperty('--transition-time', transitionTime);
+        // Update active, prev, and next classes
+        function updateSlideClasses(index) {
+          slides.forEach((slide, idx) => {
+            slide.classList.remove('active', 'prev', 'next');
+            if (idx === index) {
+              slide.classList.add('active');
+            } else if (idx === (index + 1) % slides.length) {
+              slide.classList.add('next');
+            } else if (idx === (index - 1 + slides.length) % slides.length) {
+              slide.classList.add('prev');
+            }
+          });
+        }
 
-        currentIndex = index;
         updateSlideClasses(currentIndex);
 
-        // Update indicators
-        tabs.forEach((tab, idx) => {
-          if (idx === index) {
-            tab.classList.add('active');
-          } else {
-            tab.classList.remove('active');
-          }
-        });
-
-        // Reset timer on manual click
-        if (!isAutoTransition) {
-          clearInterval(slideInterval);
-          startSlideShow();
+        function startSlideShow() {
+          if (isPaused) return;
+          if (slideInterval) clearInterval(slideInterval);
+          slideInterval = setInterval(() => {
+            goToSlide((currentIndex + 1) % slides.length, true);
+          }, 5000);
         }
-      }
 
-      // Button controls
-      scrollButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const direction = button.classList.contains('left') ? -1 : 1;
-          goToSlide((currentIndex + direction + slides.length) % slides.length);
-        });
-      });
+        function goToSlide(index, isAutoTransition = false) {
+          const transitionTime = isAutoTransition ? '0.5s' : '0s';
+          document.documentElement.style.setProperty('--transition-time', transitionTime);
 
-      // Side slide click controls
-      slides.forEach((slide, idx) => {
-        slide.addEventListener('click', (e) => {
-          // Ignore clicks on links or button controls
-          if (e.target.closest('.hero-buttons') || e.target.closest('a') || e.target.closest('.slide_scroll-btn')) {
-            return;
-          }
-          if (slide.classList.contains('prev') || slide.classList.contains('next')) {
-            goToSlide(idx);
-          }
-        });
-      });
+          currentIndex = index;
+          updateSlideClasses(currentIndex);
 
-      // Indicator controls
-      tabs.forEach((tab, idx) => {
-        tab.addEventListener('click', () => {
-          goToSlide(idx);
-        });
-      });
+          tabs.forEach((tab, idx) => {
+            if (idx === index) {
+              tab.classList.add('active');
+            } else {
+              tab.classList.remove('active');
+            }
+          });
 
-      // Play/Pause button control
-      const playPauseBtn = document.querySelector('.slideshow-play-pause-btn');
-      const slideshowContainer = document.querySelector('.slideshow-container');
-
-      if (playPauseBtn && slideshowContainer) {
-        playPauseBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          isPaused = !isPaused;
-          if (isPaused) {
+          if (!isAutoTransition) {
             clearInterval(slideInterval);
-            slideshowContainer.classList.add('paused');
-            playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            playPauseBtn.setAttribute('aria-label', 'Play slideshow');
-            playPauseBtn.setAttribute('title', 'Play slideshow');
-          } else {
-            slideshowContainer.classList.remove('paused');
-            playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            playPauseBtn.setAttribute('aria-label', 'Pause slideshow');
-            playPauseBtn.setAttribute('title', 'Pause slideshow');
             startSlideShow();
           }
+        }
+
+        // Button controls
+        scrollButtons.forEach(button => {
+          button.onclick = (e) => {
+            e.stopPropagation();
+            const direction = button.classList.contains('left') ? -1 : 1;
+            goToSlide((currentIndex + direction + slides.length) % slides.length);
+          };
         });
+
+        // Side slide click controls
+        slides.forEach((slide, idx) => {
+          slide.onclick = (e) => {
+            if (e.target.closest('.hero-buttons') || e.target.closest('a') || e.target.closest('.slide_scroll-btn')) {
+              return;
+            }
+            if (slide.classList.contains('prev') || slide.classList.contains('next')) {
+              goToSlide(idx);
+            }
+          };
+        });
+
+        // Indicator controls
+        tabs.forEach((tab, idx) => {
+          tab.onclick = () => {
+            goToSlide(idx);
+          };
+        });
+
+        // Play/Pause control
+        if (playPauseBtn && slideshowContainer) {
+          playPauseBtn.onclick = (e) => {
+            e.stopPropagation();
+            isPaused = !isPaused;
+            if (isPaused) {
+              clearInterval(slideInterval);
+              slideshowContainer.classList.add('paused');
+              playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+              playPauseBtn.setAttribute('aria-label', 'Play slideshow');
+              playPauseBtn.setAttribute('title', 'Play slideshow');
+            } else {
+              slideshowContainer.classList.remove('paused');
+              playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+              playPauseBtn.setAttribute('aria-label', 'Pause slideshow');
+              playPauseBtn.setAttribute('title', 'Pause slideshow');
+              startSlideShow();
+            }
+          };
+        }
+
+        // Drag & Touch Swipe controls
+        if (slideshowContainer) {
+          let isDragging = false;
+          let startX = 0;
+          let currentX = 0;
+          let hasMoved = false;
+
+          function getClientX(e) {
+            return e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+          }
+
+          function handleDragStart(e) {
+            if (e.target.closest('.slide_scroll-btn') || e.target.closest('.indicator-tab') || e.target.closest('.slideshow-play-pause-btn')) {
+              return;
+            }
+            isDragging = true;
+            hasMoved = false;
+            startX = getClientX(e);
+            currentX = startX;
+            slideshowContainer.classList.add('is-dragging');
+          }
+
+          function handleDragMove(e) {
+            if (!isDragging) return;
+            currentX = getClientX(e);
+            const deltaX = currentX - startX;
+            if (Math.abs(deltaX) > 10) hasMoved = true;
+          }
+
+          function handleDragEnd() {
+            if (!isDragging) return;
+            slideshowContainer.classList.remove('is-dragging');
+            const deltaX = currentX - startX;
+
+            if (hasMoved && Math.abs(deltaX) > 40) {
+              if (deltaX < 0) {
+                goToSlide((currentIndex + 1) % slides.length);
+              } else {
+                goToSlide((currentIndex - 1 + slides.length) % slides.length);
+              }
+            }
+
+            isDragging = false;
+            setTimeout(() => { hasMoved = false; }, 50);
+          }
+
+          slideshowContainer.onmousedown = handleDragStart;
+          slideshowContainer.onmousemove = handleDragMove;
+          slideshowContainer.onmouseup = handleDragEnd;
+          slideshowContainer.onmouseleave = handleDragEnd;
+
+          slideshowContainer.addEventListener('touchstart', handleDragStart, { passive: true });
+          slideshowContainer.addEventListener('touchmove', handleDragMove, { passive: true });
+          slideshowContainer.addEventListener('touchend', handleDragEnd);
+          slideshowContainer.addEventListener('touchcancel', handleDragEnd);
+        }
+
+        startSlideShow();
       }
 
-      // Drag & Touch Swipe side scroll functionality
-      if (slideshowContainer) {
-        let isDragging = false;
-        let startX = 0;
-        let currentX = 0;
-        let hasMoved = false;
+      // 1. Initial setup with fallback HTML immediately
+      setupSlideshowControls();
 
-        function getClientX(e) {
-          return e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
-        }
+      // 2. Hydrate from /api/homepage/hero-slides
+      async function initDynamicHeroSlides() {
+        const slideWrapper = document.querySelector('.slide-wrapper');
+        const indicatorsContainer = document.querySelector('.slide-indicators');
+        if (!slideWrapper || !indicatorsContainer) return;
 
-        function handleDragStart(e) {
-          if (e.target.closest('.slide_scroll-btn') || e.target.closest('.indicator-tab') || e.target.closest('.slideshow-play-pause-btn')) {
-            return;
+        try {
+          const res = await fetch('/api/homepage/hero-slides');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              slideWrapper.innerHTML = data.map((s, idx) => {
+                const safeBgUrl = safeUrl(s.bgUrl);
+                const bgContent = s.bgType === 'video'
+                  ? `<div class="slide-bg">
+                      <video autoplay muted loop playsinline>
+                        <source src="${escapeAttr(safeBgUrl)}" type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>`
+                  : `<div class="slide-bg" style="background-image: url('${escapeAttr(safeBgUrl)}');"></div>`;
+
+                const isWatch = s.primaryBtnText && (s.primaryBtnText.toLowerCase().includes('watch') || s.primaryBtnText.toLowerCase().includes('video'));
+                const primaryIcon = isWatch ? '<i class="fa-brands fa-youtube" style="font-size: 1.25em; margin-right: 8px; vertical-align: -1px;"></i>' : '';
+                const validPrimaryLink = safeUrl(s.primaryBtnLink);
+                const isPrimaryExternal = validPrimaryLink.startsWith('http');
+                const primaryTarget = isPrimaryExternal ? 'target="_blank" rel="noopener noreferrer"' : '';
+
+                const primaryBtn = s.primaryBtnText ? `
+                  <a href="${escapeAttr(validPrimaryLink)}" ${primaryTarget} class="watch-now">
+                    ${primaryIcon}${escapeHtml(s.primaryBtnText)}
+                  </a>` : '';
+
+                const validSecLink = safeUrl(s.secondaryBtnLink);
+                const isSecExternal = validSecLink.startsWith('http');
+                const secTarget = isSecExternal ? 'target="_blank" rel="noopener noreferrer"' : '';
+
+                const secondaryBtn = s.secondaryBtnText ? `
+                  <a href="${escapeAttr(validSecLink)}" ${secTarget} class="details">
+                    ${escapeHtml(s.secondaryBtnText)}
+                  </a>` : '';
+
+                return `
+                  <div class="slide ${idx === 0 ? 'active' : ''}">
+                    ${bgContent}
+                    <div class="hero-overlay">
+                      <div class="hero-content">
+                        <p class="Spotlight">${escapeHtml(s.spotlight || `#${idx + 1} Spotlight`)}</p>
+                        <h1 class="anime-title">${escapeHtml(s.title)}</h1>
+                        <p class="anime-description">${escapeHtml(s.description || '')}</p>
+                        <div class="hero-buttons">
+                          ${primaryBtn}
+                          ${secondaryBtn}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('');
+
+              indicatorsContainer.innerHTML = data.map((s, idx) => `
+                <span class="indicator-tab ${idx === 0 ? 'active' : ''}" data-slide="${idx}">${escapeHtml((s.title || '').toUpperCase())}</span>
+              `).join('');
+
+              // Re-bind controls on the dynamic slides
+              setupSlideshowControls();
+            }
+          } else {
+            console.warn("[Failure Path] Could not load dynamic hero slides (HTTP " + res.status + "), cleanly using static fallback markup.");
           }
-          isDragging = true;
-          hasMoved = false;
-          startX = getClientX(e);
-          currentX = startX;
-          slideshowContainer.classList.add('is-dragging');
+        } catch (err) {
+          console.warn("[Failure Path] Could not load dynamic hero slides, cleanly using static fallback markup:", err);
         }
+      }
 
-        function handleDragMove(e) {
-          if (!isDragging) return;
-          currentX = getClientX(e);
-          const deltaX = currentX - startX;
-          if (Math.abs(deltaX) > 10) {
-            hasMoved = true;
-          }
-        }
+      initDynamicHeroSlides();
 
-        function handleDragEnd() {
-          if (!isDragging) return;
-          slideshowContainer.classList.remove('is-dragging');
-          const deltaX = currentX - startX;
+      // 3. Dynamic "New Merch on Store" loader
+      async function initDynamicHomeMerch() {
+        const featureCard = document.getElementById("home-merch-feature-card");
+        const gridContainer = document.getElementById("home-merch-grid");
+        if (!featureCard || !gridContainer) return;
 
-          if (hasMoved && Math.abs(deltaX) > 40) {
-            if (deltaX < 0) {
-              goToSlide((currentIndex + 1) % slides.length);
-            } else {
-              goToSlide((currentIndex - 1 + slides.length) % slides.length);
+        try {
+          let spotlight = null;
+          let gridProds = [];
+
+          const res = await fetch("/api/homepage/merch-spotlight");
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.spotlight) {
+              spotlight = data.spotlight;
+              gridProds = Array.isArray(data.grid) ? data.grid : [];
             }
           }
 
-          isDragging = false;
-          setTimeout(() => {
-            hasMoved = false;
-          }, 50);
-        }
-
-        slideshowContainer.addEventListener('click', (e) => {
-          if (hasMoved) {
-            e.preventDefault();
-            e.stopPropagation();
+          // Fallback to /api/products if spotlight endpoint fails
+          if (!spotlight) {
+            const fallbackRes = await fetch("/api/products");
+            if (!fallbackRes.ok) {
+              console.warn("[Failure Path] Could not fetch store products for home merch (HTTP " + fallbackRes.status + "), cleanly using static fallback markup.");
+              return;
+            }
+            const products = await fallbackRes.json();
+            if (!Array.isArray(products) || products.length === 0) return;
+            let physicalProds = products.filter(p => p.type === 'physical' && p.available !== false);
+            if (physicalProds.length === 0) physicalProds = products.filter(p => p.available !== false);
+            if (physicalProds.length === 0) return;
+            spotlight = physicalProds[0];
+            gridProds = physicalProds.slice(1, 7);
           }
-        }, true);
 
-        slideshowContainer.addEventListener('mousedown', handleDragStart);
-        slideshowContainer.addEventListener('mousemove', handleDragMove);
-        slideshowContainer.addEventListener('mouseup', handleDragEnd);
-        slideshowContainer.addEventListener('mouseleave', handleDragEnd);
+          const featImg = safeUrl(spotlight.img || "assets/SenpaiWorks logo bg.png");
+          const price = typeof spotlight.price === 'number' ? spotlight.price : (parseInt(spotlight.price, 10) || 1299);
+          const origPrice = spotlight.originalPrice ? (typeof spotlight.originalPrice === 'number' ? spotlight.originalPrice : parseInt(spotlight.originalPrice, 10)) : Math.round(price * 1.6);
+          const discountPct = Math.max(5, Math.round(((origPrice - price) / origPrice) * 100));
+          const rating = spotlight.computedRating !== undefined ? spotlight.computedRating : (spotlight.rating || 5.0);
+          const ratingCount = spotlight.computedRatingCount !== undefined ? spotlight.computedRatingCount : (spotlight.ratingCount || 52);
+          const badgeText = spotlight.badge ? escapeHtml(spotlight.badge) : "BESTSELLER";
 
-        slideshowContainer.addEventListener('touchstart', handleDragStart, { passive: true });
-        slideshowContainer.addEventListener('touchmove', handleDragMove, { passive: true });
-        slideshowContainer.addEventListener('touchend', handleDragEnd);
-        slideshowContainer.addEventListener('touchcancel', handleDragEnd);
+          featureCard.href = `store-detail.html?id=${encodeURIComponent(spotlight.id)}`;
+          featureCard.innerHTML = `
+            <div class="feature-card-img-wrap">
+              <div class="prod-badges-row">
+                <span class="prod-badge badge-bestseller">${badgeText}</span>
+                <span class="prod-discount-badge">${discountPct}% OFF</span>
+              </div>
+              <img src="${escapeAttr(featImg)}" alt="${escapeAttr(spotlight.name)}" class="feature-card-image" loading="lazy" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
+            </div>
+            <div class="merch-feature-card-content">
+              <div class="prod-sub-row">
+                <span class="prod-sub-text">${escapeHtml(spotlight.category || 'Hoodies')}</span>
+                <span class="prod-rating-text"><i class="fa-solid fa-star"></i> ${rating} <span>(${ratingCount})</span></span>
+              </div>
+              <h2 class="feature-card-title">${escapeHtml(spotlight.name)}</h2>
+              <div class="prod-price-row">
+                <span class="prod-price">₹${price.toLocaleString('en-IN')}</span>
+                <span class="prod-orig-price">₹${origPrice.toLocaleString('en-IN')}</span>
+              </div>
+              <div class="explore-btn">Explore Store &rarr;</div>
+            </div>
+          `;
+
+          // Update Right Grid
+          if (gridProds.length > 0) {
+            gridContainer.innerHTML = gridProds.map(p => {
+              const pImg = safeUrl(p.img || "assets/SenpaiWorks logo bg.png");
+              const pPrice = typeof p.price === 'number' ? p.price : (parseInt(p.price, 10) || 899);
+              const pOrigPrice = p.originalPrice ? (typeof p.originalPrice === 'number' ? p.originalPrice : parseInt(p.originalPrice, 10)) : Math.round(pPrice * 1.6);
+              const pDiscountPct = Math.max(5, Math.round(((pOrigPrice - pPrice) / pOrigPrice) * 100));
+              const pRating = p.computedRating !== undefined ? p.computedRating : (p.rating || 4.9);
+              const pRatingCount = p.computedRatingCount !== undefined ? p.computedRatingCount : (p.ratingCount || 40);
+              const pBadgeMarkup = p.badge ? `<span class="prod-badge">${escapeHtml(p.badge)}</span>` : '';
+
+              return `
+                <a href="store-detail.html?id=${encodeURIComponent(p.id)}" class="grid-card">
+                  <div class="grid-card-img-wrap">
+                    <div class="prod-badges-row">
+                      ${pBadgeMarkup}
+                      <span class="prod-discount-badge">${pDiscountPct}% OFF</span>
+                    </div>
+                    <img src="${escapeAttr(pImg)}" alt="${escapeAttr(p.name)}" class="grid-card-image" loading="lazy" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
+                  </div>
+                  <div class="grid-card-content">
+                    <div class="prod-sub-row">
+                      <span class="prod-sub-text">${escapeHtml(p.category || 'T-Shirts')}</span>
+                      <span class="prod-rating-text"><i class="fa-solid fa-star"></i> ${pRating} <span>(${pRatingCount})</span></span>
+                    </div>
+                    <h3 class="grid-card-title">${escapeHtml(p.name)}</h3>
+                    <div class="prod-price-row">
+                      <span class="prod-price">₹${pPrice.toLocaleString('en-IN')}</span>
+                      <span class="prod-orig-price">₹${pOrigPrice.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+                </a>
+              `;
+            }).join('');
+          }
+        } catch (err) {
+          console.warn("[Failure Path] Could not load dynamic home merch, cleanly using static fallback markup:", err);
+        }
       }
 
-      // Start the slideshow
-      startSlideShow();
+      initDynamicHomeMerch();
     });
-
   </script>
 
 
@@ -1073,11 +1430,12 @@
 
   <!-- ===== CONTACT & FOOTER ===== -->
   <div id="contact-container"></div>
-  <script src="scripts/contact.js"></script>
-  <script>loadContactSection("https://res.cloudinary.com/dmzchsqms/image/upload/f_auto,q_auto/w_auto/v1757630824/rem_copy_rkjlfo.webp");</script>
+  <script src="scripts/contact.js?v=2.0"></script>
+  <script>loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/rem_copy_rkjlfo.webp");</script>
 
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
+  <script src="scripts/home-news.js?v=1.0" defer></script>
   <script src="scripts/home-animations.js" defer></script>
 
 </body>

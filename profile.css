@@ -238,17 +238,27 @@ body {
 
 .signout-nav-btn {
   margin-top: 12px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #fee2e2;
   padding-top: 12px;
-  background: #f8fafc;
-  color: #0f172a;
+  background: #fff5f5;
+  color: #ef4444 !important;
   border-radius: 10px;
   font-weight: 700;
 }
 
+.signout-nav-btn i,
+.signout-nav-btn span {
+  color: #ef4444 !important;
+}
+
 .signout-nav-btn:hover {
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+.signout-nav-btn:hover i,
+.signout-nav-btn:hover span {
+  color: #dc2626 !important;
 }
 
 /* MAIN HUB LAYOUT GRID */
@@ -403,6 +413,7 @@ body {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  text-align: left;
 }
 
 .account-tab-panel {
@@ -412,6 +423,7 @@ body {
   max-width: 100%;
   box-sizing: border-box;
   min-width: 0;
+  text-align: left;
 }
 
 .account-tab-panel.active {
@@ -432,6 +444,7 @@ body {
 
 .panel-header {
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .panel-header h2 {
@@ -439,12 +452,14 @@ body {
   font-weight: 900;
   color: #0f172a;
   margin: 0 0 4px 0;
+  text-align: left;
 }
 
 .panel-header p {
   font-size: 0.9rem;
   color: #64748b;
   margin: 0;
+  text-align: left;
 }
 
 .panel-card {
@@ -458,6 +473,11 @@ body {
   box-sizing: border-box;
   min-width: 0;
   overflow: hidden;
+  text-align: left;
+}
+
+.panel-card h3 {
+  text-align: left;
 }
 
 .panel-divider {
@@ -630,7 +650,7 @@ body {
 .input-wrapper input {
   width: 100%;
   max-width: 100%;
-  padding: 12px 14px 12px 42px;
+  padding: 12px 38px 12px 42px;
   border-radius: 8px;
   border: 1px solid #cbd5e1;
   font-family: inherit;
@@ -639,6 +659,27 @@ body {
   box-sizing: border-box;
   text-align: left;
   transition: border-color 0.2s ease;
+}
+
+.input-wrapper .toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  font-size: 0.95rem;
+}
+
+.input-wrapper .toggle-password-btn:hover {
+  color: #0f172a;
 }
 
 .input-wrapper input:focus,

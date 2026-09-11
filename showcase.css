@@ -164,23 +164,22 @@
   border-radius: 100px;
   text-decoration: none;
   width: fit-content;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.85s ease, box-shadow 0.85s ease;
+  transition: background 0.85s ease, box-shadow 0.85s ease, filter 0.3s ease;
   box-shadow: 0 8px 24px var(--active-shadow, rgba(183, 107, 255, 0.3));
 }
 
 .explore-suzens-btn:hover {
-  transform: translateY(-2px);
+  transform: none;
   box-shadow: 0 12px 32px var(--active-shadow, rgba(183, 107, 255, 0.55));
   filter: brightness(1.1);
 }
 
 .explore-suzens-btn .arrow-icon {
   font-size: 1.1rem;
-  transition: transform 0.3s ease;
 }
 
 .explore-suzens-btn:hover .arrow-icon {
-  transform: translateX(4px);
+  transform: none;
 }
 
 /* Right stacked image carousel column */

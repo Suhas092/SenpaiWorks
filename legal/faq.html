@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/assets/Videos/SenpaiWorks logo.png" type="image/png">
+  <link rel="shortcut icon" href="/assets/Videos/SenpaiWorks logo.png" type="image/png">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ &amp; Help Center — SenpaiWorks</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/header.css">
+  <link rel="stylesheet" href="/legal/legal.css?v=26">
+</head>
+
+<body>
+
+  <!-- Dynamic Fixed Header -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="/scripts/header.js?v=7"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Dynamic Drawer -->
+  <div id="drawer-container"></div>
+  <script src="/scripts/drawer.js?v=7"></script>
+
+  <!-- MAIN LEGAL & FAQ CONTENT -->
+  <main class="legal-container">
+    <header class="legal-header">
+      <h1 class="legal-title">Frequently Asked Questions</h1>
+      <p class="legal-meta">Last updated: August 30, 2026</p>
+      <p class="legal-lead">Find clear answers across topics regarding store orders, merchandise delivery, 3D asset licenses, and studio projects.</p>
+      <hr class="legal-divider">
+    </header>
+
+    <!-- Clean Left-Aligned Search Bar -->
+    <div class="faq-clean-search-wrapper">
+      <input type="text" id="faq-search-input" class="faq-clean-search-input" placeholder="Search questions (e.g. shipping, sizes, rigs, discount, tracking)..." autocomplete="off" />
+      <button type="button" id="faq-search-clear" class="faq-clean-search-clear" title="Clear Search">&times;</button>
+    </div>
+
+    <!-- Category Filter Bar (Clean Left-Aligned Text Pills, No Colorful Buttons) -->
+    <div class="faq-category-bar-wrapper">
+      <div class="faq-categories">
+        <button class="faq-category-btn active" data-category="all">All</button>
+        <button class="faq-category-btn" data-category="store">Store &amp; Orders</button>
+        <button class="faq-category-btn" data-category="merch">Apparel &amp; Merch</button>
+        <button class="faq-category-btn" data-category="assets">3D Assets &amp; Rigs</button>
+        <button class="faq-category-btn" data-category="account">Accounts &amp; Notifs</button>
+        <button class="faq-category-btn" data-category="general">Studio &amp; Art</button>
+      </div>
+    </div>
+
+    <!-- FAQ Clean Content Section -->
+    <div class="faq-section" id="faq-section">
+      <div class="faq-meta-bar">
+        <span id="faq-item-range-count">Showing questions</span>
+        <span id="faq-search-count" style="display:none;"></span>
+      </div>
+
+      <!-- Dynamic Accordion Container -->
+      <div class="faq-accordion" id="faq-accordion-list">
+        <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 12px; color: #111827;"></i>
+          <p style="margin: 0; font-size: 1rem;">Loading questions...</p>
+        </div>
+      </div>
+
+      <!-- No results container -->
+      <div id="faq-no-results" class="faq-no-results" style="display:none;">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h4>No questions found</h4>
+        <p>Try searching with different keywords or switch categories.</p>
+      </div>
+
+      <!-- Pagination Controls (Right-aligned, 10 per page) -->
+      <div class="faq-pagination-wrapper" id="faq-pagination">
+        <button class="faq-page-btn" id="faq-prev-btn" aria-label="Previous Page">
+          <i class="fa-solid fa-chevron-left"></i> Prev
+        </button>
+        <div id="faq-page-numbers" style="display: flex; gap: 6px;"></div>
+        <button class="faq-page-btn" id="faq-next-btn" aria-label="Next Page">
+          Next <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Dynamic Contact and Footer -->
+  <div id="contact-container"></div>
+  <script src="/scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/all_characters_yvk9ik.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="/scripts/footer.js?v=7"></script>
+
+  <!-- Search, Filter, Dynamic Fetch & Pagination JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const ITEMS_PER_PAGE = 10;
+      let currentPage = 1;
+      let currentCategory = 'all';
+      let searchQuery = '';
+      let dynamicFaqs = [];
+
+      const accordionList = document.getElementById('faq-accordion-list');
+      const searchInput = document.getElementById('faq-search-input');
+      const searchClear = document.getElementById('faq-search-clear');
+      const searchCount = document.getElementById('faq-search-count');
+      const rangeCount = document.getElementById('faq-item-range-count');
+      const filterBtns = document.querySelectorAll('.faq-category-btn');
+      const noResults = document.getElementById('faq-no-results');
+      const paginationWrapper = document.getElementById('faq-pagination');
+      const prevBtn = document.getElementById('faq-prev-btn');
+      const nextBtn = document.getElementById('faq-next-btn');
+      const pageNumbersContainer = document.getElementById('faq-page-numbers');
+
+      // Fallback local FAQs
+      const fallbackFaqs = [
+        { id: 1, category: 'store', question: 'How do I place an order and track its status?', answer: 'Browse our Store, choose your desired apparel size or 3D asset license, and complete payment via Stripe or Razorpay. You will receive an instant order confirmation email with your unique order number and real-time tracking updates.' },
+        { id: 2, category: 'store', question: 'What payment methods and currencies are supported?', answer: 'We support all major Credit/Debit Cards, Net Banking, and UPI via Razorpay for Indian transactions (INR), as well as international cards through Stripe.' },
+        { id: 3, category: 'merch', question: 'How long does shipping take, and is there free shipping?', answer: 'Merchandise is packaged and dispatched within 1–3 business days. Metro deliveries typically arrive within 3–5 business days, and regional addresses within 5–7 business days. We offer free standard shipping on promotional orders and orders exceeding specified cart thresholds.' },
+        { id: 4, category: 'store', question: 'Can I apply discount coupon codes at checkout?', answer: 'Yes! Enter your coupon code (e.g. SENPAI100) into the promo box on the Checkout screen and click Apply. Valid discounts are deducted immediately from your order total.' },
+        { id: 5, category: 'store', question: 'How do I cancel or modify my placed order?', answer: 'Physical orders can be canceled directly from your Account Orders tab before dispatch. Once dispatched, orders cannot be canceled, but you may request a replacement or return upon delivery under our 7-day policy.' },
+        { id: 6, category: 'merch', question: 'What fabric and sizing are used for SenpaiWorks apparel?', answer: 'All tees and hoodies are crafted from premium 100% combed ringspun cotton (240+ GSM for hoodies) with heavy-duty DTF and screen printing. Refer to the size chart on each product page for exact chest and length measurements.' },
+        { id: 7, category: 'merch', question: 'Can I exchange or return a physical merchandise item?', answer: 'If an item arrives damaged, defective, or in the wrong size, submit an exchange or return request within 7 days of delivery. Once verified, refunds or replacements are processed promptly.' },
+        { id: 8, category: 'assets', question: 'How do 3D model and character rig downloads work?', answer: 'Digital assets are delivered instantly upon completed payment. Download links and license keys appear on the confirmation screen and are stored indefinitely in your Account Orders Tab.' },
+        { id: 9, category: 'assets', question: 'Can I use purchased 3D models in commercial games or animations?', answer: 'Standard purchases grant a Personal License. For commercial indie games, films, or monetization, select the Commercial License option or contact us at senpaiworks.official@gmail.com.' },
+        { id: 10, category: 'assets', question: 'What software versions are required for your 3D rigs?', answer: 'Our character rigs are constructed and optimized for Blender 4.0 and newer. Please ensure you enable Auto Run Python Scripts in Blender Preferences for custom rigging controls.' }
+      ];
+
+      // Fetch FAQs from SQLite database API
+      fetch('/api/faqs')
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+            dynamicFaqs = data;
+          } else {
+            dynamicFaqs = fallbackFaqs;
+          }
+          renderFaqs();
+        })
+        .catch(() => {
+          dynamicFaqs = fallbackFaqs;
+          renderFaqs();
+        });
+
+      function getFilteredFaqs() {
+        return dynamicFaqs.filter(faq => {
+          const matchCat = (currentCategory === 'all') || (faq.category && faq.category.toLowerCase() === currentCategory.toLowerCase());
+          const matchQuery = !searchQuery || 
+            (faq.question && faq.question.toLowerCase().includes(searchQuery)) ||
+            (faq.answer && faq.answer.toLowerCase().includes(searchQuery));
+          return matchCat && matchQuery;
+        });
+      }
+
+      function renderFaqs() {
+        const filtered = getFilteredFaqs();
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+        const pageItems = filtered.slice(startIndex, endIndex);
+
+        if (totalItems === 0) {
+          accordionList.innerHTML = '';
+          noResults.style.display = 'block';
+          rangeCount.textContent = 'Showing 0 questions';
+          paginationWrapper.style.display = 'none';
+          return;
+        }
+
+        noResults.style.display = 'none';
+        rangeCount.textContent = `Showing ${startIndex + 1}–${endIndex} of ${totalItems} questions`;
+
+        accordionList.innerHTML = pageItems.map(faq => `
+          <div class="faq-item" data-id="${faq.id}">
+            <div class="faq-question">
+              <h3>${escapeHtml(faq.question)}</h3>
+              <span class="faq-icon-wrap"><i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">${formatAnswer(faq.answer)}</div>
+            </div>
+          </div>
+        `).join('');
+
+        // Attach Accordion Toggle Listeners
+        accordionList.querySelectorAll('.faq-question').forEach(q => {
+          q.addEventListener('click', () => {
+            const item = q.closest('.faq-item');
+            const answer = item.querySelector('.faq-answer');
+            const isActive = item.classList.contains('active');
+
+            accordionList.querySelectorAll('.faq-item').forEach(other => {
+              if (other !== item) {
+                other.classList.remove('active');
+                other.querySelector('.faq-answer').style.maxHeight = null;
+              }
+            });
+
+            if (!isActive) {
+              item.classList.add('active');
+              answer.style.maxHeight = answer.scrollHeight + 'px';
+            } else {
+              item.classList.remove('active');
+              answer.style.maxHeight = null;
+            }
+          });
+        });
+
+        // Update Pagination Controls
+        renderPagination(totalPages);
+      }
+
+      function renderPagination(totalPages) {
+        if (totalPages <= 1) {
+          paginationWrapper.style.display = 'none';
+          return;
+        }
+
+        paginationWrapper.style.display = 'flex';
+        prevBtn.disabled = (currentPage === 1);
+        nextBtn.disabled = (currentPage === totalPages);
+
+        pageNumbersContainer.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement('button');
+          btn.className = `faq-num-btn ${i === currentPage ? 'active' : ''}`;
+          btn.textContent = i;
+          btn.addEventListener('click', () => {
+            currentPage = i;
+            renderFaqs();
+            window.scrollTo({ top: document.querySelector('.legal-header').offsetTop - 20, behavior: 'smooth' });
+          });
+          pageNumbersContainer.appendChild(btn);
+        }
+      }
+
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderFaqs();
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(getFilteredFaqs().length / ITEMS_PER_PAGE);
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderFaqs();
+        }
+      });
+
+      // Filter Buttons
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategory = btn.getAttribute('data-category');
+          currentPage = 1;
+          renderFaqs();
+        });
+      });
+
+      // Search Input
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim().toLowerCase();
+        searchClear.style.display = searchQuery ? 'block' : 'none';
+        currentPage = 1;
+        renderFaqs();
+      });
+
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchQuery = '';
+        searchClear.style.display = 'none';
+        currentPage = 1;
+        renderFaqs();
+      });
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+
+      function formatAnswer(str) {
+        if (!str) return '';
+        return str.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+      }
+    });
+  </script>
+</body>
+</html>

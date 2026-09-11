@@ -24,7 +24,29 @@
 
 <body>
 
-  <script src="scripts/auth.js"></script>
+  <!-- Early auth check: redirect immediately if already logged in, or if returning from OAuth -->
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      var notLoggedOut = localStorage.getItem("userLoggedOut") !== "true";
+      var hasUser = !!localStorage.getItem("currentUser");
+      if (isLoggedIn && notLoggedOut && hasUser) {
+        window.location.replace("/home");
+        return;
+      }
+      var hash = window.location.hash || "";
+      if (hash.includes("access_token") || hash.includes("id_token")) {
+        window.__oauthHashPending = true;
+        document.documentElement.style.visibility = "hidden";
+        setTimeout(function() {
+          document.documentElement.style.visibility = "";
+          window.__oauthHashPending = false;
+        }, 8000);
+      }
+    })();
+  </script>
+
+  <script src="scripts/auth.js?v=113"></script>
 
   <!-- AUTH PAGE MAIN CONTAINER -->
   <main class="auth-page-wrapper">
@@ -98,12 +120,15 @@
             <input type="text" id="signup-lastname" placeholder="Last Name" required autocomplete="family-name">
           </div>
 
-          <div class="input-icon-group">
+          <div class="input-icon-group" style="margin-bottom: 6px;">
             <i class="fa-solid fa-lock input-leading-icon"></i>
-            <input type="password" id="signup-password" placeholder="Choose a password (Min 6 characters)" required minlength="6" autocomplete="new-password">
+            <input type="password" id="signup-password" placeholder="Choose a password (Min 8 characters)" required minlength="8" autocomplete="new-password">
             <button type="button" class="toggle-password-btn" id="toggle-signup-pass" title="Toggle Password Visibility">
               <i class="fa-regular fa-eye-slash"></i>
             </button>
+          </div>
+          <div class="password-requirements-hint" style="font-size: 0.78rem; color: #64748b; margin: 0 0 14px 4px; text-align: left; line-height: 1.4;">
+            <i class="fa-solid fa-circle-info" style="color: #3b82f6; margin-right: 4px;"></i>At least 8 characters with uppercase, lowercase, number & special character.
           </div>
 
           <!-- Marketing Checkboxes -->
@@ -123,7 +148,7 @@
 
           <!-- Legal Terms Disclaimer -->
           <div class="auth-legal-notice">
-            By creating an account, I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and acknowledge that I have read the <a href="privacy.html" target="_blank">Privacy Policy</a>.
+            By creating an account, I agree to the <a href="/terms" target="_blank">Terms of Service</a> and acknowledge that I have read the <a href="/privacy" target="_blank">Privacy Policy</a>.
           </div>
 
           <div class="auth-country-notice">
@@ -138,18 +163,46 @@
         </div>
       </div>
 
+      <!-- ================= STEP 3: OTP VERIFICATION ================= -->
+      <div id="register-step-3" style="display: none;">
+        <h1 class="auth-title-center" style="font-size: 1.5rem; text-align: left; margin-bottom: 8px;">Check your email</h1>
+        <p class="auth-subtitle-center" style="text-align: left; max-width: 100%; margin-bottom: 22px; line-height: 1.5;">
+          We sent a 6-digit verification code to <strong id="step3-email-display" style="color: #ffffff;">user@gmail.com</strong>.
+        </p>
+
+        <form id="step3-form">
+          <div class="input-icon-group">
+            <i class="fa-solid fa-key input-leading-icon"></i>
+            <input type="text" id="step3-otp" placeholder="Enter 6-digit code" required maxlength="6" style="letter-spacing: 4px; font-weight: 700; font-size: 1.1rem; text-align: center;" autocomplete="one-time-code">
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; font-size: 0.85rem;">
+            <button type="button" id="btn-resend-step3-otp" style="background: none; border: none; color: #38bdf8; font-weight: 700; cursor: pointer; text-decoration: underline;">
+              Resend code
+            </button>
+            <span id="step3-timer" style="color: #94a3b8;"></span>
+          </div>
+
+          <button type="submit" id="btn-submit-step3" class="auth-submit-pill">Verify & Complete Registration</button>
+        </form>
+
+        <div class="auth-footer-center" style="margin-top: 18px;">
+          <a href="#" id="step3-back-btn" class="auth-edit-link">&larr; Change details</a>
+        </div>
+      </div>
+
     </div>
 
     <!-- Standalone Minimal Footer -->
     <footer class="auth-minimal-footer">
       <div class="auth-minimal-links">
-        <a href="contact.html">Support</a>
+        <a href="/contact">Support</a>
         <span class="sep">•</span>
-        <a href="privacy.html">Privacy Notice</a>
+        <a href="/privacy">Privacy Notice</a>
         <span class="sep">•</span>
-        <a href="terms.html">Terms of Service</a>
+        <a href="/terms">Terms of Service</a>
         <span class="sep">•</span>
-        <a href="privacy.html#cookies">Cookie Preferences</a>
+        <a href="/privacy#cookies">Cookie Preferences</a>
       </div>
       <div class="auth-recaptcha-text">
         This site is protected by Google reCAPTCHA and its <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
@@ -167,26 +220,55 @@
 
       const step1Div = document.getElementById("register-step-1");
       const step2Div = document.getElementById("register-step-2");
+      const step3Div = document.getElementById("register-step-3");
 
       const step1Form = document.getElementById("step1-form");
       const step2Form = document.getElementById("step2-form");
+      const step3Form = document.getElementById("step3-form");
 
       const step1Email = document.getElementById("step1-email");
       const step2EmailDisplay = document.getElementById("step2-email-display");
+      const step3EmailDisplay = document.getElementById("step3-email-display");
       const editEmailBtn = document.getElementById("step2-edit-email");
+      const step3BackBtn = document.getElementById("step3-back-btn");
       const editCountryBtn = document.getElementById("edit-country-btn");
       const countryVal = document.getElementById("country-val");
 
       const errBox = document.getElementById("signup-error");
       const togglePass = document.getElementById("toggle-signup-pass");
+      const btnResendStep3 = document.getElementById("btn-resend-step3-otp");
+      const step3Timer = document.getElementById("step3-timer");
 
       let userEmail = "";
+      let userPassword = "";
+      let userFullName = "";
+      let resendTimerInterval = null;
+
+      function startStep3Timer(seconds = 60) {
+        if (resendTimerInterval) clearInterval(resendTimerInterval);
+        if (btnResendStep3) btnResendStep3.style.display = "none";
+        if (step3Timer) {
+          step3Timer.style.display = "inline";
+          step3Timer.textContent = `(Resend in ${seconds}s)`;
+        }
+
+        resendTimerInterval = setInterval(() => {
+          seconds--;
+          if (seconds <= 0) {
+            clearInterval(resendTimerInterval);
+            if (btnResendStep3) btnResendStep3.style.display = "inline";
+            if (step3Timer) step3Timer.style.display = "none";
+          } else {
+            if (step3Timer) step3Timer.textContent = `(Resend in ${seconds}s)`;
+          }
+        }, 1000);
+      }
 
       // Step 1 Submission: Validate Email & Show Step 2
       if (step1Form) {
         step1Form.addEventListener("submit", (e) => {
           e.preventDefault();
-          userEmail = step1Email ? step1Email.value.trim() : "";
+          userEmail = step1Email ? step1Email.value.trim().toLowerCase() : "";
           if (!userEmail || !userEmail.includes("@")) {
             if (errBox) {
               errBox.textContent = "Please enter a valid email address.";
@@ -213,6 +295,15 @@
         });
       }
 
+      // Step 3 Back Button -> Return to Step 2
+      if (step3BackBtn) {
+        step3BackBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          step3Div.style.display = "none";
+          step2Div.style.display = "block";
+        });
+      }
+
       // Edit Country Option
       if (editCountryBtn) {
         editCountryBtn.addEventListener("click", (e) => {
@@ -236,25 +327,147 @@
         });
       }
 
-      // Step 2 Submission: Complete Registration
+      // Step 2 Submission: Call Backend /api/auth/signup and Challenge with OTP
       if (step2Form) {
-        step2Form.addEventListener("submit", (e) => {
+        step2Form.addEventListener("submit", async (e) => {
           e.preventDefault();
           const firstName = document.getElementById("signup-firstname").value.trim();
           const lastName = document.getElementById("signup-lastname").value.trim();
-          const password = document.getElementById("signup-password").value.trim();
+          userPassword = document.getElementById("signup-password").value.trim();
 
-          const username = `${firstName} ${lastName}`.trim();
+          userFullName = `${firstName} ${lastName}`.trim() || firstName;
 
-          const result = window.Auth.register(username, userEmail, password);
-          if (result.success) {
-            if (errBox) errBox.style.display = "none";
-            window.Auth.handlePostLoginRedirect("home.html");
-          } else {
+          const isStrongPass = userPassword.length >= 8 &&
+            /[A-Z]/.test(userPassword) &&
+            /[a-z]/.test(userPassword) &&
+            /[0-9]/.test(userPassword) &&
+            /[^A-Za-z0-9]/.test(userPassword);
+
+          if (!isStrongPass) {
             if (errBox) {
-              errBox.textContent = result.message || "Registration failed.";
+              errBox.textContent = "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.";
               errBox.style.display = "block";
             }
+            return;
+          }
+
+          const submitBtn = step2Form.querySelector('button[type="submit"]');
+          const originalText = submitBtn ? submitBtn.innerText : "Agree & Continue";
+          if (submitBtn) submitBtn.innerText = "Creating account...";
+          if (errBox) errBox.style.display = "none";
+
+          try {
+            const res = await fetch('/api/auth/signup', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email: userEmail, username: userFullName, password: userPassword })
+            });
+
+            const data = await res.json();
+
+            if (data.requireOtp || (res.ok && data.success)) {
+              // Gated with OTP Challenge
+              step2Div.style.display = "none";
+              step3Div.style.display = "block";
+              if (step3EmailDisplay) step3EmailDisplay.textContent = userEmail;
+              startStep3Timer(60);
+              const otpInput = document.getElementById("step3-otp");
+              if (otpInput) {
+                otpInput.value = "";
+                otpInput.focus();
+              }
+            } else {
+              if (errBox) {
+                errBox.textContent = data.error || "Signup failed.";
+                errBox.style.display = "block";
+              }
+            }
+          } catch (err) {
+            if (errBox) {
+              errBox.textContent = "Server error. Please try again.";
+              errBox.style.display = "block";
+            }
+          } finally {
+            if (submitBtn) submitBtn.innerText = originalText;
+          }
+        });
+      }
+
+      // Step 3 Submission: Verify OTP & Log In
+      if (step3Form) {
+        step3Form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const otpVal = document.getElementById("step3-otp").value.trim();
+          if (otpVal.length !== 6) {
+            if (errBox) {
+              errBox.textContent = "Please enter the complete 6-digit verification code.";
+              errBox.style.display = "block";
+            }
+            return;
+          }
+
+          const verifyBtn = document.getElementById("btn-submit-step3");
+          const originalText = verifyBtn ? verifyBtn.innerText : "Verify & Complete Registration";
+          if (verifyBtn) verifyBtn.innerText = "Verifying...";
+          if (errBox) errBox.style.display = "none";
+
+          try {
+            const res = await fetch('/api/auth/verify-signup-otp', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email: userEmail, otp: otpVal })
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success && data.token) {
+              // Save authenticated session
+              localStorage.setItem("userToken", data.token);
+              localStorage.setItem("currentUser", JSON.stringify(data.user));
+              if (data.deviceToken) {
+                localStorage.setItem("senpai_device_token", data.deviceToken);
+              }
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.removeItem("userLoggedOut");
+
+              window.Auth.handlePostLoginRedirect("home.html");
+            } else {
+              if (errBox) {
+                errBox.textContent = data.error || "Invalid verification code.";
+                errBox.style.display = "block";
+              }
+            }
+          } catch (err) {
+            if (errBox) {
+              errBox.textContent = "Server error. Please try again.";
+              errBox.style.display = "block";
+            }
+          } finally {
+            if (verifyBtn) verifyBtn.innerText = originalText;
+          }
+        });
+      }
+
+      // Resend OTP in Step 3
+      if (btnResendStep3) {
+        btnResendStep3.addEventListener("click", async () => {
+          try {
+            const res = await fetch('/api/auth/resend-signup-otp', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: userEmail })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+              startStep3Timer(60);
+              alert(`New 6-digit code sent to ${userEmail}!`);
+            } else {
+              alert(data.error || "Failed to resend code.");
+            }
+          } catch (err) {
+            alert("Network error. Please try again.");
           }
         });
       }
