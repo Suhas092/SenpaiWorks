@@ -62,8 +62,10 @@ const prisma = new PrismaClient();
 app.use(helmet({
   contentSecurityPolicy: false, // Maintain smooth compatibility with Google Fonts, FontAwesome, LiveReload CDNs
   crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: false // Allow payment gateway popups (Razorpay/Stripe 3DS) to navigate without about:blank isolation
 }));
+
 
 // Live Reload setup for development auto-refreshing on save
 if (process.env.NODE_ENV !== 'production') {
@@ -4324,7 +4326,18 @@ function formatShippingAddressText(addressInput) {
   return lines.length > 0 ? lines.join("\n") : (addr.address || "Address details on file");
 }
 
+// Razorpay Payments Gateway Router
+const createPaymentsRouter = require('./routes/payments');
+app.use('/api/payments', createPaymentsRouter({
+  prisma,
+  optionalUserToken,
+  sendOrderConfirmationEmail,
+  sendDigitalOrderDownloadEmail,
+  sendTelegramAlert
+}));
+
 app.post("/api/orders", optionalUserToken, async (req, res) => {
+
   try {
     const { email, address, items, subtotal, discountAmount, shipping, grandTotal, paymentType, paymentId } = req.body;
 

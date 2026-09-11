@@ -251,8 +251,11 @@ model Order {
   shippingAddress String   // store as JSON string
   status          String   @default("Processing")
   paymentStatus   String   @default("paid")
-  paymentGateway  String?  @default("stub")
+  paymentGateway  String?  @default("razorpay")
   paymentId       String?
+  razorpayOrderId String?
+  razorpaySignature String?
+
   subtotal        Float
   shipping        Float
   discount        Float    @default(0)

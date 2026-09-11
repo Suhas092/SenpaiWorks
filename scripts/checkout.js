@@ -841,68 +841,147 @@ window.handleCheckoutSubmit = function (e) {
   }
 };
 
-// CONFIGURATION: Insert your official Razorpay Key ID when connecting a live backend server
-const RAZORPAY_KEY_ID = ""; // e.g. "rzp_test_1234567890"
+async function triggerRazorpaySDKPayment(orderData) {
+  const submitBtn = document.getElementById("chk-submit-btn");
+  const originalBtnText = submitBtn ? submitBtn.innerHTML : "Pay with Razorpay";
 
-function triggerRazorpaySDKPayment(orderData) {
-  window.pendingRazorpayOrder = orderData;
+  try {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Initializing Razorpay...`;
+    }
 
-  const rzpModalAmountEl = document.getElementById("rzp-modal-amount");
-  if (rzpModalAmountEl) {
-    rzpModalAmountEl.textContent = `₹${orderData.grandTotal.toFixed(2)}`;
-  }
+    // 1. Call backend to compute authoritative prices and create Razorpay Order
+    const createRes = await fetch("/api/payments/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: orderData.items,
+        discountAmount: orderData.discountAmount,
+        email: orderData.email,
+        address: orderData.address
+      })
+    });
 
-  // If a valid live/test key is configured and Razorpay SDK is loaded, attempt official SDK popup
-  if (RAZORPAY_KEY_ID && window.Razorpay) {
-    try {
-      const options = {
-        key: RAZORPAY_KEY_ID,
-        amount: Math.round(orderData.grandTotal * 100),
-        currency: "INR",
-        name: "SenpaiWorks Studio",
-        description: `Order ${orderData.orderId} - Official Merchandise & Assets`,
-        image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp",
-        handler: function (response) {
-          processVerifiedOrderSuccess({
-            ...orderData,
-            paymentId: response.razorpay_payment_id || ("pay_" + Math.random().toString(36).substring(2, 10)),
-            paymentType: "Razorpay Official Gateway"
-          });
-        },
-        prefill: {
-          name: `${orderData.address ? orderData.address.firstName : 'Collector'} ${orderData.address ? orderData.address.lastName : ''}`,
-          email: orderData.email || "collector@senpaiworks.com",
-          contact: orderData.address ? orderData.address.phone : "9876543210"
-        },
-        notes: {
-          address: orderData.address ? `${orderData.address.address}, ${orderData.address.city}` : "Bengaluru, Karnataka"
-        },
-        theme: {
-          color: "#2563eb"
+    const createData = await createRes.json();
+    if (!createRes.ok || !createData.success) {
+      throw new Error(createData.error || "Failed to initialize payment.");
+    }
+
+    const { keyId, orderId, amount, currency } = createData;
+
+    if (!window.Razorpay) {
+      throw new Error("Razorpay Checkout SDK failed to load. Please check your internet connection.");
+    }
+
+    // 2. Open official Razorpay Checkout Popup
+    const options = {
+      key: keyId,
+      amount: amount,
+      currency: currency || "INR",
+      name: "SenpaiWorks",
+      description: "Official Merchandise & Art Assets",
+      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo.png",
+      order_id: orderId,
+      handler: async function (response) {
+        // Customer completed payment -> Cryptographic verification on server
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Verifying Payment...`;
         }
-      };
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-      return;
-    } catch (e) {
-      console.warn("Razorpay SDK initialization failed, launching embedded gateway modal.", e);
+        try {
+          const verifyRes = await fetch("/api/payments/verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(localStorage.getItem("userToken") ? { "Authorization": `Bearer ${localStorage.getItem("userToken")}` } : {})
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              orderData: orderData
+            })
+          });
+
+          const verifyData = await verifyRes.json();
+          if (!verifyRes.ok || !verifyData.success) {
+            throw new Error(verifyData.error || "Payment signature verification failed.");
+          }
+
+          // Clear shopping cart or single item
+          const singleStr = sessionStorage.getItem("checkoutSingleItem");
+          if (singleStr) {
+            let singleItem = JSON.parse(singleStr);
+            let fullCart = localStorage.getItem("shoppingCart");
+            if (fullCart) {
+              let cart = JSON.parse(fullCart);
+              const existingIdx = cart.findIndex(c => c.id === singleItem.id && c.variant === singleItem.variant);
+              if (existingIdx > -1) {
+                cart.splice(existingIdx, 1);
+                localStorage.setItem("shoppingCart", JSON.stringify(cart));
+              }
+            }
+            sessionStorage.removeItem("checkoutSingleItem");
+          } else {
+            localStorage.removeItem("shoppingCart");
+          }
+
+          // Redirect to Order Confirmation Page
+          const emailParam = verifyData.email ? `&email=${encodeURIComponent(verifyData.email)}` : "";
+          window.location.href = `order-confirmation.html?orderId=${verifyData.orderNumber}${emailParam}`;
+        } catch (verErr) {
+          console.error("Payment verification failed:", verErr);
+          alert("Payment Verification Error: " + verErr.message);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+          }
+        }
+      },
+      prefill: {
+        name: `${orderData.address ? orderData.address.firstName : "Collector"} ${orderData.address ? (orderData.address.lastName || "") : ""}`.trim(),
+        email: orderData.email || "",
+        contact: orderData.address ? (orderData.address.phone || "") : ""
+      },
+      notes: {
+        address: orderData.address ? `${orderData.address.address || ""}, ${orderData.address.city || ""}` : "Bengaluru, Karnataka"
+      },
+      theme: {
+        color: "#2563eb"
+      },
+      modal: {
+        ondismiss: function () {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+          }
+        }
+      }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on("payment.failed", function (failResponse) {
+      console.warn("Razorpay payment failed:", failResponse.error);
+      alert(`Payment Failed: ${failResponse.error.description || failResponse.error.reason || "Transaction could not be completed."}`);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    });
+
+    rzp.open();
+  } catch (err) {
+    console.error("Razorpay initiation error:", err);
+    alert("Payment initiation error: " + err.message);
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
     }
   }
-
-  // Seamless Embedded Gateway Modal for Local Testing
-  openRazorpayModal();
 }
 
-function openRazorpayModal() {
-  const rzpModal = document.getElementById("razorpay-checkout-modal");
-  if (rzpModal) rzpModal.classList.add("active");
-}
-
-window.closeRazorpayModal = function () {
-  const rzpModal = document.getElementById("razorpay-checkout-modal");
-  if (rzpModal) rzpModal.classList.remove("active");
-};
 
 async function processVerifiedOrderSuccess(orderData) {
   const currentUser = getCurrentUser() || { username: orderData.address ? orderData.address.firstName : "Collector", email: orderData.email };
