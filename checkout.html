@@ -205,10 +205,10 @@
             <div class="chk-payment-methods-stack">
 
               <!-- OPTION 1: SCAN AND PAY WITH UPI -->
-              <div class="payment-method-card active" id="pay-card-upi" onclick="selectPayOption('upi')">
+              <div class="payment-method-card" id="pay-card-upi" onclick="selectPayOption('upi')">
                 <div class="pay-card-header">
                   <div class="pay-radio-col">
-                    <input type="radio" name="payment_method" value="upi" checked>
+                    <input type="radio" name="payment_method" value="upi">
                   </div>
                   <div class="pay-title-col">
                     <div class="pay-method-name">Scan and Pay with UPI <span class="pay-badge-tag"><i class="fa-solid fa-bolt"></i> FASTEST</span></div>
@@ -223,6 +223,9 @@
                 </div>
                 <div class="pay-card-body">
                   <p class="pay-info-txt"><i class="fa-solid fa-qrcode" style="color: #0284c7;"></i> Scan QR code or enter your UPI ID for instant 1-click mobile confirmation.</p>
+                  <button type="button" class="amazon-use-method-btn" onclick="usePaymentMethodAndProceed('upi', event)">
+                    Use this payment method
+                  </button>
                 </div>
               </div>
 
@@ -244,6 +247,9 @@
                 </div>
                 <div class="pay-card-body">
                   <p class="pay-info-txt"><i class="fa-solid fa-shield-halved" style="color: #059669;"></i> 256-Bit SSL encrypted card processing with standard 3D-Secure bank OTP verification.</p>
+                  <button type="button" class="amazon-use-method-btn" onclick="usePaymentMethodAndProceed('cards', event)">
+                    Use this payment method
+                  </button>
                 </div>
               </div>
 
@@ -263,6 +269,9 @@
                 </div>
                 <div class="pay-card-body">
                   <p class="pay-info-txt"><i class="fa-solid fa-arrow-right-arrow-left" style="color: #0284c7;"></i> Direct authorization through your bank's secure internet banking gateway.</p>
+                  <button type="button" class="amazon-use-method-btn" onclick="usePaymentMethodAndProceed('netbanking', event)">
+                    Use this payment method
+                  </button>
                 </div>
               </div>
 
@@ -282,6 +291,9 @@
                 </div>
                 <div class="pay-card-body">
                   <p class="pay-info-txt">Please keep exact change ready upon delivery. Available for physical merchandise only.</p>
+                  <button type="button" class="amazon-use-method-btn" onclick="usePaymentMethodAndProceed('cod', event)">
+                    Use this payment method
+                  </button>
                 </div>
               </div>
 
@@ -300,8 +312,8 @@
 
           <!-- SUBMIT CTA BUTTON -->
           <div class="chk-submit-wrap" style="margin-top: 24px;">
-            <button type="submit" class="chk-place-order-btn" id="chk-submit-btn">
-              <i class="fa-solid fa-lock"></i> Complete Order & Pay
+            <button type="submit" class="chk-place-order-btn" id="chk-submit-btn" disabled>
+              <i class="fa-solid fa-lock"></i> Use this payment method
             </button>
             <p class="chk-legal-disclaimer">By placing your order, you agree to SenpaiWorks <a href="/terms" target="_blank">Terms of Service</a>, <a href="/privacy" target="_blank">Privacy Policy</a>, <a href="/shipping" target="_blank">Shipping</a>, and <a href="/refunds" target="_blank">Refund Policy</a>.</p>
           </div>

@@ -3,7 +3,7 @@
 let cartData = [];
 let discountPercentage = 0;
 let flatDiscountAmount = 0;
-let selectedPaymentMethod = "upi";
+let selectedPaymentMethod = null;
 let isUsingSavedAddress = false;
 
 // COMPREHENSIVE COUNTRY & STATE LIBRARY DATASET
@@ -675,7 +675,26 @@ window.applyPromoCode = function () {
   updateSummaryTotals();
 };
 
-// 8. SEPARATE PAYMENT METHOD HANDLER
+// 8. SEPARATE PAYMENT METHOD HANDLER (AMAZON-STYLE)
+function updateSubmitBtnState() {
+  const submitBtn = document.getElementById("chk-submit-btn");
+  if (!submitBtn) return;
+
+  if (!selectedPaymentMethod) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Use this payment method`;
+    submitBtn.setAttribute("title", "Please select a payment method to continue");
+  } else {
+    submitBtn.disabled = false;
+    submitBtn.removeAttribute("title");
+    if (selectedPaymentMethod === "cod") {
+      submitBtn.innerHTML = `<i class="fa-solid fa-truck"></i> Use this payment method (Cash on Delivery)`;
+    } else {
+      submitBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Use this payment method`;
+    }
+  }
+}
+
 function initPaymentSelection() {
   const payCards = document.querySelectorAll(".payment-method-card");
   payCards.forEach(card => {
@@ -687,6 +706,7 @@ function initPaymentSelection() {
         radio.checked = true;
         selectedPaymentMethod = radio.value;
       }
+      updateSubmitBtnState();
     });
   });
 
@@ -699,18 +719,48 @@ function initPaymentSelection() {
       const codRadio = codCard.querySelector("input[type='radio']");
       if (codRadio) codRadio.checked = false;
     }
-    const defaultOnline = document.getElementById("pay-card-upi") || document.querySelector(".payment-method-card:not(#pay-card-cod)");
-    if (defaultOnline) {
-      defaultOnline.classList.add("active");
-      const rzRadio = defaultOnline.querySelector("input[type='radio']");
-      if (rzRadio) rzRadio.checked = true;
-      selectedPaymentMethod = rzRadio ? rzRadio.value : "upi";
-    }
   }
+
+  // Initial state: nothing selected by default, button unclickable
+  selectedPaymentMethod = null;
+  payCards.forEach(c => {
+    c.classList.remove("active");
+    const radio = c.querySelector("input[type='radio']");
+    if (radio) radio.checked = false;
+  });
+  updateSubmitBtnState();
 }
 
 window.selectPayOption = function (method) {
   selectedPaymentMethod = method;
+  const targetCard = document.getElementById(`pay-card-${method}`);
+  const payCards = document.querySelectorAll(".payment-method-card");
+  payCards.forEach(c => c.classList.remove("active"));
+  if (targetCard) {
+    targetCard.classList.add("active");
+    const radio = targetCard.querySelector("input[type='radio']");
+    if (radio) radio.checked = true;
+  }
+  updateSubmitBtnState();
+};
+
+window.usePaymentMethodAndProceed = function (method, event) {
+  if (event) {
+    event.stopPropagation();
+  }
+  if (method) {
+    window.selectPayOption(method);
+  }
+  const form = document.getElementById("checkout-main-form");
+  if (form) {
+    if (typeof form.requestSubmit === "function") {
+      form.requestSubmit();
+    } else {
+      window.handleCheckoutSubmit();
+    }
+  } else {
+    window.handleCheckoutSubmit();
+  }
 };
 
 // 9. CHECKOUT FORM SUBMISSION & VALIDATION
@@ -829,6 +879,13 @@ window.handleCheckoutSubmit = function (e) {
     grandTotal,
     date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   };
+
+  if (!selectedPaymentMethod) {
+    alert("Please select a payment method before proceeding.");
+    const stack = document.querySelector(".chk-payment-methods-stack");
+    if (stack) stack.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
 
   if (selectedPaymentMethod === "razorpay" || selectedPaymentMethod === "upi" || selectedPaymentMethod === "cards" || selectedPaymentMethod === "netbanking") {
     triggerRazorpaySDKPayment(orderPayload);
