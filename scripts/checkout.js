@@ -695,16 +695,16 @@ function initPaymentSelection() {
   if (!hasPhysical || isDonationMode) {
     const codCard = document.getElementById("pay-card-cod");
     if (codCard) {
-      codCard.classList.remove("active");
+      codCard.style.display = "none";
       const codRadio = codCard.querySelector("input[type='radio']");
       if (codRadio) codRadio.checked = false;
     }
-    const razorpayCard = document.getElementById("pay-card-razorpay") || document.querySelector(".payment-method-card:not(#pay-card-cod)");
-    if (razorpayCard) {
-      razorpayCard.classList.add("active");
-      const rzRadio = razorpayCard.querySelector("input[type='radio']");
+    const defaultOnline = document.getElementById("pay-card-upi") || document.querySelector(".payment-method-card:not(#pay-card-cod)");
+    if (defaultOnline) {
+      defaultOnline.classList.add("active");
+      const rzRadio = defaultOnline.querySelector("input[type='radio']");
       if (rzRadio) rzRadio.checked = true;
-      selectedPaymentMethod = rzRadio ? rzRadio.value : "razorpay";
+      selectedPaymentMethod = rzRadio ? rzRadio.value : "upi";
     }
   }
 }
@@ -874,7 +874,56 @@ async function triggerRazorpaySDKPayment(orderData) {
       throw new Error("Razorpay Checkout SDK failed to load. Please check your internet connection.");
     }
 
-    // 2. Open official Razorpay Checkout Popup
+    // 2. Configure method sequence based on user's selection (Amazon-style preselection)
+    const rzpConfig = {};
+    if (selectedPaymentMethod === 'upi') {
+      rzpConfig.display = {
+        blocks: {
+          upi: {
+            name: "Pay via UPI",
+            instruments: [{ method: "upi" }]
+          },
+          other: {
+            name: "Other Payment Methods",
+            instruments: [{ method: "card" }, { method: "netbanking" }, { method: "wallet" }]
+          }
+        },
+        sequence: ["block.upi", "block.other"],
+        preferences: { show_default_blocks: false }
+      };
+    } else if (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card') {
+      rzpConfig.display = {
+        blocks: {
+          cards: {
+            name: "Credit & Debit Cards",
+            instruments: [{ method: "card" }]
+          },
+          other: {
+            name: "Other Payment Methods",
+            instruments: [{ method: "upi" }, { method: "netbanking" }, { method: "wallet" }]
+          }
+        },
+        sequence: ["block.cards", "block.other"],
+        preferences: { show_default_blocks: false }
+      };
+    } else if (selectedPaymentMethod === 'netbanking') {
+      rzpConfig.display = {
+        blocks: {
+          netbanking: {
+            name: "Net Banking",
+            instruments: [{ method: "netbanking" }]
+          },
+          other: {
+            name: "Other Payment Methods",
+            instruments: [{ method: "upi" }, { method: "card" }, { method: "wallet" }]
+          }
+        },
+        sequence: ["block.netbanking", "block.other"],
+        preferences: { show_default_blocks: false }
+      };
+    }
+
+    // 3. Open official Razorpay Checkout Popup
     const options = {
       key: keyId,
       amount: amount,
@@ -883,6 +932,7 @@ async function triggerRazorpaySDKPayment(orderData) {
       description: "Official Merchandise & Art Assets",
       image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo.png",
       order_id: orderId,
+      config: rzpConfig,
       handler: async function (response) {
         // Customer completed payment -> Cryptographic verification on server
         if (submitBtn) {

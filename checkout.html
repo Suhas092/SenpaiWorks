@@ -201,39 +201,79 @@
               <span class="chk-payment-security-txt"><i class="fa-solid fa-shield-halved" style="color: #059669;"></i> 256-Bit Encrypted</span>
             </div>
 
-            <!-- DISTINCT PAYMENT OPTIONS STACK -->
+            <!-- DISTINCT PAYMENT OPTIONS STACK (AMAZON-STYLE) -->
             <div class="chk-payment-methods-stack">
 
-              <!-- OPTION 1: ONLINE PAYMENT (RAZORPAY UNIFIED) -->
-              <div class="payment-method-card active" id="pay-card-razorpay" onclick="selectPayOption('razorpay')">
+              <!-- OPTION 1: SCAN AND PAY WITH UPI -->
+              <div class="payment-method-card active" id="pay-card-upi" onclick="selectPayOption('upi')">
                 <div class="pay-card-header">
                   <div class="pay-radio-col">
-                    <input type="radio" name="payment_method" value="razorpay" checked>
+                    <input type="radio" name="payment_method" value="upi" checked>
                   </div>
                   <div class="pay-title-col">
-                    <div class="pay-method-name">Online Payment <span class="pay-badge-tag"><i class="fa-solid fa-bolt"></i> FASTEST & SECURE</span></div>
-                    <div class="pay-method-sub">UPI (Google Pay, PhonePe, Paytm), All Credit & Debit Cards, NetBanking, EMI & Wallets</div>
+                    <div class="pay-method-name">Scan and Pay with UPI <span class="pay-badge-tag"><i class="fa-solid fa-bolt"></i> FASTEST</span></div>
+                    <div class="pay-method-sub">Instant zero-fee payment using Google Pay, PhonePe, Paytm, BHIM or any UPI QR</div>
                   </div>
                   <div class="pay-badges-col" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    <img src="https://img.icons8.com/color/48/000000/google-pay.png" alt="GPay" style="height: 20px;">
-                    <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa" style="height: 18px;">
-                    <img src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard" style="height: 18px;">
-                    <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" style="height: 20px;">
+                    <img src="https://img.icons8.com/color/48/000000/google-pay.png" alt="Google Pay" style="height: 22px;">
+                    <i class="fa-solid fa-mobile-screen-button" style="color: #5f259f; font-size: 1.15rem;" title="PhonePe"></i>
+                    <span style="font-size: 0.75rem; font-weight: 800; color: #00baf2; background: #f0f9ff; padding: 2px 6px; border-radius: 4px; border: 1px solid #bae6fd;">Paytm</span>
+                    <span style="font-size: 0.75rem; font-weight: 800; color: #0284c7; background: #f8fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">UPI</span>
                   </div>
                 </div>
                 <div class="pay-card-body">
-                  <p class="pay-info-txt"><i class="fa-solid fa-shield-halved" style="color:#2563eb"></i> Instant 256-bit SSL encrypted checkout powered by Razorpay. 100% Buyer Protection guaranteed.</p>
+                  <p class="pay-info-txt"><i class="fa-solid fa-qrcode" style="color: #0284c7;"></i> Scan QR code or enter your UPI ID for instant 1-click mobile confirmation.</p>
                 </div>
               </div>
 
-              <!-- OPTION 2: CASH ON DELIVERY (COD) -->
+              <!-- OPTION 2: CREDIT OR DEBIT CARDS -->
+              <div class="payment-method-card" id="pay-card-cards" onclick="selectPayOption('cards')">
+                <div class="pay-card-header">
+                  <div class="pay-radio-col">
+                    <input type="radio" name="payment_method" value="cards">
+                  </div>
+                  <div class="pay-title-col">
+                    <div class="pay-method-name">Credit & Debit Cards</div>
+                    <div class="pay-method-sub">Visa, Mastercard, RuPay, Maestro & American Express</div>
+                  </div>
+                  <div class="pay-badges-col" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa" style="height: 18px;">
+                    <img src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard" style="height: 18px;">
+                    <span style="font-size: 0.75rem; font-weight: 800; color: #1e3a8a; background: #eff6ff; padding: 2px 6px; border-radius: 4px; border: 1px solid #bfdbfe;">RuPay</span>
+                  </div>
+                </div>
+                <div class="pay-card-body">
+                  <p class="pay-info-txt"><i class="fa-solid fa-shield-halved" style="color: #059669;"></i> 256-Bit SSL encrypted card processing with standard 3D-Secure bank OTP verification.</p>
+                </div>
+              </div>
+
+              <!-- OPTION 3: NET BANKING -->
+              <div class="payment-method-card" id="pay-card-netbanking" onclick="selectPayOption('netbanking')">
+                <div class="pay-card-header">
+                  <div class="pay-radio-col">
+                    <input type="radio" name="payment_method" value="netbanking">
+                  </div>
+                  <div class="pay-title-col">
+                    <div class="pay-method-name">Net Banking</div>
+                    <div class="pay-method-sub">SBI, HDFC, ICICI, Axis, Kotak, Canara & 50+ Indian Banks</div>
+                  </div>
+                  <div class="pay-badges-col">
+                    <i class="fa-solid fa-building-columns" style="color: #0284c7; font-size: 1.15rem;"></i>
+                  </div>
+                </div>
+                <div class="pay-card-body">
+                  <p class="pay-info-txt"><i class="fa-solid fa-arrow-right-arrow-left" style="color: #0284c7;"></i> Direct authorization through your bank's secure internet banking gateway.</p>
+                </div>
+              </div>
+
+              <!-- OPTION 4: CASH ON DELIVERY (COD) -->
               <div class="payment-method-card" id="pay-card-cod" onclick="selectPayOption('cod')">
                 <div class="pay-card-header">
                   <div class="pay-radio-col">
                     <input type="radio" name="payment_method" value="cod">
                   </div>
                   <div class="pay-title-col">
-                    <div class="pay-method-name">Cash on Delivery (COD)</div>
+                    <div class="pay-method-name">Cash on Delivery / Pay on Delivery</div>
                     <div class="pay-method-sub">Pay in cash when package arrives at your doorstep</div>
                   </div>
                   <div class="pay-badges-col">
@@ -241,10 +281,20 @@
                   </div>
                 </div>
                 <div class="pay-card-body">
-                  <p class="pay-info-txt">Please keep exact change ready. A small ₹49 handling fee applies for Cash on Delivery shipments.</p>
+                  <p class="pay-info-txt">Please keep exact change ready upon delivery. Available for physical merchandise only.</p>
                 </div>
               </div>
 
+            </div>
+
+            <!-- TRUST & GATEWAY POWERED FOOTER -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; font-size: 0.8rem; color: #64748b;">
+              <span><i class="fa-solid fa-shield-halved" style="color: #059669;"></i> 100% Buyer Protection</span>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span>Secured by</span>
+                <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" style="height: 16px;">
+                <strong style="color: #0f172a; font-weight: 700;">Razorpay</strong>
+              </div>
             </div>
           </div>
 
