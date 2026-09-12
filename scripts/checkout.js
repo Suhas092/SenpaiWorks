@@ -962,13 +962,16 @@ async function triggerRazorpaySDKPayment(orderData) {
     }
 
     // 3. Open official Razorpay Checkout Popup
+    const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || (i.id && String(i.id).startsWith("donation"))));
+    const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
+
     const options = {
       key: keyId,
       amount: amount,
       currency: currency || "INR",
       name: "SenpaiWorks",
-      description: "Official Merchandise & Art Assets",
-      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo.png",
+      description: isDonationOrder ? "Patron Community Support" : (isDigitalOrder ? "Digital Art Assets" : "Official Anime Streetwear & Merch"),
+      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo_bg.png",
       order_id: orderId,
       config: rzpConfig,
       handler: async function (response) {
@@ -1016,9 +1019,10 @@ async function triggerRazorpaySDKPayment(orderData) {
             localStorage.removeItem("shoppingCart");
           }
 
-          // Redirect to Order Confirmation Page
+          // Redirect to Order Confirmation Page with donation flag if applicable
           const emailParam = verifyData.email ? `&email=${encodeURIComponent(verifyData.email)}` : "";
-          window.location.href = `order-confirmation.html?orderId=${verifyData.orderNumber}${emailParam}`;
+          const donationParam = isDonationOrder ? "&isDonation=true" : "";
+          window.location.href = `order-confirmation.html?orderId=${verifyData.orderNumber}${emailParam}${donationParam}`;
         } catch (verErr) {
           console.error("Payment verification failed:", verErr);
           alert("Payment Verification Error: " + verErr.message);
@@ -1037,7 +1041,7 @@ async function triggerRazorpaySDKPayment(orderData) {
         address: orderData.address ? `${orderData.address.address || ""}, ${orderData.address.city || ""}` : "Bengaluru, Karnataka"
       },
       theme: {
-        color: "#2563eb"
+        color: "#0f172a"
       },
       modal: {
         ondismiss: function () {

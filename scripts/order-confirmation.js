@@ -73,23 +73,57 @@ async function renderLatestOrderReceipt() {
   const shippingEl = document.getElementById("rcpt-shipping-val");
   const grandTotalEl = document.getElementById("rcpt-grand-total-val");
 
-  const userName = latestOrder.guestName || (latestOrder.customer ? latestOrder.customer.username : (latestOrder.customerName || "Customer"));
-  if (greetingNameEl) greetingNameEl.textContent = `Hi ${userName},`;
+  const isDonation = urlParams.get('isDonation') === 'true' || 
+    (latestOrder.items || []).some(i => (i.product && (i.product.id === 'DONATION' || i.product.isDonation)) || i.isDonation || (i.name && i.name.toLowerCase().includes('donation')) || (i.productName && i.productName.toLowerCase().includes('donation')));
 
-  if (addressTextEl) {
-    let addrStr = "";
-    if (latestOrder.shippingAddress) {
-      let addr = latestOrder.shippingAddress;
-      if (typeof addr === 'string') {
-        try { addr = JSON.parse(addr); } catch(e) {}
-      }
-      if (typeof addr === 'object' && addr !== null) {
-        addrStr = `${userName}<br>${addr.address || ''}<br>${addr.city || ''}, ${addr.state || ''} ${addr.pincode || ''}<br>${addr.country || 'India'}`;
-      } else {
-        addrStr = addr;
-      }
+  const heroBadgeEl = document.querySelector(".confirmation-success-badge");
+  const heroTitleEl = document.querySelector(".order-hero-title");
+  const itemsHeadTitleEl = document.querySelector(".order-items-head-title");
+  const deliveryAddressLabel = document.querySelector(".order-delivery-address-col strong");
+  const actionsRow = document.querySelector(".confirmation-actions-row");
+
+  if (isDonation) {
+    document.title = "Thank You for Your Contribution! — SenpaiWorks Patron Support";
+    if (heroBadgeEl) heroBadgeEl.innerHTML = `<i class="fa-solid fa-heart" style="color: #ef4444;"></i> Contribution Confirmed`;
+    if (heroTitleEl) heroTitleEl.textContent = "Thank you for your generous support!";
+    if (greetingNameEl) {
+      greetingNameEl.innerHTML = `Hi ${userName},<br><span style="font-size: 0.95rem; font-weight: 500; color: #475569; display: block; margin-top: 6px;">Your contribution directly fuels our original 2D/3D anime productions, indie creators, and community releases. We are truly grateful for your patronage!</span>`;
     }
-    addressTextEl.innerHTML = addrStr || "Address details not available";
+    if (deliveryAddressLabel) deliveryAddressLabel.textContent = "Supporter Information";
+    if (addressTextEl) {
+      const emailDisplay = latestOrder.customerEmail || paramEmail || latestOrder.email || "Direct Patron Supporter";
+      addressTextEl.innerHTML = `<strong>${userName}</strong><br>${emailDisplay}<br><span style="color: #10b981; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; margin-top: 4px;"><i class="fa-solid fa-shield-halved"></i> Verified Community Patron</span>`;
+    }
+    if (itemsHeadTitleEl) itemsHeadTitleEl.textContent = "Your Patron Contribution";
+    if (deliveryDatesEl) deliveryDatesEl.style.display = "none";
+
+    if (actionsRow) {
+      actionsRow.innerHTML = `
+        <a href="community.html" class="btn-view-order">
+          <i class="fa-solid fa-users"></i> Return to Community Hub
+        </a>
+        <a href="art-library.html" class="btn-secondary-order">
+          <i class="fa-solid fa-palette"></i> Explore Art Library
+        </a>
+      `;
+    }
+  } else {
+    if (greetingNameEl) greetingNameEl.textContent = `Hi ${userName},`;
+    if (addressTextEl) {
+      let addrStr = "";
+      if (latestOrder.shippingAddress) {
+        let addr = latestOrder.shippingAddress;
+        if (typeof addr === 'string') {
+          try { addr = JSON.parse(addr); } catch(e) {}
+        }
+        if (typeof addr === 'object' && addr !== null) {
+          addrStr = `${userName}<br>${addr.address || ''}<br>${addr.city || ''}, ${addr.state || ''} ${addr.pincode || ''}<br>${addr.country || 'India'}`;
+        } else {
+          addrStr = addr;
+        }
+      }
+      addressTextEl.innerHTML = addrStr || "Address details not available";
+    }
   }
 
   if (orderIdEl) orderIdEl.textContent = latestOrder.orderNumber || latestOrder.orderId || latestOrder.id;
@@ -102,7 +136,9 @@ async function renderLatestOrderReceipt() {
   const hasPhysical = items.some(i => (i.product && i.product.type !== 'digital') || (!i.product && i.type !== 'digital'));
   const allDigital = items.length > 0 && !hasPhysical;
 
-  if (allDigital) {
+  if (isDonation) {
+    // Delivery timeline is hidden above
+  } else if (allDigital) {
     if (deliveryDatesEl) deliveryDatesEl.innerHTML = `<span style="color: #10b981; font-weight: 700;"><i class="fa-solid fa-bolt"></i> Instant Digital Delivery (Ready to Download)</span>`;
   } else {
     const d1 = new Date(dateObj); d1.setDate(dateObj.getDate() + 3);
@@ -117,19 +153,20 @@ async function renderLatestOrderReceipt() {
     latestOrder.items.forEach(item => {
       const price = item.price || 0;
       const quantity = item.quantity || 1;
+      const isDonItem = item.isDonation || (item.id && String(item.id).startsWith("donation")) || item.name === "Community Patron Contribution";
       const isDigital = (item.product && item.product.type === "digital") || item.type === "digital";
       const downloadUrl = item.product?.downloadUrl || item.downloadUrl;
 
       itemsHtml += `
         <div class="order-item-card">
-          <img src="${item.img || item.productImage || 'assets/Videos/SenpaiWorks logo.png'}" alt="${item.name || item.productName}" class="order-item-img">
+          <img src="${item.img || item.productImage || (isDonItem ? 'assets/Ayana.png' : 'assets/Videos/SenpaiWorks logo.png')}" alt="${item.name || item.productName}" class="order-item-img">
           <div class="order-item-details">
             <div class="order-item-name" style="display: flex; align-items: center; gap: 8px;">
-              ${item.name || item.productName}
-              ${isDigital ? '<span style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;"><i class="fa-solid fa-cloud-arrow-down"></i> Digital Asset</span>' : ''}
+              ${item.name || item.productName || (isDonItem ? 'Community Patron Contribution' : 'SenpaiWorks Item')}
+              ${isDonItem ? '<span style="background: rgba(239, 68, 68, 0.12); color: #ef4444; font-size: 0.68rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;"><i class="fa-solid fa-heart"></i> Patron Support</span>' : (isDigital ? '<span style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;"><i class="fa-solid fa-cloud-arrow-down"></i> Digital Asset</span>' : '')}
             </div>
-            <div style="color: #666666; margin-bottom: 4px;">Variant / Size: ${item.size || item.variant || (isDigital ? 'Digital Edition' : 'Standard Edition')}</div>
-            <div style="color: #666666;">Quantity: ${quantity}</div>
+            <div style="color: #666666; margin-bottom: 4px;">${isDonItem ? 'Tier: Creative Community Supporter' : `Variant / Size: ${item.size || item.variant || (isDigital ? 'Digital Edition' : 'Standard Edition')}`}</div>
+            ${isDonItem ? '' : `<div style="color: #666666;">Quantity: ${quantity}</div>`}
             ${isDigital ? `
               <div style="margin-top: 8px;">
                 <a href="${downloadUrl || '#'}" target="_blank" class="btn-download-asset" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #ffffff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 700; box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);">
