@@ -486,6 +486,57 @@ function updateVisibleItems() {
   layoutMasonry();
 }
 
+// ── Skeleton Loading Coordination ───────────────────────────
+function hideSkeletonAndRevealGrid() {
+  const skeleton = document.getElementById("pinterest-skeleton-grid");
+  const grid = document.getElementById("pinterest-grid");
+  if (grid) {
+    grid.classList.remove("is-loading");
+    layoutMasonry();
+  }
+  if (skeleton) {
+    skeleton.classList.add("hidden");
+  }
+}
+
+function waitForVisibleImagesAndReveal() {
+  const grid = document.getElementById("pinterest-grid");
+  if (!grid) return;
+
+  const visibleItems = Array.from(grid.querySelectorAll(".pinterest-item")).filter(i => i.style.display !== 'none');
+  const imgs = visibleItems.slice(0, 12).map(i => i.querySelector('img')).filter(Boolean);
+
+  if (imgs.length === 0) {
+    hideSkeletonAndRevealGrid();
+    return;
+  }
+
+  let loadedCount = 0;
+  const total = imgs.length;
+
+  const checkDone = () => {
+    loadedCount++;
+    layoutMasonry();
+    if (loadedCount >= Math.min(8, total)) {
+      hideSkeletonAndRevealGrid();
+    }
+  };
+
+  imgs.forEach(img => {
+    if (img.complete && img.naturalHeight > 0) {
+      checkDone();
+    } else {
+      img.addEventListener('load', checkDone, { once: true });
+      img.addEventListener('error', checkDone, { once: true });
+    }
+  });
+
+  // Safety fallback so skeleton never hangs indefinitely
+  setTimeout(() => {
+    hideSkeletonAndRevealGrid();
+  }, 1200);
+}
+
 // ── Non-Blocking Fast API Fetch Handler ──────────────────────
 async function fetchAndRenderDatabaseArtworks(grid) {
   const renderList = (artworksList) => {
@@ -517,6 +568,7 @@ async function fetchAndRenderDatabaseArtworks(grid) {
 
     initPinterestHoverShareButtons();
     updateVisibleItems();
+    waitForVisibleImagesAndReveal();
   };
 
   try {
@@ -542,8 +594,12 @@ async function fetchAndRenderDatabaseArtworks(grid) {
       if (stored) {
         const artworks = JSON.parse(stored);
         renderList(artworks);
+      } else {
+        waitForVisibleImagesAndReveal();
       }
-    } catch(e) {}
+    } catch(e) {
+      waitForVisibleImagesAndReveal();
+    }
   }
 }
 
@@ -2514,6 +2570,9 @@ document.addEventListener("DOMContentLoaded", () => {
       modalImageList = originalPinterestItems.map(item => item.querySelector('img'));
       initCardListeners();
       updateVisibleItems();
+      waitForVisibleImagesAndReveal();
+    }).catch(() => {
+      waitForVisibleImagesAndReveal();
     });
 
     const imgs = grid.querySelectorAll('img');
@@ -2525,6 +2584,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
+
+    // Initial fallback reveal trigger
+    setTimeout(() => {
+      waitForVisibleImagesAndReveal();
+    }, 250);
   }
 
 
