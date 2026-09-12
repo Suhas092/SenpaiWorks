@@ -40,9 +40,13 @@ module.exports = function ({
 
     for (const item of items) {
       // Dynamic Donation Items Support
-      if (item.isDonation || String(item.id || '').startsWith('donation')) {
+      if (item.isDonation || String(item.id || '').startsWith('donation') || item.productId === 'DONATION') {
         hasDigital = true;
-        const donationAmount = Math.max(1, Math.round(Number(item.price || item.originalAmount || 85)));
+        let donationAmount = Number(item.price || item.originalAmount || 85);
+        if (item.currency === 'USD' && item.originalAmount && donationAmount === Number(item.originalAmount)) {
+          donationAmount = Math.round(donationAmount * 85);
+        }
+        donationAmount = Math.max(1, Math.round(donationAmount));
         computedSubtotal += donationAmount;
 
         let donationProduct = await prisma.product.findUnique({ where: { id: 'DONATION' } });

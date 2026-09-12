@@ -553,12 +553,16 @@ window.toggleMobileSummaryList = function () {
 
 // 4. PRICE FORMATTING HELPERS
 function getItemNumericPrice(item) {
+  if (!item) return 0;
+  if (item.isDonation) {
+    if (item.currency === 'USD' || (item.originalAmount && item.price === item.originalAmount)) {
+      return Math.round(Number(item.originalAmount || item.price) * 85);
+    }
+    return Math.round(Number(item.price)) || 85;
+  }
   let p = item.price;
   if (typeof p === 'string') {
     p = parseFloat(p.replace(/[^0-9.]/g, '')) || 0;
-  }
-  if (p > 0 && p < 100) {
-    p = Math.round(p * 83); // USD to INR conversion
   }
   return Math.round(p);
 }
@@ -912,7 +916,7 @@ async function triggerRazorpaySDKPayment(orderData) {
       throw new Error("Razorpay Checkout SDK failed to load. Please check your internet connection.");
     }
 
-    // 2. Configure method sequence & prefill based on user's checkout selection
+    // 2. Configure method prefill based on user's checkout selection
     const methodPrefill = selectedPaymentMethod === 'upi' 
       ? 'upi' 
       : (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card' ? 'card' : (selectedPaymentMethod === 'netbanking' ? 'netbanking' : undefined));
@@ -920,47 +924,15 @@ async function triggerRazorpaySDKPayment(orderData) {
     const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
 
-    const rzpConfig = {
-      display: {
-        blocks: {
-          upi: {
-            name: "Pay with UPI (GPay, PhonePe, Paytm, QR)",
-            instruments: [{ method: "upi" }]
-          },
-          cards: {
-            name: "Credit & Debit Cards",
-            instruments: [{ method: "card" }]
-          },
-          netbanking: {
-            name: "Net Banking",
-            instruments: [{ method: "netbanking" }]
-          },
-          other: {
-            name: "Wallets & Other",
-            instruments: [{ method: "wallet" }]
-          }
-        },
-        sequence: selectedPaymentMethod === 'upi'
-          ? ["block.upi", "block.cards", "block.netbanking", "block.other"]
-          : (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card')
-          ? ["block.cards", "block.upi", "block.netbanking", "block.other"]
-          : selectedPaymentMethod === 'netbanking'
-          ? ["block.netbanking", "block.upi", "block.cards", "block.other"]
-          : ["block.upi", "block.cards", "block.netbanking", "block.other"],
-        preferences: { show_default_blocks: true }
-      }
-    };
-
     // 3. Open official Razorpay Checkout Popup
     const options = {
       key: keyId,
       amount: amount,
       currency: currency || "INR",
-      name: "SenpaiWorks Official",
+      name: "SenpaiWorks",
       description: isDonationOrder ? "Community Patron Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
-      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo_bg.png",
+      image: `${window.location.origin}/assets/Videos/SenpaiWorks%20logo%20with%20blackbg.png`,
       order_id: orderId,
-      config: rzpConfig,
       handler: async function (response) {
         // Customer completed payment -> Cryptographic verification on server
         if (submitBtn) {
@@ -1029,8 +1001,8 @@ async function triggerRazorpaySDKPayment(orderData) {
         address: orderData.address ? `${orderData.address.address || ""}, ${orderData.address.city || ""}` : "Bengaluru, Karnataka"
       },
       theme: {
-        color: "#0f172a",
-        backdrop_color: "rgba(15, 23, 42, 0.85)"
+        color: "#000000",
+        backdrop_color: "rgba(0, 0, 0, 0.85)"
       },
       modal: {
         ondismiss: function () {

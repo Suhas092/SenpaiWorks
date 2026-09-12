@@ -606,11 +606,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const donorEmailVal = emailInput ? emailInput.value.trim() : "";
       const donorMessageVal = messageInput ? messageInput.value.trim() : "";
 
+      const inrPrice = currentCurrency === 'USD' ? Math.round(selectedAmount * 85) : selectedAmount;
+
       const donationItem = {
         id: "donation-" + Date.now(),
         name: `Community Support Donation${donorNameVal ? ' - ' + donorNameVal : ''}`,
-        price: selectedAmount,
-        originalPrice: selectedAmount,
+        price: inrPrice,
+        originalPrice: inrPrice,
         displayPriceFormatted: currentCurrency === 'USD' ? `$${selectedAmount}` : `₹${selectedAmount}`,
         quantity: 1,
         img: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp",
@@ -618,6 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
         isDonation: true,
         currency: currentCurrency,
         originalAmount: selectedAmount,
+        amountInUsd: currentCurrency === 'USD' ? selectedAmount : (selectedAmount / 85),
         donorName: donorNameVal,
         donorEmail: donorEmailVal,
         donorMessage: donorMessageVal
