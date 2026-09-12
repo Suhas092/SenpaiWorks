@@ -39,6 +39,47 @@ module.exports = function ({
     let hasDigital = false;
 
     for (const item of items) {
+      // Dynamic Donation Items Support
+      if (item.isDonation || String(item.id || '').startsWith('donation')) {
+        hasDigital = true;
+        const donationAmount = Math.max(1, Math.round(Number(item.price || item.originalAmount || 85)));
+        computedSubtotal += donationAmount;
+
+        let donationProduct = await prisma.product.findUnique({ where: { id: 'DONATION' } });
+        if (!donationProduct) {
+          try {
+            donationProduct = await prisma.product.create({
+              data: {
+                id: 'DONATION',
+                name: 'Community Support Donation',
+                category: 'Community',
+                subCategory: 'Donation',
+                price: 1,
+                description: 'Direct community supporter donation to SenpaiWorks Studio',
+                img: 'https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp',
+                type: 'digital',
+                format: 'Digital Contribution',
+                isNew: false,
+                available: true,
+                stockQuantity: 999999
+              }
+            });
+          } catch (e) {
+            donationProduct = await prisma.product.findFirst({ where: { id: 'DONATION' } });
+          }
+        }
+
+        dbItems.push({
+          productId: donationProduct ? donationProduct.id : 'DONATION',
+          productName: item.name || 'Community Support Donation',
+          price: donationAmount,
+          img: item.img || 'https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp',
+          variant: item.donorName ? `Donor: ${item.donorName}` : (item.currency ? `Currency: ${item.currency}` : null),
+          quantity: 1
+        });
+        continue;
+      }
+
       const prodIdStr = String(item.id || item.productId || '');
       let product = await prisma.product.findUnique({ where: { id: prodIdStr } });
 
