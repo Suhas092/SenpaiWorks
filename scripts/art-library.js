@@ -486,60 +486,63 @@ function updateVisibleItems() {
   layoutMasonry();
 }
 
-// ── Skeleton Loading Coordination ───────────────────────────
-function hideSkeletonAndRevealGrid() {
-  const skeleton = document.getElementById("pinterest-skeleton-grid");
-  const grid = document.getElementById("pinterest-grid");
-  if (grid) {
-    grid.classList.remove("is-loading");
+// ── Real Per-Card Progressive Image Skeleton Handler ────────
+function bindCardImageSkeleton(item) {
+  const wrap = item.querySelector('.pin-img-wrap');
+  const img = item.querySelector('.pin-img-wrap img');
+  if (!img || !wrap) return;
+
+  const onLoaded = () => {
+    img.classList.add('loaded');
+    wrap.classList.add('img-loaded');
     layoutMasonry();
-  }
-  if (skeleton) {
-    skeleton.classList.add("hidden");
+  };
+
+  if (img.complete && img.naturalHeight > 0) {
+    onLoaded();
+  } else {
+    img.addEventListener('load', onLoaded, { once: true });
+    img.addEventListener('error', onLoaded, { once: true });
   }
 }
 
-function waitForVisibleImagesAndReveal() {
-  const grid = document.getElementById("pinterest-grid");
-  if (!grid) return;
-
-  const visibleItems = Array.from(grid.querySelectorAll(".pinterest-item")).filter(i => i.style.display !== 'none');
-  const imgs = visibleItems.slice(0, 12).map(i => i.querySelector('img')).filter(Boolean);
-
-  if (imgs.length === 0) {
-    hideSkeletonAndRevealGrid();
-    return;
-  }
-
-  let loadedCount = 0;
-  const total = imgs.length;
-
-  const checkDone = () => {
-    loadedCount++;
-    layoutMasonry();
-    if (loadedCount >= Math.min(8, total)) {
-      hideSkeletonAndRevealGrid();
-    }
-  };
-
-  imgs.forEach(img => {
-    if (img.complete && img.naturalHeight > 0) {
-      checkDone();
-    } else {
-      img.addEventListener('load', checkDone, { once: true });
-      img.addEventListener('error', checkDone, { once: true });
-    }
+function renderSkeletonPlaceholderCards(grid) {
+  if (!grid || grid.querySelectorAll('.pinterest-item').length > 0) return;
+  const heights = [380, 280, 340, 260, 420, 300, 350, 320, 400, 290, 360, 310];
+  const fragment = document.createDocumentFragment();
+  heights.forEach(h => {
+    const card = document.createElement('div');
+    card.className = 'pinterest-item is-skeleton';
+    card.innerHTML = `
+      <div class="skeleton-img" style="height: ${h}px;"></div>
+      <div class="pinterest-info">
+        <div class="skeleton-title-line"></div>
+        <div class="skeleton-sub-line"></div>
+      </div>
+    `;
+    fragment.appendChild(card);
   });
+  grid.appendChild(fragment);
+  layoutMasonry();
+}
 
-  // Safety fallback so skeleton never hangs indefinitely
-  setTimeout(() => {
-    hideSkeletonAndRevealGrid();
-  }, 1200);
+function removeSkeletonPlaceholderCards(grid) {
+  if (!grid) return;
+  const skeletons = grid.querySelectorAll('.pinterest-item.is-skeleton');
+  skeletons.forEach(s => s.remove());
 }
 
 // ── Non-Blocking Fast API Fetch Handler ──────────────────────
 async function fetchAndRenderDatabaseArtworks(grid) {
   const renderList = (artworksList) => {
+    if (!artworksList || artworksList.length === 0) return;
+
+    removeSkeletonPlaceholderCards(grid);
+
+    // Clear existing dynamic items if re-rendering
+    const existing = grid.querySelectorAll('.pinterest-item');
+    existing.forEach(el => el.remove());
+
     artworksList.forEach((art) => {
       const item = document.createElement("div");
       item.className = "pinterest-item";
@@ -557,18 +560,24 @@ async function fetchAndRenderDatabaseArtworks(grid) {
       item.setAttribute("data-created-at", art.createdAt || "");
 
       item.innerHTML = `
-        <img src="${escapeHTML2D(art.img)}" alt="${escapeHTML2D(art.charname)}" loading="lazy" />
+        <div class="pin-img-wrap">
+          <img src="${escapeHTML2D(art.img)}" alt="${escapeHTML2D(art.charname)}" loading="lazy" />
+        </div>
         <div class="pinterest-info">
           <p class="pinterest-title">${escapeHTML2D(art.charname)}</p>
           <p class="pinterest-category">${escapeHTML2D(art.category.replace("-", " ").replace(/\b\w/g, c => c.toUpperCase()))}</p>
         </div>
       `;
-      grid.insertBefore(item, grid.firstChild);
+      grid.appendChild(item);
+      bindCardImageSkeleton(item);
     });
 
+    originalPinterestItems = Array.from(grid.querySelectorAll(".pinterest-item"));
+    modalImageList = originalPinterestItems.map(item => item.querySelector('img'));
+    initCardListeners();
     initPinterestHoverShareButtons();
     updateVisibleItems();
-    waitForVisibleImagesAndReveal();
+    layoutMasonry();
   };
 
   try {
@@ -594,12 +603,8 @@ async function fetchAndRenderDatabaseArtworks(grid) {
       if (stored) {
         const artworks = JSON.parse(stored);
         renderList(artworks);
-      } else {
-        waitForVisibleImagesAndReveal();
       }
-    } catch(e) {
-      waitForVisibleImagesAndReveal();
-    }
+    } catch(e) {}
   }
 }
 
@@ -2556,39 +2561,63 @@ document.addEventListener("DOMContentLoaded", () => {
   const pinPageLayout = document.getElementById("pin-page-layout");
 
   if (grid) {
+    // 1. Instant Synchronous Hydration from local cache or realistic skeleton placeholders
+    let hasHydrated = false;
+    try {
+      const stored = localStorage.getItem("cached_artworks");
+      if (stored) {
+        const cached = JSON.parse(stored);
+        if (Array.isArray(cached) && cached.length > 0) {
+          cached.forEach((art) => {
+            const item = document.createElement("div");
+            item.className = "pinterest-item";
+            item.setAttribute("data-db-id", art.id);
+            item.setAttribute("data-downloads", art.downloadCount || 0);
+            item.setAttribute("data-category", art.category);
+            item.setAttribute("data-charname", art.charname);
+            item.setAttribute("data-artist", art.artist || "SenpaiWorks Official");
+            item.setAttribute("data-source", art.source || "SenpaiWorks Original");
+            item.setAttribute("data-sex", art.sex || "Female");
+            item.setAttribute("data-artstyle", art.artstyle || "Digital Art");
+            item.setAttribute("data-software", art.software || "Photoshop");
+            item.setAttribute("data-description", art.description || "");
+            item.setAttribute("data-about-desc", art.aboutDesc || "");
+            item.setAttribute("data-created-at", art.createdAt || "");
+
+            item.innerHTML = `
+              <div class="pin-img-wrap">
+                <img src="${escapeHTML2D(art.img)}" alt="${escapeHTML2D(art.charname)}" loading="lazy" />
+              </div>
+              <div class="pinterest-info">
+                <p class="pinterest-title">${escapeHTML2D(art.charname)}</p>
+                <p class="pinterest-category">${escapeHTML2D(art.category.replace("-", " ").replace(/\b\w/g, c => c.toUpperCase()))}</p>
+              </div>
+            `;
+            grid.appendChild(item);
+            bindCardImageSkeleton(item);
+          });
+          hasHydrated = true;
+        }
+      }
+    } catch(e) {}
+
+    if (!hasHydrated) {
+      renderSkeletonPlaceholderCards(grid);
+    }
+
     originalPinterestItems = Array.from(grid.querySelectorAll(".pinterest-item"));
     modalImageList = originalPinterestItems.map(item => item.querySelector('img'));
 
     initCardListeners();
     initDetailCardListeners();
+    initPinterestHoverShareButtons();
 
     visibleLimit = getInitialLimit();
     updateVisibleItems();
+    layoutMasonry();
 
-    fetchAndRenderDatabaseArtworks(grid).then(() => {
-      originalPinterestItems = Array.from(grid.querySelectorAll(".pinterest-item"));
-      modalImageList = originalPinterestItems.map(item => item.querySelector('img'));
-      initCardListeners();
-      updateVisibleItems();
-      waitForVisibleImagesAndReveal();
-    }).catch(() => {
-      waitForVisibleImagesAndReveal();
-    });
-
-    const imgs = grid.querySelectorAll('img');
-    imgs.forEach(img => {
-      if (!img.complete) {
-        img.addEventListener('load', () => layoutMasonry());
-        img.addEventListener('error', () => {
-          layoutMasonry();
-        });
-      }
-    });
-
-    // Initial fallback reveal trigger
-    setTimeout(() => {
-      waitForVisibleImagesAndReveal();
-    }, 250);
+    // 2. Fetch fresh database artworks in background and seamlessly update
+    fetchAndRenderDatabaseArtworks(grid);
   }
 
 
