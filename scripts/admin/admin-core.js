@@ -24,6 +24,8 @@ window.tabSlugMap = {
   "tab-reviews": "reviews",
   "tab-orders": "customer-orders",
   "tab-replacements": "replacements",
+  "tab-payments": "payments",
+  "tab-donations": "donations",
   "tab-art": "art-library",
   "tab-motion": "motion-assets",
   "tab-news": "news-articles",
@@ -44,6 +46,8 @@ window.slugToTabMap = {
   "reviews": "tab-reviews",
   "customer-orders": "tab-orders",
   "replacements": "tab-replacements",
+  "payments": "tab-payments",
+  "donations": "tab-donations",
   "art-library": "tab-art",
   "motion-assets": "tab-motion",
   "news-articles": "tab-news",
@@ -309,6 +313,12 @@ window.activateTabById = function (targetTab, updateHash = true) {
   }
   if (targetTab === "tab-orders") {
     if (typeof window.loadOrders === "function") window.loadOrders();
+  }
+  if (targetTab === "tab-payments") {
+    if (typeof window.loadPayments === "function") window.loadPayments();
+  }
+  if (targetTab === "tab-donations") {
+    if (typeof window.loadDonations === "function") window.loadDonations();
   }
   if (targetTab === "tab-store") {
     if (typeof window.loadProducts === "function") window.loadProducts();

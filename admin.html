@@ -65,6 +65,14 @@
           <i class="fa-solid fa-rotate-left"></i>
           <span>Replacements</span>
         </a>
+        <a href="#" class="sidebar-link" data-tab="tab-payments">
+          <i class="fa-solid fa-credit-card"></i>
+          <span>Payments & Gateway</span>
+        </a>
+        <a href="#" class="sidebar-link" data-tab="tab-donations">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+          <span>Donations & Patrons</span>
+        </a>
         <a href="#" class="sidebar-link" data-tab="tab-art">
           <i class="fa-solid fa-palette"></i>
           <span>Art Library</span>
@@ -842,6 +850,170 @@
                   <!-- Populated dynamically -->
                 </tbody>
               </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE: PAYMENTS & GATEWAY ANALYTICS       -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-payments">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title"><i class="fa-solid fa-credit-card"></i> Payments & Gateway Analytics</h1>
+              <p class="page-subtitle">Real-time ledger of Razorpay transactions, gross sales, patron volume, and payment method distribution.</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <button type="button" class="btn-refresh" onclick="window.loadPayments()"
+                style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-rotate"></i> Refresh Transactions
+              </button>
+            </div>
+          </div>
+
+          <!-- Metrics Row -->
+          <div class="dashboard-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Gross Processed Volume</div>
+              <div id="payments-total-volume" style="font-size: 1.8rem; font-weight: 800; color: #10b981; margin-top: 6px;">₹0.00</div>
+            </div>
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Total Transactions</div>
+              <div id="payments-tx-count" style="font-size: 1.8rem; font-weight: 800; color: #3b82f6; margin-top: 6px;">0</div>
+            </div>
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">UPI Volume</div>
+              <div id="payments-upi-volume" style="font-size: 1.8rem; font-weight: 800; color: #8b5cf6; margin-top: 6px;">₹0.00</div>
+            </div>
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Card & NetBanking</div>
+              <div id="payments-card-volume" style="font-size: 1.8rem; font-weight: 800; color: #06b6d4; margin-top: 6px;">₹0.00</div>
+            </div>
+          </div>
+
+          <!-- Transaction Ledger Card -->
+          <div class="admin-card list-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+              <h2><i class="fa-solid fa-receipt"></i> Live Transaction Ledger</h2>
+            </div>
+
+            <!-- Toolbar & Filters -->
+            <div class="table-toolbar" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+              <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; flex: 1;">
+                <div class="table-search-wrap" style="flex: 1; min-width: 240px;">
+                  <i class="fa-solid fa-search"></i>
+                  <input type="text" id="payments-search" class="table-search-input" placeholder="Search order ID, donor, payment ID...">
+                </div>
+
+                <div class="table-filter-wrap">
+                  <select id="payments-filter-method" class="table-select-filter"
+                    style="background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer;">
+                    <option value="">💳 All Types & Gateways</option>
+                    <option value="store">Store Orders</option>
+                    <option value="donation">Patron Donations</option>
+                    <option value="upi">UPI</option>
+                    <option value="card">Cards</option>
+                    <option value="cod">Cash on Delivery</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table" id="payments-table">
+                <thead>
+                  <tr>
+                    <th>Reference / Order ID</th>
+                    <th>Customer / Supporter</th>
+                    <th>Gross Amount</th>
+                    <th>Method</th>
+                    <th>Razorpay Payment ID</th>
+                    <th>Gateway Status</th>
+                    <th>Date & Time</th>
+                  </tr>
+                </thead>
+                <tbody id="payments-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="payments-empty-state" style="display: none; text-align: center; padding: 40px; color: var(--text-secondary);">
+              <i class="fa-solid fa-receipt" style="font-size: 2.5rem; opacity: 0.4; margin-bottom: 12px;"></i>
+              <p>No transactions recorded yet.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUBPAGE: DONATIONS & PATRON HUB            -->
+        <!-- ========================================== -->
+        <section class="admin-subpage" id="tab-donations">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title"><i class="fa-solid fa-hand-holding-dollar"></i> Donations & Patron Hub</h1>
+              <p class="page-subtitle">Track community patrons, direct donations, and creative production funding.</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <button type="button" class="btn-refresh" onclick="window.loadDonations()"
+                style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-rotate"></i> Refresh Patrons
+              </button>
+            </div>
+          </div>
+
+          <!-- Metrics Row -->
+          <div class="dashboard-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Total Raised (USD)</div>
+              <div id="donations-total-raised" style="font-size: 1.8rem; font-weight: 800; color: #ef4444; margin-top: 6px;">$0.00</div>
+            </div>
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Community Patrons</div>
+              <div id="donations-donor-count" style="font-size: 1.8rem; font-weight: 800; color: #3b82f6; margin-top: 6px;">0</div>
+            </div>
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Monthly Goal Progress</div>
+              <div id="donations-goal-progress" style="font-size: 1.8rem; font-weight: 800; color: #10b981; margin-top: 6px;">0%</div>
+            </div>
+          </div>
+
+          <div class="admin-card list-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+              <h2><i class="fa-solid fa-heart" style="color: #ef4444;"></i> Patron Supporters</h2>
+            </div>
+
+            <!-- Search Toolbar -->
+            <div class="table-toolbar" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px;">
+              <div class="table-search-wrap" style="flex: 1; min-width: 240px;">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="donations-search" class="table-search-input" placeholder="Search patron name, email, transaction ID...">
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table" id="donations-table">
+                <thead>
+                  <tr>
+                    <th>Donor Name</th>
+                    <th>Email</th>
+                    <th>Amount (Original)</th>
+                    <th>USD Equivalent</th>
+                    <th>Payment Method</th>
+                    <th>Transaction ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="donations-list-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="donations-empty-state" style="display: none; text-align: center; padding: 40px; color: var(--text-secondary);">
+              <i class="fa-solid fa-hand-holding-heart" style="font-size: 2.5rem; opacity: 0.4; margin-bottom: 12px;"></i>
+              <p>No patron contributions recorded yet.</p>
             </div>
           </div>
         </section>
@@ -2569,6 +2741,7 @@
   <script src="scripts/admin/admin-courses.js?v=2.0"></script>
   <script src="scripts/admin/admin-faq.js?v=4.0"></script>
   <script src="scripts/admin/admin-account.js?v=4.0"></script>
+  <script src="scripts/admin/admin-payments.js?v=1.0"></script>
   <script src="scripts/admin/admin-donations.js?v=4.0"></script>
   <script src="scripts/admin/admin-users.js?v=4.0"></script>
   <script src="scripts/admin/admin-trash.js?v=1.0"></script>
