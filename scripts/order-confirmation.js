@@ -63,43 +63,102 @@ async function renderLatestOrderReceipt() {
   }
 
   const greetingNameEl = document.getElementById("rcpt-greeting-name");
+  const greetingBoxEl = document.getElementById("rcpt-greeting-box");
+  const greetingDescEl = document.getElementById("rcpt-greeting-desc");
   const addressTextEl = document.getElementById("rcpt-address-text");
+  const addressHeadingEl = document.getElementById("rcpt-address-heading");
   const orderIdEl = document.getElementById("rcpt-order-id");
   const orderDateEl = document.getElementById("rcpt-order-date");
+  const idLabelEl = document.getElementById("rcpt-id-label");
+  const dateLabelEl = document.getElementById("rcpt-date-label");
   const deliveryDatesEl = document.getElementById("rcpt-delivery-dates");
   const itemsListEl = document.getElementById("rcpt-items-list");
   const paymentMethodEl = document.getElementById("rcpt-payment-method");
   const subtotalEl = document.getElementById("rcpt-subtotal-val");
+  const subtotalLabelEl = document.getElementById("rcpt-subtotal-label");
   const shippingEl = document.getElementById("rcpt-shipping-val");
+  const shippingRowEl = document.getElementById("rcpt-shipping-row");
   const grandTotalEl = document.getElementById("rcpt-grand-total-val");
+  const totalLabelEl = document.getElementById("rcpt-total-label");
 
+  // Determine user display name safely
+  let userName = latestOrder.customerName || latestOrder.name || latestOrder.donorName || "";
+  if (!userName && latestOrder.shippingAddress) {
+    let addr = latestOrder.shippingAddress;
+    if (typeof addr === "string") {
+      try { addr = JSON.parse(addr); } catch(e) {}
+    }
+    if (typeof addr === "object" && addr) {
+      userName = addr.firstName ? `${addr.firstName} ${addr.lastName || ""}`.trim() : addr.name || "";
+    }
+  }
+  if (!userName) {
+    const storedUser = localStorage.getItem("userData") || localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const u = JSON.parse(storedUser);
+        userName = u.name || u.username || u.displayName || "";
+      } catch(e) {}
+    }
+  }
+  if (!userName) userName = "Collector";
+
+  // Check if this is a donation
   const isDonation = urlParams.get('isDonation') === 'true' || 
-    (latestOrder.items || []).some(i => (i.product && (i.product.id === 'DONATION' || i.product.isDonation)) || i.isDonation || (i.name && i.name.toLowerCase().includes('donation')) || (i.productName && i.productName.toLowerCase().includes('donation')));
+    (latestOrder.items || []).some(i => 
+      i.productId === 'DONATION' ||
+      (i.product && (i.product.id === 'DONATION' || i.product.isDonation)) || 
+      i.isDonation || 
+      (i.name && i.name.toLowerCase().includes('donation')) || 
+      (i.productName && i.productName.toLowerCase().includes('donation')) ||
+      (i.productName && i.productName.toLowerCase().includes('patron')) ||
+      (i.name && i.name.toLowerCase().includes('patron'))
+    );
 
-  const heroBadgeEl = document.querySelector(".confirmation-success-badge");
-  const heroTitleEl = document.querySelector(".order-hero-title");
-  const itemsHeadTitleEl = document.querySelector(".order-items-head-title");
-  const deliveryAddressLabel = document.querySelector(".order-delivery-address-col strong");
-  const actionsRow = document.querySelector(".confirmation-actions-row");
+  const heroBadgeEl = document.getElementById("rcpt-hero-badge") || document.querySelector(".confirmation-success-badge");
+  const heroTitleEl = document.getElementById("rcpt-hero-title") || document.querySelector(".order-hero-title");
+  const itemsHeadTitleEl = document.getElementById("rcpt-items-head-title") || document.querySelector(".order-items-head-title");
+  const actionsRow = document.getElementById("rcpt-actions-row") || document.querySelector(".confirmation-actions-row");
 
   if (isDonation) {
     document.title = "Thank You for Your Contribution! — SenpaiWorks Patron Support";
-    if (heroBadgeEl) heroBadgeEl.innerHTML = `<i class="fa-solid fa-heart" style="color: #ef4444;"></i> Contribution Confirmed`;
-    if (heroTitleEl) heroTitleEl.textContent = "Thank you for your generous support!";
-    if (greetingNameEl) {
-      greetingNameEl.innerHTML = `Hi ${userName},<br><span style="font-size: 0.95rem; font-weight: 500; color: #475569; display: block; margin-top: 6px;">Your contribution directly fuels our original 2D/3D anime productions, indie creators, and community releases. We are truly grateful for your patronage!</span>`;
+    if (heroBadgeEl) {
+      heroBadgeEl.innerHTML = `<i class="fa-solid fa-heart" style="color: #ef4444; margin-right: 6px;"></i> Contribution Confirmed`;
+      heroBadgeEl.style.background = "rgba(239, 68, 68, 0.1)";
+      heroBadgeEl.style.borderColor = "rgba(239, 68, 68, 0.3)";
+      heroBadgeEl.style.color = "#ef4444";
     }
-    if (deliveryAddressLabel) deliveryAddressLabel.textContent = "Supporter Information";
+    if (heroTitleEl) heroTitleEl.textContent = "Thank you for supporting SenpaiWorks!";
+    
+    if (greetingNameEl) greetingNameEl.textContent = `Hi ${userName === "Collector" ? "Supporter" : userName},`;
+    if (greetingDescEl) {
+      greetingDescEl.innerHTML = `Your generous contribution directly fuels our original 2D/3D anime productions, indie creator resources, and community art releases.<br>A receipt and patron acknowledgement have been recorded for your account.`;
+    }
+    
+    if (addressHeadingEl) addressHeadingEl.textContent = "Supporter Information";
+    if (idLabelEl) idLabelEl.textContent = "Receipt nº";
+    if (dateLabelEl) dateLabelEl.textContent = "Contribution Date";
+
     if (addressTextEl) {
-      const emailDisplay = latestOrder.customerEmail || paramEmail || latestOrder.email || "Direct Patron Supporter";
-      addressTextEl.innerHTML = `<strong>${userName}</strong><br>${emailDisplay}<br><span style="color: #10b981; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; margin-top: 4px;"><i class="fa-solid fa-shield-halved"></i> Verified Community Patron</span>`;
+      const emailDisplay = latestOrder.customerEmail || paramEmail || latestOrder.email || "Direct Patron Backer";
+      addressTextEl.innerHTML = `
+        <div style="font-weight: 800; color: #0f172a; font-size: 0.98rem; margin-bottom: 2px;">${userName === "Collector" ? "Creative Patron" : userName}</div>
+        <div style="color: #64748b; font-size: 0.88rem; margin-bottom: 8px;">${emailDisplay}</div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.1); color: #059669; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 0.78rem; border: 1px solid rgba(16, 185, 129, 0.25);">
+          <i class="fa-solid fa-shield-halved"></i> Verified Community Patron
+        </div>
+      `;
     }
+
     if (itemsHeadTitleEl) itemsHeadTitleEl.textContent = "Your Patron Contribution";
     if (deliveryDatesEl) deliveryDatesEl.style.display = "none";
+    if (shippingRowEl) shippingRowEl.style.display = "none";
+    if (subtotalLabelEl) subtotalLabelEl.textContent = "Contribution Amount";
+    if (totalLabelEl) totalLabelEl.textContent = "Total Contribution";
 
     if (actionsRow) {
       actionsRow.innerHTML = `
-        <a href="community.html" class="btn-view-order">
+        <a href="community.html" class="btn-view-order" style="background: linear-gradient(135deg, #ef4444, #dc2626); border-color: #ef4444;">
           <i class="fa-solid fa-users"></i> Return to Community Hub
         </a>
         <a href="art-library.html" class="btn-secondary-order">
@@ -109,6 +168,9 @@ async function renderLatestOrderReceipt() {
     }
   } else {
     if (greetingNameEl) greetingNameEl.textContent = `Hi ${userName},`;
+    if (greetingDescEl) {
+      greetingDescEl.innerHTML = `We are delighted that you have found something you like!<br>As soon as your package is on its way, you will receive a delivery confirmation from us by email.`;
+    }
     if (addressTextEl) {
       let addrStr = "";
       if (latestOrder.shippingAddress) {
@@ -124,6 +186,17 @@ async function renderLatestOrderReceipt() {
       }
       addressTextEl.innerHTML = addrStr || "Address details not available";
     }
+
+    if (actionsRow) {
+      actionsRow.innerHTML = `
+        <a href="store.html" class="btn-view-order">
+          <i class="fa-solid fa-bag-shopping"></i> Continue Shopping
+        </a>
+        <a href="profile.html#orders" class="btn-secondary-order">
+          <i class="fa-solid fa-box"></i> View Replacements & Orders
+        </a>
+      `;
+    }
   }
 
   if (orderIdEl) orderIdEl.textContent = latestOrder.orderNumber || latestOrder.orderId || latestOrder.id;
@@ -137,14 +210,20 @@ async function renderLatestOrderReceipt() {
   const allDigital = items.length > 0 && !hasPhysical;
 
   if (isDonation) {
-    // Delivery timeline is hidden above
+    if (deliveryDatesEl) deliveryDatesEl.style.display = "none";
   } else if (allDigital) {
-    if (deliveryDatesEl) deliveryDatesEl.innerHTML = `<span style="color: #10b981; font-weight: 700;"><i class="fa-solid fa-bolt"></i> Instant Digital Delivery (Ready to Download)</span>`;
+    if (deliveryDatesEl) {
+      deliveryDatesEl.style.display = "block";
+      deliveryDatesEl.innerHTML = `<span style="color: #10b981; font-weight: 700;"><i class="fa-solid fa-bolt"></i> Instant Digital Delivery (Ready to Download)</span>`;
+    }
   } else {
     const d1 = new Date(dateObj); d1.setDate(dateObj.getDate() + 3);
     const d2 = new Date(dateObj); d2.setDate(dateObj.getDate() + 5);
     const dateStr = `Standard Delivery: ${d1.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} - ${d2.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}`;
-    if (deliveryDatesEl) deliveryDatesEl.textContent = dateStr;
+    if (deliveryDatesEl) {
+      deliveryDatesEl.style.display = "block";
+      deliveryDatesEl.textContent = dateStr;
+    }
   }
 
   // Render Item Cards
@@ -153,21 +232,21 @@ async function renderLatestOrderReceipt() {
     latestOrder.items.forEach(item => {
       const price = item.price || 0;
       const quantity = item.quantity || 1;
-      const isDonItem = item.isDonation || (item.id && String(item.id).startsWith("donation")) || item.name === "Community Patron Contribution";
+      const isDonItem = isDonation || item.isDonation || item.productId === "DONATION" || (item.id && String(item.id).startsWith("donation")) || (item.name && item.name.toLowerCase().includes("donation")) || (item.productName && item.productName.toLowerCase().includes("donation"));
       const isDigital = (item.product && item.product.type === "digital") || item.type === "digital";
       const downloadUrl = item.product?.downloadUrl || item.downloadUrl;
 
       itemsHtml += `
         <div class="order-item-card">
-          <img src="${item.img || item.productImage || (isDonItem ? 'assets/Ayana.png' : 'assets/Videos/SenpaiWorks logo.png')}" alt="${item.name || item.productName}" class="order-item-img">
+          <img src="${item.img || item.productImage || (isDonItem ? 'assets/Ayana.png' : 'assets/Videos/SenpaiWorks logo.png')}" alt="${item.name || item.productName || 'Item'}" class="order-item-img">
           <div class="order-item-details">
             <div class="order-item-name" style="display: flex; align-items: center; gap: 8px;">
               ${item.name || item.productName || (isDonItem ? 'Community Patron Contribution' : 'SenpaiWorks Item')}
               ${isDonItem ? '<span style="background: rgba(239, 68, 68, 0.12); color: #ef4444; font-size: 0.68rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;"><i class="fa-solid fa-heart"></i> Patron Support</span>' : (isDigital ? '<span style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;"><i class="fa-solid fa-cloud-arrow-down"></i> Digital Asset</span>' : '')}
             </div>
-            <div style="color: #666666; margin-bottom: 4px;">${isDonItem ? 'Tier: Creative Community Supporter' : `Variant / Size: ${item.size || item.variant || (isDigital ? 'Digital Edition' : 'Standard Edition')}`}</div>
+            <div style="color: #666666; margin-bottom: 4px;">${isDonItem ? 'Tier: Creative Community Supporter' : `Variant / Size: ${item.variant || item.size || (isDigital ? 'Digital Edition' : 'Standard Edition')}`}</div>
             ${isDonItem ? '' : `<div style="color: #666666;">Quantity: ${quantity}</div>`}
-            ${isDigital ? `
+            ${isDigital && !isDonItem ? `
               <div style="margin-top: 8px;">
                 <a href="${downloadUrl || '#'}" target="_blank" class="btn-download-asset" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #ffffff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 700; box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);">
                   <i class="fa-solid fa-cloud-arrow-down"></i> Download Asset
@@ -189,7 +268,7 @@ async function renderLatestOrderReceipt() {
   let grandTotal = latestOrder.total || (subtotal + shipping - discount);
 
   if (paymentMethodEl) {
-    let pmtText = "Credit / Debit Card";
+    let pmtText = "Razorpay Gateway / Online";
     if (latestOrder.paymentId && latestOrder.paymentId.startsWith("COD")) {
       pmtText = "Cash on Delivery (COD)";
     } else if (latestOrder.paymentType) {
@@ -202,24 +281,40 @@ async function renderLatestOrderReceipt() {
   if (shippingEl) shippingEl.textContent = shipping > 0 ? `₹${shipping.toLocaleString()}.00` : "Free";
   
   // Create a discount row if needed
-  if (discount > 0) {
+  if (discount > 0 && !isDonation) {
     const parent = subtotalEl.parentElement.parentElement;
     let discountRow = document.getElementById("rcpt-discount-row");
     if (!discountRow) {
        discountRow = document.createElement("div");
        discountRow.id = "rcpt-discount-row";
-       discountRow.className = "summary-row";
-       discountRow.innerHTML = `<span>Discount Applied</span><span style="color: #10b981;">-₹${discount.toLocaleString()}.00</span>`;
+       discountRow.className = "order-total-line-item";
+       discountRow.innerHTML = `<span>Discount Applied</span><span style="color: #10b981; font-weight: 700;">-₹${discount.toLocaleString()}.00</span>`;
        parent.insertBefore(discountRow, grandTotalEl.parentElement);
     }
   }
 
   if (grandTotalEl) grandTotalEl.textContent = `₹${grandTotal.toLocaleString()}.00`;
 
-  // Render Real Status Timeline
+  // Render Real Status Timeline (or Patron Appreciation Banner for donations)
   const timelineContainer = document.getElementById("rcpt-status-timeline-container");
   if (timelineContainer) {
-    timelineContainer.innerHTML = generateOrderTimelineHtml(latestOrder);
+    if (isDonation) {
+      timelineContainer.innerHTML = `
+        <div style="margin: 20px 0; padding: 20px 22px; background: linear-gradient(135deg, #fff1f2 0%, #f0fdf4 100%); border: 1.5px solid #fecdd3; border-radius: 14px; box-shadow: 0 4px 14px rgba(244, 63, 94, 0.06); display: flex; align-items: center; gap: 18px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #f43f5e); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);">
+            <i class="fa-solid fa-hand-holding-heart"></i>
+          </div>
+          <div>
+            <div style="font-weight: 800; color: #9f1239; font-size: 1rem; margin-bottom: 2px;">Direct Studio Supporter Badge Active</div>
+            <div style="font-size: 0.85rem; color: #475569; line-height: 1.45;">
+              Your patronage is now logged. You have helped power independent anime creators, animation tools, and open art archives. Thank you!
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      timelineContainer.innerHTML = generateOrderTimelineHtml(latestOrder);
+    }
   }
 }
 

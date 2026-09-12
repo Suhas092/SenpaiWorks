@@ -912,57 +912,18 @@ async function triggerRazorpaySDKPayment(orderData) {
       throw new Error("Razorpay Checkout SDK failed to load. Please check your internet connection.");
     }
 
-    // 2. Configure method sequence based on user's selection (Amazon-style preselection)
-    const rzpConfig = {};
+    // 2. Configure direct method preselection based on user selection
+    let rzpMethod = undefined;
     if (selectedPaymentMethod === 'upi') {
-      rzpConfig.display = {
-        blocks: {
-          upi: {
-            name: "Pay via UPI",
-            instruments: [{ method: "upi" }]
-          },
-          other: {
-            name: "Other Payment Methods",
-            instruments: [{ method: "card" }, { method: "netbanking" }, { method: "wallet" }]
-          }
-        },
-        sequence: ["block.upi", "block.other"],
-        preferences: { show_default_blocks: false }
-      };
+      rzpMethod = 'upi';
     } else if (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card') {
-      rzpConfig.display = {
-        blocks: {
-          cards: {
-            name: "Credit & Debit Cards",
-            instruments: [{ method: "card" }]
-          },
-          other: {
-            name: "Other Payment Methods",
-            instruments: [{ method: "upi" }, { method: "netbanking" }, { method: "wallet" }]
-          }
-        },
-        sequence: ["block.cards", "block.other"],
-        preferences: { show_default_blocks: false }
-      };
+      rzpMethod = 'card';
     } else if (selectedPaymentMethod === 'netbanking') {
-      rzpConfig.display = {
-        blocks: {
-          netbanking: {
-            name: "Net Banking",
-            instruments: [{ method: "netbanking" }]
-          },
-          other: {
-            name: "Other Payment Methods",
-            instruments: [{ method: "upi" }, { method: "card" }, { method: "wallet" }]
-          }
-        },
-        sequence: ["block.netbanking", "block.other"],
-        preferences: { show_default_blocks: false }
-      };
+      rzpMethod = 'netbanking';
     }
 
     // 3. Open official Razorpay Checkout Popup
-    const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || (i.id && String(i.id).startsWith("donation"))));
+    const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
 
     const options = {
@@ -970,10 +931,10 @@ async function triggerRazorpaySDKPayment(orderData) {
       amount: amount,
       currency: currency || "INR",
       name: "SenpaiWorks",
-      description: isDonationOrder ? "Patron Community Support" : (isDigitalOrder ? "Digital Art Assets" : "Official Anime Streetwear & Merch"),
-      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo_bg.png",
+      description: isDonationOrder ? "Patron Community Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
+      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo.png",
       order_id: orderId,
-      config: rzpConfig,
+      ...(rzpMethod ? { method: rzpMethod } : {}),
       handler: async function (response) {
         // Customer completed payment -> Cryptographic verification on server
         if (submitBtn) {
@@ -1041,7 +1002,8 @@ async function triggerRazorpaySDKPayment(orderData) {
         address: orderData.address ? `${orderData.address.address || ""}, ${orderData.address.city || ""}` : "Bengaluru, Karnataka"
       },
       theme: {
-        color: "#0f172a"
+        color: "#0f172a",
+        backdrop_color: "rgba(15, 23, 42, 0.85)"
       },
       modal: {
         ondismiss: function () {
@@ -1166,10 +1128,12 @@ async function processVerifiedOrderSuccess(orderData) {
 
   // Redirect to Order Confirmation Page with the real DB orderNumber
   const finalId = finalOrder.orderNumber || finalOrder.orderId || finalOrder.id;
+  const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === "DONATION" || (i.id && String(i.id).startsWith("donation"))));
+  const donationParam = isDonationOrder ? "&isDonation=true" : "";
   
   // order-confirmation page uses query params for lookup now
   const emailParam = finalOrder.email ? `&email=${encodeURIComponent(finalOrder.email)}` : '';
-  window.location.href = `order-confirmation.html?orderId=${finalId}${emailParam}`;
+  window.location.href = `order-confirmation.html?orderId=${finalId}${emailParam}${donationParam}`;
 }
 
 window.processTestPayment = function (paymentType) {
