@@ -601,6 +601,143 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
     year: 'numeric'
   });
 
+  const isDonation = (order.orderNumber && order.orderNumber.startsWith('TXN-')) || 
+    (order.items || []).some(item => 
+      item.productId === 'DONATION' || 
+      (item.product && item.product.id === 'DONATION') || 
+      item.isDonation || 
+      (item.name && item.name.toLowerCase().includes('donation')) || 
+      (item.productName && item.productName.toLowerCase().includes('donation'))
+    );
+
+  if (isDonation) {
+    const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Contribution Receipt #${orderNumber}</title>
+      </head>
+      <body style="margin:0; padding:0; background-color:#f8fafc; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#0f172a;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f8fafc; padding:36px 16px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:540px; background:#ffffff; border-radius:14px; overflow:hidden; border:1px solid #e2e8f0; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+                
+                <!-- Clean Brand Header Badge -->
+                <tr>
+                  <td style="padding:26px 32px 20px 32px; border-bottom:1px solid #f1f5f9; text-align:left;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="display:inline-table; background:#000000; border-radius:8px; padding:6px 14px;">
+                      <tr>
+                        <td style="vertical-align:middle; padding-right:8px;">
+                          <img src="${LOGO_ICON_URL}" alt="Logo" height="24" style="height:24px; width:auto; display:block; border:0;">
+                        </td>
+                        <td style="vertical-align:middle;">
+                          <img src="${LOGO_TEXT_URL}" alt="SenpaiWorks" height="16" style="height:16px; width:auto; display:block; border:0;">
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Content Body -->
+                <tr>
+                  <td style="padding:32px;">
+                    <div style="display:inline-block; background:#dcfce7; color:#166534; font-size:12px; font-weight:800; padding:4px 10px; border-radius:20px; margin-bottom:12px;">
+                      &#10003; Contribution Confirmed
+                    </div>
+
+                    <h1 style="margin:0 0 10px 0; font-size:22px; font-weight:800; color:#0f172a;">
+                      Thank you for your support, ${customerName}!
+                    </h1>
+                    
+                    <p style="margin:0 0 20px 0; font-size:14px; line-height:1.6; color:#475569;">
+                      Your generous contribution of <strong>₹${(order.total || 0).toLocaleString('en-IN')}.00</strong> directly fuels our original 2D/3D anime productions, indie creator resources, and open community art releases.
+                    </p>
+
+                    <!-- Transaction Summary Meta Grid -->
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:22px;">
+                      <tr>
+                        <td style="font-size:12px; color:#64748b; font-weight:600; padding-bottom:4px;">Transaction ID</td>
+                        <td align="right" style="font-size:12px; color:#64748b; font-weight:600; padding-bottom:4px;">Contribution Date</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:14px; font-weight:800; color:#0f172a; font-family:monospace;">#${orderNumber}</td>
+                        <td align="right" style="font-size:13px; font-weight:700; color:#0f172a;">${orderDate}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="padding-top:10px; font-size:12px; color:#64748b;">
+                          Payment: <strong style="color:#0f172a;">Online Payment (Confirmed)</strong>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Items Table -->
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:16px;">
+                      <thead>
+                        <tr>
+                          <th align="left" style="font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; padding-bottom:8px; border-bottom:2px solid #e2e8f0;">Contribution</th>
+                          <th align="right" style="font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; padding-bottom:8px; border-bottom:2px solid #e2e8f0;">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding:12px 0; border-bottom:1px solid #f1f5f9; vertical-align:top;">
+                            <div style="font-size:14px; font-weight:600; color:#0f172a;">Community Patron Contribution</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:2px;">Tier: Creative Community Supporter</div>
+                          </td>
+                          <td align="right" style="padding:12px 0; border-bottom:1px solid #f1f5f9; vertical-align:top; font-size:14px; font-weight:600; color:#0f172a;">
+                            ₹${(order.total || 0).toLocaleString('en-IN')}.00
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <!-- Totals Breakdown -->
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; margin-bottom:24px;">
+                      <tr>
+                        <td style="font-size:15px; font-weight:800; color:#0f172a; padding:10px 0 0 0; border-top:1px solid #e2e8f0;">Total Contribution</td>
+                        <td align="right" style="font-size:16px; font-weight:800; color:#0f172a; padding:10px 0 0 0; border-top:1px solid #e2e8f0;">₹${(order.total || 0).toLocaleString('en-IN')}.00</td>
+                      </tr>
+                    </table>
+
+                    <!-- Return to Community Hub Button -->
+                    <div style="margin-bottom:28px;">
+                      <a href="${process.env.APP_URL || 'http://localhost:5000'}/community.html" target="_blank" style="display:inline-block; background:#0f172a; color:#ffffff; font-weight:700; font-size:14px; text-decoration:none; padding:12px 24px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.15);">
+                        Return to Community Hub &rarr;
+                      </a>
+                    </div>
+
+                    <p style="margin:20px 0 0 0; font-size:12px; line-height:1.5; color:#64748b;">
+                      If you have questions regarding your contribution or patron recognition, please contact us at <a href="mailto:support@senpaiworks.com" style="color:#0284c7; text-decoration:underline;">support@senpaiworks.com</a>.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Clean Footer -->
+                <tr>
+                  <td style="padding:18px 32px; background:#f8fafc; border-top:1px solid #f1f5f9; text-align:center; font-size:12px; color:#64748b;">
+                    &copy; 2025 SenpaiWorks. All rights reserved.
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
+
+    return sendEmail({
+      from: DELIVERY_FROM,
+      to: order.email,
+      subject: `Contribution Receipt: #${orderNumber} — SenpaiWorks Patron Support`,
+      html: html
+    });
+  }
+
   const items = order.items || [];
   const itemsHtml = items.map(item => {
     const pName = item.productName || item.name || (item.product && item.product.name) || 'SenpaiWorks Product';

@@ -912,29 +912,55 @@ async function triggerRazorpaySDKPayment(orderData) {
       throw new Error("Razorpay Checkout SDK failed to load. Please check your internet connection.");
     }
 
-    // 2. Configure direct method preselection based on user selection
-    let rzpMethod = undefined;
-    if (selectedPaymentMethod === 'upi') {
-      rzpMethod = 'upi';
-    } else if (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card') {
-      rzpMethod = 'card';
-    } else if (selectedPaymentMethod === 'netbanking') {
-      rzpMethod = 'netbanking';
-    }
+    // 2. Configure method sequence & prefill based on user's checkout selection
+    const methodPrefill = selectedPaymentMethod === 'upi' 
+      ? 'upi' 
+      : (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card' ? 'card' : (selectedPaymentMethod === 'netbanking' ? 'netbanking' : undefined));
 
-    // 3. Open official Razorpay Checkout Popup
     const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
 
+    const rzpConfig = {
+      display: {
+        blocks: {
+          upi: {
+            name: "Pay with UPI (GPay, PhonePe, Paytm, QR)",
+            instruments: [{ method: "upi" }]
+          },
+          cards: {
+            name: "Credit & Debit Cards",
+            instruments: [{ method: "card" }]
+          },
+          netbanking: {
+            name: "Net Banking",
+            instruments: [{ method: "netbanking" }]
+          },
+          other: {
+            name: "Wallets & Other",
+            instruments: [{ method: "wallet" }]
+          }
+        },
+        sequence: selectedPaymentMethod === 'upi'
+          ? ["block.upi", "block.cards", "block.netbanking", "block.other"]
+          : (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card')
+          ? ["block.cards", "block.upi", "block.netbanking", "block.other"]
+          : selectedPaymentMethod === 'netbanking'
+          ? ["block.netbanking", "block.upi", "block.cards", "block.other"]
+          : ["block.upi", "block.cards", "block.netbanking", "block.other"],
+        preferences: { show_default_blocks: true }
+      }
+    };
+
+    // 3. Open official Razorpay Checkout Popup
     const options = {
       key: keyId,
       amount: amount,
       currency: currency || "INR",
-      name: "SenpaiWorks",
-      description: isDonationOrder ? "Patron Community Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
-      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo.png",
+      name: "SenpaiWorks Official",
+      description: isDonationOrder ? "Community Patron Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
+      image: "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/senpaiworks_logo_bg.png",
       order_id: orderId,
-      ...(rzpMethod ? { method: rzpMethod } : {}),
+      config: rzpConfig,
       handler: async function (response) {
         // Customer completed payment -> Cryptographic verification on server
         if (submitBtn) {
@@ -996,7 +1022,8 @@ async function triggerRazorpaySDKPayment(orderData) {
       prefill: {
         name: `${orderData.address ? orderData.address.firstName : "Collector"} ${orderData.address ? (orderData.address.lastName || "") : ""}`.trim(),
         email: orderData.email || "",
-        contact: orderData.address ? (orderData.address.phone || "") : ""
+        contact: orderData.address ? (orderData.address.phone || "") : "",
+        ...(methodPrefill ? { method: methodPrefill } : {})
       },
       notes: {
         address: orderData.address ? `${orderData.address.address || ""}, ${orderData.address.city || ""}` : "Bengaluru, Karnataka"

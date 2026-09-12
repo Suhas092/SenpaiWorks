@@ -4433,14 +4433,16 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
     }
 
     const randSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
-    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${randSuffix}`;
+    const isDonationOrder = (items || []).some(it => it.isDonation || it.productId === 'DONATION' || (it.productName && it.productName.toLowerCase().includes('donation')) || (it.name && it.name.toLowerCase().includes('donation')));
+    const prefix = isDonationOrder ? 'TXN-' : 'ORD-';
+    const orderNumber = `${prefix}${Date.now().toString(36).toUpperCase()}-${randSuffix}`;
     const computedTotal = computedSubtotal + (isDigitalOnly ? 0 : (shipping || 0)) - (discountAmount || 0);
 
     const initialHistory = [
-      { status: "Placed", timestamp: new Date().toISOString() }
+      { status: isDonationOrder ? "Confirmed" : "Placed", timestamp: new Date().toISOString() }
     ];
-    if (isDigitalOnly) {
-      initialHistory.push({ status: "Delivered", timestamp: new Date().toISOString(), note: "Instant Digital Delivery" });
+    if (isDonationOrder || isDigitalOnly) {
+      initialHistory.push({ status: isDonationOrder ? "Completed" : "Delivered", timestamp: new Date().toISOString(), note: isDonationOrder ? "Patron Contribution Acknowledged" : "Instant Digital Delivery" });
     } else {
       initialHistory.push({ status: "Processing", timestamp: new Date().toISOString(), note: "Order placed and confirmed" });
     }

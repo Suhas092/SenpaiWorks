@@ -121,44 +121,42 @@ async function renderLatestOrderReceipt() {
   const actionsRow = document.getElementById("rcpt-actions-row") || document.querySelector(".confirmation-actions-row");
 
   if (isDonation) {
-    document.title = "Thank You for Your Contribution! — SenpaiWorks Patron Support";
+    document.title = "Contribution Receipt — SenpaiWorks Patron Support";
     if (heroBadgeEl) {
-      heroBadgeEl.innerHTML = `<i class="fa-solid fa-heart" style="color: #ef4444; margin-right: 6px;"></i> Contribution Confirmed`;
-      heroBadgeEl.style.background = "rgba(239, 68, 68, 0.1)";
-      heroBadgeEl.style.borderColor = "rgba(239, 68, 68, 0.3)";
-      heroBadgeEl.style.color = "#ef4444";
+      heroBadgeEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Contribution Confirmed`;
+      heroBadgeEl.style.background = "#dcfce7";
+      heroBadgeEl.style.borderColor = "#bbf7d0";
+      heroBadgeEl.style.color = "#166534";
     }
-    if (heroTitleEl) heroTitleEl.textContent = "Thank you for supporting SenpaiWorks!";
+    if (heroTitleEl) heroTitleEl.textContent = "Thanks for your contribution!";
     
     if (greetingNameEl) greetingNameEl.textContent = `Hi ${userName === "Collector" ? "Supporter" : userName},`;
     if (greetingDescEl) {
-      greetingDescEl.innerHTML = `Your generous contribution directly fuels our original 2D/3D anime productions, indie creator resources, and community art releases.<br>A receipt and patron acknowledgement have been recorded for your account.`;
+      greetingDescEl.innerHTML = `Thank you for supporting SenpaiWorks! Your contribution directly powers independent anime creations, animator toolsets, and open community art releases.`;
     }
     
     if (addressHeadingEl) addressHeadingEl.textContent = "Supporter Information";
-    if (idLabelEl) idLabelEl.textContent = "Receipt nº";
+    if (idLabelEl) idLabelEl.textContent = "Transaction ID";
     if (dateLabelEl) dateLabelEl.textContent = "Contribution Date";
 
     if (addressTextEl) {
       const emailDisplay = latestOrder.customerEmail || paramEmail || latestOrder.email || "Direct Patron Backer";
       addressTextEl.innerHTML = `
-        <div style="font-weight: 800; color: #0f172a; font-size: 0.98rem; margin-bottom: 2px;">${userName === "Collector" ? "Creative Patron" : userName}</div>
-        <div style="color: #64748b; font-size: 0.88rem; margin-bottom: 8px;">${emailDisplay}</div>
-        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.1); color: #059669; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 0.78rem; border: 1px solid rgba(16, 185, 129, 0.25);">
-          <i class="fa-solid fa-shield-halved"></i> Verified Community Patron
-        </div>
+        <div style="font-weight: 700; color: #111111; font-size: 0.95rem;">${userName === "Collector" ? "Community Supporter" : userName}</div>
+        <div style="color: #64748b; font-size: 0.88rem; margin-top: 2px;">${emailDisplay}</div>
+        <div style="color: #64748b; font-size: 0.85rem; margin-top: 2px;">Role: Community Supporter</div>
       `;
     }
 
-    if (itemsHeadTitleEl) itemsHeadTitleEl.textContent = "Your Patron Contribution";
+    if (itemsHeadTitleEl) itemsHeadTitleEl.textContent = "Contribution Summary";
     if (deliveryDatesEl) deliveryDatesEl.style.display = "none";
     if (shippingRowEl) shippingRowEl.style.display = "none";
     if (subtotalLabelEl) subtotalLabelEl.textContent = "Contribution Amount";
-    if (totalLabelEl) totalLabelEl.textContent = "Total Contribution";
+    if (totalLabelEl) totalLabelEl.textContent = "Total";
 
     if (actionsRow) {
       actionsRow.innerHTML = `
-        <a href="community.html" class="btn-view-order" style="background: linear-gradient(135deg, #ef4444, #dc2626); border-color: #ef4444;">
+        <a href="community.html" class="btn-view-order">
           <i class="fa-solid fa-users"></i> Return to Community Hub
         </a>
         <a href="art-library.html" class="btn-secondary-order">
@@ -295,24 +293,14 @@ async function renderLatestOrderReceipt() {
 
   if (grandTotalEl) grandTotalEl.textContent = `₹${grandTotal.toLocaleString()}.00`;
 
-  // Render Real Status Timeline (or Patron Appreciation Banner for donations)
+  // Render Real Status Timeline (Only for physical / digital store orders)
   const timelineContainer = document.getElementById("rcpt-status-timeline-container");
   if (timelineContainer) {
     if (isDonation) {
-      timelineContainer.innerHTML = `
-        <div style="margin: 20px 0; padding: 20px 22px; background: linear-gradient(135deg, #fff1f2 0%, #f0fdf4 100%); border: 1.5px solid #fecdd3; border-radius: 14px; box-shadow: 0 4px 14px rgba(244, 63, 94, 0.06); display: flex; align-items: center; gap: 18px;">
-          <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #f43f5e); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);">
-            <i class="fa-solid fa-hand-holding-heart"></i>
-          </div>
-          <div>
-            <div style="font-weight: 800; color: #9f1239; font-size: 1rem; margin-bottom: 2px;">Direct Studio Supporter Badge Active</div>
-            <div style="font-size: 0.85rem; color: #475569; line-height: 1.45;">
-              Your patronage is now logged. You have helped power independent anime creators, animation tools, and open art archives. Thank you!
-            </div>
-          </div>
-        </div>
-      `;
+      timelineContainer.innerHTML = "";
+      timelineContainer.style.display = "none";
     } else {
+      timelineContainer.style.display = "block";
       timelineContainer.innerHTML = generateOrderTimelineHtml(latestOrder);
     }
   }

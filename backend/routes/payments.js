@@ -251,15 +251,17 @@ module.exports = function ({
 
       // Step D: Create Order in Neon PostgreSQL
       const randSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
-      const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${randSuffix}`;
+      const isDonationOrder = (orderCalc.dbItems || []).some(it => it.productId === 'DONATION' || (it.productName && it.productName.toLowerCase().includes('donation')));
+      const prefix = isDonationOrder ? 'TXN-' : 'ORD-';
+      const orderNumber = `${prefix}${Date.now().toString(36).toUpperCase()}-${randSuffix}`;
 
       const initialHistory = [
-        { status: 'Placed', timestamp: new Date().toISOString() },
+        { status: isDonationOrder ? 'Confirmed' : 'Placed', timestamp: new Date().toISOString() },
         { status: 'Paid', timestamp: new Date().toISOString(), note: `Razorpay payment ${razorpay_payment_id}` }
       ];
 
-      if (orderCalc.isDigitalOnly) {
-        initialHistory.push({ status: 'Delivered', timestamp: new Date().toISOString(), note: 'Instant Digital Delivery' });
+      if (isDonationOrder || orderCalc.isDigitalOnly) {
+        initialHistory.push({ status: isDonationOrder ? 'Completed' : 'Delivered', timestamp: new Date().toISOString(), note: isDonationOrder ? 'Patron Contribution Acknowledged' : 'Instant Digital Delivery' });
       } else {
         initialHistory.push({ status: 'Processing', timestamp: new Date().toISOString(), note: 'Order confirmed and sent to warehouse' });
       }
