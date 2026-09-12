@@ -13,6 +13,16 @@ document.addEventListener("DOMContentLoaded", () => {
   async function initCommunityReviews() {
     if (!reviewsGrid) return;
 
+    // Render skeleton placeholders immediately while loading
+    reviewsGrid.innerHTML = Array(4).fill(0).map(() => `
+      <div class="review-card is-skeleton">
+        <div class="skeleton-line-title"></div>
+        <div class="skeleton-line-text"></div>
+        <div class="skeleton-line-text" style="width: 85%;"></div>
+        <div class="skeleton-line-text" style="width: 55%; margin-top: 10px;"></div>
+      </div>
+    `).join("");
+
     let apiReviews = [];
     try {
       const res = await fetch("/api/community/reviews");

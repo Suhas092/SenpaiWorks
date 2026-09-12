@@ -119,14 +119,38 @@
         }).join("");
       }
 
+      bindNewsImages();
     } catch (e) {
       console.warn("Could not load dynamic news, using static fallback", e);
     }
   }
 
+  function bindNewsImages() {
+    const thumbs = document.querySelectorAll('.nw-article-thumb, .nw-edit-img');
+    thumbs.forEach(wrap => {
+      const img = wrap.querySelector('img');
+      if (!img) return;
+      const onDone = () => {
+        img.classList.add('loaded');
+        wrap.classList.add('img-loaded');
+      };
+      if (img.complete && img.naturalHeight > 0) {
+        onDone();
+      } else {
+        img.addEventListener('load', onDone, { once: true });
+        img.addEventListener('error', onDone, { once: true });
+      }
+    });
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", loadDynamicNews);
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDynamicNews();
+      bindNewsImages();
+    });
   } else {
     loadDynamicNews();
+    bindNewsImages();
   }
+  window.addEventListener('load', bindNewsImages);
 })();

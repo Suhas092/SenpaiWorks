@@ -506,7 +506,7 @@ function renderProducts() {
         <div class="prod-img-wrap" style="position: relative;">
           ${outOfStockOverlay}
           <a href="store-detail.html?id=${prod.id}">
-            <img src="${prod.img || 'assets/SenpaiWorks logo.png'}" alt="${prod.name || 'Product'}">
+            <img src="${prod.img || 'assets/SenpaiWorks logo.png'}" alt="${prod.name || 'Product'}" loading="lazy">
           </a>
           <div class="prod-badges-row">
             ${badgeMarkup}
@@ -528,6 +528,30 @@ function renderProducts() {
       </div>
     `;
   }).join("");
+
+  bindStoreProductImages(grid);
+}
+
+function bindStoreProductImages(grid) {
+  if (!grid) return;
+  const cards = grid.querySelectorAll('.product-card');
+  cards.forEach(card => {
+    const wrap = card.querySelector('.prod-img-wrap');
+    const img = card.querySelector('.prod-img-wrap img');
+    if (!wrap || !img) return;
+
+    const onImageLoaded = () => {
+      img.classList.add('loaded');
+      wrap.classList.add('img-loaded');
+    };
+
+    if (img.complete && img.naturalHeight > 0) {
+      onImageLoaded();
+    } else {
+      img.addEventListener('load', onImageLoaded, { once: true });
+      img.addEventListener('error', onImageLoaded, { once: true });
+    }
+  });
 }
 
 // Global Wishlist toggle for Product Cards in Store Page

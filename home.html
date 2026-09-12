@@ -1437,6 +1437,35 @@
   <script src="scripts/footer.js"></script>
   <script src="scripts/home-news.js?v=1.0" defer></script>
   <script src="scripts/home-animations.js" defer></script>
+  <script>
+    // Universal Homepage Progressive Skeleton Shimmer Binder
+    function bindHomeProgressiveSkeletons() {
+      const items = document.querySelectorAll(
+        '.merch-image-card, .feature-card-img-wrap, .grid-card-img-wrap, .movie-card, .rec-list-item'
+      );
+      items.forEach(container => {
+        const img = container.querySelector('img');
+        if (!img) return;
+        const markLoaded = () => {
+          img.classList.add('loaded');
+          container.classList.add('img-loaded');
+        };
+        if (img.complete && img.naturalHeight > 0) {
+          markLoaded();
+        } else {
+          img.addEventListener('load', markLoaded, { once: true });
+          img.addEventListener('error', markLoaded, { once: true });
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindHomeProgressiveSkeletons);
+    } else {
+      bindHomeProgressiveSkeletons();
+    }
+    window.addEventListener('load', bindHomeProgressiveSkeletons);
+  </script>
 
 </body>
 

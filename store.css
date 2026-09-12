@@ -612,20 +612,27 @@ body {
   box-shadow: none !important;
 }
 
+/* ── Store Product Card Progressive Image Skeleton ── */
 .prod-img-wrap {
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
   height: auto;
   overflow: hidden;
-  background: #f4f4f6;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: store-skeleton-shimmer 1.5s infinite ease-in-out;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 !important;
   box-sizing: border-box;
-  transition: background-color 0.3s ease;
+}
+
+.prod-img-wrap.img-loaded {
+  background: #f4f4f6;
+  animation: none;
 }
 
 .prod-img-wrap a {
@@ -644,11 +651,55 @@ body {
   object-fit: cover !important;
   display: block;
   border-radius: 6px;
-  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.prod-img-wrap img.loaded {
+  opacity: 1;
 }
 
 .product-card:hover .prod-img-wrap img {
   transform: scale(1.05);
+}
+
+@keyframes store-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton Placeholder Product Cards */
+.product-card.is-skeleton {
+  pointer-events: none;
+  user-select: none;
+}
+
+.product-card.is-skeleton .skeleton-prod-img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: store-skeleton-shimmer 1.5s infinite ease-in-out;
+}
+
+.product-card.is-skeleton .skeleton-prod-title {
+  height: 14px;
+  width: 80%;
+  border-radius: 4px;
+  margin: 12px 0 8px 0;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: store-skeleton-shimmer 1.5s infinite ease-in-out;
+}
+
+.product-card.is-skeleton .skeleton-prod-price {
+  height: 12px;
+  width: 40%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: store-skeleton-shimmer 1.5s infinite ease-in-out;
 }
 
 .prod-badges-row {

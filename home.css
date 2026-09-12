@@ -3559,3 +3559,90 @@ body.page-loaded .page-transition-curtain {
     clip-path: none !important;
   }
 }
+
+/* ── Universal Home Skeleton Shimmer System ────────────────── */
+@keyframes home-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 1. Things You Might Like Artwork Image */
+.merch-image-card {
+  position: relative;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: home-skeleton-shimmer 1.5s infinite ease-in-out;
+  overflow: hidden;
+}
+
+.merch-image-card.img-loaded {
+  background: transparent;
+  animation: none;
+}
+
+.merch-image-card img {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.merch-image-card img.loaded {
+  opacity: 1;
+}
+
+/* 2. Featured News Recommended List Thumbnails */
+.rec-item-img {
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: home-skeleton-shimmer 1.5s infinite ease-in-out;
+  border-radius: 8px;
+}
+
+.rec-item-img.loaded {
+  animation: none;
+}
+
+/* 3. Shorts & Entertainment Video Cards */
+.movie-card {
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+  animation: home-skeleton-shimmer 1.5s infinite ease-in-out;
+}
+
+.movie-card.img-loaded {
+  background: #16161f;
+  animation: none;
+}
+
+.movie-card img {
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.5s ease, filter 0.5s ease;
+}
+
+.movie-card img.loaded {
+  opacity: 1;
+}
+
+/* 4. New Merch on Store Image Shimmer */
+.feature-card-img-wrap,
+.grid-card-img-wrap {
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: home-skeleton-shimmer 1.5s infinite ease-in-out;
+}
+
+.feature-card-img-wrap.img-loaded,
+.grid-card-img-wrap.img-loaded {
+  background: #f8fafc;
+  animation: none;
+}
+
+.feature-card-image,
+.grid-card-image {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.feature-card-image.loaded,
+.grid-card-image.loaded {
+  opacity: 1;
+}

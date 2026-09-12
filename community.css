@@ -1096,6 +1096,37 @@ body {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Skeleton Placeholder for Community Feedback */
+.review-card.is-skeleton {
+  pointer-events: none;
+  user-select: none;
+}
+
+.review-card.is-skeleton .skeleton-line-title {
+  height: 16px;
+  width: 75%;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: comm-skeleton-shimmer 1.5s infinite ease-in-out;
+}
+
+.review-card.is-skeleton .skeleton-line-text {
+  height: 12px;
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: comm-skeleton-shimmer 1.5s infinite ease-in-out;
+}
+
+@keyframes comm-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 .review-card:hover {
   transform: none;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
