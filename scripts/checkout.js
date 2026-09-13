@@ -971,7 +971,7 @@ async function triggerRazorpaySDKPayment(orderData) {
     const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
 
-    const logoAsset = window.SENPAIWORKS_LOGO_BLACK_BG || `${window.location.origin}/assets/Videos/SenpaiWorks%20logo%20with%20blackbg.png`;
+    const logoAsset = window.SENPAIWORKS_LOGO_HORIZ || window.SENPAIWORKS_LOGO_BLACK_BG || `${window.location.origin}/assets/Videos/senpaiworks_razorpay_brand_logo.png`;
 
     window.lastOrderPayload = orderData;
 
