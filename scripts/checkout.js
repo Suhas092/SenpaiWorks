@@ -1043,9 +1043,9 @@ async function triggerRazorpaySDKPayment(orderData) {
         }
       },
       prefill: {
-        name: `${orderData.address ? orderData.address.firstName : "Collector"} ${orderData.address ? (orderData.address.lastName || "") : ""}`.trim(),
+        name: isDonationOrder ? (orderData.address?.firstName || "Community Patron") : `${orderData.address ? orderData.address.firstName : "Collector"} ${orderData.address ? (orderData.address.lastName || "") : ""}`.trim(),
         email: orderData.email || "",
-        contact: orderData.address ? (orderData.address.phone || "") : "",
+        ...(isDonationOrder ? {} : (orderData.address && orderData.address.phone ? { contact: orderData.address.phone } : {})),
         ...(methodPrefill ? { method: methodPrefill } : {})
       },
       notes: {
