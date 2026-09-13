@@ -971,7 +971,7 @@ async function triggerRazorpaySDKPayment(orderData) {
     const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
 
-    const logoAsset = window.SENPAIWORKS_LOGO_HORIZ || window.SENPAIWORKS_LOGO_BLACK_BG || `${window.location.origin}/assets/Videos/senpaiworks_razorpay_brand_logo.png`;
+    const logoAsset = window.SENPAIWORKS_LOGO_STACKED || window.SENPAIWORKS_LOGO_BLACK_BG || `${window.location.origin}/assets/Videos/senpaiworks_razorpay_stacked_logo.png`;
 
     window.lastOrderPayload = orderData;
 
@@ -980,7 +980,7 @@ async function triggerRazorpaySDKPayment(orderData) {
       key: keyId,
       amount: amount,
       currency: currency || "INR",
-      name: " ",
+      name: "SenpaiWorks",
       description: isDonationOrder ? "Community Patron Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
       image: logoAsset,
       order_id: orderId,
