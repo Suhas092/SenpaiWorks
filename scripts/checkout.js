@@ -916,10 +916,52 @@ async function triggerRazorpaySDKPayment(orderData) {
       throw new Error("Razorpay Checkout SDK failed to load. Please check your internet connection.");
     }
 
-    // 2. Configure method prefill based on user's checkout selection
+    // 2. Strict method mapping & isolation: only show the chosen method in Razorpay popup
+    let rzpConfig = undefined;
     const methodPrefill = selectedPaymentMethod === 'upi' 
       ? 'upi' 
       : (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card' ? 'card' : (selectedPaymentMethod === 'netbanking' ? 'netbanking' : undefined));
+
+    if (selectedPaymentMethod === 'upi') {
+      rzpConfig = {
+        display: {
+          blocks: {
+            upi: {
+              name: "Pay using UPI (Google Pay, PhonePe, Paytm, QR)",
+              instruments: [{ method: "upi" }]
+            }
+          },
+          sequence: ["block.upi"],
+          preferences: { show_default_blocks: false }
+        }
+      };
+    } else if (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card') {
+      rzpConfig = {
+        display: {
+          blocks: {
+            card: {
+              name: "Credit & Debit Cards",
+              instruments: [{ method: "card" }]
+            }
+          },
+          sequence: ["block.card"],
+          preferences: { show_default_blocks: false }
+        }
+      };
+    } else if (selectedPaymentMethod === 'netbanking') {
+      rzpConfig = {
+        display: {
+          blocks: {
+            netbanking: {
+              name: "Net Banking",
+              instruments: [{ method: "netbanking" }]
+            }
+          },
+          sequence: ["block.netbanking"],
+          preferences: { show_default_blocks: false }
+        }
+      };
+    }
 
     const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
@@ -933,6 +975,7 @@ async function triggerRazorpaySDKPayment(orderData) {
       description: isDonationOrder ? "Community Patron Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
       image: `${window.location.origin}/assets/Videos/SenpaiWorks%20logo%20with%20blackbg.png`,
       order_id: orderId,
+      ...(rzpConfig ? { config: rzpConfig } : {}),
       handler: async function (response) {
         // Customer completed payment -> Cryptographic verification on server
         if (submitBtn) {
