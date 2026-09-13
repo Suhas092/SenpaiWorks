@@ -373,26 +373,6 @@
     </div>
   </div>
 
-  <!-- STYLED PAYMENT FAILURE DIALOG MODAL -->
-  <div id="payment-failure-dialog" class="payment-failure-overlay" style="display: none;">
-    <div class="payment-failure-card">
-      <div class="failure-icon-wrap">
-        <i class="fa-solid fa-circle-xmark"></i>
-      </div>
-      <h3 class="failure-dialog-title" id="failure-title">Payment Failed</h3>
-      <p class="failure-dialog-msg" id="failure-msg">Payment Failed: Your payment has been cancelled. Try again or complete the payment later.</p>
-      
-      <div class="failure-dialog-actions">
-        <button type="button" class="btn-failure-retry" onclick="retryFailedPayment()">
-          <i class="fa-solid fa-rotate-right"></i> Try Again
-        </button>
-        <button type="button" class="btn-failure-dismiss" onclick="closePaymentFailureDialog()">
-          Dismiss
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Official Razorpay Checkout Library -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="scripts/brand-logo-data.js?v=2"></script>

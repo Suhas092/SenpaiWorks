@@ -976,18 +976,16 @@ async function triggerRazorpaySDKPayment(orderData) {
     window.lastOrderPayload = orderData;
 
     // 3. Open official Razorpay Checkout Popup
-    let paymentSuccessOccurred = false;
     const options = {
       key: keyId,
       amount: amount,
       currency: currency || "INR",
-      name: "SenpaiWorks",
+      name: " ",
       description: isDonationOrder ? "Community Patron Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
       image: logoAsset,
       order_id: orderId,
       ...(rzpConfig ? { config: rzpConfig } : {}),
       handler: async function (response) {
-        paymentSuccessOccurred = true;
         // Customer completed payment -> Cryptographic verification on server
         if (submitBtn) {
           submitBtn.disabled = true;
@@ -1038,7 +1036,6 @@ async function triggerRazorpaySDKPayment(orderData) {
           window.location.href = `order-confirmation.html?orderId=${verifyData.orderNumber}${emailParam}${donationParam}`;
         } catch (verErr) {
           console.error("Payment verification failed:", verErr);
-          showPaymentFailureDialog("Payment Failed: " + (verErr.message || "Payment signature verification failed. Try again or complete the payment later."));
           if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnText;
@@ -1064,9 +1061,6 @@ async function triggerRazorpaySDKPayment(orderData) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnText;
           }
-          if (!paymentSuccessOccurred) {
-            showPaymentFailureDialog("Payment Failed: Your payment has been cancelled. Try again or complete the payment later.");
-          }
         }
       }
     };
@@ -1074,8 +1068,6 @@ async function triggerRazorpaySDKPayment(orderData) {
     const rzp = new window.Razorpay(options);
     rzp.on("payment.failed", function (failResponse) {
       console.warn("Razorpay payment failed:", failResponse.error);
-      const errDetail = failResponse.error ? (failResponse.error.description || failResponse.error.reason) : "";
-      showPaymentFailureDialog(errDetail ? `Payment Failed: ${errDetail}. Try again or complete the payment later.` : "Payment Failed: Your payment has been cancelled. Try again or complete the payment later.");
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnText;
@@ -1085,42 +1077,12 @@ async function triggerRazorpaySDKPayment(orderData) {
     rzp.open();
   } catch (err) {
     console.error("Razorpay initiation error:", err);
-    showPaymentFailureDialog("Payment Failed: " + (err.message || "Your payment has been cancelled. Try again or complete the payment later."));
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalBtnText;
     }
   }
 }
-
-// Payment failure modal helper functions
-window.showPaymentFailureDialog = function(msg) {
-  const overlay = document.getElementById("payment-failure-dialog");
-  const msgEl = document.getElementById("failure-msg");
-  if (msgEl && msg) {
-    msgEl.textContent = msg;
-  }
-  if (overlay) {
-    overlay.style.display = "flex";
-  }
-};
-
-window.closePaymentFailureDialog = function() {
-  const overlay = document.getElementById("payment-failure-dialog");
-  if (overlay) {
-    overlay.style.display = "none";
-  }
-};
-
-window.retryFailedPayment = function() {
-  window.closePaymentFailureDialog();
-  if (window.lastOrderPayload) {
-    triggerRazorpaySDKPayment(window.lastOrderPayload);
-  } else {
-    const submitBtn = document.getElementById("complete-order-btn");
-    if (submitBtn) submitBtn.click();
-  }
-};
 
 
 async function processVerifiedOrderSuccess(orderData) {
