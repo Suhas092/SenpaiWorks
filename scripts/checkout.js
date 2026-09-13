@@ -928,7 +928,12 @@ async function triggerRazorpaySDKPayment(orderData) {
           blocks: {
             upi: {
               name: "Pay using UPI (Google Pay, PhonePe, Paytm, QR)",
-              instruments: [{ method: "upi" }]
+              instruments: [
+                {
+                  method: "upi",
+                  flows: ["qr", "intent", "collect"]
+                }
+              ]
             }
           },
           sequence: ["block.upi"],
@@ -966,6 +971,8 @@ async function triggerRazorpaySDKPayment(orderData) {
     const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
 
+    const logoAsset = window.SENPAIWORKS_LOGO_BLACK_BG || `${window.location.origin}/assets/Videos/SenpaiWorks%20logo%20with%20blackbg.png`;
+
     // 3. Open official Razorpay Checkout Popup
     const options = {
       key: keyId,
@@ -973,7 +980,7 @@ async function triggerRazorpaySDKPayment(orderData) {
       currency: currency || "INR",
       name: "SenpaiWorks",
       description: isDonationOrder ? "Community Patron Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
-      image: `${window.location.origin}/assets/Videos/SenpaiWorks%20logo%20with%20blackbg.png`,
+      image: logoAsset,
       order_id: orderId,
       ...(rzpConfig ? { config: rzpConfig } : {}),
       handler: async function (response) {
