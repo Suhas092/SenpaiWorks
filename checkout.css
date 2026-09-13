@@ -1217,3 +1217,146 @@ body.checkout-body {
   transform: translateY(-1px);
   box-shadow: 0 8px 25px rgba(225, 29, 72, 0.35) !important;
 }
+
+/* =========================================================================
+   PAYMENT FAILURE DIALOG STYLES
+   ========================================================================= */
+.payment-failure-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 29, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  padding: 16px;
+  animation: failureOverlayFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.payment-failure-card {
+  background: #0f172a;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 20px;
+  max-width: 440px;
+  width: 100%;
+  padding: 36px 30px 30px 30px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(239, 68, 68, 0.15);
+  animation: failureCardScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-failure-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ef4444, #f87171, #ef4444);
+}
+
+.failure-icon-wrap {
+  width: 68px;
+  height: 68px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  font-size: 2.2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+  animation: failureIconPulse 2s infinite ease-in-out;
+}
+
+.failure-dialog-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.failure-dialog-msg {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #94a3b8;
+  margin-bottom: 26px;
+  font-weight: 450;
+}
+
+.failure-dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-failure-retry {
+  flex: 1;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-weight: 700;
+  font-size: 0.94rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.btn-failure-retry:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+}
+
+.btn-failure-dismiss {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-weight: 600;
+  font-size: 0.94rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-failure-dismiss:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+}
+
+@keyframes failureOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes failureCardScaleUp {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes failureIconPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+  }
+}
