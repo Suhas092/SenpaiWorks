@@ -121,12 +121,12 @@ async function renderLatestOrderReceipt() {
   const actionsRow = document.getElementById("rcpt-actions-row") || document.querySelector(".confirmation-actions-row");
 
   if (isDonation) {
-    document.title = "Contribution Receipt — SenpaiWorks Patron Support";
+    document.title = "Contribution Receipt — SenpaiWorks Supporter";
     if (heroBadgeEl) {
       heroBadgeEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Contribution Confirmed`;
-      heroBadgeEl.style.background = "#dcfce7";
-      heroBadgeEl.style.borderColor = "#bbf7d0";
-      heroBadgeEl.style.color = "#166534";
+      heroBadgeEl.style.background = "#ecfdf5";
+      heroBadgeEl.style.borderColor = "#a7f3d0";
+      heroBadgeEl.style.color = "#059669";
     }
     if (heroTitleEl) heroTitleEl.textContent = "Thanks for your contribution!";
     
@@ -140,11 +140,11 @@ async function renderLatestOrderReceipt() {
     if (dateLabelEl) dateLabelEl.textContent = "Contribution Date";
 
     if (addressTextEl) {
-      const emailDisplay = latestOrder.customerEmail || paramEmail || latestOrder.email || "Direct Patron Backer";
+      const emailDisplay = latestOrder.customerEmail || paramEmail || latestOrder.email || "";
       addressTextEl.innerHTML = `
-        <div style="font-weight: 700; color: #111111; font-size: 0.95rem;">${userName === "Collector" ? "Community Supporter" : userName}</div>
-        <div style="color: #64748b; font-size: 0.88rem; margin-top: 2px;">${emailDisplay}</div>
-        <div style="color: #64748b; font-size: 0.85rem; margin-top: 2px;">Role: Community Supporter</div>
+        <div style="font-weight: 700; color: #111111; font-size: 0.95rem;">${userName === "Collector" ? "Supporter" : userName}</div>
+        ${emailDisplay ? `<div style="color: #64748b; font-size: 0.88rem; margin-top: 2px;">${emailDisplay}</div>` : ''}
+        <div style="color: #64748b; font-size: 0.85rem; margin-top: 2px;">Supporter</div>
       `;
     }
 
@@ -155,6 +155,10 @@ async function renderLatestOrderReceipt() {
     if (totalLabelEl) totalLabelEl.textContent = "Total";
 
     if (actionsRow) {
+      const orderNum = latestOrder.orderNumber || latestOrder.orderId || latestOrder.id;
+      const orderEmail = latestOrder.email || (latestOrder.user && latestOrder.user.email) || "";
+      const invoiceUrl = `/api/orders/${encodeURIComponent(orderNum)}/invoice${orderEmail ? `?email=${encodeURIComponent(orderEmail)}` : ''}`;
+
       actionsRow.innerHTML = `
         <a href="community.html" class="btn-view-order">
           <i class="fa-solid fa-users"></i> Return to Community Hub
@@ -162,9 +166,13 @@ async function renderLatestOrderReceipt() {
         <a href="art-library.html" class="btn-secondary-order">
           <i class="fa-solid fa-palette"></i> Explore Art Library
         </a>
+        <a href="${invoiceUrl}" download="SenpaiWorks-Donation-Receipt-${orderNum}.pdf" target="_blank" class="btn-secondary-order" style="border-color: #cbd5e1; color: #334155;">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Download Receipt (PDF)
+        </a>
       `;
     }
   } else {
+    if (idLabelEl) idLabelEl.textContent = "Order ID";
     if (greetingNameEl) greetingNameEl.textContent = `Hi ${userName},`;
     if (greetingDescEl) {
       greetingDescEl.innerHTML = `We are delighted that you have found something you like!<br>As soon as your package is on its way, you will receive a delivery confirmation from us by email.`;
@@ -186,18 +194,27 @@ async function renderLatestOrderReceipt() {
     }
 
     if (actionsRow) {
+      const orderNum = latestOrder.orderNumber || latestOrder.orderId || latestOrder.id;
+      const orderEmail = latestOrder.email || (latestOrder.user && latestOrder.user.email) || "";
+      const invoiceUrl = `/api/orders/${encodeURIComponent(orderNum)}/invoice${orderEmail ? `?email=${encodeURIComponent(orderEmail)}` : ''}`;
+
       actionsRow.innerHTML = `
         <a href="store.html" class="btn-view-order">
           <i class="fa-solid fa-bag-shopping"></i> Continue Shopping
         </a>
         <a href="profile.html#orders" class="btn-secondary-order">
-          <i class="fa-solid fa-box"></i> View Replacements & Orders
+          <i class="fa-solid fa-box"></i> View My Orders
+        </a>
+        <a href="${invoiceUrl}" download="SenpaiWorks-Invoice-${orderNum}.pdf" target="_blank" class="btn-secondary-order" style="border-color: #cbd5e1; color: #334155;">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Download Invoice (PDF)
         </a>
       `;
     }
   }
 
-  if (orderIdEl) orderIdEl.textContent = latestOrder.orderNumber || latestOrder.orderId || latestOrder.id;
+  const rawId = latestOrder.orderNumber || latestOrder.orderId || latestOrder.id || "—";
+  const displayId = (isDonation && String(rawId).startsWith("ORD-")) ? String(rawId).replace(/^ORD-/, "TXN-") : rawId;
+  if (orderIdEl) orderIdEl.textContent = displayId;
   
   let dateObj = latestOrder.createdAt ? new Date(latestOrder.createdAt) : new Date();
   if (orderDateEl) orderDateEl.textContent = dateObj.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
@@ -239,10 +256,10 @@ async function renderLatestOrderReceipt() {
           <img src="${item.img || item.productImage || (isDonItem ? 'assets/Ayana.png' : 'assets/Videos/SenpaiWorks logo.png')}" alt="${item.name || item.productName || 'Item'}" class="order-item-img">
           <div class="order-item-details">
             <div class="order-item-name" style="display: flex; align-items: center; gap: 8px;">
-              ${item.name || item.productName || (isDonItem ? 'Community Patron Contribution' : 'SenpaiWorks Item')}
-              ${isDonItem ? '<span style="background: rgba(239, 68, 68, 0.12); color: #ef4444; font-size: 0.68rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;"><i class="fa-solid fa-heart"></i> Patron Support</span>' : (isDigital ? '<span style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;"><i class="fa-solid fa-cloud-arrow-down"></i> Digital Asset</span>' : '')}
+              ${item.name || item.productName || (isDonItem ? 'Community Supporter Contribution' : 'SenpaiWorks Item')}
+              ${isDonItem ? '<span style="background: rgba(239, 68, 68, 0.12); color: #ef4444; font-size: 0.68rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;"><i class="fa-solid fa-heart"></i> Supporter</span>' : (isDigital ? '<span style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;"><i class="fa-solid fa-cloud-arrow-down"></i> Digital Asset</span>' : '')}
             </div>
-            <div style="color: #666666; margin-bottom: 4px;">${isDonItem ? 'Tier: Creative Community Supporter' : `Variant / Size: ${item.variant || item.size || (isDigital ? 'Digital Edition' : 'Standard Edition')}`}</div>
+            <div style="color: #666666; margin-bottom: 4px;">${isDonItem ? 'Supporter Contribution' : `Variant / Size: ${item.variant || item.size || (isDigital ? 'Digital Edition' : 'Standard Edition')}`}</div>
             ${isDonItem ? '' : `<div style="color: #666666;">Quantity: ${quantity}</div>`}
             ${isDigital && !isDonItem ? `
               <div style="margin-top: 8px;">
@@ -266,17 +283,24 @@ async function renderLatestOrderReceipt() {
   let grandTotal = latestOrder.total || (subtotal + shipping - discount);
 
   if (paymentMethodEl) {
-    let pmtText = "Razorpay Gateway / Online";
-    if (latestOrder.paymentId && latestOrder.paymentId.startsWith("COD")) {
+    let pmtText = isDonation ? "Online Payment (Confirmed)" : "Online Payment (Razorpay)";
+    if (latestOrder.paymentId && String(latestOrder.paymentId).startsWith("COD")) {
+      pmtText = "Cash on Delivery (COD)";
+    } else if (latestOrder.paymentGateway === "cod") {
       pmtText = "Cash on Delivery (COD)";
     } else if (latestOrder.paymentType) {
       pmtText = latestOrder.paymentType;
+    } else if (latestOrder.paymentGateway === "razorpay") {
+      pmtText = "Razorpay Gateway (Online)";
     }
     paymentMethodEl.textContent = pmtText;
   }
 
   if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toLocaleString()}.00`;
-  if (shippingEl) shippingEl.textContent = shipping > 0 ? `₹${shipping.toLocaleString()}.00` : "Free";
+  if (shippingEl) {
+    const numShipping = Number(shipping || 0);
+    shippingEl.textContent = numShipping > 0 ? `₹${numShipping.toLocaleString()}.00` : "Free";
+  }
   
   // Create a discount row if needed
   if (discount > 0 && !isDonation) {

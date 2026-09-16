@@ -4361,7 +4361,9 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
       const user = await prisma.user.findUnique({ where: { email: req.userEmail } });
       if (user) {
         customerId = user.id;
-        finalEmail = user.email;
+        if (!finalEmail) {
+          finalEmail = user.email;
+        }
         if (!guestName && (user.name || user.username)) {
           guestName = user.name || user.username;
         }
@@ -4433,22 +4435,31 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
     }
 
     const randSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
-    const isDonationOrder = (items || []).some(it => it.isDonation || it.productId === 'DONATION' || (it.productName && it.productName.toLowerCase().includes('donation')) || (it.name && it.name.toLowerCase().includes('donation')));
+    const isDonationOrder = (items || []).some(it => 
+      it.isDonation || 
+      it.productId === 'DONATION' || 
+      String(it.id || '').startsWith('donation') ||
+      (it.productName && it.productName.toLowerCase().includes('donation')) || 
+      (it.name && it.name.toLowerCase().includes('donation'))
+    );
     const prefix = isDonationOrder ? 'TXN-' : 'ORD-';
     const orderNumber = `${prefix}${Date.now().toString(36).toUpperCase()}-${randSuffix}`;
-    const computedTotal = computedSubtotal + (isDigitalOnly ? 0 : (shipping || 0)) - (discountAmount || 0);
+    const computedShipping = isDigitalOnly ? 0 : (computedSubtotal >= 999 ? 0 : 99);
+    const computedTotal = computedSubtotal + computedShipping - (discountAmount || 0);
 
     const initialHistory = [
       { status: isDonationOrder ? "Confirmed" : "Placed", timestamp: new Date().toISOString() }
     ];
     if (isDonationOrder || isDigitalOnly) {
-      initialHistory.push({ status: isDonationOrder ? "Completed" : "Delivered", timestamp: new Date().toISOString(), note: isDonationOrder ? "Patron Contribution Acknowledged" : "Instant Digital Delivery" });
+      initialHistory.push({ status: isDonationOrder ? "Completed" : "Delivered", timestamp: new Date().toISOString(), note: isDonationOrder ? "Supporter Contribution Acknowledged" : "Instant Digital Delivery" });
     } else {
       initialHistory.push({ status: "Processing", timestamp: new Date().toISOString(), note: "Order placed and confirmed" });
     }
 
     const shippingAddressObj = {
       ...(address || {}),
+      paymentType: paymentType || (address && address.paymentType) || (isDonationOrder ? 'Online Payment' : 'Razorpay Gateway (Online)'),
+      isDonation: isDonationOrder,
       _statusHistory: initialHistory
     };
 
@@ -4461,7 +4472,7 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
         guestPhone,
         shippingAddress: JSON.stringify(shippingAddressObj),
         subtotal: computedSubtotal,
-        shipping: isDigitalOnly ? 0 : (shipping || 0),
+        shipping: computedShipping,
         discount: discountAmount || 0,
         total: computedTotal,
         status: isDigitalOnly ? "Delivered" : "Processing",
@@ -4486,8 +4497,8 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
         data: {
           userEmail: "suhas_admin",
           type: "order_created",
-          title: `New Order: #${order.orderNumber}`,
-          message: `Order #${order.orderNumber} placed by ${order.guestName || order.email} for ₹${order.total.toLocaleString()}.`,
+          title: `New Order: ${order.orderNumber}`,
+          message: `Order ID: ${order.orderNumber} placed by ${order.guestName || order.email} for ₹${order.total.toLocaleString()}.`,
           link: "admin.html#tab-orders",
           icon: "fa-solid fa-box"
         }
@@ -4534,7 +4545,7 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
 
       sendOrderConfirmationEmail(order, trackingUrl).then(res => {
         if (res && res.success) {
-          console.log(`[Order Email] Dispatched confirmation email to ${order.email} for order #${order.orderNumber} (ID: ${res.id || res.messageId}) Tracking Link: ${trackingUrl}`);
+          console.log(`[Order Email] Dispatched confirmation email to ${order.email} for order ID ${order.orderNumber} (ID: ${res.id || res.messageId}) Tracking Link: ${trackingUrl}`);
         }
       }).catch(mailErr => {
         console.warn("[Mailer] Failed to dispatch order confirmation email:", mailErr.message);
@@ -4571,7 +4582,7 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
 
     const telegramMessage = `🛒 <b>New Order Placed!</b>\n` +
       `Order ${dailyOrderCount} (${dateStr})\n\n` +
-      `<b>Order #:</b> #${order.orderNumber}\n` +
+      `<b>Order ID:</b> ${order.orderNumber}\n` +
       `<b>Customer:</b> ${resolvedCustomerName}\n` +
       `<b>Phone:</b> ${resolvedPhone}\n` +
       `<b>Email:</b> ${order.email}\n\n` +
@@ -4633,6 +4644,50 @@ app.get("/api/orders/lookup", orderLookupLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error looking up order:", error);
     res.status(500).json({ error: "Failed to lookup order" });
+  }
+});
+
+// DEDICATED PDF INVOICE GENERATION ROUTE
+const { generateOrderInvoicePDF } = require('./utils/generateInvoicePdf');
+
+app.get("/api/orders/:id/invoice", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.query;
+
+    const cleanId = String(id || '').trim();
+    if (!cleanId) {
+      return res.status(400).json({ error: "Order ID is required." });
+    }
+
+    const numId = parseInt(cleanId, 10);
+    const isNum = !isNaN(numId) && String(numId) === cleanId;
+
+    const whereConditions = isNum
+      ? [{ id: numId }, { orderNumber: cleanId }, { orderNumber: { equals: cleanId, mode: 'insensitive' } }]
+      : [{ orderNumber: cleanId }, { orderNumber: { equals: cleanId, mode: 'insensitive' } }];
+
+    const order = await prisma.order.findFirst({
+      where: {
+        OR: whereConditions,
+        ...(email ? { email: { equals: String(email).trim(), mode: 'insensitive' } } : {})
+      },
+      include: {
+        items: {
+          include: { product: true }
+        },
+        customer: true
+      }
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order invoice not found." });
+    }
+
+    generateOrderInvoicePDF(order, res);
+  } catch (error) {
+    console.error("Error generating order invoice PDF:", error.stack || error);
+    res.status(500).json({ error: "Failed to generate order invoice PDF" });
   }
 });
 
@@ -4706,11 +4761,11 @@ app.patch("/api/admin/orders/:id/status", requireAdminToken, adminOrderStatusLim
 
         const notifTitle = productSummary
           ? `Your order for ${productSummary} has been delivered! 🎉`
-          : `Your order #${order.orderNumber} has been delivered! 🎉`;
+          : `Your order (Order ID: ${order.orderNumber}) has been delivered! 🎉`;
 
         const notifMessage = productSummary
-          ? `Your package containing ${productSummary} (Order #${order.orderNumber}) has been delivered. Thank you for shopping with SenpaiWorks!`
-          : `Your package with order #${order.orderNumber} has been delivered. Thank you for shopping with SenpaiWorks!`;
+          ? `Your package containing ${productSummary} (Order ID: ${order.orderNumber}) has been delivered. Thank you for shopping with SenpaiWorks!`
+          : `Your package with order ID ${order.orderNumber} has been delivered. Thank you for shopping with SenpaiWorks!`;
 
         await prisma.notification.create({
           data: {
@@ -4977,8 +5032,8 @@ app.post("/api/orders/:id/replace", requireUserToken, async (req, res) => {
         data: {
           userEmail: "suhas_admin",
           type: "replacement_requested",
-          title: `Replacement Requested: #${order.orderNumber}`,
-          message: `Replacement requested for Order #${order.orderNumber} by ${customerDisplayName}. Reason: ${reason || 'Defective/Damaged'}`,
+          title: `Replacement Requested: ${order.orderNumber}`,
+          message: `Replacement requested for Order ID: ${order.orderNumber} by ${customerDisplayName}. Reason: ${reason || 'Defective/Damaged'}`,
           link: "admin.html#tab-replacements",
           icon: "🔄"
         }
@@ -5016,7 +5071,7 @@ app.post("/api/orders/:id/replace", requireUserToken, async (req, res) => {
     }
 
     const telegramMessage = `🔄 <b>New Replacement Request!</b>\n\n` +
-      `<b>Order #:</b> #${order.orderNumber}\n` +
+      `<b>Order ID:</b> ${order.orderNumber}\n` +
       `<b>Customer:</b> ${resolvedCustomerName}\n` +
       `<b>Phone:</b> ${resolvedPhone}\n` +
       `<b>Email:</b> ${order.email}\n\n` +

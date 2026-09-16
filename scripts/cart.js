@@ -191,7 +191,7 @@ function renderCartPage() {
   let subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
   let discount = promoDiscountAmount > 0 ? promoDiscountAmount : (subtotal * promoDiscountPercent) / 100;
   let hasPhysical = cartData.some(i => i.type === 'physical');
-  let shipping = hasPhysical ? (subtotal > 999 ? 0 : 99) : 0;
+  let shipping = hasPhysical ? (subtotal >= 999 ? 0 : 99) : 0;
   let grandTotal = Math.max(0, subtotal - discount + shipping);
 
   let itemsHtml = "";

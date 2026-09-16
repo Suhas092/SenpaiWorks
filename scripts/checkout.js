@@ -55,8 +55,24 @@ function getCart() {
 }
 
 function getCurrentUser() {
+  const isLoggedOut = localStorage.getItem("userLoggedOut") === "true" || localStorage.getItem("isLoggedIn") === "false";
+  if (isLoggedOut) return null;
   const user = localStorage.getItem("currentUser");
   return user ? JSON.parse(user) : null;
+}
+
+function getAuthTokenIfLoggedIn() {
+  const isLoggedOut = localStorage.getItem("userLoggedOut") === "true" || localStorage.getItem("isLoggedIn") === "false" || !localStorage.getItem("currentUser");
+  if (isLoggedOut) {
+    if (localStorage.getItem("userToken")) {
+      localStorage.removeItem("userToken");
+    }
+    if (sessionStorage.getItem("userToken")) {
+      sessionStorage.removeItem("userToken");
+    }
+    return null;
+  }
+  return localStorage.getItem("userToken") || sessionStorage.getItem("userToken") || null;
 }
 
 function initCheckoutPage() {
@@ -620,7 +636,7 @@ function updateSummaryTotals() {
   let subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
   let discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;
   let hasPhysical = cartData.some(i => i.type === 'physical');
-  let shipping = hasPhysical ? (subtotal > 999 ? 0 : 99) : 0;
+  let shipping = hasPhysical ? (subtotal >= 999 ? 0 : 99) : 0;
   let grandTotal = Math.max(0, subtotal - discountAmount + shipping);
 
   const subtotalEl = document.getElementById("chk-subtotal-val");
@@ -714,14 +730,15 @@ function initPaymentSelection() {
     });
   });
 
-  const hasPhysical = cartData.some(i => i.type === 'physical');
-  const isDonationMode = cartData.some(i => i && i.isDonation);
-  if (!hasPhysical || isDonationMode) {
-    const codCard = document.getElementById("pay-card-cod");
-    if (codCard) {
+  const isDigitalOrDonationOnly = cartData.length > 0 && cartData.every(i => i && (i.isDonation || i.type === 'digital' || (i.product && i.product.type === 'digital') || (i.id && String(i.id).startsWith("donation"))));
+  const codCard = document.getElementById("pay-card-cod");
+  if (codCard) {
+    if (isDigitalOrDonationOnly) {
       codCard.style.display = "none";
       const codRadio = codCard.querySelector("input[type='radio']");
       if (codRadio) codRadio.checked = false;
+    } else {
+      codCard.style.display = "block";
     }
   }
 
@@ -748,55 +765,56 @@ window.selectPayOption = function (method) {
   updateSubmitBtnState();
 };
 
-// 9. CHECKOUT FORM SUBMISSION & VALIDATION
-window.handleCheckoutSubmit = function (e) {
+// 9. CHECKOUT SUBMISSION & AUTHORITATIVE RAZORPAY TRANSACTION FLOW
+window.handleCheckoutSubmit = async function (e) {
   if (e) e.preventDefault();
 
-  const email = document.getElementById("chk-email").value.trim();
+  if (cartData.length === 0) {
+    alert("Your shopping cart is empty.");
+    return;
+  }
+
+  const isDonationMode = cartData.some(i => i && i.isDonation);
+  const isDigitalOnly = !isDonationMode && cartData.every(i => i.type === "digital");
+
+  const emailInput = document.getElementById("chk-email");
+  const email = emailInput ? emailInput.value.trim() : "";
   if (!email) {
-    alert("Please enter your email address for order confirmation.");
+    alert("Please enter a valid email address.");
+    if (emailInput) emailInput.focus();
     return;
   }
 
   let finalAddressObj = null;
 
-  const isDonationMode = cartData.some(i => i && i.isDonation);
-  const hasPhysical = cartData.some(i => i.type === 'physical');
-  const isDigitalOnly = !hasPhysical && !isDonationMode;
-
-  const currentUser = getCurrentUser() || { username: "Collector", email: email };
-
   if (isDonationMode) {
     const donorNameInput = document.getElementById("chk-donor-name");
-    const donorNameVal = donorNameInput ? donorNameInput.value.trim() : "";
-    const donationObj = cartData.find(i => i && i.isDonation) || {};
-    const finalName = donorNameVal || donationObj.donorName || "Community Supporter";
-
+    const donorName = donorNameInput ? donorNameInput.value.trim() : "Community Supporter";
+    const nameParts = donorName.split(" ");
     finalAddressObj = {
-      firstName: finalName,
-      lastName: "",
-      address: "Online Community Donation",
+      firstName: nameParts[0] || "Community",
+      lastName: nameParts.length > 1 ? nameParts.slice(1).join(" ") : "",
+      address: "Community Patron",
       apartment: "",
-      city: "Digital",
+      city: "Bengaluru",
       country: "IN",
-      state: "Online",
-      pincode: "000000",
+      state: "Karnataka",
+      pincode: "560001",
       phone: ""
     };
   } else if (isDigitalOnly) {
-    const defaultName = (currentUser && (currentUser.name || currentUser.username)) || (email.split('@')[0]) || "Collector";
     finalAddressObj = {
-      firstName: defaultName,
-      lastName: "",
+      firstName: "Digital",
+      lastName: "Collector",
       address: "Instant Digital Delivery",
       apartment: "",
-      city: "Online",
+      city: "Bengaluru",
       country: "IN",
-      state: "Digital",
-      pincode: "000000",
-      phone: document.getElementById("chk-phone")?.value.trim() || ""
+      state: "Karnataka",
+      pincode: "560001",
+      phone: ""
     };
-  } else if (isUsingSavedAddress) {
+  } else if (isUsingSavedAddress && selectedSavedAddressId) {
     const addrs = getSavedAddressesList();
     const target = addrs.find(a => a.id === selectedSavedAddressId) || addrs[0];
     if (target) {
@@ -849,9 +867,23 @@ window.handleCheckoutSubmit = function (e) {
 
   const subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
   const discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;
-  const shipping = hasPhysical ? (subtotal > 999 ? 0 : 99) : 0;
+  const hasPhysical = cartData.some(i => i.type === 'physical');
+  const isDonationOrder = cartData.some(i => i && (i.isDonation || i.productId === "DONATION" || (i.id && String(i.id).startsWith("donation"))));
+  const shipping = (hasPhysical && !isDonationOrder) ? (subtotal >= 999 ? 0 : 99) : 0;
   const grandTotal = Math.max(0, subtotal - discountAmount + shipping);
-  const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
+  const orderPrefix = isDonationOrder ? "TXN-" : "ORD-";
+  const orderId = orderPrefix + Math.floor(100000 + Math.random() * 900000);
+
+  const paymentLabels = {
+    upi: "UPI",
+    card: "Credit / Debit Card",
+    cards: "Credit / Debit Card",
+    netbanking: "NetBanking",
+    wallet: "Wallet",
+    wallets: "Wallet",
+    cod: "Cash on Delivery (COD)",
+    razorpay: "Online Payment (Razorpay)"
+  };
 
   const orderPayload = {
     orderId,
@@ -862,6 +894,9 @@ window.handleCheckoutSubmit = function (e) {
     discountAmount,
     shipping,
     grandTotal,
+    paymentType: paymentLabels[selectedPaymentMethod] || "Online Payment",
+    isDonation: isDonationOrder,
+    orderType: isDonationOrder ? "donation" : (hasPhysical ? "physical" : "digital"),
     date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   };
 
@@ -872,7 +907,7 @@ window.handleCheckoutSubmit = function (e) {
     return;
   }
 
-  if (selectedPaymentMethod === "razorpay" || selectedPaymentMethod === "upi" || selectedPaymentMethod === "cards" || selectedPaymentMethod === "netbanking") {
+  if (selectedPaymentMethod === "razorpay" || selectedPaymentMethod === "upi" || selectedPaymentMethod === "cards" || selectedPaymentMethod === "card" || selectedPaymentMethod === "netbanking" || selectedPaymentMethod === "wallet" || selectedPaymentMethod === "wallets") {
     triggerRazorpaySDKPayment(orderPayload);
   } else if (selectedPaymentMethod === "cod") {
     processVerifiedOrderSuccess({
@@ -916,22 +951,31 @@ async function triggerRazorpaySDKPayment(orderData) {
       throw new Error("Razorpay Checkout SDK failed to load. Please check your internet connection.");
     }
 
-    // 2. Strict method mapping & isolation: only show the chosen method in Razorpay popup
-    let rzpConfig = undefined;
+    // 2. Strict method isolation: pass selected category and prefill to show ONLY chosen method
     const methodPrefill = selectedPaymentMethod === 'upi' 
       ? 'upi' 
-      : (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card' ? 'card' : (selectedPaymentMethod === 'netbanking' ? 'netbanking' : undefined));
+      : (selectedPaymentMethod === 'cards' || selectedPaymentMethod === 'card' ? 'card' : (selectedPaymentMethod === 'netbanking' ? 'netbanking' : (selectedPaymentMethod === 'wallet' || selectedPaymentMethod === 'wallets' ? 'wallet' : undefined)));
+    
+    const methodRestrictions = methodPrefill ? {
+      netbanking: methodPrefill === 'netbanking',
+      card: methodPrefill === 'card',
+      upi: methodPrefill === 'upi',
+      wallet: methodPrefill === 'wallet',
+      emi: false,
+      paylater: false
+    } : undefined;
 
+    let rzpConfig = undefined;
     if (selectedPaymentMethod === 'upi') {
       rzpConfig = {
         display: {
           blocks: {
             upi: {
-              name: "Pay using UPI (Google Pay, PhonePe, Paytm, QR)",
+              name: "Pay using UPI",
               instruments: [
                 {
                   method: "upi",
-                  flows: ["qr", "intent", "collect"]
+                  flows: ["qr", "collect", "intent"]
                 }
               ]
             }
@@ -966,24 +1010,55 @@ async function triggerRazorpaySDKPayment(orderData) {
           preferences: { show_default_blocks: false }
         }
       };
+    } else if (selectedPaymentMethod === 'wallet' || selectedPaymentMethod === 'wallets') {
+      rzpConfig = {
+        display: {
+          blocks: {
+            wallet: {
+              name: "Wallets",
+              instruments: [{ method: "wallet" }]
+            }
+          },
+          sequence: ["block.wallet"],
+          preferences: { show_default_blocks: false }
+        }
+      };
     }
 
     const isDonationOrder = (orderData.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.id && String(i.id).startsWith("donation"))));
     const isDigitalOrder = (orderData.items || []).every(i => i && (i.type === "digital" || (i.product && i.product.type === "digital")));
 
-    const logoAsset = window.SENPAIWORKS_LOGO_HORIZ || `${window.location.origin}/assets/Videos/senpaiworks_razorpay_brand_logo.png`;
+    const logoAsset = window.SENPAIWORKS_LOGO_BLACK_BG || `${window.location.origin}/assets/Videos/senpaiworks_razorpay_square_logo.png`;
 
     window.lastOrderPayload = orderData;
 
-    // 3. Open official Razorpay Checkout Popup
+    const paymentLabels = {
+      upi: "UPI",
+      card: "Credit / Debit Card",
+      cards: "Credit / Debit Card",
+      netbanking: "NetBanking",
+      wallet: "Wallet",
+      wallets: "Wallet",
+      cod: "Cash on Delivery (COD)",
+      razorpay: "Online Payment (Razorpay)"
+    };
+
+    // 3. Open official Razorpay Checkout Popup with strict isolation
     const options = {
       key: keyId,
       amount: amount,
       currency: currency || "INR",
-      name: " ",
-      description: isDonationOrder ? "Community Patron Support" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
+      name: "SenpaiWorks",
+      description: isDonationOrder ? "SenpaiWorks Supporter Contribution" : (isDigitalOrder ? "Digital Art Assets" : "Anime Streetwear & Collectibles"),
       image: logoAsset,
       order_id: orderId,
+      prefill: {
+        name: isDonationOrder ? (orderData.address?.firstName || "Supporter") : `${orderData.address ? orderData.address.firstName : "Collector"} ${orderData.address ? (orderData.address.lastName || "") : ""}`.trim(),
+        email: orderData.email || "",
+        ...(isDonationOrder ? {} : (orderData.address && orderData.address.phone ? { contact: orderData.address.phone } : {})),
+        ...(methodPrefill ? { method: methodPrefill } : {})
+      },
+      ...(methodRestrictions ? { method: methodRestrictions } : {}),
       ...(rzpConfig ? { config: rzpConfig } : {}),
       handler: async function (response) {
         // Customer completed payment -> Cryptographic verification on server
@@ -993,16 +1068,18 @@ async function triggerRazorpaySDKPayment(orderData) {
         }
 
         try {
+          const activeAuthToken = getAuthTokenIfLoggedIn();
           const verifyRes = await fetch("/api/payments/verify", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              ...(localStorage.getItem("userToken") ? { "Authorization": `Bearer ${localStorage.getItem("userToken")}` } : {})
+              ...(activeAuthToken ? { "Authorization": `Bearer ${activeAuthToken}` } : {})
             },
             body: JSON.stringify({
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
+              paymentType: paymentLabels[selectedPaymentMethod] || "Razorpay Gateway (Online)",
               orderData: orderData
             })
           });
@@ -1127,12 +1204,12 @@ async function processVerifiedOrderSuccess(orderData) {
   const headers = {
     "Content-Type": "application/json"
   };
-  const token = localStorage.getItem("userToken");
+  const token = getAuthTokenIfLoggedIn();
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
     console.log("Added Authorization header to order request");
   } else {
-    console.warn("No userToken found in localStorage for order request");
+    console.warn("No active userToken for order request (guest checkout)");
   }
 
   try {
@@ -1191,9 +1268,11 @@ window.processTestPayment = function (paymentType) {
   const subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
   const discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;
   const hasPhysical = cartData.some(i => i.type === 'physical');
-  const shipping = hasPhysical ? (subtotal > 999 ? 0 : 99) : 0;
+  const isDonationOrder = cartData.some(i => i && (i.isDonation || i.productId === "DONATION" || (i.id && String(i.id).startsWith("donation"))));
+  const shipping = (hasPhysical && !isDonationOrder) ? (subtotal >= 999 ? 0 : 99) : 0;
   const grandTotal = Math.max(0, subtotal - discountAmount + shipping);
-  const orderId = pending ? pending.orderId : ("ORD-" + Math.floor(100000 + Math.random() * 900000));
+  const defaultPrefix = isDonationOrder ? "TXN-" : "ORD-";
+  const orderId = pending ? pending.orderId : (defaultPrefix + Math.floor(100000 + Math.random() * 900000));
 
   closeRazorpayModal();
 

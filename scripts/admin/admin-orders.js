@@ -261,7 +261,7 @@ window.updateAdminOrderStatus = async function (orderId, newStatus) {
 
     let bodyData = { status: newStatus };
     if (newStatus === "Shipped" || newStatus === "In Transit") {
-      const awb = prompt(`Enter AWB / Tracking Number for order #${orderId} (optional):`);
+      const awb = prompt(`Enter AWB / Tracking Number for Order ID ${orderId} (optional):`);
       if (awb !== null && awb.trim() !== "") {
         bodyData.awbNumber = awb.trim();
       }
@@ -300,7 +300,7 @@ window.viewAdminOrderDetails = async function (orderId) {
   const typeInfo = window.getOrderTypeInfo(order);
 
   if (title) {
-    title.innerHTML = `<i class="fa-solid fa-receipt"></i> Order #${order.orderNumber || order.orderId || order.id} <span style="${typeInfo.badgeStyle}; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle;"><i class="fa-solid ${typeInfo.icon}"></i> ${typeInfo.type} Order</span>`;
+    title.innerHTML = `<i class="fa-solid fa-receipt"></i> Order ID: ${order.orderNumber || order.orderId || order.id} <span style="${typeInfo.badgeStyle}; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle;"><i class="fa-solid ${typeInfo.icon}"></i> ${typeInfo.type} Order</span>`;
   }
 
   let addressObj = {};

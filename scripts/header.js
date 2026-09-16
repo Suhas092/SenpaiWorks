@@ -553,21 +553,38 @@ function initHeaderInteractions() {
   const signoutConfirmBtn = document.getElementById("signout-confirm-btn");
 
   function performLogout() {
-    if (window.Auth) {
-      window.Auth.logout("home.html");
-    } else {
-      const cur = getCurrentUser();
-      if (cur) {
-        localStorage.setItem("lastUser", JSON.stringify(cur));
-      }
-      localStorage.removeItem("currentUser");
-      localStorage.setItem("userLoggedOut", "true");
-      localStorage.setItem("isLoggedIn", "false");
-      sessionStorage.clear();
-      updateAuthUI();
-      if (dropdownCard) dropdownCard.classList.remove("active");
-      window.location.href = "home.html";
+    const cur = getCurrentUser();
+    if (cur) {
+      localStorage.setItem("lastUser", JSON.stringify(cur));
     }
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("userData");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("lastUserToken");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("shoppingCart");
+    localStorage.setItem("userLoggedOut", "true");
+    localStorage.setItem("isLoggedIn", "false");
+    sessionStorage.clear();
+
+    // Clear session cookies
+    document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    try {
+      fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    } catch (e) {}
+
+    if (window.Auth && typeof window.Auth.logout === "function") {
+      window.Auth.logout("home.html");
+      return;
+    }
+
+    updateAuthUI();
+    if (dropdownCard) dropdownCard.classList.remove("active");
+    window.location.href = "home.html";
   }
 
   if (dropdownSignoutBtn) {

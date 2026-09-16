@@ -467,10 +467,11 @@ function renderOrdersList(ordersToRender, resetPage = true) {
           </div>
 
           <div class="order-header-right" style="text-align: right;">
-            ${order.isReplacementOrder ? '<div style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:700;display:inline-block;margin-bottom:4px;"><i class="fa-solid fa-rotate"></i> Replacement</div><br>' : ''}
-            <div class="meta-label">ORDER # ${orderId}</div>
+            <div class="meta-label">ORDER ID: ${orderId}</div>
             <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 4px;">
               <a href="javascript:void(0)" onclick="openOrderDetailsModal('${orderId}')" class="link-view-receipt">Order Details</a>
+              <span style="color: #cbd5e1;">|</span>
+              <a href="/api/orders/${encodeURIComponent(orderId)}/invoice" download="SenpaiWorks-Invoice-${orderId}.pdf" target="_blank" class="link-view-receipt" title="Download Official Invoice PDF"><i class="fa-solid fa-file-pdf"></i> Invoice</a>
               <span style="color: #cbd5e1;">|</span>
               <a href="order-confirmation.html?orderId=${orderId}" class="link-view-receipt">View Receipt &rarr;</a>
             </div>
@@ -890,14 +891,14 @@ window.cancelOrder = function (dbId, orderNumber) {
   const numEl = document.getElementById("cancel-modal-order-number");
   const nameEl = document.getElementById("cancel-modal-product-name");
 
-  if (numEl) numEl.textContent = `Order #${orderNumber}`;
+  if (numEl) numEl.textContent = `Order ID: ${orderNumber}`;
   if (nameEl) nameEl.textContent = productNames;
 
   if (modal) {
     modal.classList.add("active");
   } else {
     // Fallback if modal not present
-    if (confirm(`Are you sure you want to cancel "${productNames}" (Order #${orderNumber})?`)) {
+    if (confirm(`Are you sure you want to cancel "${productNames}" (Order ID: ${orderNumber})?`)) {
       window.confirmCancelOrderAction();
     }
   }
@@ -932,8 +933,8 @@ window.confirmCancelOrderAction = async function () {
     if (res.ok) {
       window.closeCancelOrderModal();
       const toastMsg = data.refundFlagged
-        ? `Order #${orderNumber} cancelled. Refund is being processed.`
-        : `Order #${orderNumber} cancelled`;
+        ? `Order ID: ${orderNumber} cancelled. Refund is being processed.`
+        : `Order ID: ${orderNumber} cancelled`;
       window.showOrderToast(toastMsg, productNames, "success");
       initOrdersDashboard(); // Refresh orders list & badge
     } else {
@@ -1208,7 +1209,7 @@ window.openEditOrderAddressModal = function (dbId, orderNumber) {
   const dbIdInput = document.getElementById("edit-order-db-id");
   const numInput = document.getElementById("edit-order-num-val");
 
-  if (numEl) numEl.textContent = `Order #${orderNumber || (order ? order.orderNumber : dbId)}`;
+  if (numEl) numEl.textContent = `Order ID: ${orderNumber || (order ? order.orderNumber : dbId)}`;
   if (dbIdInput) dbIdInput.value = dbId;
   if (numInput) numInput.value = orderNumber || (order ? order.orderNumber : dbId);
 
@@ -1295,7 +1296,7 @@ window.handleSaveOrderAddressSubmit = async function (e) {
     const data = await res.json();
     if (res.ok && data.success) {
       window.closeEditOrderAddressModal();
-      window.showOrderToast("Address Updated", `Shipping address for Order #${orderNumber || dbId} updated successfully.`, "success");
+      window.showOrderToast("Address Updated", `Shipping address for Order ID: ${orderNumber || dbId} updated successfully.`, "success");
       
       // Update local orders cache
       if (data.order && window.allUserOrders) {

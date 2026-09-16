@@ -593,22 +593,26 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
     parsedAddress = typeof order.shippingAddress === 'string' ? JSON.parse(order.shippingAddress) : order.shippingAddress;
   } catch (e) {}
 
-  const customerName = order.guestName || (parsedAddress ? `${parsedAddress.firstName || ''} ${parsedAddress.lastName || ''}`.trim() : null) || 'Valued Customer';
-  const orderNumber = order.orderNumber || `ORD-${order.id}`;
-  const orderDate = new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  });
-
   const isDonation = (order.orderNumber && order.orderNumber.startsWith('TXN-')) || 
+    order.isDonation ||
+    order.orderType === 'donation' ||
+    (parsedAddress && (parsedAddress.isDonation || parsedAddress.address === 'Community Supporter' || parsedAddress.address === 'Community Patron')) ||
     (order.items || []).some(item => 
       item.productId === 'DONATION' || 
       (item.product && item.product.id === 'DONATION') || 
       item.isDonation || 
       (item.name && item.name.toLowerCase().includes('donation')) || 
-      (item.productName && item.productName.toLowerCase().includes('donation'))
+      (item.productName && item.productName.toLowerCase().includes('donation')) ||
+      (item.id && String(item.id).startsWith('donation'))
     );
+
+  const customerName = order.guestName || (parsedAddress ? `${parsedAddress.firstName || ''} ${parsedAddress.lastName || ''}`.trim() : null) || (isDonation ? 'Supporter' : 'Valued Customer');
+  const orderNumber = order.orderNumber || (isDonation ? `TXN-${order.id}` : `ORD-${order.id}`);
+  const orderDate = new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
 
   if (isDonation) {
     const html = `
@@ -644,7 +648,7 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
                 <!-- Content Body -->
                 <tr>
                   <td style="padding:32px;">
-                    <div style="display:inline-block; background:#dcfce7; color:#166534; font-size:12px; font-weight:800; padding:4px 10px; border-radius:20px; margin-bottom:12px;">
+                    <div style="display:inline-block; background:#ecfdf5; color:#059669; border:1px solid #a7f3d0; font-size:12px; font-weight:800; padding:4px 12px; border-radius:20px; margin-bottom:12px;">
                       &#10003; Contribution Confirmed
                     </div>
 
@@ -653,7 +657,7 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
                     </h1>
                     
                     <p style="margin:0 0 20px 0; font-size:14px; line-height:1.6; color:#475569;">
-                      Your generous contribution of <strong>₹${(order.total || 0).toLocaleString('en-IN')}.00</strong> directly fuels our original 2D/3D anime productions, indie creator resources, and open community art releases.
+                      Your generous contribution of <strong>₹${(order.total || 0).toLocaleString('en-IN')}.00</strong> directly powers our original 2D/3D anime productions, indie creator resources, and open community art releases.
                     </p>
 
                     <!-- Transaction Summary Meta Grid -->
@@ -663,7 +667,7 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
                         <td align="right" style="font-size:12px; color:#64748b; font-weight:600; padding-bottom:4px;">Contribution Date</td>
                       </tr>
                       <tr>
-                        <td style="font-size:14px; font-weight:800; color:#0f172a; font-family:monospace;">#${orderNumber}</td>
+                        <td style="font-size:14px; font-weight:800; color:#0f172a; font-family:monospace; white-space:nowrap;">#${orderNumber}</td>
                         <td align="right" style="font-size:13px; font-weight:700; color:#0f172a;">${orderDate}</td>
                       </tr>
                       <tr>
@@ -684,8 +688,8 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
                       <tbody>
                         <tr>
                           <td style="padding:12px 0; border-bottom:1px solid #f1f5f9; vertical-align:top;">
-                            <div style="font-size:14px; font-weight:600; color:#0f172a;">Community Patron Contribution</div>
-                            <div style="font-size:12px; color:#64748b; margin-top:2px;">Tier: Creative Community Supporter</div>
+                            <div style="font-size:14px; font-weight:600; color:#0f172a;">Community Supporter Contribution</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:2px;">Supporter</div>
                           </td>
                           <td align="right" style="padding:12px 0; border-bottom:1px solid #f1f5f9; vertical-align:top; font-size:14px; font-weight:600; color:#0f172a;">
                             ₹${(order.total || 0).toLocaleString('en-IN')}.00
@@ -733,7 +737,7 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
     return sendEmail({
       from: DELIVERY_FROM,
       to: order.email,
-      subject: `Contribution Receipt: #${orderNumber} — SenpaiWorks Patron Support`,
+      subject: `Contribution Receipt #${orderNumber} — SenpaiWorks Supporter`,
       html: html
     });
   }
@@ -758,7 +762,7 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
   }).join('');
 
   let addressBlockHtml = '';
-  if (parsedAddress && (parsedAddress.address || parsedAddress.city)) {
+  if (!isDonation && parsedAddress && (parsedAddress.address || parsedAddress.city)) {
     const lines = [
       parsedAddress.address || parsedAddress.street || parsedAddress.flat || '',
       parsedAddress.apartment ? `Apt/Suite: ${parsedAddress.apartment}` : '',
@@ -778,9 +782,9 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
     `;
   }
 
-  const paymentMethodText = (order.paymentGateway === 'cod' || (order.paymentId && order.paymentId.startsWith('COD')))
+  const paymentMethodText = order.paymentType || ((order.paymentGateway === 'cod' || (order.paymentId && order.paymentId.startsWith('COD')))
     ? 'Cash on Delivery (Pending)'
-    : 'Online Payment (Confirmed)';
+    : 'Online Payment (Confirmed)');
 
   const html = `
     <!DOCTYPE html>
@@ -823,6 +827,7 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
                     Thanks for your order, ${customerName}!
                   </h1>
                   
+                  ${!isDonation ? `
                   <p style="margin:0 0 20px 0; font-size:14px; line-height:1.6; color:#475569;">
                     We're getting your order ready. You can track your order status live anytime using the button below:
                   </p>
@@ -833,11 +838,12 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
                       Track Your Order &rarr;
                     </a>
                   </div>
+                  ` : ''}
 
                   <!-- Order Summary Meta Grid -->
                   <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:22px;">
                     <tr>
-                      <td style="font-size:12px; color:#64748b; font-weight:600; padding-bottom:4px;">Order Number</td>
+                      <td style="font-size:12px; color:#64748b; font-weight:600; padding-bottom:4px;">Order ID</td>
                       <td align="right" style="font-size:12px; color:#64748b; font-weight:600; padding-bottom:4px;">Order Date</td>
                     </tr>
                     <tr>

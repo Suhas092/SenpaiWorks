@@ -117,7 +117,7 @@ module.exports = function ({
 
     const isDigitalOnly = hasDigital && !hasPhysical;
     // Free shipping above ₹999 for physical items; ₹0 for purely digital orders
-    const shipping = isDigitalOnly ? 0 : (computedSubtotal > 999 ? 0 : 99);
+    const shipping = isDigitalOnly ? 0 : (computedSubtotal >= 999 ? 0 : 99);
     const validDiscount = Math.min(computedSubtotal, Math.max(0, Number(discountAmount) || 0));
     const grandTotal = Math.max(1, computedSubtotal + shipping - validDiscount);
 
@@ -236,7 +236,9 @@ module.exports = function ({
         const user = await prisma.user.findUnique({ where: { email: req.userEmail } });
         if (user) {
           customerId = user.id;
-          finalEmail = user.email;
+          if (!finalEmail) {
+            finalEmail = user.email;
+          }
           if (!guestName && (user.name || user.username)) {
             guestName = user.name || user.username;
           }
@@ -255,7 +257,13 @@ module.exports = function ({
 
       // Step D: Create Order in Neon PostgreSQL
       const randSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
-      const isDonationOrder = (orderCalc.dbItems || []).some(it => it.productId === 'DONATION' || (it.productName && it.productName.toLowerCase().includes('donation')));
+      const isDonationOrder = (orderCalc.dbItems || []).some(it => 
+        it.productId === 'DONATION' || 
+        (it.productName && it.productName.toLowerCase().includes('donation')) ||
+        it.isDonation ||
+        (it.name && it.name.toLowerCase().includes('donation')) ||
+        (it.id && String(it.id).startsWith('donation'))
+      );
       const prefix = isDonationOrder ? 'TXN-' : 'ORD-';
       const orderNumber = `${prefix}${Date.now().toString(36).toUpperCase()}-${randSuffix}`;
 
@@ -265,13 +273,15 @@ module.exports = function ({
       ];
 
       if (isDonationOrder || orderCalc.isDigitalOnly) {
-        initialHistory.push({ status: isDonationOrder ? 'Completed' : 'Delivered', timestamp: new Date().toISOString(), note: isDonationOrder ? 'Patron Contribution Acknowledged' : 'Instant Digital Delivery' });
+        initialHistory.push({ status: isDonationOrder ? 'Completed' : 'Delivered', timestamp: new Date().toISOString(), note: isDonationOrder ? 'Supporter Contribution Acknowledged' : 'Instant Digital Delivery' });
       } else {
         initialHistory.push({ status: 'Processing', timestamp: new Date().toISOString(), note: 'Order confirmed and sent to warehouse' });
       }
 
       const shippingAddressObj = {
         ...addr,
+        paymentType: req.body.paymentType || addr.paymentType || (isDonationOrder ? 'Online Payment' : 'Razorpay Gateway (Online)'),
+        isDonation: isDonationOrder,
         _statusHistory: initialHistory
       };
 
@@ -312,8 +322,8 @@ module.exports = function ({
           data: {
             userEmail: 'suhas_admin',
             type: 'order_created',
-            title: `Paid Order: #${order.orderNumber}`,
-            message: `Order #${order.orderNumber} placed by ${order.guestName || order.email} for ₹${order.total.toLocaleString('en-IN')}. (Razorpay: ${razorpay_payment_id})`,
+            title: `Paid Order: ${order.orderNumber}`,
+            message: `Order ID: ${order.orderNumber} placed by ${order.guestName || order.email} for ₹${order.total.toLocaleString('en-IN')}. (Razorpay: ${razorpay_payment_id})`,
             link: 'admin.html#tab-orders',
             icon: 'fa-solid fa-box'
           }
