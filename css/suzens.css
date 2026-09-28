@@ -132,7 +132,7 @@ body {
 .sz-hero-bg-overlay {
   position: absolute;
   inset: 0;
-  background-image: url('assets/suzens band.png');
+  background-image: url('../assets/suzens band.png');
   background-size: cover;
   background-position: center top;
   opacity: 0.18;

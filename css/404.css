@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'BankGothic Lt BT';
-  src: url('assets/font_assets/BNKGOTHL.TTF') format('truetype');
+  src: url('../assets/font_assets/BNKGOTHL.TTF') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -31,7 +31,7 @@ body {
   background: 
     linear-gradient(180deg, rgba(11, 15, 25, 0.4) 0%, rgba(11, 15, 25, 0.3) 40%, rgba(11, 15, 25, 0.85) 100%),
     radial-gradient(circle at center, rgba(11, 15, 25, 0.1) 0%, rgba(11, 15, 25, 0.65) 100%),
-    url('assets/News page assets/zoro lost.png') center/cover no-repeat;
+    url('../assets/News page assets/zoro lost.png') center/cover no-repeat;
   background-attachment: fixed;
 }
 
