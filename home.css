@@ -3957,47 +3957,22 @@ body.page-loaded .page-transition-curtain {
 
 /* 3. Shorts & Entertainment Video Cards */
 .movie-card {
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
-  background-size: 200% 100%;
-  animation: home-skeleton-shimmer 1.5s infinite ease-in-out;
-}
-
-.movie-card.img-loaded {
   background: #16161f;
-  animation: none;
 }
 
 .movie-card img {
-  opacity: 0;
-  transition: opacity 0.35s ease, transform 0.5s ease, filter 0.5s ease;
-}
-
-.movie-card img.loaded {
   opacity: 1;
+  transition: transform 0.5s ease, filter 0.5s ease;
 }
 
 /* 4. New Merch on Store Image Shimmer */
 .feature-card-img-wrap,
 .grid-card-img-wrap {
-  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
-  background-size: 200% 100%;
-  animation: home-skeleton-shimmer 1.5s infinite ease-in-out;
-}
-
-.feature-card-img-wrap.img-loaded,
-.grid-card-img-wrap.img-loaded {
   background: #f8fafc;
-  animation: none;
 }
 
 .feature-card-image,
 .grid-card-image {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.feature-card-image.loaded,
-.grid-card-image.loaded {
   opacity: 1;
 }
 

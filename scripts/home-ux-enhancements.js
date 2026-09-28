@@ -105,28 +105,6 @@
   }
 
   // ═════════════════════════════════════════════════════════════════
-  // ISSUE #10: Loading Skeleton UI (Enhance Existing System)
-  // Show skeletons before API data loads
-  // ═════════════════════════════════════════════════════════════════
-
-  function enhanceLoadingSkeletons() {
-    // Show loading skeleton for recommended news IMMEDIATELY
-    const recList = document.getElementById("home-rec-list");
-    if (recList) {
-      // Check if content is still loading (empty or has only fallback)
-      if (recList.children.length === 0) {
-        recList.classList.add("skeleton-loading");
-      }
-    }
-
-    // Show placeholder for feature card while loading
-    const featureCard = document.querySelector(".merch-feature-card");
-    if (featureCard && !featureCard.querySelector("img.loaded")) {
-      featureCard.classList.add("skeleton-loading");
-    }
-  }
-
-  // ═════════════════════════════════════════════════════════════════
   // Initialize on Page Load
   // ═════════════════════════════════════════════════════════════════
 
@@ -134,12 +112,10 @@
     document.addEventListener("DOMContentLoaded", () => {
       initNewsAccordion();
       initTouchPauseForSlideshow();
-      enhanceLoadingSkeletons();
     });
   } else {
     initNewsAccordion();
     initTouchPauseForSlideshow();
-    enhanceLoadingSkeletons();
   }
 
   // Re-init accordion on window resize (responsive)

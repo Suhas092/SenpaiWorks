@@ -487,6 +487,27 @@
 
 
   <script>
+    window.bindHomeProgressiveSkeletons = function(targetEl) {
+      const root = targetEl || document;
+      const items = root.querySelectorAll(
+        '.merch-image-card, .feature-card-img-wrap, .grid-card-img-wrap, .movie-card, .rec-list-item'
+      );
+      items.forEach(container => {
+        const img = container.querySelector('img');
+        if (!img) return;
+        const markLoaded = () => {
+          img.classList.add('loaded');
+          container.classList.add('img-loaded');
+        };
+        if (img.complete && img.naturalHeight > 0) {
+          markLoaded();
+        } else {
+          img.addEventListener('load', markLoaded, { once: true });
+          img.addEventListener('error', markLoaded, { once: true });
+        }
+      });
+    };
+
     (async function loadDynamicShorts() {
       const container = document.querySelector(".movies-container");
       const leftBtn = document.querySelector(".carousel-btn.left");
@@ -559,6 +580,7 @@
                 </a>
               `;
             }).join("");
+            window.bindHomeProgressiveSkeletons(container);
           }
         } else {
           console.warn("[Showcase API] Could not fetch dynamic shorts (HTTP " + res.status + "), cleanly using static fallback markup.");
@@ -1392,13 +1414,13 @@
           const badgeText = spotlight.badge ? escapeHtml(spotlight.badge) : "BESTSELLER";
 
           featureCard.href = `store-detail.html?id=${encodeURIComponent(spotlight.id)}`;
-          featureCard.innerHTML = `
+              featureCard.innerHTML = `
             <div class="feature-card-img-wrap">
               <div class="prod-badges-row">
                 <span class="prod-badge badge-bestseller">${badgeText}</span>
                 <span class="prod-discount-badge">${discountPct}% OFF</span>
               </div>
-              <img src="${escapeAttr(featImg)}" alt="${escapeAttr(spotlight.name)}" class="feature-card-image" loading="lazy" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
+              <img src="${escapeAttr(featImg)}" alt="${escapeAttr(spotlight.name)}" class="feature-card-image" loading="eager" decoding="async" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
             </div>
             <div class="merch-feature-card-content">
               <div class="prod-sub-row">
@@ -1432,7 +1454,7 @@
                       ${pBadgeMarkup}
                       <span class="prod-discount-badge">${pDiscountPct}% OFF</span>
                     </div>
-                    <img src="${escapeAttr(pImg)}" alt="${escapeAttr(p.name)}" class="grid-card-image" loading="lazy" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
+                    <img src="${escapeAttr(pImg)}" alt="${escapeAttr(p.name)}" class="grid-card-image" loading="eager" decoding="async" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
                   </div>
                   <div class="grid-card-content">
                     <div class="prod-sub-row">
@@ -1448,6 +1470,10 @@
                 </a>
               `;
             }).join('');
+          }
+
+          if (typeof bindHomeProgressiveSkeletons === 'function') {
+            bindHomeProgressiveSkeletons();
           }
         } catch (err) {
           console.warn("[Failure Path] Could not load dynamic home merch, cleanly using static fallback markup:", err);
@@ -1475,33 +1501,12 @@
   <script src="scripts/home-animations.js" defer></script>
   <script src="scripts/home-ux-enhancements.js" defer></script>
   <script>
-    // Universal Homepage Progressive Skeleton Shimmer Binder
-    function bindHomeProgressiveSkeletons() {
-      const items = document.querySelectorAll(
-        '.merch-image-card, .feature-card-img-wrap, .grid-card-img-wrap, .movie-card, .rec-list-item'
-      );
-      items.forEach(container => {
-        const img = container.querySelector('img');
-        if (!img) return;
-        const markLoaded = () => {
-          img.classList.add('loaded');
-          container.classList.add('img-loaded');
-        };
-        if (img.complete && img.naturalHeight > 0) {
-          markLoaded();
-        } else {
-          img.addEventListener('load', markLoaded, { once: true });
-          img.addEventListener('error', markLoaded, { once: true });
-        }
-      });
-    }
-
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', bindHomeProgressiveSkeletons);
+      document.addEventListener('DOMContentLoaded', () => window.bindHomeProgressiveSkeletons());
     } else {
-      bindHomeProgressiveSkeletons();
+      window.bindHomeProgressiveSkeletons();
     }
-    window.addEventListener('load', bindHomeProgressiveSkeletons);
+    window.addEventListener('load', () => window.bindHomeProgressiveSkeletons());
   </script>
 
 <script src="scripts/image-loader.js" defer></script>
