@@ -1,6 +1,6 @@
 "use strict";
 // Footer script
-fetch('footer.html?v=' + new Date().getTime())
+fetch('/footer.html?v=' + new Date().getTime())
     .then(response => response.text())
     .then(html => {
     const container = document.getElementById('footer-container');

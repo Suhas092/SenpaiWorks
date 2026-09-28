@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Populate placeholder
-  fetch("header.html?v=" + new Date().getTime())
+  fetch("/header.html?v=" + new Date().getTime())
     .then(res => res.text())
     .then(data => {
       placeholder.innerHTML = data;

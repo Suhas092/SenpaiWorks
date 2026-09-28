@@ -4,11 +4,11 @@ function loadContactSection(imageSrc) {
     if (!document.querySelector('link[href*="contact.css"]')) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
-        link.href = "css/contact.css?v=2.0";
+        link.href = "/css/contact.css?v=2.0";
         document.head.appendChild(link);
     }
 
-    fetch("contact-section.html")
+    fetch("/contact-section.html")
         .then(response => response.text())
         .then(html => {
             const container = document.getElementById("contact-container");

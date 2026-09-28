@@ -5,7 +5,7 @@ function initDrawer() {
   if (container.hasAttribute('data-drawer-initialized')) return true;
   container.setAttribute('data-drawer-initialized', 'true');
 
-  fetch('drawer.html?v=' + new Date().getTime())
+  fetch('/drawer.html?v=' + new Date().getTime())
     .then(res => res.text())
     .then(html => {
       container.innerHTML = html;
