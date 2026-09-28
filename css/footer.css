@@ -1,7 +1,7 @@
 
 @font-face {
   font-family: 'BankGothic Lt BT';
-  src: url('assets/font_assets/BNKGOTHL.TTF') format('truetype');
+  src: url('../assets/font_assets/BNKGOTHL.TTF') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

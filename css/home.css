@@ -2546,8 +2546,8 @@ body {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, #ffffff 0%, #d8b4fe 30%, #818cf8 70%, #4f46e5 100%);
-  -webkit-mask: url('assets/SenpaiWorks logo.png') center/contain no-repeat;
-  mask: url('assets/SenpaiWorks logo.png') center/contain no-repeat;
+  -webkit-mask: url('../assets/SenpaiWorks logo.png') center/contain no-repeat;
+  mask: url('../assets/SenpaiWorks logo.png') center/contain no-repeat;
   filter: drop-shadow(0 15px 35px rgba(99, 102, 241, 0.45));
 }
 
