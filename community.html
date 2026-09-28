@@ -15,9 +15,12 @@
   <!-- FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="header.css?v=11">
   <link rel="stylesheet" href="community.css?v=2.0">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -34,6 +37,7 @@
   </script>
 </div>
   <script src="scripts/header.js?v=7"></script>
+  <script src="scripts/realtime-notifications.js"></script>
 
   <div class="top-bg-strip"></div>
 
@@ -87,7 +91,7 @@
             <h3>Instagram</h3>
             <p>Follow visual storyboards, color-pencil sketch phases, reels, WIP renders, and daily animation teasers
               directly on the feed.</p>
-            <a href="https://instagram.com/senpaiworks_" target="_blank" rel="noopener" class="channel-btn">Follow
+             <a href="https://www.instagram.com/senpaiworks_/" target="_blank" rel="noopener" class="channel-btn">Follow
               Us &rarr;</a>
           </div>
 
@@ -122,16 +126,6 @@
             <h3>Patreon</h3>
             <p>Support the creator, gain access to exclusive project source files, early script releases, private Discord roles, and premium visual toolkits.</p>
             <a href="https://www.patreon.com/cw/SenpaiWorks" target="_blank" rel="noopener" class="channel-btn">Become a Patron &rarr;</a>
-          </div>
-
-          <!-- GitHub Card -->
-          <div class="channel-card github">
-            <div class="channel-header">
-              <i class="fab fa-github channel-icon"></i>
-            </div>
-            <h3>GitHub</h3>
-            <p>Check out the developer repositories, open-source web experiments, animation helper scripts, shaders, and visual web systems.</p>
-            <a href="https://github.com/Suhas092" target="_blank" rel="noopener" class="channel-btn">Code Vault &rarr;</a>
           </div>
 
           <!-- LinkedIn Card -->
@@ -374,6 +368,7 @@
   <!-- Community reviews logic -->
   <script src="scripts/community.js?v=999"></script>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

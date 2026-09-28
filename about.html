@@ -8,11 +8,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SenpaiWorks</title>
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="header.css?v=11">
   <link rel="stylesheet" href="about.css">
-  <link rel="stylesheet" href="art-library.css">
+  <link rel="stylesheet" href="art-library.css?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -74,7 +77,7 @@
       <div class="about-image">
         <img
           src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/suhas_main_ae2frc.webp"
-          alt="Artist at work">
+          alt="Artist at work" loading="lazy" decoding="async">
       </div>
 
       <!-- Paragraph -->
@@ -104,7 +107,7 @@
       <div class="about-image">
         <img
           src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/rem_copy_rkjlfo.webp"
-          alt="How it started">
+          alt="How it started" loading="lazy" decoding="async">
       </div>
 
       <!-- Paragraph -->
@@ -136,7 +139,7 @@
       <div class="about-image">
         <img
           src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/all_characters_yvk9ik.webp"
-          alt="SenpaiWorks meaning">
+          alt="SenpaiWorks meaning" loading="lazy" decoding="async">
       </div>
 
       <!-- Paragraph -->
@@ -171,7 +174,7 @@
       <div class="about-image">
         <img
           src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/naruto_kurama_copy_um4z3o.webp"
-          alt="The future of SenpaiWorks">
+          alt="The future of SenpaiWorks" loading="lazy" decoding="async">
       </div>
 
       <!-- Paragraph -->
@@ -212,6 +215,7 @@
 
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

@@ -488,7 +488,8 @@ module.exports = function (prisma, requireUserToken, requireAdminToken, JWT_SECR
 
     try {
       const review = await prisma.review.findUnique({
-        where: { id: reviewId }
+        where: { id: reviewId },
+        include: { user: { select: { email: true, name: true } } }
       });
 
       if (!review) {
@@ -530,6 +531,26 @@ module.exports = function (prisma, requireUserToken, requireAdminToken, JWT_SECR
 
         return { helpfulCount: newHelpfulCount, voted };
       });
+
+      // Create notification when someone marks a review as helpful
+      if (result.voted && review.user?.email) {
+        try {
+          await prisma.notification.create({
+            data: {
+              userEmail: review.user.email,
+              type: 'community',
+              title: 'Your Review Was Helpful',
+              message: `${req.user.name || 'A user'} found your product review helpful!`,
+              link: '/store.html',
+              icon: 'fa-thumbs-up',
+              isRead: false
+            }
+          });
+          console.log('[Notification] Created helpful vote notification for:', review.user.email);
+        } catch (notifErr) {
+          console.error('[Notification] Error creating helpful notification:', notifErr.message);
+        }
+      }
 
       return res.json({
         success: true,

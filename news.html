@@ -11,10 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="header.css?v=11">
   <link rel="stylesheet" href="news.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 <body class="news-body-container">
 
@@ -87,7 +90,7 @@
         <h2 class="nw-heading">The Latest</h2>
         <div id="news-latest-col-list">
           <a href="article.html?id=deadpool-animation" class="nw-article-card">
-            <div class="nw-article-thumb"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool"></div>
+            <div class="nw-article-thumb"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool" loading="eager" decoding="async"></div>
             <div class="nw-article-info">
               <h3>Deadpool & Wolverine Fan Animation — Behind the Scenes & Full Breakdown</h3>
               <p>Experience the chaos, comedy, and combat in this high-octane, fan-made Deadpool animation — crafted from scratch.</p>
@@ -95,7 +98,7 @@
             </div>
           </a>
           <a href="article.html?id=web-architecture" class="nw-article-card">
-            <div class="nw-article-thumb"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/code_copy_jq3ic6.webp" alt="Web Architecture"></div>
+            <div class="nw-article-thumb"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/code_copy_jq3ic6.webp" alt="Web Architecture" loading="eager" decoding="async"></div>
             <div class="nw-article-info">
               <h3>SenpaiWorks v2 Website Architecture — Custom 3D Carousel CSS Matrix Engine</h3>
               <p>We built a custom CSS 3D rendering pipeline implementing matrix inversions for our parallax card carousel.</p>
@@ -103,7 +106,7 @@
             </div>
           </a>
           <a href="article.html?id=crypto-etfs-art-library" class="nw-article-card">
-            <div class="nw-article-thumb"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/rem_and_ram_copy_zigezp.webp" alt="Art Library"></div>
+            <div class="nw-article-thumb"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/rem_and_ram_copy_zigezp.webp" alt="Art Library" loading="eager" decoding="async"></div>
             <div class="nw-article-info">
               <h3>Art Library Expansion — 200+ New Illustrations Added to the SenpaiWorks Collection</h3>
               <p>Explore the expanded art library featuring new charcoal portraits, digital paintings, and anime studies.</p>
@@ -146,7 +149,7 @@
     </div>
     <div class="nw-editorial-grid" id="news-editorial-grid">
       <a href="article.html?id=deadpool-animation" class="nw-edit-card nw-edit-card--large" id="news-edit-main">
-        <div class="nw-edit-img"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool"></div>
+        <div class="nw-edit-img"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool" loading="eager" decoding="async"></div>
         <div class="nw-edit-body">
           <span class="nw-tag-pill">Featured</span>
           <h3>The Making of Deadpool: A Complete Visual Effects Breakdown</h3>
@@ -156,7 +159,7 @@
       </a>
       <div class="nw-edit-stack" id="news-edit-stack">
         <a href="article.html?id=suzens-idol-debut" class="nw-edit-card nw-edit-card--small">
-          <div class="nw-edit-img"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp" alt="Suzens"></div>
+          <div class="nw-edit-img"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp" alt="Suzens" loading="eager" decoding="async"></div>
           <div class="nw-edit-body">
             <span class="nw-tag-pill">Design</span>
             <h3>Designing Virtual Idols: Suzens Character Art Pipeline</h3>
@@ -164,7 +167,7 @@
           </div>
         </a>
         <a href="article.html?id=web-architecture" class="nw-edit-card nw-edit-card--small">
-          <div class="nw-edit-img"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/rem_copy_rkjlfo.webp" alt="Web Dev"></div>
+          <div class="nw-edit-img"><img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/rem_copy_rkjlfo.webp" alt="Web Dev" loading="eager" decoding="async"></div>
           <div class="nw-edit-body">
             <span class="nw-tag-pill">Engineering</span>
             <h3>SenpaiWorks v2 Architecture: Node & CSS Engine</h3>
@@ -189,7 +192,7 @@
       <!-- Video Card 1 -->
       <div class="nw-video-card nw-open-video-btn" data-video-id="SsoV6Mdjr6A" data-video-title="SenpaiWorks 2.0 Official Platform Showcase & Video Proof">
         <div class="nw-video-thumb-container">
-          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/all_characters_yvk9ik.webp" alt="SenpaiWorks 2.0 Proof">
+          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/all_characters_yvk9ik.webp" alt="SenpaiWorks 2.0 Proof" loading="eager" decoding="async">
           <div class="nw-play-overlay">
             <div class="nw-play-icon"><i class="fa-solid fa-play"></i></div>
           </div>
@@ -214,7 +217,7 @@
       <!-- Video Card 2 -->
       <div class="nw-video-card nw-open-video-btn" data-video-id="SsoV6Mdjr6A" data-video-title="Deadpool & Wolverine Animation - 4K Visual Proof & VFX Breakdown">
         <div class="nw-video-thumb-container">
-          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool Animation Proof">
+          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool Animation Proof" loading="eager" decoding="async">
           <div class="nw-play-overlay">
             <div class="nw-play-icon"><i class="fa-solid fa-play"></i></div>
           </div>
@@ -239,7 +242,7 @@
       <!-- Video Card 3 -->
       <div class="nw-video-card nw-open-video-btn" data-video-id="SsoV6Mdjr6A" data-video-title="Suzens: Virtual Idol Debut Concert Teaser & Audio Proof">
         <div class="nw-video-thumb-container">
-          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp" alt="Suzens Virtual Idol Proof">
+          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp" alt="Suzens Virtual Idol Proof" loading="eager" decoding="async">
           <div class="nw-play-overlay">
             <div class="nw-play-icon"><i class="fa-solid fa-play"></i></div>
           </div>
@@ -362,5 +365,6 @@
   <script src="scripts/footer.js"></script>
   <script src="scripts/news.js?v=1.0" defer></script>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 </html>

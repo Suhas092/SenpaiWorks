@@ -247,7 +247,7 @@
       return `
         <a href="article.html?id=${encodeURIComponent(art.id)}" class="more-article-card">
           <div class="more-article-thumb">
-            <img src="${escapeAttr(safeUrl(img))}" alt="${escapeAttr(art.title)}" loading="lazy">
+            <img src="${escapeAttr(safeUrl(img))}" alt="${escapeAttr(art.title)}" loading=\"${idx < 15 ? 'eager' : 'lazy'}\">
           </div>
           <div class="more-article-body">
             <span class="more-article-tag">${escapeHtml(art.category || "Story")}</span>

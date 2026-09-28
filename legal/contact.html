@@ -130,29 +130,68 @@
   </main>
 
   <script>
-    function handleSupportFormSubmit(e) {
+    async function handleSupportFormSubmit(e) {
       e.preventDefault();
       const name = document.getElementById('sup-name').value.trim();
       const email = document.getElementById('sup-email').value.trim();
+      const category = document.getElementById('sup-category').value.trim();
+      const orderId = document.getElementById('sup-order-id').value.trim();
+      const message = document.getElementById('sup-message').value.trim();
       const alertBox = document.getElementById('support-feedback-alert');
       const submitBtn = document.getElementById('sup-submit-btn');
 
-      if (!name || !email) return;
+      if (!name || !email || !category || !message) {
+        if (alertBox) {
+          alertBox.innerHTML = 'Please fill in all required fields.';
+          alertBox.style.display = 'block';
+          alertBox.style.color = '#dc2626';
+        }
+        return;
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending...';
 
-      setTimeout(function() {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Message';
-        
+      try {
+        const response = await fetch('/api/support/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            subject: category,
+            message: message,
+            orderId: orderId || null
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to send message');
+        }
+
+        // Success
         if (alertBox) {
           alertBox.innerHTML = 'Thank you, ' + name + '. Your message has been received. Our team will follow up at <strong>' + email + '</strong> within 24–48 business hours.';
           alertBox.style.display = 'block';
+          alertBox.style.color = '#16a34a';
         }
 
         document.getElementById('support-inquiry-form').reset();
-      }, 500);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        if (alertBox) {
+          alertBox.innerHTML = (error.message || 'Failed to send message. Please try again.');
+          alertBox.style.display = 'block';
+          alertBox.style.color = '#dc2626';
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      }
     }
   </script>
 

@@ -33,31 +33,84 @@ window.loadAdminAlerts = async function () {
 
     if (list) {
       if (alerts.length === 0) {
-        list.innerHTML = '<div style="padding: 24px; text-align: center; color: #64748b; font-size: 0.85rem;">No alerts right now.</div>';
+        list.innerHTML = '<div style="padding: 24px; text-align: center; color: #60789A; font-size: 16px;">No alerts right now.</div>';
       } else {
-        list.innerHTML = alerts.map(a => {
-          const isOrder = a.type === 'order_created';
-          const isReplace = a.type === 'replacement_requested';
-          const icon = a.icon || (isOrder ? '📦' : isReplace ? '🔄' : '🔔');
-          const bg = !a.isRead ? 'rgba(59, 130, 246, 0.08)' : 'transparent';
-          const targetTab = isOrder ? 'tab-orders' : isReplace ? 'tab-replacements' : 'tab-notifications';
-          const timeAgo = formatTimeAgo(new Date(a.createdAt));
+       const cardsHtml = alerts.map(a => {
+         const isOrder = a.type === 'order_created';
+         const isReplace = a.type === 'replacement_requested';
+          
+         const accentColor = isOrder ? '#2878F0' : isReplace ? '#16A979' : '#8b5cf6';
+         const iconBg = isOrder ? '#E5F0FF' : isReplace ? '#DFF8EF' : '#ede9fe';
+         const detailsBg = isOrder ? '#F1F7FF' : isReplace ? '#F1FAF7' : '#F3F0FF';
+         const dividerColor = isOrder ? '#BFD0E6' : isReplace ? '#C4DED5' : '#d4c5f9';
+         const borderColor = isOrder ? '#CFE0F7' : isReplace ? '#DCE5EA' : '#E0D5F0';
+         const badgeText = isOrder ? 'New Order' : isReplace ? 'Paid Order' : 'Notification';
+         const shadowColor = isOrder ? 'rgba(30, 80, 150, 0.08)' : isReplace ? 'rgba(30, 80, 100, 0.06)' : 'rgba(50, 50, 100, 0.04)';
+         const targetTab = isOrder ? 'tab-orders' : isReplace ? 'tab-replacements' : 'tab-notifications';
+         const timeAgo = formatTimeAgo(new Date(a.createdAt));
+          
+         // Extract Order ID from message (format: "Order ID: XXX placed by ...")
+         const orderIdMatch = a.message.match(/Order ID:\s*([^\s]+)/);
+         const orderId = orderIdMatch ? orderIdMatch[1] : a.title;
 
-          return `
-            <div class="admin-notif-item" onclick="window.handleAdminAlertClick(${a.id}, '${targetTab}')" style="padding: 10px 16px; border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.05)); cursor: pointer; background: ${bg}; transition: background 0.2s ease;">
-              <div style="display: flex; gap: 10px; align-items: flex-start;">
-                <span style="font-size: 1.2rem;">${icon}</span>
-                <div style="flex: 1; min-width: 0;">
-                  <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                    <strong style="font-size: 0.83rem; color: var(--text-main, #f8fafc); font-weight: 700;">${window.escapeHtml(a.title)}</strong>
-                    <span style="font-size: 0.7rem; color: #94a3b8;">${timeAgo}</span>
-                  </div>
-                  <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-muted, #94a3b8); line-height: 1.35;">${window.escapeHtml(a.message)}</p>
+         return `
+          <div onclick="window.handleAdminAlertClick(${a.id}, '${targetTab}')" style="
+            padding: 20px;
+            border: 1px solid ${borderColor};
+            border-left: 4px solid ${accentColor};
+            border-radius: 12px;
+            background: #FFFFFF;
+            box-shadow: 0 1px 3px ${shadowColor};
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+          ">
+             
+            <!-- Top section: Icon, Badge, Details, Timestamp -->
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start;">
+              <!-- Icon circle -->
+              <div style="flex-shrink: 0; width: 50px; height: 50px; border-radius: 50%; background: ${iconBg}; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid ${isOrder ? 'fa-box' : isReplace ? 'fa-cart-shopping' : 'fa-bell'}" style="color: ${accentColor}; font-size: 26px;"></i>
+              </div>
+               
+              <!-- Middle: Badge and subtitle -->
+              <div style="flex: 1; min-width: 0;">
+                <div style="display: inline-block; background: ${accentColor}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 4px;">
+                  ${window.escapeHtml(badgeText)}
+                </div>
+                <div style="font-size: 14px; font-weight: 500; color: #1a1a1a; margin-top: 2px; word-break: break-word;">
+                  ${window.escapeHtml(a.title)}
+                </div>
+              </div>
+               
+              <!-- Right: Timestamp -->
+              <div style="flex-shrink: 0; display: flex; align-items: center; gap: 6px; color: #64748B; font-size: 12px;">
+                <i class="fa-solid fa-calendar" style="font-size: 14px;"></i>
+                <span style="font-weight: 500;">${timeAgo}</span>
+              </div>
+            </div>
+             
+            <!-- Details grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-top: 1px solid ${dividerColor}; padding-top: 12px;">
+              <div>
+                <div style="font-size: 11px; font-weight: 500; color: #6B7280; margin-bottom: 4px;">Order ID</div>
+                <div style="font-size: 13px; font-weight: 700; color: #111827; word-break: break-word;">
+                  ${window.escapeHtml(orderId)}
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 11px; font-weight: 500; color: #6B7280; margin-bottom: 4px;">Order Details</div>
+                <div style="font-size: 12px; color: #374151; line-height: 1.3; word-break: break-word;">
+                  ${window.escapeHtml(a.message)}
                 </div>
               </div>
             </div>
+          </div>
           `;
         }).join('');
+        
+       list.innerHTML = `<div style="display: flex; flex-direction: column; gap: 8px; padding: 6px 0;">${cardsHtml}</div>`;
       }
     }
   } catch (e) {

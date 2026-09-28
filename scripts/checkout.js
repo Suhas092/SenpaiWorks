@@ -353,13 +353,20 @@ function loadSavedAddressCard() {
 
   // 1. Get ONLY the Default Address (or first saved address if no default is flagged)
   const defaultAddr = addrs.find(a => a.isDefault) || addrs[0];
-  selectedSavedAddressId = defaultAddr.id;
+  if (defaultAddr && defaultAddr.id) selectedSavedAddressId = defaultAddr.id;
 
-  if (isUsingSavedAddress) {
+  // If user has at least one saved address, auto-select the default and hide manual fields
+  if (defaultAddr) {
+    isUsingSavedAddress = true;
     if (manualFormGroup) manualFormGroup.style.display = "none";
   } else {
+    isUsingSavedAddress = false;
     if (manualFormGroup) manualFormGroup.style.display = "block";
   }
+
+  // Build visible saved-address summary card (always shown when saved addresses exist)
+  const addressLine = defaultAddr ? `${defaultAddr.flat || ''}${defaultAddr.street ? (defaultAddr.flat ? ', ' : '') + defaultAddr.street : ''}${defaultAddr.landmark ? ', ' + defaultAddr.landmark : ''}` : '';
+  const cityState = defaultAddr ? `${defaultAddr.city || ''}${defaultAddr.state ? ', ' + defaultAddr.state : ''}` : '';
 
   let html = `
     <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
@@ -373,11 +380,12 @@ function loadSavedAddressCard() {
                 <span style="background: #e0f2fe; color: #0284c7; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">Default</span>
               </div>
               <div style="font-size: 0.88rem; color: #475569; margin-top: 4px; line-height: 1.4;">
-                ${defaultAddr.flat}, ${defaultAddr.street}${defaultAddr.landmark ? ', ' + defaultAddr.landmark : ''}, ${defaultAddr.city ? defaultAddr.city.toUpperCase() : ''}, ${defaultAddr.state ? defaultAddr.state.toUpperCase() : ''} ${defaultAddr.pincode}, ${defaultAddr.country}
+                ${addressLine}, ${cityState} ${defaultAddr.pincode || ''}, ${defaultAddr.country || ''}
               </div>
-              <div style="font-size: 0.82rem; color: #64748b; margin-top: 4px; font-weight: 600;">Phone number: ${defaultAddr.phone}</div>
+              <div style="font-size: 0.82rem; color: #64748b; margin-top: 4px; font-weight: 600;">Phone number: ${defaultAddr.phone || ''}</div>
             </div>
           </div>
+
           ${isUsingSavedAddress ? '<i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 1.2rem;"></i>' : ''}
         </div>
       </div>
@@ -388,9 +396,69 @@ function loadSavedAddressCard() {
         </button>
         <a href="profile.html#addresses" style="font-weight: 700; font-size: 0.85rem; color: #0284c7; text-decoration: underline;">Manage Saved Addresses</a>
       </div>
+
+      <div id="selected-saved-address-summary" style="padding: 10px 12px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; font-size: 0.92rem;">
+        <div style="font-weight: 700; margin-bottom: 6px;">Delivering to: ${defaultAddr.fullName}</div>
+        <div style="font-size: 0.9rem; color: #475569;">${addressLine}, ${cityState} ${defaultAddr.pincode || ''}, ${defaultAddr.country || ''}</div>
+        <div style="margin-top: 8px;"><button type="button" onclick="window.useManualAddressMode()" style="background: transparent; border: none; color: #0284c7; font-weight: 700; cursor: pointer;">Change / Edit</button></div>
+      </div>
     </div>`;
 
   container.innerHTML = html;
+
+  // Attach reliable event listeners (in case inline onclicks are blocked by overlays or CSP)
+  try {
+    // Saved card click selects saved address
+    const savedCard = container.querySelector('.saved-address-selector-card');
+    if (savedCard) {
+      savedCard.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        try { window.useSavedAddressMode && window.useSavedAddressMode(defaultAddr.id); } catch (e) { console.warn('[checkout] useSavedAddressMode failed', e); }
+      });
+    }
+
+    // Deliver to a different address button
+    const deliverDiffBtn = container.querySelector('.btn-clear-addr');
+    if (deliverDiffBtn) {
+      deliverDiffBtn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        try { window.useManualAddressMode && window.useManualAddressMode(); } catch (e) { console.warn('[checkout] useManualAddressMode failed', e); }
+      });
+    }
+
+    // Change / Edit button inside selected-saved-address-summary
+    const changeEditBtn = container.querySelector('#selected-saved-address-summary button');
+    if (changeEditBtn) {
+      changeEditBtn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        try { window.useManualAddressMode && window.useManualAddressMode(); } catch (e) { console.warn('[checkout] useManualAddressMode failed', e); }
+      });
+    }
+  } catch (err) { console.warn('[checkout] attaching saved address listeners failed', err); }
+
+  // Autofill hidden manual fields (so any code that reads form inputs still finds values)
+  try {
+    const setIfExists = (id, val) => { const el = document.getElementById(id); if (el && (!el.value || el.value.trim() === '')) el.value = val || ''; };
+    if (defaultAddr) {
+      setIfExists('chk-first-name', (defaultAddr.fullName || '').split(' ')[0] || '');
+      setIfExists('chk-last-name', (defaultAddr.fullName || '').split(' ').slice(1).join(' ') || '');
+      setIfExists('chk-address', addressLine);
+      setIfExists('chk-apartment', defaultAddr.landmark || '');
+      setIfExists('chk-city', defaultAddr.city || '');
+      setIfExists('chk-pincode', defaultAddr.pincode || '');
+      setIfExists('chk-phone', defaultAddr.phone || '');
+      if (defaultAddr.country) {
+        const cEl = document.getElementById('chk-country'); if (cEl) { cEl.value = defaultAddr.country; window.onCountryChange(); }
+      }
+      if (defaultAddr.state) {
+        const sEl = document.getElementById('chk-state'); if (sEl) {
+          for (let i = 0; i < sEl.options.length; i++) {
+            if (sEl.options[i].value.toLowerCase() === (defaultAddr.state || '').toLowerCase()) { sEl.selectedIndex = i; break; }
+          }
+        }
+      }
+    }
+  } catch (err) { console.warn('[checkout] autofill saved address failed', err); }
 }
 
 window.selectCheckoutAddress = function (id) {
@@ -814,7 +882,28 @@ window.handleCheckoutSubmit = async function (e) {
       pincode: "560001",
       phone: ""
     };
-  } else if (isUsingSavedAddress && selectedSavedAddressId) {
+  }
+
+  // If the page didn't already set 'isUsingSavedAddress' but the user has saved addresses,
+  // auto-select the default saved address so the checkout uses it instead of forcing manual input.
+  if (!isUsingSavedAddress) {
+    try {
+      const addrsTry = getSavedAddressesList();
+      if (addrsTry && addrsTry.length > 0) {
+        const def = addrsTry.find(a => a.isDefault) || addrsTry[0];
+        if (def && def.id) {
+          isUsingSavedAddress = true;
+          selectedSavedAddressId = def.id;
+          // Update UI to reflect selected saved address
+          loadSavedAddressCard();
+        }
+      }
+    } catch (err) {
+      console.warn('[checkout] auto-select saved address failed', err);
+    }
+  }
+
+  else if (isUsingSavedAddress && selectedSavedAddressId) {
     const addrs = getSavedAddressesList();
     const target = addrs.find(a => a.id === selectedSavedAddressId) || addrs[0];
     if (target) {
@@ -832,19 +921,49 @@ window.handleCheckoutSubmit = async function (e) {
       };
     }
   } else {
-    const firstName = document.getElementById("chk-first-name").value.trim();
-    const lastName = document.getElementById("chk-last-name").value.trim();
-    const address = document.getElementById("chk-address").value.trim();
-    const apartment = document.getElementById("chk-apartment").value.trim();
-    const city = document.getElementById("chk-city").value.trim();
-    const country = document.getElementById("chk-country").value;
-    const state = document.getElementById("chk-state").value;
-    const pincode = document.getElementById("chk-pincode").value.trim();
-    const phone = document.getElementById("chk-phone").value.trim();
-    const saveInfo = document.getElementById("chk-save-info").checked;
+    // Read fields safely (some pages may not render every field or IDs may change)
+    const firstName = (document.getElementById("chk-first-name")?.value || "").trim();
+    const lastName = (document.getElementById("chk-last-name")?.value || "").trim();
+    const address = (document.getElementById("chk-address")?.value || "").trim();
+    const apartment = (document.getElementById("chk-apartment")?.value || "").trim();
+    const city = (document.getElementById("chk-city")?.value || "").trim();
+    const country = (document.getElementById("chk-country")?.value || "").trim();
+    const state = (document.getElementById("chk-state")?.value || "").trim();
+    const pincode = (document.getElementById("chk-pincode")?.value || "").trim();
+    const phone = (document.getElementById("chk-phone")?.value || "").trim();
+    const saveInfo = !!document.getElementById("chk-save-info") && document.getElementById("chk-save-info").checked;
 
-    if (!firstName || !lastName || !address || !city || !state || !pincode || !phone) {
-      alert("Please fill in all required delivery address fields.");
+    // Validate required fields and provide a helpful message showing which are missing
+    const requiredMap = [
+      ['firstName', firstName, 'First name'],
+      ['lastName', lastName, 'Last name'],
+      ['address', address, 'Address line'],
+      ['city', city, 'City'],
+      ['state', state, 'State'],
+      ['pincode', pincode, 'Pincode / ZIP'],
+      ['phone', phone, 'Phone']
+    ];
+
+    const missingFields = requiredMap.filter(([_, val]) => !val).map(([key, _v, label]) => label);
+    if (missingFields.length > 0) {
+      // Focus the first missing field if present in DOM
+      const firstMissingIdMap = {
+        'First name': 'chk-first-name',
+        'Last name': 'chk-last-name',
+        'Address line': 'chk-address',
+        'City': 'chk-city',
+        'State': 'chk-state',
+        'Pincode / ZIP': 'chk-pincode',
+        'Phone': 'chk-phone'
+      };
+      const firstMissingLabel = missingFields[0];
+      const focusId = firstMissingIdMap[firstMissingLabel];
+      if (focusId) {
+        const el = document.getElementById(focusId);
+        if (el) el.focus();
+      }
+
+      alert(`Please fill the following required delivery field(s): ${missingFields.join(', ')}.`);
       return;
     }
 

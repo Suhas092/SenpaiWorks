@@ -21,16 +21,40 @@
   function safeUrl(url) {
     if (!url) return "#";
     const trimmed = String(url).trim();
+    // Block dangerous protocols
     if (trimmed.startsWith("javascript:") || trimmed.startsWith("data:") || trimmed.startsWith("vbscript:")) {
+      return "#";
+    }
+    // Validate image URLs (allow https, http, /relative)
+    if (trimmed.startsWith("/") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return trimmed;
+    }
+    // For inline CSS URLs, ensure it's not trying to execute code
+    if (trimmed.includes("expression(") || trimmed.includes("@import")) {
       return "#";
     }
     return trimmed;
   }
 
+  /**
+   * Load featured news from backend API
+   * Expected endpoint: GET /api/news/featured
+   * Expected response shape:
+   * {
+   *   mainFeature: { id, title, category, date, img, hashtags },
+   *   recommended: { id, title, category, img },
+   *   listItems: [{ id, title, category, img, readTime, date }]
+   * }
+   * NOTE: If readTime is missing, falls back to date field.
+   * Ensure API returns dates in ISO format (YYYY-MM-DD) or human-readable format.
+   */
   async function loadHomeFeaturedNews() {
     try {
       const res = await fetch("/api/news/featured");
-      if (!res.ok) return;
+      if (!res.ok) {
+        console.warn("[News API] Failed to load featured news (HTTP " + res.status + ")");
+        return;
+      }
 
       const { mainFeature, recommended, listItems } = await res.json();
 

@@ -11,6 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="admin.css?v=4.0">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
 
   <style>
     /* Course Editor Specific Styles */
@@ -415,6 +417,7 @@
       gap: 10px;
     }
   </style>
+<script src="scripts/image-preload.js"></script>
 </head>
 <body class="editor-layout">
 
@@ -710,5 +713,6 @@
   <!-- EDITOR CONTROLLER SCRIPT -->
   <script src="scripts/admin/admin-core.js?v=4.0"></script>
   <script src="scripts/admin/admin-course-editor.js?v=1.0"></script>
+<script src="scripts/image-loader.js" defer></script>
 </body>
 </html>

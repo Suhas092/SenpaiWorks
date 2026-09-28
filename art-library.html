@@ -7,13 +7,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2D Art Library - SenpaiWorks</title>
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="header.css">
-  <link rel="stylesheet" href="art-library.css?v=43">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="header.css?v=11">
+  <link rel="stylesheet" href="art-library.css?v=44">
   <!-- FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
   <!-- Full Emoji Picker Web Component Library -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"></script>
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -84,7 +87,7 @@
                 </button>
                 <div class="top-bar-account-profile">
                   <img class="top-bar-artist-img" src="assets/SenpaiWorks logo bg.png"
-                    alt="SenpaiWorks Official Artist Logo" />
+                    alt="SenpaiWorks Official Artist Logo" loading="eager" decoding="async" />
                   <div class="top-bar-artist-info">
                     <span class="top-bar-artist-name">SenpaiWorks</span>
                     <span class="top-bar-artist-label">Official Artist</span>
@@ -142,7 +145,7 @@
               <div class="detail-main-col">
                 <div class="detail-image-container">
                   <div class="detail-image-wrapper">
-                    <img id="detail-main-img" src="" alt="Artwork Preview" />
+                    <img id="detail-main-img" src="" alt="Artwork Preview" loading="eager" decoding="async" />
                     <button type="button" class="enlarge-img-btn" id="enlarge-img-btn" title="Enlarge Artwork">
                       <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
                     </button>
@@ -301,7 +304,7 @@
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 
-  <script src="scripts/art-library.js?v=51"></script>
+  <script src="scripts/art-library.js?v=52"></script>
 
   <!-- Full-page refresh transition overlay -->
   <div class="page-refresh-overlay" id="page-refresh-overlay"></div>
@@ -330,7 +333,7 @@
     </div>
 
     <div class="lightbox-content" id="lightbox-content">
-      <img id="lightbox-img" src="" alt="Enlarged Artwork" />
+      <img id="lightbox-img" src="" alt="Enlarged Artwork" loading="eager" decoding="async" />
     </div>
   </div>
 
@@ -454,6 +457,7 @@
     </div>
   </div>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

@@ -171,8 +171,8 @@ async function initProductDetailPage() {
     const icon = wishlistBtn.querySelector("i");
 
     if (icon) {
-      icon.className = isWishlisted ? "fa-solid fa-heart" : "fa-regular fa-heart";
-      icon.style.color = isWishlisted ? "#ff4d6a" : "";
+      icon.className = isWishlisted ? "fa-solid fa-bookmark" : "fa-regular fa-bookmark";
+      icon.style.color = isWishlisted ? "#ef4444" : "";
     }
   }
 
@@ -389,7 +389,12 @@ async function initProductDetailPage() {
         };
       }
       if (titleWishlistBtn) {
-        titleWishlistBtn.style.display = "none";
+        titleWishlistBtn.style.display = "inline-flex";
+        const icon = titleWishlistBtn.querySelector("i");
+        if (icon) {
+          icon.className = isVariantWishlisted ? "fa-solid fa-bookmark" : "fa-regular fa-bookmark";
+          icon.style.color = isVariantWishlisted ? "#ef4444" : "";
+        }
       }
     } else {
       if (buyNowBtn) {
@@ -411,8 +416,8 @@ async function initProductDetailPage() {
         titleWishlistBtn.style.display = "inline-flex";
         const icon = titleWishlistBtn.querySelector("i");
         if (icon) {
-          icon.className = isVariantWishlisted ? "fa-solid fa-heart" : "fa-regular fa-heart";
-          icon.style.color = isVariantWishlisted ? "#ff4d6a" : "";
+          icon.className = isVariantWishlisted ? "fa-solid fa-bookmark" : "fa-regular fa-bookmark";
+          icon.style.color = isVariantWishlisted ? "#ef4444" : "";
         }
       }
     }
@@ -532,7 +537,7 @@ async function initProductDetailPage() {
   }
 
   // Wishlist handler for saving exact variant
-  const saveCurrentVariantToWishlist = () => {
+  const saveCurrentVariantToWishlist = async () => {
     if (!isUserLoggedIn()) {
       showToastNotice("Please sign in to save products to your Wishlist!");
       setTimeout(() => {
@@ -555,8 +560,21 @@ async function initProductDetailPage() {
     if (existingIdx > -1) {
       wishlistArr.splice(existingIdx, 1);
       showToastNotice(`Removed ${selectedColor || 'Standard'} from Wishlist`);
+      
+      // Remove from API
+      try {
+        const token = (typeof getAuthToken === 'function' ? getAuthToken() : localStorage.getItem('auth_token')) || null;
+        if (token) {
+          await fetch(`/api/wishlist/remove/${product.id}/product`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+        }
+      } catch (e) {
+        console.warn("API wishlist removal failed:", e);
+      }
     } else {
-      wishlistArr.push({
+      const itemData = {
         variantId: variantId,
         id: product.id,
         name: product.name,
@@ -567,9 +585,40 @@ async function initProductDetailPage() {
         size: selectedSize,
         category: product.category || "Merchandise",
         savedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-      });
+      };
+      
+      wishlistArr.push(itemData);
       window.showWishlistModal("Your item has been successfully added to your Wishlist.");
       localStorage.setItem("wishlist_has_unseen_items", "true");
+
+      // Add to API
+      try {
+        const token = (typeof getAuthToken === 'function' ? getAuthToken() : localStorage.getItem('auth_token')) || null;
+        if (token) {
+          await fetch(`/api/wishlist/add`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              itemId: product.id,
+              itemType: "product",
+              itemData: {
+                name: product.name,
+                image: variantImg,
+                price: product.price,
+                link: `/store-detail.html?id=${product.id}`,
+                type: "product",
+                color: selectedColor,
+                size: selectedSize
+              }
+            })
+          });
+        }
+      } catch (e) {
+        console.warn("API wishlist add failed:", e);
+      }
     }
 
     localStorage.setItem("userWishlist", JSON.stringify(wishlistArr));
@@ -712,16 +761,65 @@ window.showCartModal = function(msg) {
 
   // 9. Interactive Gallery switcher
   const mainImg = document.getElementById("main-preview-img");
+  const mainPreviewBox = document.querySelector(".main-preview-box");
   const thumbGallery = document.getElementById("thumbnail-gallery");
   if (mainImg) {
-    mainImg.src = product.img;
+    let imageSrc = product.img || "";
+    let isUsingFallback = false;
+    
+    // Check if the image path looks broken (references non-existent directories)
+    const isBrokenPath = (url) => {
+      if (!url) return true;
+      // Block paths to directories that don't exist
+      if (url.includes('assets/Images/')) return true;
+      if (url.includes('.r2.dev') && url.includes('avatar')) return true;
+      return false;
+    };
+    
+    // Use fallback if image path is broken
+    if (isBrokenPath(imageSrc)) {
+      imageSrc = "assets/SenpaiWorks logo.png";
+      isUsingFallback = true;
+    }
+    
+    mainImg.src = imageSrc;
     mainImg.alt = product.name;
     mainImg.style.opacity = "1";
     mainImg.style.display = "block";
-    mainImg.onerror = function () {
-      this.onerror = null;
-      this.src = "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp";
-    };
+    
+    // If using fallback, adjust styling to show placeholder
+    if (isUsingFallback) {
+      mainImg.style.setProperty("object-fit", "contain", "important");
+      // Add checkered background pattern (visible behind transparent logo)
+      if (mainPreviewBox) {
+        mainPreviewBox.style.background = 
+          "linear-gradient(45deg, #c0c0c0 25%, transparent 25%), " +
+          "linear-gradient(-45deg, #c0c0c0 25%, transparent 25%), " +
+          "linear-gradient(45deg, transparent 75%, #c0c0c0 75%), " +
+          "linear-gradient(-45deg, transparent 75%, #c0c0c0 75%)";
+        mainPreviewBox.style.backgroundSize = "20px 20px";
+        mainPreviewBox.style.backgroundPosition = "0 0, 0 10px, 10px -10px, -10px 0px";
+        mainPreviewBox.style.backgroundColor = "#e0e0e0";
+      }
+    }
+    
+    // Also add a timeout-based fallback for slow/missing images
+    setTimeout(() => {
+      if (mainImg.naturalHeight === 0 && mainImg.src !== "assets/SenpaiWorks logo.png") {
+        mainImg.src = "assets/SenpaiWorks logo.png";
+        mainImg.style.setProperty("object-fit", "contain", "important");
+        if (mainPreviewBox) {
+          mainPreviewBox.style.background = 
+            "linear-gradient(45deg, #c0c0c0 25%, transparent 25%), " +
+            "linear-gradient(-45deg, #c0c0c0 25%, transparent 25%), " +
+            "linear-gradient(45deg, transparent 75%, #c0c0c0 75%), " +
+            "linear-gradient(-45deg, transparent 75%, #c0c0c0 75%)";
+          mainPreviewBox.style.backgroundSize = "20px 20px";
+          mainPreviewBox.style.backgroundPosition = "0 0, 0 10px, 10px -10px, -10px 0px";
+          mainPreviewBox.style.backgroundColor = "#e0e0e0";
+        }
+      }
+    }, 3000);
   }
 
   if (thumbGallery) {

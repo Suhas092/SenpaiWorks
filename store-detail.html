@@ -9,9 +9,12 @@
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="store.css">
-  <link rel="stylesheet" href="store-detail.css?v=18">
+  <link rel="stylesheet" href="store-detail.css?v=20">
   <!-- FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 <body>
 
@@ -62,7 +65,7 @@
           <h1 class="product-title" id="product-title">Loading Product...</h1>
           <div class="title-action-buttons">
             <button class="title-action-btn" id="action-share" title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-            <button class="title-action-btn" id="action-wishlist" title="Save to Wishlist" style="display: none;"><i class="fa-regular fa-heart"></i></button>
+            <button class="title-action-btn" id="action-wishlist" title="Add to Wishlist"><i class="fa-regular fa-bookmark"></i></button>
           </div>
         </div>
 
@@ -507,7 +510,8 @@
 
   <!-- Page Logic Scripts -->
   <script src="scripts/products-data.js?v=5"></script>
-  <script src="scripts/store-detail.js?v=18"></script>
+  <script src="scripts/store-detail.js?v=20"></script>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 </html>

@@ -15,7 +15,9 @@ const {
   sendPasswordChangedConfirmationEmail,
   sendDigitalOrderDownloadEmail,
   sendEmailChangeOtpEmail,
-  sendOrderConfirmationEmail
+  sendOrderConfirmationEmail,
+  sendContactInquiryToAdmin,
+  sendContactConfirmationToUser
 } = require('./mailer');
 
 dotenv.config();
@@ -93,6 +95,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({ origin: true, credentials: true }));
+
 // Body parser: limit set to 15MB to accommodate base64-encoded image uploads
 // (base64 adds ~33% overhead: 10MB binary → ~13.3MB JSON payload)
 // Actual per-use-case limits are enforced inside each upload route:
@@ -227,8 +230,58 @@ app.get('/:page', (req, res, next) => {
   next();
 });
 
-// Serve static assets (CSS, JS, images) for all pages
-app.use(express.static(path.join(__dirname, '..'), { index: false }));
+// Cache middleware for static assets - set headers BEFORE serving
+function staticCacheMiddleware(req, res, next) {
+  // Log the request path for debugging
+  if (req.path.includes('.css') || req.path.includes('.js')) {
+    console.log('[Cache] Request path:', req.path);
+  }
+  
+  // CSS and JS files with version numbers get 1 year cache
+  if (req.path.match(/\.(css|js)\?v=/i)) {
+    console.log('[Cache] Long cache (1 year) for:', req.path);
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.set('X-Content-Type-Options', 'nosniff');
+  } 
+  // HTML files should not be cached (always check for new version)
+  else if (req.path.endsWith('.html')) {
+    console.log('[Cache] Short cache (1 hour) for:', req.path);
+    res.set('Cache-Control', 'public, max-age=3600, must-revalidate');
+    res.set('X-Content-Type-Options', 'nosniff');
+  }
+  // Image files get aggressive caching (1 year for optimized images)
+  else if (req.path.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+    console.log('[Cache] Image cache (1 year) for:', req.path);
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.set('X-Content-Type-Options', 'nosniff');
+    // Enable compression for SVG
+    if (req.path.endsWith('.svg')) {
+      res.set('Vary', 'Accept-Encoding');
+    }
+  }
+  // Fonts get very long cache
+  else if (req.path.match(/\.(woff|woff2|ttf|eot|otf)$/i)) {
+    console.log('[Cache] Font cache (1 year) for:', req.path);
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.set('X-Content-Type-Options', 'nosniff');
+  }
+  
+  // Add compression hint for all cacheable content
+  if (req.path.match(/\.(css|js|svg|json|woff2|ttf)$/i)) {
+    res.set('Vary', 'Accept-Encoding');
+  }
+  
+  next();
+}
+
+app.use(staticCacheMiddleware);
+
+// Serve static assets (CSS, JS, images) for all pages with custom cache settings
+app.use(express.static(path.join(__dirname, '..'), { 
+  index: false,
+  maxAge: 0, // Don't let express.static set its own cache
+  etag: false // Disable etag to reduce processing
+}));
 
 // Rate limiter for admin login (max 5 requests per 15 mins)
 const adminLoginLimiter = rateLimit({
@@ -1165,6 +1218,52 @@ app.get('/api/user/login-history', requireUserToken, async (req, res) => {
   }
 });
 
+// 8a. Get User Profile Data (Protected)
+app.get('/api/user/profile', requireUserToken, async (req, res) => {
+  try {
+    const userEmail = req.user?.email || req.userEmail;
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        username: true,
+        avatar: true,
+        phone: true,
+        countryCode: true,
+        profileCompleted: true,
+        provider: true,
+        emailVerified: true,
+        welcomeOfferUsed: true,
+        createdAt: true
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if user has made any purchase
+    const orderCount = await prisma.order.count({
+      where: { customerId: user.id }
+    });
+    
+    const hasPurchased = orderCount > 0;
+
+    res.json({ 
+      success: true, 
+      user: {
+        ...user,
+        hasPurchased
+      }
+    });
+  } catch (err) {
+    console.error('[API Error] GET /api/user/profile:', err);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+
 // 8b. Verify Current Password in Profile Settings (Protected)
 app.post('/api/user/verify-current-password', requireUserToken, async (req, res) => {
   try {
@@ -1796,6 +1895,126 @@ app.post('/api/anime/likes/reset', requireAdminToken, async (req, res) => {
   }
 });
 
+// ==================== WISHLIST ENDPOINTS ====================
+
+// GET user's wishlist
+app.get('/api/wishlist', requireUserToken, async (req, res) => {
+  try {
+    const userEmail = req.user?.email;
+    if (!userEmail) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    const wishlistItems = await prisma.wishlist.findMany({
+      where: { userEmail },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    // Parse itemData back to objects
+    const items = wishlistItems.map(item => ({
+      id: item.id,
+      itemId: item.itemId,
+      itemType: item.itemType,
+      itemData: JSON.parse(item.itemData),
+      createdAt: item.createdAt
+    }));
+
+    res.json({ items });
+  } catch (error) {
+    console.error('Error fetching wishlist:', error);
+    res.status(500).json({ error: 'Failed to fetch wishlist' });
+  }
+});
+
+// CHECK if item is in wishlist
+app.get('/api/wishlist/check/:itemId/:itemType', requireUserToken, async (req, res) => {
+  try {
+    const userEmail = req.user?.email;
+    const { itemId, itemType } = req.params;
+
+    if (!userEmail) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    const wishlistItem = await prisma.wishlist.findUnique({
+      where: {
+        userEmail_itemId_itemType: {
+          userEmail,
+          itemId,
+          itemType
+        }
+      }
+    });
+
+    res.json({ inWishlist: !!wishlistItem });
+  } catch (error) {
+    console.error('Error checking wishlist:', error);
+    res.status(500).json({ error: 'Failed to check wishlist' });
+  }
+});
+
+// ADD to wishlist
+app.post('/api/wishlist/add', requireUserToken, async (req, res) => {
+  try {
+    const userEmail = req.user?.email;
+    const { itemId, itemType, itemData } = req.body;
+
+    if (!userEmail || !itemId || !itemType || !itemData) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Upsert - add or ignore if already exists
+    const wishlistItem = await prisma.wishlist.upsert({
+      where: {
+        userEmail_itemId_itemType: {
+          userEmail,
+          itemId,
+          itemType
+        }
+      },
+      update: {},
+      create: {
+        userEmail,
+        itemId,
+        itemType,
+        itemData: JSON.stringify(itemData)
+      }
+    });
+
+    res.json({ success: true, wishlistItem });
+  } catch (error) {
+    console.error('Error adding to wishlist:', error);
+    res.status(500).json({ error: 'Failed to add to wishlist' });
+  }
+});
+
+// REMOVE from wishlist
+app.delete('/api/wishlist/remove/:itemId/:itemType', requireUserToken, async (req, res) => {
+  try {
+    const userEmail = req.user?.email;
+    const { itemId, itemType } = req.params;
+
+    if (!userEmail) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    await prisma.wishlist.delete({
+      where: {
+        userEmail_itemId_itemType: {
+          userEmail,
+          itemId,
+          itemType
+        }
+      }
+    }).catch(() => {}); // Ignore if not found
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error removing from wishlist:', error);
+    res.status(500).json({ error: 'Failed to remove from wishlist' });
+  }
+});
+
 // Anime Comments Endpoints (with Threaded Replies, Likes, Reports, and Block filtering - Requires Authentication)
 // Public endpoint: returns only the comment count (no content, no auth required)
 app.get('/api/anime/comments/count', async (req, res) => {
@@ -1813,38 +2032,65 @@ app.get('/api/anime/comments/count', async (req, res) => {
   }
 });
 
-app.get('/api/anime/comments', requireUserToken, async (req, res) => {
+app.get('/api/anime/comments', async (req, res) => {
   const { animeId } = req.query;
   if (!isValidAnimeId(animeId)) {
     return res.status(400).json({ error: 'Invalid or missing animeId' });
   }
 
   try {
+    // Try to get authenticated user, but allow unauthenticated access
     const actingUsername = (req.user?.username || '').toLowerCase().trim();
     const actingEmail = (req.user?.email || '').toLowerCase().trim();
-    const effectiveUserKey = `user_${actingUsername || actingEmail}`;
+    // Only set effectiveUserKey if user is authenticated
+    const effectiveUserKey = (actingUsername || actingEmail) ? `user_${actingUsername || actingEmail}` : null;
 
-    // 1. Get blocked users list for the viewing user
+    // 1. Get blocked users list for the viewing user (if authenticated)
     let blockedUserKeys = [];
-    const blocks = await prisma.userBlock.findMany({
-      where: {
-        OR: [
-          { userKey: actingEmail },
-          ...(actingUsername ? [{ userKey: actingUsername }] : [])
-        ]
-      },
-      select: { blockedUserKey: true }
-    });
-    blockedUserKeys = blocks.map(b => b.blockedUserKey.toLowerCase());
+    if (actingEmail || actingUsername) {
+      const blocks = await prisma.userBlock.findMany({
+        where: {
+          OR: [
+            { userKey: actingEmail },
+            ...(actingUsername ? [{ userKey: actingUsername }] : [])
+          ]
+        },
+        select: { blockedUserKey: true }
+      });
+      blockedUserKeys = blocks.map(b => b.blockedUserKey.toLowerCase());
+    }
+    
+    if (blockedUserKeys.length > 0) {
+      console.log(`[API] /comments - Blocked users for "${actingUsername || actingEmail}":`, blockedUserKeys);
+    }
 
     // 2. Fetch all comments for this artwork
     const allComments = await prisma.comment.findMany({
       where: { animeId },
       orderBy: { createdAt: 'asc' }
     });
+    
+    console.log(`[API] GET /comments - User:"${actingUsername || actingEmail}" animeId:"${animeId}" found:${allComments.length} comments, blockedKeys=${blockedUserKeys.length}`);
 
     // 3. Filter out comments from blocked users
     const filteredComments = allComments.filter(c => !blockedUserKeys.includes(c.username.toLowerCase()));
+    
+    if (allComments.length > 0 && filteredComments.length === 0) {
+      console.log(`[WARNING] ALL ${allComments.length} comments were filtered as blocked!`);
+      allComments.slice(0, 5).forEach(c => {
+        const isBlocked = blockedUserKeys.includes(c.username.toLowerCase());
+        console.log(`  - username:"${c.username}" (lowercased: "${c.username.toLowerCase()}") blocked:${isBlocked}, keys: ${JSON.stringify(blockedUserKeys)}`);
+      });
+    }
+    
+    if (allComments.length > 0) {
+     console.log(`[API] /comments - animeId=${animeId}`);
+     console.log(`  Total: ${allComments.length}, Filtered: ${filteredComments.length}`);
+     allComments.forEach(c => {
+       const isBlocked = blockedUserKeys.includes(c.username.toLowerCase());
+       console.log(`    - ID:${c.id} username:"${c.username}" parent:${c.parentId} blocked:${isBlocked}`);
+     });
+    }
 
     // 4. Fetch comment IDs liked by the current user/guest
     let likedCommentIds = [];
@@ -1873,25 +2119,31 @@ app.get('/api/anime/comments', requireUserToken, async (req, res) => {
     // 6. Structure into parent comments + nested replies
     const parentComments = [];
     const replyMap = new Map();
+    
+    console.log(`[DEBUG] Before forEach - filteredComments.length=${filteredComments.length}`);
 
     filteredComments.forEach(comment => {
-      const isLikedByViewer = likedCommentIds.includes(comment.id);
-      const userAvatar = comment.username ? (avatarMap.get(comment.username.toLowerCase()) || null) : null;
-      const formattedComment = { ...comment, userAvatar, userHasLiked: isLikedByViewer, replies: [] };
+     const isLikedByViewer = likedCommentIds.includes(comment.id);
+     const userAvatar = comment.username ? (avatarMap.get(comment.username.toLowerCase()) || null) : null;
+     const formattedComment = { ...comment, userAvatar, userHasLiked: isLikedByViewer, replies: [] };
 
-      if (!comment.parentId) {
-        parentComments.push(formattedComment);
-        replyMap.set(comment.id, formattedComment.replies);
-      } else {
-        if (!replyMap.has(comment.parentId)) {
-          replyMap.set(comment.parentId, []);
-        }
-        replyMap.get(comment.parentId).push(formattedComment);
-      }
+     if (!comment.parentId) {
+       parentComments.push(formattedComment);
+       replyMap.set(comment.id, formattedComment.replies);
+     } else {
+       if (!replyMap.has(comment.parentId)) {
+         replyMap.set(comment.parentId, []);
+       }
+       replyMap.get(comment.parentId).push(formattedComment);
+     }
     });
+    
+    console.log(`[DEBUG] After forEach - parentComments.length=${parentComments.length}, total in filtered=${filteredComments.length}`);
 
     // Sort parent comments newest first
     parentComments.reverse();
+    
+    console.log(`[API] GET /api/anime/comments - returning parentComments=${parentComments.length}, replies=${filteredComments.length - parentComments.length}`);
 
     res.json({ comments: parentComments, likedCommentIds });
   } catch (error) {
@@ -1972,13 +2224,23 @@ app.post('/api/anime/comments', requireUserToken, commentPerUserLimiter, async (
 
   const parsedParentId = parentId ? parseInt(parentId, 10) : null;
   let resolvedParentId = null;
+  let parentCommentAuthor = null;
 
   if (!isNaN(parsedParentId) && parsedParentId > 0) {
     try {
-      const parentComment = await prisma.comment.findUnique({ where: { id: parsedParentId } });
+      const parentComment = await prisma.comment.findUnique({
+        where: { id: parsedParentId },
+        include: { user: { select: { email: true, name: true } } }
+      });
       if (parentComment) {
         // Enforce 1-level max reply nesting depth: if parent is already a reply, flatten to top-level parentId
         resolvedParentId = parentComment.parentId ? parentComment.parentId : parentComment.id;
+        // Use stored email first, fallback to user.email if available
+        parentCommentAuthor = {
+          email: parentComment.userEmail || parentComment.user?.email,
+          name: parentComment.user?.name,
+          isDirectParent: parentComment.id === parsedParentId  // Track if this is the direct parent
+        };
       }
     } catch (e) {
       resolvedParentId = null;
@@ -1986,19 +2248,51 @@ app.post('/api/anime/comments', requireUserToken, commentPerUserLimiter, async (
   }
 
   try {
+    console.log(`[POST COMMENT DEBUG] Attempting to create: animeId="${animeId}", username="${verifiedUsername}", userEmail="${userEmail}", userId=${userId}, text="${rawText.substring(0, 50)}...", parentId=${resolvedParentId}`);
+    
     const comment = await prisma.comment.create({
       data: {
         animeId,
         username: verifiedUsername,
+        userEmail: userEmail,  // Store email for notifications
         userId: userId,
         text: rawText,
         parentId: resolvedParentId
       }
     });
+    
+    console.log(`[POST COMMENT] Created: ID=${comment.id}, animeId="${animeId}", username="${verifiedUsername}", text="${rawText.substring(0, 30)}..."`);
+
+    // Create notifications for replies
+    if (resolvedParentId && parentCommentAuthor?.email && parentCommentAuthor.email !== userEmail) {
+      try {
+        const notificationLink = `/art-library.html?artworkId=${encodeURIComponent(animeId)}&focusComment=${comment.id}`;
+        await prisma.notification.create({
+          data: {
+            userEmail: parentCommentAuthor.email,
+            type: 'community',
+            title: 'New Reply to Your Comment',
+            message: `${verifiedUsername} replied: "${rawText.substring(0, 40)}..."`,
+            link: notificationLink,
+            icon: 'fa-reply',
+            isRead: false
+          }
+        });
+        console.log('[Notification] Created reply notification for:', parentCommentAuthor.email, 'link:', notificationLink);
+      } catch (notifErr) {
+        console.error('[Notification] Error creating reply notification:', notifErr.message);
+      }
+    }
+
     res.json(comment);
   } catch (error) {
-    console.error('Error creating comment:', error);
-    res.status(500).json({ error: 'Failed to post comment' });
+    console.error('[POST COMMENT ERROR]', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack
+    });
+    res.status(500).json({ error: 'Failed to post comment', details: error.message });
   }
 });
 
@@ -2041,6 +2335,12 @@ app.post('/api/anime/comments/like', requireUserToken, commentLikeLimiter, async
       return res.json({ success: true, userHasLiked: false, likeCount: newLikeCount });
     } else {
       if (!existingLike) {
+        // Get the comment with user info before creating the like
+        const comment = await prisma.comment.findUnique({
+          where: { id: targetCommentId },
+          include: { user: { select: { email: true, name: true } } }
+        });
+
         await prisma.commentLike.create({
           data: { commentId: targetCommentId, userKey: effectiveUserKey }
         });
@@ -2049,6 +2349,28 @@ app.post('/api/anime/comments/like', requireUserToken, commentLikeLimiter, async
           data: { likeCount: { increment: 1 } }
         });
         newLikeCount = updated.likeCount;
+
+        // Create notification for comment author when someone likes their comment
+        const commentAuthorEmail = comment?.user?.email || comment?.userEmail;
+        if (commentAuthorEmail && commentAuthorEmail !== actingEmail) {
+          try {
+            const notificationLink = `/art-library.html?artworkId=${encodeURIComponent(comment.animeId)}&focusComment=${comment.id}`;
+            await prisma.notification.create({
+              data: {
+                userEmail: commentAuthorEmail,
+                type: 'community',
+                title: 'New Like on Your Comment',
+                message: `${actingUsername || 'A user'} liked your comment: "${comment.text.substring(0, 40)}..."`,
+                link: notificationLink,
+                icon: 'fa-heart',
+                isRead: false
+              }
+            });
+            console.log('[Notification] Created comment like notification for:', commentAuthorEmail, 'link:', notificationLink);
+          } catch (notifErr) {
+            console.error('[Notification] Error creating comment like notification:', notifErr.message);
+          }
+        }
       } else {
         const comment = await prisma.comment.findUnique({ where: { id: targetCommentId } });
         newLikeCount = comment ? comment.likeCount : 0;
@@ -2329,6 +2651,8 @@ app.post('/api/community/reviews', communityReviewLimiter, async (req, res) => {
 app.post('/api/community/reviews/:id/like', async (req, res) => {
   const { id } = req.params;
   const { action } = req.body; // 'like' or 'unlike'
+  const likerEmail = req.body.likerEmail || req.user?.email; // Who is liking
+  
   try {
     const review = await prisma.communityReview.findUnique({ where: { id } });
     if (!review) return res.status(404).json({ error: 'Review not found' });
@@ -2338,6 +2662,27 @@ app.post('/api/community/reviews/:id/like', async (req, res) => {
       where: { id },
       data: { likes: newLikes }
     });
+    
+    // Create notification for the review author when someone likes their review
+    if (action === 'like' && review.email && review.email !== likerEmail) {
+      try {
+        await prisma.notification.create({
+          data: {
+            userEmail: review.email,
+            type: 'community',
+            title: 'New Like on Your Feedback',
+            message: `${likerEmail || 'Someone'} liked your feedback: "${review.title.substring(0, 50)}..."`,
+            link: '/community.html',
+            icon: 'fa-heart',
+            isRead: false
+          }
+        });
+        console.log('[Notification] Created like notification for:', review.email);
+      } catch (notifErr) {
+        console.error('[Notification] Error creating like notification:', notifErr.message);
+      }
+    }
+    
     res.json(updated);
   } catch (error) {
     console.error('Error toggling review like:', error);
@@ -2517,6 +2862,80 @@ app.post('/api/artworks/:id/download', artworkDownloadLimiter, async (req, res) 
   } catch (error) {
     console.error('Error incrementing artwork download count:', error);
     res.status(500).json({ error: 'Failed to update download count' });
+  }
+});
+
+// Download artwork image with forced download headers
+app.get('/api/artworks/:id/download-image', artworkDownloadLimiter, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'Invalid artwork ID' });
+  }
+
+  try {
+    const artwork = await prisma.artwork.findUnique({
+      where: { id },
+      select: { img: true, charname: true }
+    });
+
+    if (!artwork || !artwork.img) {
+      return res.status(404).json({ error: 'Artwork not found' });
+    }
+
+    // Generate filename
+    const charName = (artwork.charname || 'artwork').toLowerCase().replace(/[^a-z0-9]/g, '_');
+    const fileName = `${charName}.jpg`;
+
+    // Increment download count
+    prisma.artwork.update({
+      where: { id },
+      data: { downloadCount: { increment: 1 } }
+    }).catch(() => {});
+
+    // Set response headers for download
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+
+    // Fetch image from CDN and pipe to response
+    const https = require('https');
+    const http = require('http');
+    
+    let imgUrl = artwork.img.trim();
+    // Ensure URL has protocol
+    if (!imgUrl.startsWith('http://') && !imgUrl.startsWith('https://')) {
+      imgUrl = 'https://' + imgUrl;
+    }
+    
+    const protocol = imgUrl.startsWith('https') ? https : http;
+    
+    const request = protocol.get(imgUrl, {
+      headers: {
+        'User-Agent': 'SenpaiWorks/1.0 (+https://senpaiworks.com)',
+        'Accept': 'image/jpeg,image/*,*/*'
+      }
+    }, (imageStream) => {
+      // Check for HTTP errors
+      if (imageStream.statusCode && imageStream.statusCode >= 400) {
+        res.status(imageStream.statusCode).json({ error: `CDN returned ${imageStream.statusCode}` });
+        return;
+      }
+      imageStream.pipe(res);
+    });
+    
+    request.on('error', (err) => {
+      console.error('Error fetching image from CDN:', err.message);
+      if (!res.headersSent) {
+        res.status(503).json({ error: 'Unable to fetch image from CDN. Please try again later.' });
+      }
+    });
+
+  } catch (error) {
+    console.error('Error downloading artwork image:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Failed to download image' });
+    }
   }
 });
 
@@ -3663,7 +4082,7 @@ app.get('/api/notifications', requireUserToken, async (req, res) => {
 
   const categoryMapping = {
     'Orders': ['order_update', 'order_delivered'],
-    'Community': ['post_reply', 'support_reply'],
+    'Community': ['post_reply', 'support_reply', 'community'],
     'Store': ['new_product', 'new_offer', 'sale', 'wishlist_restock'],
     'News': ['new_article', 'new_course', 'admin_broadcast']
   };
@@ -3713,7 +4132,7 @@ app.get('/api/notifications/unread-count', requireUserToken, async (req, res) =>
 
     const categoryMapping = {
       'Orders': ['order_update', 'order_delivered'],
-      'Community': ['post_reply', 'support_reply'],
+      'Community': ['post_reply', 'support_reply', 'community'],
       'Store': ['new_product', 'new_offer', 'sale', 'wishlist_restock'],
       'News': ['new_article', 'new_course', 'admin_broadcast']
     };
@@ -4491,6 +4910,19 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
       }
     });
 
+    // Mark welcome offer as used if the discount is ₹100 (SENPAI100 code)
+    if (customerId && discountAmount === 100 && req.userEmail) {
+      try {
+        await prisma.user.update({
+          where: { id: customerId },
+          data: { welcomeOfferUsed: true }
+        });
+        console.log(`[Welcome Offer] Marked as used for user ${req.userEmail} (Order: ${order.orderNumber})`);
+      } catch (welcomeErr) {
+        console.warn("[Welcome Offer] Failed to mark as used:", welcomeErr.message);
+      }
+    }
+
     // 1. In-app Admin Notification
     try {
       await prisma.notification.create({
@@ -4745,7 +5177,8 @@ app.patch("/api/admin/orders/:id/status", requireAdminToken, adminOrderStatusLim
       }
     });
 
-    if (status === "Delivered" && order.email) {
+    // Create notifications for all order status changes
+    if (order.email) {
       try {
         const orderItems = order.items || [];
         let productSummary = "";
@@ -4759,28 +5192,56 @@ app.patch("/api/admin/orders/:id/status", requireAdminToken, adminOrderStatusLim
           }
         }
 
-        const notifTitle = productSummary
-          ? `Your order for ${productSummary} has been delivered! 🎉`
-          : `Your order (Order ID: ${order.orderNumber}) has been delivered! 🎉`;
+        let notifTitle = "";
+        let notifMessage = "";
+        let notificationType = "order_update";
 
-        const notifMessage = productSummary
-          ? `Your package containing ${productSummary} (Order ID: ${order.orderNumber}) has been delivered. Thank you for shopping with SenpaiWorks!`
-          : `Your package with order ID ${order.orderNumber} has been delivered. Thank you for shopping with SenpaiWorks!`;
+        switch (status) {
+          case "Dispatched":
+            notifTitle = `Your order for ${productSummary} has been dispatched!`;
+            notifMessage = `Your package (Order ID: ${order.orderNumber}) is on its way! Track your shipment using AWB: ${awbNumber || "N/A"}`;
+            notificationType = "order_update";
+            break;
+          case "Shipped":
+            notifTitle = `Your order for ${productSummary} has been shipped!`;
+            notifMessage = `Your package (Order ID: ${order.orderNumber}) is being shipped. You'll receive it soon!`;
+            notificationType = "order_update";
+            break;
+          case "In Transit":
+            notifTitle = `Your order for ${productSummary} is in transit!`;
+            notifMessage = `Your package (Order ID: ${order.orderNumber}) is on the way to your address.`;
+            notificationType = "order_update";
+            break;
+          case "Delivered":
+            notifTitle = productSummary
+              ? `Your order for ${productSummary} has been delivered!`
+              : `Your order (Order ID: ${order.orderNumber}) has been delivered!`;
+            notifMessage = productSummary
+              ? `Your package containing ${productSummary} (Order ID: ${order.orderNumber}) has been delivered. Thank you for shopping with SenpaiWorks!`
+              : `Your package with order ID ${order.orderNumber} has been delivered. Thank you for shopping with SenpaiWorks!`;
+            notificationType = "order_delivered";
+            break;
+          default:
+            notifTitle = `Order ${order.orderNumber} status updated to: ${status}`;
+            notifMessage = `Your order status has changed to ${status}`;
+        }
 
         await prisma.notification.create({
           data: {
             userEmail: order.email,
-            type: "order_delivered",
+            type: notificationType,
             title: notifTitle,
             message: notifMessage,
             link: "profile.html#orders",
-            icon: "📦"
+            icon: "fa-box"
           }
         });
+        console.log('[Notification] Created order status notification:', notificationType, 'for:', order.email);
       } catch (notifErr) {
-        console.warn("[Notification] Failed to create delivered notification:", notifErr.message);
+        console.warn("[Notification] Failed to create order status notification:", notifErr.message);
       }
     }
+
     res.json({ success: true, order: formatOrderResponse(order) });
   } catch (error) {
     console.error("Error updating order status:", error);
@@ -6860,6 +7321,29 @@ app.post("/api/coupons/validate", couponValidateLimiter, async (req, res) => {
   }
 });
 
+// Mark Welcome Offer as Used (Protected)
+app.post("/api/coupons/mark-welcome-used", requireUserToken, async (req, res) => {
+  try {
+    const userEmail = req.user?.email || req.userEmail;
+    const user = await prisma.user.findUnique({ where: { email: userEmail } });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update the welcomeOfferUsed flag
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { welcomeOfferUsed: true }
+    });
+
+    res.json({ success: true, message: "Welcome offer marked as used" });
+  } catch (err) {
+    console.error("[Mark Welcome Used] Error:", err);
+    res.status(500).json({ error: "Failed to mark welcome offer as used" });
+  }
+});
+
 // ── Admin: Create coupon ───────────────────────────────────────────────────────
 app.post("/api/admin/coupons", requireAdminToken, async (req, res) => {
   try {
@@ -6931,6 +7415,49 @@ app.patch("/api/admin/coupons/:code/toggle", requireAdminToken, async (req, res)
     res.json({ success: true, status: newStatus });
   } catch (err) {
     res.status(500).json({ error: "Failed to toggle coupon" });
+  }
+});
+
+// =========================================================================
+// PUBLIC: Contact/Support Form Submission
+// =========================================================================
+app.post('/api/support/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message, orderId } = req.body;
+
+    // Validation
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ error: 'Missing required fields: name, email, subject, message' });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email address' });
+    }
+
+    // Send admin notification
+    const adminResult = await sendContactInquiryToAdmin(email, name, subject, message, orderId || null);
+    if (!adminResult.success) {
+      console.error('[Support Form] Failed to send admin notification:', adminResult.error);
+      return res.status(500).json({ error: 'Failed to process your inquiry. Please try again.' });
+    }
+
+    // Send user confirmation
+    const userResult = await sendContactConfirmationToUser(email, name, subject);
+    if (!userResult.success) {
+      console.warn('[Support Form] Failed to send user confirmation:', userResult.error);
+      // Don't fail the whole request, just log the warning
+    }
+
+    res.json({
+      success: true,
+      message: 'Your inquiry has been received. We will respond within 24-48 business hours.',
+      inquiryId: adminResult.id || adminResult.messageId
+    });
+  } catch (error) {
+    console.error('[Support Form Error]', error);
+    res.status(500).json({ error: 'An unexpected error occurred. Please try again.' });
   }
 });
 

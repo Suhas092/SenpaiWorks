@@ -1601,19 +1601,37 @@ window.togglePasswordVisibility = function (inputId, btnEl) {
       listContainer.querySelectorAll('.dropdown-notif-item').forEach(el => {
         el.addEventListener('click', async (e) => {
           e.preventDefault();
+          e.stopPropagation();
           const id = el.getAttribute('data-id');
+          const link = el.getAttribute('data-link');
+          
+          console.log('[Notification Click] id:', id, 'link:', link);
+          
           try {
             await fetch(`/api/notifications/${id}/read`, {
               method: 'PATCH',
               headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
             });
             fetchUnreadCount();
-          } catch(e) {}
+          } catch(e) {
+            console.error('[Notification] Error marking as read:', e);
+          }
           
           // Close dropdown
           const dropdown = document.getElementById('notifications-dropdown');
           if (dropdown) dropdown.style.display = 'none';
 
+          // If notification has an artwork link (from comment notifications), navigate directly to it
+          if (link && link.includes('artworkId')) {
+            console.log('[Notification Click] Direct navigation to:', link);
+            // Add slight delay to allow mark-as-read to complete
+            setTimeout(() => {
+              window.location.href = link;
+            }, 100);
+            return;
+          }
+
+          // Otherwise, go to profile notifications
           const isProfilePage = window.location.pathname.endsWith('profile.html') || window.location.pathname.endsWith('profile');
           if (isProfilePage && typeof window.openDirectNotificationById === 'function') {
             if (typeof window.switchAccountTab === 'function') {
@@ -1667,11 +1685,24 @@ window.togglePasswordVisibility = function (inputId, btnEl) {
     // Initial fetch — also called from setupHeader when header DOM is ready
     fetchUnreadCount();
 
-    // Polling every 45 seconds
-    setInterval(fetchUnreadCount, 45000);
+    // Polling every 15 seconds for more realtime feel (was 45s)
+    setInterval(fetchUnreadCount, 15000);
 
     // Refresh on page focus
     window.addEventListener("focus", fetchUnreadCount);
+
+    // Also refresh when dropdown is opened
+    let lastDropdownOpenTime = 0;
+    document.body.addEventListener("click", (e) => {
+      const btn = e.target.closest("#nav-notifications-btn");
+      if (btn) {
+        const now = Date.now();
+        if (now - lastDropdownOpenTime > 5000) { // Refresh if last was > 5s ago
+          fetchUnreadCount();
+          lastDropdownOpenTime = now;
+        }
+      }
+    });
 
     // Mark all as read button in dropdown
     document.body.addEventListener('click', async (e) => {

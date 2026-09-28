@@ -15,9 +15,12 @@
   <!-- FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="header.css?v=11">
   <link rel="stylesheet" href="learn.css?v=3.0">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -34,6 +37,7 @@
     </script>
   </div>
   <script src="scripts/header.js?v=7"></script>
+  <script src="scripts/realtime-notifications.js"></script>
 
   <div class="top-bg-strip"></div>
 
@@ -320,7 +324,41 @@
             status: "Pending"
           });
           localStorage.setItem("site_design_poll_suggestions", JSON.stringify(list));
-        } catch(err) {}
+        } catch(err) { console.warn('[Learn] Failed to persist suggestion locally', err); }
+
+        // Send server notification (email to SenpaiWorks admin)
+        (async function sendCourseInterestToServer() {
+          try {
+            const topic = document.getElementById("request-topic")?.value.trim() || "";
+            const category = document.getElementById("request-category")?.value || "General";
+            const details = document.getElementById("request-details")?.value.trim() || "";
+            const name = document.getElementById("request-name")?.value.trim() || "Community Member";
+            const email = document.getElementById("request-email")?.value.trim() || "";
+
+            const payload = {
+              name: name,
+              email: email,
+              subject: `Course Interest: ${topic} (${category})`,
+              message: `Course Topic: ${topic}\nCategory: ${category}\n\nDetails:\n${details}\n\nSubmitted by: ${name} ${email ? `(${email})` : ''}`
+            };
+
+            const token = (typeof getAuthToken === 'function' ? getAuthToken() : (localStorage.getItem('auth_token') || null)) || null;
+
+            await fetch('/api/support/contact', {
+              method: 'POST',
+              headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'Authorization': `Bearer ${token}` } : {}),
+              body: JSON.stringify(payload)
+            }).then(async (res) => {
+              if (res.ok) {
+                console.log('[Learn] Course interest submitted and admin email triggered');
+              } else {
+                console.warn('[Learn] Server contact endpoint returned', res.status);
+              }
+            }).catch(err => console.warn('[Learn] Failed to notify server:', err));
+          } catch (err) {
+            console.warn('[Learn] Error sending course interest to server:', err);
+          }
+        })();
 
         requestForm.style.display = 'none';
         if (successAlert) successAlert.style.display = 'flex';
@@ -347,6 +385,7 @@
     setInterval(updateCourseRequestFormState, 1000);
   </script>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

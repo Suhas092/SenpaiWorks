@@ -922,11 +922,157 @@ async function sendOrderConfirmationEmail(order, trackingUrl) {
   });
 }
 
+/**
+ * Send Contact/Support Inquiry to Admin
+ */
+async function sendContactInquiryToAdmin(userEmail, userName, subject, message, orderID = null) {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>New Support Inquiry</title>
+      <style>
+        body { font-family: 'Plus Jakarta Sans', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #f9fafb; padding: 20px; border-radius: 8px; }
+        .header { background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
+        .content { background: white; padding: 20px; }
+        .field { margin-bottom: 15px; }
+        .field-label { font-weight: 600; color: #1e40af; font-size: 14px; text-transform: uppercase; }
+        .field-value { color: #555; margin-top: 5px; padding: 10px; background: #f3f4f6; border-radius: 4px; }
+        .message-box { background: #f0f9ff; border-left: 4px solid #0284c7; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .footer { font-size: 12px; color: #999; text-align: center; margin-top: 20px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2 style="margin: 0;">📨 New Support Inquiry Received</h2>
+        </div>
+        <div class="content">
+          <div class="field">
+            <div class="field-label">From</div>
+            <div class="field-value">${userName}</div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Email Address</div>
+            <div class="field-value"><a href="mailto:${userEmail}">${userEmail}</a></div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Subject</div>
+            <div class="field-value">${subject}</div>
+          </div>
+
+          ${orderID ? `
+          <div class="field">
+            <div class="field-label">Order ID</div>
+            <div class="field-value">${orderID}</div>
+          </div>
+          ` : ''}
+
+          <div class="field">
+            <div class="field-label">Message</div>
+            <div class="message-box">${message.replace(/\n/g, '<br>')}</div>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="mailto:${userEmail}?subject=Re: ${subject}" style="background: #1e40af; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              Reply to Inquiry
+            </a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>This is an automated notification from SenpaiWorks Support System</p>
+          <p style="margin: 5px 0;">Received: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendEmail({
+    from: DELIVERY_FROM,
+    to: 'senpaiworks.official@gmail.com',
+    subject: `[Support] ${subject} - from ${userName}`,
+    html: html
+  });
+}
+
+/**
+ * Send Confirmation to User
+ */
+async function sendContactConfirmationToUser(userEmail, userName, subject) {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>We Received Your Message</title>
+      <style>
+        body { font-family: 'Plus Jakarta Sans', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #f9fafb; padding: 20px; border-radius: 8px; }
+        .header { background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
+        .content { background: white; padding: 20px; }
+        .message-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 15px; margin: 15px 0; border-radius: 4px; color: #166534; }
+        .footer { font-size: 12px; color: #999; text-align: center; margin-top: 20px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2 style="margin: 0;">✅ Message Received!</h2>
+        </div>
+        <div class="content">
+          <p>Hi <strong>${userName}</strong>,</p>
+          
+          <p>Thank you for reaching out to SenpaiWorks! We've received your inquiry regarding:</p>
+          
+          <div class="message-box">
+            <strong>${subject}</strong>
+          </div>
+
+          <p>Our support team will review your message and get back to you shortly. Here's what to expect:</p>
+          
+          <ul style="color: #555;">
+            <li><strong>Response Time:</strong> Typically within 24–48 business hours</li>
+            <li><strong>Support Hours:</strong> Monday – Saturday, 10:00 AM – 6:00 PM IST</li>
+            <li><strong>Reference Email:</strong> senpaiworks.official@gmail.com</li>
+          </ul>
+
+          <p>If you have any additional information to add, please reply to this email directly.</p>
+
+          <p>Best regards,<br>
+          <strong>SenpaiWorks Support Team</strong><br>
+          Mysuru, Karnataka — 570016, India</p>
+        </div>
+
+        <div class="footer">
+          <p>This is an automated confirmation email</p>
+          <p style="margin: 5px 0;">© 2026 SenpaiWorks™. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendEmail({
+    from: DELIVERY_FROM,
+    to: userEmail,
+    subject: `We Received Your Message - ${subject}`,
+    html: html
+  });
+}
+
 module.exports = {
   sendSignupOtpEmail,
   sendPasswordResetOtpEmail,
   sendPasswordChangedConfirmationEmail,
   sendDigitalOrderDownloadEmail,
   sendEmailChangeOtpEmail,
-  sendOrderConfirmationEmail
+  sendOrderConfirmationEmail,
+  sendContactInquiryToAdmin,
+  sendContactConfirmationToUser
 };

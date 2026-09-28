@@ -12,8 +12,6 @@ let pendingBlockUsername = null;
 let detailInteractionPollInterval = null; // legacy single poll (kept for compatibility)
 let detailCountsPollInterval = null; // frequent small-count polling (likes/comments counts)
 let detailCommentsPollInterval = null; // less-frequent full comments polling (full list)
-let lastCommentCountShown = 0; // Cache to prevent data loss
-let lastLikeCountShown = 0;
 
 function setEditingComment(commentId, text) {
   cancelReplyingToComment();
@@ -807,11 +805,6 @@ function goToPreviousDetailView() {
 // ── Fetch & Render Likes and Comments ──────────────────────
 async function loadDetailInteractions(artworkId) {
   activeArtworkId = artworkId;
-  
-  // CRITICAL: Clear stale comments when switching to a new artwork
-  currentCommentsList = [];
-  lastCommentCountShown = 0;
-  lastLikeCountShown = 0;
 
   const container = document.getElementById("detail-comments-container");
   if (container) {
@@ -850,7 +843,6 @@ async function loadDetailInteractions(artworkId) {
     }
   });
 
-
   if (!isUserSignedIn()) {
     // Logged-out: blank out both counts and show the lock card — no data exposed
     if (likeCount) likeCount.textContent = "";
@@ -876,26 +868,17 @@ async function loadDetailInteractions(artworkId) {
     if (res.ok) {
       const data = await res.json();
       rawCount = typeof data.count === 'number' ? data.count : parseInt(data.count || 0, 10);
-      if (rawCount > 0) {
-        lastLikeCountShown = rawCount;
-      }
-      // Only update UI if API confirms userHasLiked state
-      // If not provided, keep the localStorage value
       if (typeof data.userHasLiked === 'boolean') {
         updateLikedUI(data.userHasLiked);
-      } else if (isLiked) {
-        // If API doesn't return state but localStorage says liked, keep it red
-        updateLikedUI(true);
       }
     } else {
-      rawCount = lastLikeCountShown; // Use cached value on error
+      rawCount = 0;
     }
   } catch (err) {
-    rawCount = lastLikeCountShown; // Use cached value on error
+    rawCount = 0;
   }
 
-  const displayLikeCount = rawCount > 0 ? rawCount : lastLikeCountShown;
-  const formattedCount = formatCompactNumber(displayLikeCount);
+  const formattedCount = formatCompactNumber(rawCount);
   if (likeCount) likeCount.textContent = formattedCount;
   if (mobileLikeCount) mobileLikeCount.textContent = formattedCount;
 
@@ -910,35 +893,16 @@ async function loadDetailInteractions(artworkId) {
     });
     if (res.ok) {
       const data = await res.json();
-      // API returns { comments: [...], likedCommentIds: [...] }
-      // Server already sets userHasLiked on each comment
-      const comments = data.comments || [];
-      console.log('[Comments] Fetched API Response:', { 
-        data, 
-        url: commentsUrl, 
-        commentCount: comments.length, 
-        artworkId,
-        hasComments: !!data.comments,
-        hasLikedIds: !!data.likedCommentIds
-      });
-      // Only render if this is still the active artwork
-      if (activeArtworkId === artworkId) {
-        renderCommentsList(data);
-      }
+      const comments = Array.isArray(data) ? data : (data.comments || []);
+      renderCommentsList(comments);
     } else {
-      console.error("[Comments] Fetch failed:", { status: res.status, statusText: res.statusText, url: commentsUrl });
-      if (activeArtworkId === artworkId) {
-        renderCommentsList([]);
-      }
-    }
-  } catch (err) {
-    console.error("[Comments] Exception:", err);
-    if (activeArtworkId === artworkId) {
       renderCommentsList([]);
     }
+  } catch (err) {
+    renderCommentsList([]);
   }
 
-  // Start polling for real-time updates (every 2 seconds)
+  // Start polling for real-time updates (every 5 seconds)
   if (detailInteractionPollInterval) {
     clearInterval(detailInteractionPollInterval);
   }
@@ -946,13 +910,6 @@ async function loadDetailInteractions(artworkId) {
   // Only poll if user is signed in
   if (isUserSignedIn()) {
     detailInteractionPollInterval = setInterval(async () => {
-      // CRITICAL: Check if this artwork is still active before polling
-      if (activeArtworkId !== artworkId) {
-        clearInterval(detailInteractionPollInterval);
-        detailInteractionPollInterval = null;
-        return;
-      }
-      
       try {
         const token = getAuthToken();
         const pollUrl = `/api/anime/comments?animeId=${artworkId}`;
@@ -962,15 +919,16 @@ async function loadDetailInteractions(artworkId) {
             ...(token ? { "Authorization": `Bearer ${token}` } : {})
           }
         });
-        if (pollRes.ok && activeArtworkId === artworkId) {
+        if (pollRes.ok) {
           const pollData = await pollRes.json();
-          // Update comments in UI with fresh data (pass full object so renderCommentsList can extract correctly)
-          renderCommentsList(pollData);
+          const freshComments = Array.isArray(pollData) ? pollData : (pollData.comments || []);
+          // Update comments in UI with fresh data
+          renderCommentsList(freshComments);
         }
       } catch (err) {
         // Silent error - don't spam console
       }
-    }, 2000); // Poll every 2 seconds
+    }, 5000); // Poll every 5 seconds
   }
 }
 
@@ -1045,14 +1003,8 @@ function formatCommentTextHTML(text) {
 function renderSingleCommentHTML(c, isChild = false) {
   const timeAgoStr = formatCommentTimeAgo(c.createdAt);
   const initial = c.username ? c.username.charAt(0).toUpperCase() : '?';
-  const localLikedKey = `liked_comment_${c.id}`;
-  const localLiked = localStorage.getItem(localLikedKey) === 'true';
-  const isLiked = localLiked || Boolean(c.userHasLiked);
+  const isLiked = Boolean(c.userHasLiked);
   const likeCount = c.likeCount || 0;
-  
-  if (isLiked) {
-    console.log(`[Comment] ${c.id} - isLiked=true, userHasLiked=${c.userHasLiked}`);
-  }
 
   const avatarHTML = c.userAvatar
     ? `<img src="${escapeHTML2D(c.userAvatar)}" class="detail-comment-avatar-img" alt="${escapeHTML2D(c.username)}" onerror="this.outerHTML='<div class=\\'detail-comment-avatar\\' style=\\'background:#000000;color:#ffffff;\\'>${initial}</div>'" />`
@@ -1138,19 +1090,7 @@ function renderSingleCommentHTML(c, isChild = false) {
 }
 
 function renderCommentsList(comments) {
-  // Extract comments array from various input formats
-  let extractedComments = [];
-  
-  if (Array.isArray(comments)) {
-    // Input is already an array
-    extractedComments = comments;
-  } else if (comments && typeof comments === 'object' && comments.comments && Array.isArray(comments.comments)) {
-    // Input is {comments: [...], likedCommentIds: [...]}
-    extractedComments = comments.comments;
-  }
-  // Otherwise extractedComments stays empty
-  
-  currentCommentsList = extractedComments;
+  currentCommentsList = Array.isArray(comments) ? comments : (comments ? comments.comments || [] : []);
 
   const commentsList = document.getElementById("detail-comments-list");
   const commentsCountLabel = document.getElementById("detail-comments-count-label");
@@ -1160,17 +1100,10 @@ function renderCommentsList(comments) {
   const commentForm = document.getElementById("detail-comment-form");
 
   const totalCount = currentCommentsList.length;
-  
-  // Cache comment count to prevent it from disappearing during polling race conditions
-  if (totalCount > 0) {
-    lastCommentCountShown = totalCount;
-  }
-  const displayCount = totalCount > 0 ? totalCount : lastCommentCountShown;
-  
   if (isUserSignedIn()) {
-    if (commentsCountLabel) commentsCountLabel.textContent = `${displayCount}`;
-    if (commentsShortcutCount) commentsShortcutCount.textContent = `${displayCount}`;
-    if (mobileCommentsShortcutCount) mobileCommentsShortcutCount.textContent = `${displayCount}`;
+    if (commentsCountLabel) commentsCountLabel.textContent = `${totalCount}`;
+    if (commentsShortcutCount) commentsShortcutCount.textContent = `${totalCount}`;
+    if (mobileCommentsShortcutCount) mobileCommentsShortcutCount.textContent = `${totalCount}`;
   }
 
   // Auth check for commenting and viewing comments
@@ -1244,15 +1177,11 @@ function attachCommentSocialListeners(container) {
       const commentId = btn.dataset.commentId;
       const wasLiked = btn.classList.contains("liked");
       const action = wasLiked ? 'unlike' : 'like';
-      const localLikedKey = `liked_comment_${commentId}`;
 
       // Instant optimistic UI update on heart icon
       const icon = btn.querySelector("i");
       btn.classList.toggle("liked", !wasLiked);
       if (icon) icon.className = !wasLiked ? "fa-solid fa-heart" : "fa-regular fa-heart";
-
-      // Persist optimistic comment like locally so it survives refresh
-      try { localStorage.setItem(localLikedKey, (!wasLiked).toString()); } catch (e) { }
 
       // Instant optimistic update on like count label
       const commentBox = btn.closest(".detail-comment-item-box");
@@ -1286,10 +1215,8 @@ function attachCommentSocialListeners(container) {
             countLabel.style.display = data.likeCount > 0 ? "inline" : "none";
           }
         } else if (res.status === 401) {
-          // Revert optimistic UI and local persistence when unauthorized
           btn.classList.toggle("liked", wasLiked);
           if (icon) icon.className = wasLiked ? "fa-solid fa-heart" : "fa-regular fa-heart";
-          try { if (wasLiked) localStorage.setItem(localLikedKey, 'true'); else localStorage.removeItem(localLikedKey); } catch (e) { }
           showAuthRequiredModal("like comments");
         }
       } catch (err) {
@@ -2067,10 +1994,7 @@ function initDetailCardListeners() {
               if (mobileCountEl) mobileCountEl.textContent = formatted;
               localStorage.setItem(`mock_likes_count_${activeArtworkId}`, data.count.toString());
               if (typeof data.userHasLiked === 'boolean') {
-                const votedKey = `liked_artwork_${activeArtworkId}`;
-                const localLiked = localStorage.getItem(votedKey) === 'true';
-                const finalLiked = localLiked || data.userHasLiked;
-                updateLikedUI(finalLiked);
+                updateLikedUI(data.userHasLiked);
               }
             }
           } else if (res.status === 401) {
@@ -2079,75 +2003,6 @@ function initDetailCardListeners() {
           }
         } catch (err) {
           console.warn("Backend like sync warning:", err);
-        }
-
-        return false;
-      });
-    }
-  });
-
-  // Wishlist Button Handler
-  const wishlistBtns = []; // wishlist buttons removed from artwork detail; keep handler inert
-  wishlistBtns.forEach(btn => {
-    if (btn && !btn.dataset.hasListener) {
-      btn.dataset.hasListener = "true";
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (!activeArtworkId) return false;
-
-        const currentUser = getCurrentUser();
-        if (!currentUser) {
-          showAuthRequiredModal("add to wishlist");
-          return false;
-        }
-
-        try {
-          const token = getAuthToken();
-          const wishlistKey = `wishlist_${activeArtworkId}`;
-          const isInWishlist = localStorage.getItem(wishlistKey) === 'true';
-          const charName = document.getElementById("detail-charname")?.textContent || "Artwork";
-          const imageUrl = document.querySelector(".detail-img")?.src || "";
-
-          if (isInWishlist) {
-            // Remove from wishlist
-            const res = await fetch(`/api/wishlist/remove/${activeArtworkId}/artwork`, {
-              method: "DELETE",
-              headers: {
-                "Authorization": `Bearer ${token}`
-              }
-            });
-            if (res.ok) {
-              localStorage.removeItem(wishlistKey);
-              updateWishlistUI(false, btn);
-            }
-          } else {
-            // Add to wishlist
-            const res = await fetch(`/api/wishlist/add`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                itemId: activeArtworkId,
-                itemType: "artwork",
-                itemData: {
-                  name: charName,
-                  image: imageUrl,
-                  link: `/art-library.html?artworkId=${activeArtworkId}`,
-                  type: "artwork"
-                }
-              })
-            });
-            if (res.ok) {
-              localStorage.setItem(wishlistKey, 'true');
-              updateWishlistUI(true, btn);
-            }
-          }
-        } catch (err) {
-          console.warn("Wishlist sync error:", err);
         }
 
         return false;
@@ -2318,7 +2173,6 @@ function initDetailCardListeners() {
 
       const text = textInput.value.trim();
       const targetArtworkId = activeArtworkId || document.getElementById("detail-comments-container")?.dataset.artworkId || "2d_artwork";
-      console.log('[Comment Submit] targetArtworkId:', targetArtworkId, 'activeArtworkId:', activeArtworkId);
       if (!text) return;
 
       isSubmittingComment = true;
@@ -2691,21 +2545,6 @@ function updateLikedUI(isLiked) {
   }
 }
 
-function updateWishlistUI(isInWishlist, btn) {
-  const wishlistIcon = btn.querySelector("i");
-  if (wishlistIcon) {
-    if (isInWishlist) {
-      wishlistIcon.className = "fa-solid fa-bookmark";
-      wishlistIcon.style.color = "#ef4444";
-      btn.title = "Remove from Wishlist";
-    } else {
-      wishlistIcon.className = "fa-regular fa-bookmark";
-      wishlistIcon.style.color = "#111111";
-      btn.title = "Add to Wishlist";
-    }
-  }
-}
-
 function initCardListeners() {
   originalPinterestItems.forEach((item) => {
     if (item.dataset.hasListener) return;
@@ -2820,15 +2659,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 2. Fetch fresh database artworks in background and seamlessly update
     fetchAndRenderDatabaseArtworks(grid);
-    
-    // 3. Handle notification links (artwork + comment focus) - try multiple times as artworks load
-    window.handleNotificationLink();
-    setTimeout(() => {
-      window.handleNotificationLink();
-    }, 1500);
-    setTimeout(() => {
-      window.handleNotificationLink();
-    }, 3000);
   }
 
 
@@ -3176,75 +3006,3 @@ async function loadDynamicCategories() {
     console.error("Error loading dynamic categories in art library:", e);
   }
 }
-
-// Handle notification links with artwork and comment focus
-window.handleNotificationLink = function() {
-  const params = new URLSearchParams(window.location.search);
-  const artworkId = params.get('artworkId');
-  const focusCommentId = params.get('focusComment');
-  
-  if (!artworkId) return;
-  
-  console.log(`[Notification] Opening artwork: ${artworkId}, focusComment: ${focusCommentId}`);
-  
-  // Wait for cards to be rendered or try multiple times
-  let attempts = 0;
-  const maxAttempts = 100;
-  
-  const tryOpenArtwork = () => {
-    attempts++;
-    const cards = document.querySelectorAll('[data-anime-id]');
-    
-    if (attempts <= 10 || attempts % 10 === 0) {
-      console.log(`[Notification] Attempt ${attempts}: Found ${cards.length} cards`);
-    }
-    
-    for (let card of cards) {
-      const cardId = card.getAttribute('data-anime-id');
-      if (cardId === artworkId) {
-        console.log(`[Notification] ✅ Found matching card! Clicking...`);
-        card.click();
-        
-        // Wait for detail view to fully render and comments to load
-        if (focusCommentId) {
-          // Give it time for detail view to open and comments to fetch
-          let commentWaitAttempts = 0;
-          const waitForComment = () => {
-            commentWaitAttempts++;
-            const commentEl = document.querySelector(`[data-comment-id="${focusCommentId}"]`);
-            if (commentEl) {
-              console.log(`[Notification] ✅ Found comment element! Scrolling to it...`);
-              // Use requestAnimationFrame for better timing
-              requestAnimationFrame(() => {
-                commentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Highlight with yellow glow
-                commentEl.style.backgroundColor = '#fffacd';
-                commentEl.style.transition = 'background-color 0.5s ease-in-out';
-                setTimeout(() => {
-                  commentEl.style.backgroundColor = 'transparent';
-                }, 1500);
-              });
-            } else if (commentWaitAttempts < 50) {
-              // Keep trying to find the comment
-              setTimeout(waitForComment, 150);
-            } else {
-              console.warn(`[Notification] ⚠️ Could not find comment ${focusCommentId} after ${commentWaitAttempts} attempts`);
-            }
-          };
-          setTimeout(waitForComment, 1000);
-        }
-        return true;
-      }
-    }
-    
-    // If no card found and we haven't exceeded max attempts, try again
-    if (attempts < maxAttempts) {
-      setTimeout(tryOpenArtwork, 200);
-    } else {
-      console.warn(`[Notification] ⚠️ Could not find artwork ${artworkId} after ${maxAttempts} attempts`);
-    }
-  };
-  
-  // Start trying after a delay to let page settle
-  tryOpenArtwork();
-};

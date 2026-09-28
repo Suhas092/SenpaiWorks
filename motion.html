@@ -7,10 +7,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SenpaiWorks Motion Studio — Music Videos, 2D & 4D Motion VFX</title>
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="header.css?v=11">
   <link rel="stylesheet" href="motion.css?v=30">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -69,7 +72,7 @@
 
       <!-- Featured MV 1: Suzens Band (Full-Width Viewport) -->
       <div class="mv-player-viewport">
-        <img src="assets/Suzens band.png" alt="Suzens Band MV" class="mv-player-img">
+        <img src="assets/Suzens band.png" alt="Suzens Band MV" class="mv-player-img" loading="eager" decoding="async">
         <div class="mv-player-overlay-content">
           <span class="mv-label-badge"><i class="fa-solid fa-star"></i> FEATURED ANIME MUSIC VIDEO</span>
           <h3 class="mv-hero-track-title">Suzens Band — Official Anime Music Video</h3>
@@ -89,7 +92,7 @@
       <div class="mv-split-showcase">
         <!-- Deadpool MV -->
         <div class="mv-split-media">
-          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool MV">
+          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool MV" loading="eager" decoding="async">
         </div>
         <div class="mv-split-info">
           <span class="mv-label-badge" style="background: #dc2626;"><i class="fa-solid fa-bolt"></i> ACTION REEL</span>
@@ -106,7 +109,7 @@
       <!-- Fantasy MV Split -->
       <div class="mv-split-showcase" style="direction: rtl;">
         <div class="mv-split-media" style="direction: ltr;">
-          <img src="assets/suzana.png" alt="Suzana Fantasy MV">
+          <img src="assets/suzana.png" alt="Suzana Fantasy MV" loading="eager" decoding="async">
         </div>
         <div class="mv-split-info" style="direction: ltr;">
           <span class="mv-label-badge" style="background: #d4af37;"><i class="fa-solid fa-dragon"></i> STORYBOOK MV</span>
@@ -135,7 +138,7 @@
 
     <div class="editorial-split-block">
       <div class="editorial-media-frame">
-        <img src="assets/art-others-1.png" alt="2D Anime Animation">
+        <img src="assets/art-others-1.png" alt="2D Anime Animation" loading="eager" decoding="async">
       </div>
       <div class="editorial-text-content">
         <span class="editorial-feature-tag">HAND-DRAWN KEYFRAMING</span>
@@ -175,7 +178,7 @@
     </div>
 
     <div class="wide-vfx-banner">
-      <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/chronos_plays_fl47xm.webp" alt="4D VFX" class="vfx-banner-bg-img">
+      <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/chronos_plays_fl47xm.webp" alt="4D VFX" class="vfx-banner-bg-img" loading="eager" decoding="async">
       
       <div class="vfx-banner-content">
         <span class="vfx-tag">HOUDINI & UNREAL ENGINE 5</span>
@@ -242,6 +245,7 @@
 
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

@@ -12,6 +12,7 @@ model Comment {
   id        Int      @id @default(autoincrement())
   animeId   String
   username  String
+  userEmail String?  // Store author's email for notifications
   userId    Int?
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   text      String
@@ -133,6 +134,7 @@ model User {
   provider            String         @default("local")
   providerId          String?
   emailVerified       Boolean        @default(false)
+  welcomeOfferUsed    Boolean        @default(false)
   signupOtp           String?
   signupOtpExpiresAt  DateTime?
   resetOtp            String?
@@ -479,6 +481,19 @@ model HomeShowcaseItem {
   trashMeta   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Wishlist {
+  id        Int      @id @default(autoincrement())
+  userEmail String   // Email of the user who added to wishlist
+  itemId    String   // Product ID or Artwork ID
+  itemType  String   // "product" or "artwork"
+  itemData  String   // JSON string with item details (name, image, price, etc)
+  createdAt DateTime @default(now())
+
+  @@unique([userEmail, itemId, itemType])
+  @@index([userEmail])
+  @@index([itemId])
 }
 
 

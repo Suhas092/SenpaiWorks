@@ -1,0 +1,66 @@
+/* Image Performance Optimization */
+
+/* Prevent layout shift with aspect ratio */
+img {
+  aspect-ratio: auto;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optimize image loading appearance */
+img:not([src]) {
+  background-color: #f0f0f0;
+}
+
+/* Better image rendering quality */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Carousel/slider images */
+.carousel img,
+.slider img,
+.feature-card-image,
+.grid-card-image,
+.hero img,
+.banner img {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive image sizes */
+@media (max-width: 768px) {
+  img {
+    max-width: 100%;
+  }
+}
+
+/* Optimize for different screen densities */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img[loading="lazy"] {
+    /* Hints browser to prioritize decoding */
+    decoding: async;
+  }
+}
+
+/* Avoid FOUC (Flash of Unstyled Content) */
+img[loading="lazy"] {
+  background-image: 
+    linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 2s infinite;
+}
+
+img[loading="lazy"][src]:not([src=""]) {
+  animation: none;
+  background-image: none;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

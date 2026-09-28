@@ -401,6 +401,12 @@ window.openDirectNotificationById = async function(id) {
     }
   }
 
+  // If notification has an artwork link with focusComment, navigate to art-library instead
+  if (notif && notif.link && notif.link.includes('artworkId')) {
+    window.location.href = notif.link;
+    return;
+  }
+
   if (notif) {
     window.openNotificationPreview(notif);
   }

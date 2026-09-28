@@ -10,7 +10,10 @@
   <title>Admin Control Center - SenpaiWorks</title>
   <link rel="stylesheet" href="admin.css?v=4.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -31,7 +34,8 @@
       <div class="sidebar-brand">
         <a href="index.html" class="brand-link">
           <img
-            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"
+            src="assets/default-avatar.svg"
+            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzMzNDI1NiIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5TMjwvdGV4dD48L3N2Zz4='"
             alt="SenpaiWorks Admin" class="sidebar-logo">
           <div class="brand-text">
             <h2>SenpaiWorks</h2>
@@ -122,7 +126,8 @@
       <div class="sidebar-profile">
         <div class="profile-avatar-wrap">
           <img id="sidebar-user-avatar"
-            src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"
+            src="assets/default-avatar.svg"
+            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzMzNDI1NiIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BPC90ZXh0Pjwvc3ZnPg=='"
             alt="Admin Avatar" class="profile-avatar">
           <div class="avatar-status-dot"></div>
         </div>
@@ -2020,7 +2025,8 @@
               <div class="profile-details-hero">
                 <div class="profile-detail-avatar-wrap">
                   <img id="detail-profile-avatar"
-                    src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/avatars/rem_happy_evhesz.webp"
+                    src="assets/default-avatar.svg"
+                    onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzMzNDI1NiIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BPC90ZXh0Pjwvc3ZnPg=='"
                     alt="Avatar">
                 </div>
                 <h2 id="detail-profile-name">Suhas H</h2>
@@ -2746,6 +2752,7 @@
   <script src="scripts/admin/admin-users.js?v=4.0"></script>
   <script src="scripts/admin/admin-trash.js?v=1.0"></script>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

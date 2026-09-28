@@ -7,17 +7,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SenpaiWorks</title>
+  
+  <!-- Preconnect to Google Fonts for faster loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="art-library.css">
-  <link rel="stylesheet" href="header.css?v=10">
-  <link rel="stylesheet" href="home.css?v=12">
-  <link rel="stylesheet" href="mobile-navbar.css">
-  <link rel="stylesheet" href="showcase.css?v=2.0">
+  
+  <!-- Consolidated Google Fonts - Load once for all CSS files -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets with cache-busting versions -->
+  <link rel="stylesheet" href="art-library.css?v=2">
+  <link rel="stylesheet" href="header.css?v=11">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="mobile-navbar.css?v=2">
+  <link rel="stylesheet" href="showcase.css?v=3">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
   <script src="scripts/showcase.js" defer></script>
+  <script src="scripts/home-suzens.js" defer></script>
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -37,6 +46,7 @@
   </div>
   <script src="scripts/header.js?v=102"></script>
   <script src="scripts/drawer.js?v=7"></script>
+  <script src="scripts/realtime-notifications.js"></script>
 
 
   <section class="slideshow-container" id="slides">
@@ -192,25 +202,25 @@
           <!-- Card 1: Suzana -->
           <div class="showcase-card" data-index="0">
             <div class="card-bg-overlay"></div>
-            <img src="assets/suzana all out old.png" alt="Suzana">
+            <img src="assets/suzana all out old.png" alt="Suzana" loading="eager" decoding="async">
             <div class="card-name-overlay">SUZANA</div>
           </div>
           <!-- Card 2: Tiara -->
           <div class="showcase-card" data-index="1">
             <div class="card-bg-overlay"></div>
-            <img src="assets/tiara all out.png" alt="Tiara">
+            <img src="assets/tiara all out.png" alt="Tiara" loading="eager" decoding="async">
             <div class="card-name-overlay">TIARA</div>
           </div>
           <!-- Card 4: Ayana -->
           <div class="showcase-card" data-index="3">
             <div class="card-bg-overlay"></div>
-            <img src="assets/ayana all out.png" alt="Ayana">
+            <img src="assets/ayana all out.png" alt="Ayana" loading="eager" decoding="async">
             <div class="card-name-overlay">AYANA</div>
           </div>
           <!-- Card 3: Remi -->
           <div class="showcase-card" data-index="2">
             <div class="card-bg-overlay"></div>
-            <img src="assets/remi all out.png" alt="Remi">
+            <img src="assets/remi all out.png" alt="Remi" loading="eager" decoding="async">
             <div class="card-name-overlay">REMI</div>
           </div>
         </div>
@@ -257,7 +267,7 @@
             <div class="dashed-ring ring-3"></div>
             <div class="feature-logo-wrap">
               <div class="feature-logo-gradient"></div>
-              <img src="assets/SenpaiWorks logo.png" alt="SenpaiWorks Logo" class="feature-logo-img">
+              <img src="assets/SenpaiWorks logo.png" alt="SenpaiWorks Logo" class="feature-logo-img" loading="eager" decoding="async">
             </div>
           </div>
         </a>
@@ -287,7 +297,7 @@
               </div>
               <img
                 src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/deadpool_logo_wv09fw.webp"
-                alt="Deadpool" class="rec-item-img">
+                alt="Deadpool" class="rec-item-img" loading="eager" decoding="async">
             </a>
 
             <!-- Item 2: Web Dev -->
@@ -298,7 +308,7 @@
               </div>
               <img
                 src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/code_copy_jq3ic6.webp"
-                alt="Web Dev" class="rec-item-img">
+                alt="Web Dev" class="rec-item-img" loading="eager" decoding="async">
             </a>
 
             <!-- Item 3: Design -->
@@ -309,7 +319,7 @@
               </div>
               <img
                 src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/suzan_main_bg_zrmgwb.webp"
-                alt="Design" class="rec-item-img">
+                alt="Design" class="rec-item-img" loading="eager" decoding="async">
             </a>
 
           </div>
@@ -370,7 +380,7 @@
             <img id="main-merch"
               src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp"
               alt="SenpaiWorks Courses"
-              onerror="this.onerror=null; this.src='https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp';">
+              onerror="this.onerror=null; this.src='https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp';" loading="eager" decoding="async">
           </div>
 
           <div class="dots-grid dots-bottom-right"></div>
@@ -402,7 +412,7 @@
           data-label="Start Watching">
           <img
             src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp"
-            alt="Deadpool Poster">
+            alt="Deadpool Poster" loading="eager" decoding="async">
           <div class="movie-info">
             <h3>Deadpool Animation</h3>
             <p>Experience Deadpool in Action</p>
@@ -413,7 +423,7 @@
         <a href="suzens.html" class="movie-card" data-label="See Details">
           <img
             src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp"
-            alt="Suzens Poster">
+            alt="Suzens Poster" loading="eager" decoding="async">
           <div class="movie-info">
             <h3>Suzens: The First Bloom</h3>
             <p>Suzen’s first virtual debut song arriving soon</p>
@@ -425,7 +435,7 @@
           data-label="Start Watching">
           <img
             src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/zoro_green_poster_unzusa.webp"
-            alt="Zoro Poster">
+            alt="Zoro Poster" loading="eager" decoding="async">
           <div class="movie-info">
             <h3>Zoro: Forged from Legends</h3>
             <p>An artwork sailing One Piece’s legend</p>
@@ -437,7 +447,7 @@
           data-label="Start Watching">
           <img
             src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/jungkook_copy_ntfb24.webp"
-            alt="Jungkook Charcoal Art">
+            alt="Jungkook Charcoal Art" loading="eager" decoding="async">
           <div class="movie-info">
             <h3>Jungkook: Charcoal Art</h3>
             <p>Watch the quick creation of Jungkook in charcoal</p>
@@ -450,7 +460,7 @@
           data-label="Start Watching">
           <img
             src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/itachi_copy_laotwi.webp"
-            alt="Itachi Artwork">
+            alt="Itachi Artwork" loading="eager" decoding="async">
           <div class="movie-info">
             <h3>The Legend of Itachi</h3>
             <p>An epic Itachi story built from countless little Naruto characters</p>
@@ -462,7 +472,7 @@
           data-label="Start Watching">
           <img
             src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/taeyung_copy_sne0b3.webp"
-            alt="Zoro Poster">
+            alt="Zoro Poster" loading="eager" decoding="async">
           <div class="movie-info">
             <h3>V: the Word Art</h3>
             <p>Exclusive release – October 2025</p>
@@ -551,10 +561,14 @@
             }).join("");
           }
         } else {
-          console.warn("[Failure Path] Could not fetch dynamic shorts (HTTP " + res.status + "), cleanly using static fallback markup.");
+          console.warn("[Showcase API] Could not fetch dynamic shorts (HTTP " + res.status + "), cleanly using static fallback markup.");
+          // Show error boundary message
+          container.innerHTML = '<div class="content-error-boundary"><p>⚠️ Unable to load content. Showing offline version.</p></div>';
         }
       } catch (err) {
-        console.warn("[Failure Path] Could not fetch dynamic shorts, cleanly using static fallback markup:", err);
+        console.warn("[Showcase API] Could not fetch dynamic shorts, cleanly using static fallback markup:", err);
+        // Show error boundary message
+        container.innerHTML = '<div class="content-error-boundary"><p>⚠️ Connection error. Showing offline version.</p></div>';
       }
 
       bindScrollButtons();
@@ -575,7 +589,7 @@
               <span class="prod-discount-badge">38% OFF</span>
             </div>
             <img src="assets/Store/Hoodies/colored Itachi Hoodies/itachi_hoodie_black_colored.jpg"
-              alt="Itachi Uchiha Duo Graphic Colored Hoodie" class="feature-card-image">
+              alt="Itachi Uchiha Duo Graphic Colored Hoodie" class="feature-card-image" loading="eager" decoding="async">
           </div>
 
           <div class="merch-feature-card-content">
@@ -604,7 +618,7 @@
                   <span class="prod-discount-badge">40% OFF</span>
                 </div>
                 <img src="assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg"
-                  alt="Ken Kaneki Tokyo Ghoul Full Color T-Shirt" class="grid-card-image">
+                  alt="Ken Kaneki Tokyo Ghoul Full Color T-Shirt" class="grid-card-image" loading="eager" decoding="async">
               </div>
               <div class="grid-card-content">
                 <div class="prod-sub-row">
@@ -627,7 +641,7 @@
                   <span class="prod-discount-badge">35% OFF</span>
                 </div>
                 <img src="assets/Store/Hoodies/colored Zoro Hoodies/zoro_hoodie_green_colored.jpg"
-                  alt="Roronoa Zoro Three-Sword Colored Hoodie" class="grid-card-image">
+                  alt="Roronoa Zoro Three-Sword Colored Hoodie" class="grid-card-image" loading="eager" decoding="async">
               </div>
               <div class="grid-card-content">
                 <div class="prod-sub-row">
@@ -649,7 +663,7 @@
                   <span class="prod-discount-badge">38% OFF</span>
                 </div>
                 <img src="assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg"
-                  alt="Roronoa Zoro Three-Sword Colored T-Shirt" class="grid-card-image">
+                  alt="Roronoa Zoro Three-Sword Colored T-Shirt" class="grid-card-image" loading="eager" decoding="async">
               </div>
               <div class="grid-card-content">
                 <div class="prod-sub-row">
@@ -672,7 +686,7 @@
                   <span class="prod-discount-badge">43% OFF</span>
                 </div>
                 <img src="assets/Store/Tshirts/B&W kaneki tshirts/kaneki_tshirt_black.jpg"
-                  alt="Ken Kaneki Tokyo Ghoul B&W Edition T-Shirt" class="grid-card-image">
+                  alt="Ken Kaneki Tokyo Ghoul B&W Edition T-Shirt" class="grid-card-image" loading="lazy" decoding="async">
               </div>
               <div class="grid-card-content">
                 <div class="prod-sub-row">
@@ -694,7 +708,7 @@
                   <span class="prod-discount-badge">33% OFF</span>
                 </div>
                 <img src="assets/Store/Hoodies/B&W itachi hoodies/itachi_hoodie_black.jpg"
-                  alt="Itachi Uchiha Monochrome Edition Hoodie" class="grid-card-image">
+                  alt="Itachi Uchiha Monochrome Edition Hoodie" class="grid-card-image" loading="lazy" decoding="async">
               </div>
               <div class="grid-card-content">
                 <div class="prod-sub-row">
@@ -716,7 +730,7 @@
                   <span class="prod-discount-badge">40% OFF</span>
                 </div>
                 <img src="assets/Store/Tshirts/B&W itachi tshirts/itachi_black_tshirt_bw.jpg"
-                  alt="Itachi Uchiha Monochrome Edition T-Shirt" class="grid-card-image">
+                  alt="Itachi Uchiha Monochrome Edition T-Shirt" class="grid-card-image" loading="lazy" decoding="async">
               </div>
               <div class="grid-card-content">
                 <div class="prod-sub-row">
@@ -1024,10 +1038,26 @@
             renderSlide(0);
           }
         } else {
-          console.warn("[Failure Path] Could not fetch showcase items (HTTP " + res.status + "), cleanly using static fallback markup.");
+          console.warn("[Showcase API] Could not fetch showcase items (HTTP " + res.status + "), cleanly using static fallback markup.");
+          // Show error message to user
+          const sliderBox = document.getElementById("featured-slider-box");
+          if (sliderBox && sliderBox.children.length <= 2) { // Only nav buttons, no slides
+            const errorMsg = document.createElement("div");
+            errorMsg.className = "content-error-boundary";
+            errorMsg.innerHTML = '<p>⚠️ Unable to load featured items. Please refresh the page.</p>';
+            sliderBox.appendChild(errorMsg);
+          }
         }
       } catch (err) {
-        console.warn("[Failure Path] Could not fetch showcase items, cleanly using static fallback markup:", err);
+        console.warn("[Showcase API] Could not fetch showcase items, cleanly using static fallback markup:", err);
+        // Show error message to user
+        const sliderBox = document.getElementById("featured-slider-box");
+        if (sliderBox && sliderBox.children.length <= 2) { // Only nav buttons, no slides
+          const errorMsg = document.createElement("div");
+          errorMsg.className = "content-error-boundary";
+          errorMsg.innerHTML = '<p>⚠️ Connection error. Please refresh the page.</p>';
+          sliderBox.appendChild(errorMsg);
+        }
       }
     }
     loadDynamicShowcaseItems();
@@ -1335,14 +1365,24 @@
           if (!spotlight) {
             const fallbackRes = await fetch("/api/products");
             if (!fallbackRes.ok) {
-              console.warn("[Failure Path] Could not fetch store products for home merch (HTTP " + fallbackRes.status + "), cleanly using static fallback markup.");
+              console.warn("[Merch API] Could not fetch store products for home merch (HTTP " + fallbackRes.status + "), cleanly using static fallback markup.");
               return;
             }
             const products = await fallbackRes.json();
             if (!Array.isArray(products) || products.length === 0) return;
+            
+            // Try physical products first, then any available product
             let physicalProds = products.filter(p => p.type === 'physical' && p.available !== false);
-            if (physicalProds.length === 0) physicalProds = products.filter(p => p.available !== false);
+            if (physicalProds.length === 0) {
+              // Fallback: any available product regardless of type
+              physicalProds = products.filter(p => p.available !== false);
+            }
+            if (physicalProds.length === 0) {
+              // Ultimate fallback: use first product if nothing else available
+              physicalProds = products.slice(0, 1);
+            }
             if (physicalProds.length === 0) return;
+            
             spotlight = physicalProds[0];
             gridProds = physicalProds.slice(1, 7);
           }
@@ -1437,6 +1477,7 @@
   <script src="scripts/footer.js"></script>
   <script src="scripts/home-news.js?v=1.0" defer></script>
   <script src="scripts/home-animations.js" defer></script>
+  <script src="scripts/home-ux-enhancements.js" defer></script>
   <script>
     // Universal Homepage Progressive Skeleton Shimmer Binder
     function bindHomeProgressiveSkeletons() {
@@ -1467,6 +1508,7 @@
     window.addEventListener('load', bindHomeProgressiveSkeletons);
   </script>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

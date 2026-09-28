@@ -213,7 +213,7 @@
     // Safely pull products from window.PRODUCTS or PRODUCTS global
     const storeProducts = window.PRODUCTS || (typeof PRODUCTS !== "undefined" ? PRODUCTS : []);
     if (Array.isArray(storeProducts)) {
-      storeProducts.forEach((p) => {
+      storeProducts.forEach((p, idx) => {
         if (allSearchItems.some((item) => item.id === p.id)) return;
         allSearchItems.push({
           id: p.id,
@@ -488,7 +488,7 @@
 
     // Render result cards
     resultsGrid.innerHTML = filtered
-      .map((item) => {
+      .map((item, idx) => {
         const badgeHTML = item.badge
           ? `<span class="result-badge">${escapeHTML(item.badge)}</span>`
           : "";
@@ -502,7 +502,7 @@
         return `
           <a class="result-card" href="${item.link}">
             <div class="result-card-img-wrap">
-              <img src="${item.img}" alt="${escapeHTML(item.title)}" loading="lazy" onerror="this.src='assets/SenpaiWorks logo bg.png'" />
+              <img src="${item.img}" alt="${escapeHTML(item.title)}" loading=\"${idx < 15 ? 'eager' : 'lazy'}\" onerror="this.src='assets/SenpaiWorks logo bg.png'" />
               ${badgeHTML}
               <span class="result-type-pill ${item.type}">${escapeHTML(item.category)}</span>
             </div>
@@ -525,7 +525,7 @@
   // ── Update Filter Category Counters ──────────────────────
   function updateCategoryCounts(queryMatches) {
     const filterBtns = document.querySelectorAll(".search-filter-pill");
-    filterBtns.forEach((btn) => {
+    filterBtns.forEach((btn, idx) => {
       const cat = btn.getAttribute("data-filter");
       let count = 0;
       if (cat === "all") {
@@ -638,9 +638,9 @@
 
     // Category Filter Pills Listener
     const filterBtns = document.querySelectorAll(".search-filter-pill");
-    filterBtns.forEach((btn) => {
+    filterBtns.forEach((btn, idx) => {
       btn.addEventListener("click", () => {
-        filterBtns.forEach((b) => b.classList.remove("active"));
+        filterBtns.forEach((b, idx) => b.classList.remove("active"));
         btn.classList.add("active");
         currentFilter = btn.getAttribute("data-filter") || "all";
         renderResults();

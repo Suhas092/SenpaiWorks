@@ -60,6 +60,38 @@ window.handleAccountFeedbackSubmit = function (e) {
   localStorage.setItem("userReviews", JSON.stringify(reviewsList));
   localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
 
+  // Send an email notification to SenpaiWorks admin (server will deliver)
+  (async function sendFeedbackToServer() {
+    try {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+      const authorName = currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : "Profile User";
+      const payload = {
+        name: authorName,
+        email: currentUser.email || '',
+        subject: `User Feedback: ${category}`,
+        message: `${newFeedback.title}\n\nRating: ${newFeedback.rating}/5\n\n${newFeedback.text}`
+      };
+
+      // Include auth token if available (optional)
+      const token = (typeof getAuthToken === 'function' ? getAuthToken() : (localStorage.getItem('auth_token') || null)) || null;
+
+      await fetch('/api/support/contact', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'Authorization': `Bearer ${token}` } : {}),
+        body: JSON.stringify(payload)
+      }).then(async (res) => {
+        if (res.ok) {
+          // fire-and-forget success
+          console.log('[Feedback] Server notified and admin email triggered');
+        } else {
+          console.warn('[Feedback] Server contact endpoint returned', res.status);
+        }
+      }).catch(err => console.warn('[Feedback] Failed to notify server:', err));
+    } catch (err) {
+      console.warn('[Feedback] Error preparing server feedback:', err);
+    }
+  })();
+
   document.getElementById("feedback-msg-input").value = "";
   if (typeof showToast === 'function') showToast("Thank you for your feedback! Your review has been recorded.");
   else alert("Thank you for your feedback! Your review has been recorded.");

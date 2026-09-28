@@ -39,13 +39,13 @@
       const latestListContainer = document.getElementById("news-latest-col-list");
       if (latestListContainer) {
         const latestArticles = articles.slice(0, 5);
-        latestListContainer.innerHTML = latestArticles.map(art => {
+        latestListContainer.innerHTML = latestArticles.map((art, idx) => {
           const imgUrl = art.img || "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/code_copy_jq3ic6.webp";
           const summaryText = art.summary || (art.content ? art.content.replace(/<[^>]*>?/gm, '').slice(0, 130) + '...' : '');
           return `
             <a href="article.html?id=${encodeURIComponent(art.id)}" class="nw-article-card">
               <div class="nw-article-thumb">
-                <img src="${escapeAttr(safeUrl(imgUrl))}" alt="${escapeAttr(art.title)}" loading="lazy">
+                <img src="${escapeAttr(safeUrl(imgUrl))}" alt="${escapeAttr(art.title)}" loading="${idx < 15 ? 'eager' : 'lazy'}">
               </div>
               <div class="nw-article-info">
                 <h3>${escapeHtml(art.title)}</h3>
@@ -91,8 +91,9 @@
         const mImg = m.img || "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp";
         const mSummary = m.summary || (m.content ? m.content.replace(/<[^>]*>?/gm, '').slice(0, 110) + '...' : '');
         editMain.href = `article.html?id=${encodeURIComponent(m.id)}`;
+        // Main editorial feature should eagerly load its hero image
         editMain.innerHTML = `
-          <div class="nw-edit-img"><img src="${escapeAttr(safeUrl(mImg))}" alt="${escapeAttr(m.title)}" loading="lazy"></div>
+          <div class="nw-edit-img"><img src="${escapeAttr(safeUrl(mImg))}" alt="${escapeAttr(m.title)}" loading="eager"></div>
           <div class="nw-edit-body">
             <span class="nw-tag-pill">${escapeHtml(m.category || "Featured")}</span>
             <h3>${escapeHtml(m.title)}</h3>
@@ -104,11 +105,11 @@
 
       if (editStack && editorialList.length >= 3) {
         const stackItems = editorialList.slice(1, 3);
-        editStack.innerHTML = stackItems.map(item => {
+        editStack.innerHTML = stackItems.map((item, idx) => {
           const itemImg = item.img || "https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp";
           return `
             <a href="article.html?id=${encodeURIComponent(item.id)}" class="nw-edit-card nw-edit-card--small">
-              <div class="nw-edit-img"><img src="${escapeAttr(safeUrl(itemImg))}" alt="${escapeAttr(item.title)}" loading="lazy"></div>
+              <div class="nw-edit-img"><img src="${escapeAttr(safeUrl(itemImg))}" alt="${escapeAttr(item.title)}" loading="${idx < 15 ? 'eager' : 'lazy'}"></div>
               <div class="nw-edit-body">
                 <span class="nw-tag-pill">${escapeHtml(item.category || "Story")}</span>
                 <h3>${escapeHtml(item.title)}</h3>

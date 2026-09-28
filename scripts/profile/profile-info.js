@@ -16,6 +16,7 @@ function loadUserProfileData() {
   const bannerName = document.getElementById("acc-banner-name");
   const bannerEmail = document.getElementById("acc-banner-email");
   const bannerAvatar = document.getElementById("acc-banner-avatar");
+  const welcomeOfferBadge = document.getElementById("welcome-offer-badge");
 
   if (!currentUser) {
     if (bannerName) bannerName.textContent = "Guest User";
@@ -31,6 +32,63 @@ function loadUserProfileData() {
   if (bannerName) bannerName.textContent = currentUser.name || currentUser.firstName || "Member";
   if (bannerEmail) bannerEmail.textContent = currentUser.email || "";
   if (bannerAvatar) bannerAvatar.src = userAvatar;
+
+  // Fetch user data from server to check welcomeOfferUsed status and purchase history
+  const token = localStorage.getItem("userToken");
+  fetch("/api/user/profile?_t=" + Date.now(), {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      ...(token ? { "Authorization": `Bearer ${token}` } : {})
+    },
+    credentials: "include"
+  })
+    .then(res => {
+      if (!res.ok) {
+        console.error("[Profile] API returned status:", res.status);
+        return null;
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (!data) {
+        console.warn("[Profile] No data returned from API");
+        return;
+      }
+      
+      console.log("[Profile] API response:", data);
+      
+      if (data && data.user) {
+        console.log("[Profile] User welcomeOfferUsed:", data.user.welcomeOfferUsed);
+        console.log("[Profile] User hasPurchased:", data.user.hasPurchased);
+        
+        // Hide badge if:
+        // 1. User has already used the welcome offer, OR
+        // 2. User has already made a purchase
+        const shouldShowBadge = !data.user.welcomeOfferUsed && !data.user.hasPurchased;
+        
+        if (shouldShowBadge && welcomeOfferBadge) {
+          // Show badge only if offer hasn't been used AND user hasn't purchased yet
+          console.log("[Profile] Showing welcome badge (first-time buyer)");
+          welcomeOfferBadge.style.display = "inline-flex";
+        } else if (welcomeOfferBadge) {
+          // Hide badge if offer has been used OR user has made a purchase
+          if (data.user.hasPurchased) {
+            console.log("[Profile] Hiding welcome badge (user has already purchased)");
+          } else {
+            console.log("[Profile] Hiding welcome badge (offer already used)");
+          }
+          welcomeOfferBadge.style.display = "none";
+        }
+      } else {
+        console.warn("[Profile] No user data in response");
+        if (welcomeOfferBadge) {
+          welcomeOfferBadge.style.display = "none";
+        }
+      }
+    })
+    .catch(err => console.error("[Profile] Error fetching user profile:", err));
 
   const firstnameInput = document.getElementById("profile-firstname");
   const lastnameInput = document.getElementById("profile-lastname");

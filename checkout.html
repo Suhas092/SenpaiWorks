@@ -14,7 +14,10 @@
 
   <link rel="stylesheet" href="header.css?v=97">
   <link rel="stylesheet" href="checkout.css?v=104">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body class="checkout-body">
@@ -257,22 +260,6 @@
                 </div>
               </div>
 
-              <!-- OPTION 4: WALLETS -->
-              <div class="payment-method-card" id="pay-card-wallet" onclick="selectPayOption('wallet')">
-                <div class="pay-card-header">
-                  <div class="pay-radio-col">
-                    <input type="radio" name="payment_method" value="wallet">
-                  </div>
-                  <div class="pay-title-col">
-                    <div class="pay-method-name">Wallets</div>
-                    <div class="pay-method-sub">Paytm, PhonePe, Mobikwik, Freecharge & Amazon Pay</div>
-                  </div>
-                  <div class="pay-badges-col">
-                    <i class="fa-solid fa-wallet" style="color: #6366f1; font-size: 1.15rem;"></i>
-                  </div>
-                </div>
-              </div>
-
               <!-- OPTION 5: CASH ON DELIVERY (COD) -->
               <div class="payment-method-card" id="pay-card-cod" onclick="selectPayOption('cod')">
                 <div class="pay-card-header">
@@ -393,6 +380,7 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="scripts/brand-logo-data.js?v=2"></script>
   <script src="scripts/checkout.js?v=101"></script>
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

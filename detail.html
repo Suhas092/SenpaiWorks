@@ -14,8 +14,11 @@
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="header.css?v=11">
   <link rel="stylesheet" href="detail.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 
 <body>
@@ -32,6 +35,7 @@
     </script>
   </div>
   <script src="scripts/header.js?v=5"></script>
+  <script src="scripts/realtime-notifications.js"></script>
 
   <div id="drawer-container"></div>
   <script src="scripts/drawer.js?v=5"></script>
@@ -56,7 +60,7 @@
         <!-- Cover image column -->
         <div class="detail-cover-col">
           <div class="cover-image-wrapper">
-            <img src="" alt="Anime Cover" class="detail-cover-image" />
+            <img src="" alt="Anime Cover" class="detail-cover-image" loading="eager" decoding="async" />
           </div>
         </div>
 
@@ -209,6 +213,7 @@
 
   <!-- Detail Page Script -->
   <script src="scripts/detail.js"></script>
+<script src="scripts/image-loader.js" defer></script>
 </body>
 
 </html>

@@ -453,7 +453,7 @@ function renderProducts() {
     return;
   }
 
-  grid.innerHTML = filtered.map(prod => {
+  grid.innerHTML = filtered.map((prod, idx) => {
     const subLabel = prod.subCategory || prod.category || (prod.type === 'physical' ? 'Merchandise' : 'Digital Asset');
     let badgeMarkup = prod.badge ? `<span class="prod-badge badge-custom">${prod.badge}</span>` : "";
     let outOfStockOverlay = "";
@@ -489,6 +489,11 @@ function renderProducts() {
     const calcSum = allRevs.reduce((acc, r) => acc + (Number(r.rating) || 5), 0);
     const calcAvg = allRevs.length > 0 ? (calcSum / allRevs.length).toFixed(1) : (prod.rating || 5.0).toFixed(1);
 
+    // Validate image URL - use it if it exists and is not too short
+    const imgSrc = (prod.img && prod.img.trim().length > 0) 
+      ? prod.img 
+      : 'assets/SenpaiWorks logo.png';
+
     const swatchesMarkup = prod.colorVariants && Array.isArray(prod.colorVariants) && prod.colorVariants.length > 0 ? `
       <div class="prod-color-swatches">
         ${prod.colorVariants.map(variant => `
@@ -506,7 +511,7 @@ function renderProducts() {
         <div class="prod-img-wrap" style="position: relative;">
           ${outOfStockOverlay}
           <a href="store-detail.html?id=${prod.id}">
-            <img src="${prod.img || 'assets/SenpaiWorks logo.png'}" alt="${prod.name || 'Product'}" loading="lazy">
+            <img src="${imgSrc}" alt="${prod.name || 'Product'}" loading="${idx < 12 ? 'eager' : 'lazy'}" decoding="async" onerror="this.src='assets/SenpaiWorks logo.png'">
           </a>
           <div class="prod-badges-row">
             ${badgeMarkup}
@@ -545,11 +550,27 @@ function bindStoreProductImages(grid) {
       wrap.classList.add('img-loaded');
     };
 
-    if (img.complete && img.naturalHeight > 0) {
-      onImageLoaded();
-    } else {
+    const onImageError = () => {
+      img.src = 'assets/SenpaiWorks logo.png';
       img.addEventListener('load', onImageLoaded, { once: true });
       img.addEventListener('error', onImageLoaded, { once: true });
+    };
+
+    if (img.complete && img.naturalHeight > 0) {
+      onImageLoaded();
+    } else if (img.complete && img.naturalHeight === 0) {
+      // Image is broken, use fallback
+      onImageError();
+    } else {
+      img.addEventListener('load', onImageLoaded, { once: true });
+      img.addEventListener('error', onImageError, { once: true });
+      
+      // Add timeout: if image doesn't load within 8 seconds, show it anyway
+      setTimeout(() => {
+        if (!img.classList.contains('loaded')) {
+          onImageLoaded();
+        }
+      }, 8000);
     }
   });
 }

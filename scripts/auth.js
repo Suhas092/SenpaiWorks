@@ -430,7 +430,8 @@
       const left = Math.max(0, Math.floor(window.screenX + (window.outerWidth - width) / 2));
       const top = Math.max(0, Math.floor(window.screenY + (window.outerHeight - height) / 2));
 
-      const redirectUri = window.location.origin + window.location.pathname;
+      // Fixed: Use consistent redirect URI instead of current pathname
+      const redirectUri = window.location.origin + "/login.html";
       const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=openid%20email%20profile&prompt=select_account&state=google_oauth`;
 
       console.log("[Auth] Opening centered Google OAuth popup...");
@@ -509,7 +510,8 @@
       }
 
       try {
-        const redirectUri = window.location.origin + window.location.pathname;
+        // Fixed: Use consistent redirect URI instead of current pathname
+        const redirectUri = window.location.origin + "/login.html";
         const fbUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${encodeURIComponent(appId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=public_profile&state=facebook_oauth`;
 
         // Direct same-window redirect

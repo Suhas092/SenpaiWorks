@@ -11,9 +11,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="home.css?v=13">
+  <link rel="stylesheet" href="header.css?v=11">
   <link rel="stylesheet" href="article.css">
+<link rel="stylesheet" href="image-optimize.css" media="screen">
+
+<script src="scripts/image-preload.js"></script>
 </head>
 <body class="article-body-container">
 
@@ -64,7 +67,7 @@
 
     <!-- 3. Feature Cover Banner Frame -->
     <div class="article-cover-frame">
-      <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/all_characters_yvk9ik.webp" alt="Article Cover Image" id="article-cover-img" class="article-cover-img">
+      <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/news/all_characters_yvk9ik.webp" alt="Article Cover Image" id="article-cover-img" class="article-cover-img" loading="lazy" decoding="async">
     </div>
 
     <!-- 4. Quick Table of Contents Bar -->
@@ -114,5 +117,6 @@
   <!-- Article Dynamic Logic Script -->
   <script src="scripts/article.js"></script>
 
+<script src="scripts/image-loader.js" defer></script>
 </body>
 </html>
