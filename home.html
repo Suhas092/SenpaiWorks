@@ -562,13 +562,9 @@
           }
         } else {
           console.warn("[Showcase API] Could not fetch dynamic shorts (HTTP " + res.status + "), cleanly using static fallback markup.");
-          // Show error boundary message
-          container.innerHTML = '<div class="content-error-boundary"><p>⚠️ Unable to load content. Showing offline version.</p></div>';
         }
       } catch (err) {
         console.warn("[Showcase API] Could not fetch dynamic shorts, cleanly using static fallback markup:", err);
-        // Show error boundary message
-        container.innerHTML = '<div class="content-error-boundary"><p>⚠️ Connection error. Showing offline version.</p></div>';
       }
 
       bindScrollButtons();

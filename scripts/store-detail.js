@@ -764,62 +764,19 @@ window.showCartModal = function(msg) {
   const mainPreviewBox = document.querySelector(".main-preview-box");
   const thumbGallery = document.getElementById("thumbnail-gallery");
   if (mainImg) {
-    let imageSrc = product.img || "";
-    let isUsingFallback = false;
-    
-    // Check if the image path looks broken (references non-existent directories)
-    const isBrokenPath = (url) => {
-      if (!url) return true;
-      // Block paths to directories that don't exist
-      if (url.includes('assets/Images/')) return true;
-      if (url.includes('.r2.dev') && url.includes('avatar')) return true;
-      return false;
-    };
-    
-    // Use fallback if image path is broken
-    if (isBrokenPath(imageSrc)) {
+    let imageSrc = (product.img && product.img.trim()) || "assets/SenpaiWorks logo.png";
+    if (imageSrc.includes('assets/Images/')) {
       imageSrc = "assets/SenpaiWorks logo.png";
-      isUsingFallback = true;
     }
-    
+
     mainImg.src = imageSrc;
-    mainImg.alt = product.name;
+    mainImg.alt = product.name || "Product Preview";
     mainImg.style.opacity = "1";
     mainImg.style.display = "block";
-    
-    // If using fallback, adjust styling to show placeholder
-    if (isUsingFallback) {
-      mainImg.style.setProperty("object-fit", "contain", "important");
-      // Add checkered background pattern (visible behind transparent logo)
-      if (mainPreviewBox) {
-        mainPreviewBox.style.background = 
-          "linear-gradient(45deg, #c0c0c0 25%, transparent 25%), " +
-          "linear-gradient(-45deg, #c0c0c0 25%, transparent 25%), " +
-          "linear-gradient(45deg, transparent 75%, #c0c0c0 75%), " +
-          "linear-gradient(-45deg, transparent 75%, #c0c0c0 75%)";
-        mainPreviewBox.style.backgroundSize = "20px 20px";
-        mainPreviewBox.style.backgroundPosition = "0 0, 0 10px, 10px -10px, -10px 0px";
-        mainPreviewBox.style.backgroundColor = "#e0e0e0";
-      }
-    }
-    
-    // Also add a timeout-based fallback for slow/missing images
-    setTimeout(() => {
-      if (mainImg.naturalHeight === 0 && mainImg.src !== "assets/SenpaiWorks logo.png") {
-        mainImg.src = "assets/SenpaiWorks logo.png";
-        mainImg.style.setProperty("object-fit", "contain", "important");
-        if (mainPreviewBox) {
-          mainPreviewBox.style.background = 
-            "linear-gradient(45deg, #c0c0c0 25%, transparent 25%), " +
-            "linear-gradient(-45deg, #c0c0c0 25%, transparent 25%), " +
-            "linear-gradient(45deg, transparent 75%, #c0c0c0 75%), " +
-            "linear-gradient(-45deg, transparent 75%, #c0c0c0 75%)";
-          mainPreviewBox.style.backgroundSize = "20px 20px";
-          mainPreviewBox.style.backgroundPosition = "0 0, 0 10px, 10px -10px, -10px 0px";
-          mainPreviewBox.style.backgroundColor = "#e0e0e0";
-        }
-      }
-    }, 3000);
+    mainImg.onerror = function () {
+      this.onerror = null;
+      this.src = "assets/SenpaiWorks logo.png";
+    };
   }
 
   if (thumbGallery) {

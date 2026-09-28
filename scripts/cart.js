@@ -414,53 +414,7 @@ window.applyCartPromoCode = function() {
     } else {
       promoDiscountAmount = 100;
       promoDiscountPercent = 0;
-      if (msg) msg.innerHTML = `<span style="color:#059669; font-weight:700;">₹100.00 Registration Discount Applied!</span>`;
-      
-      // Mark the welcome offer as used in the backend
-      if (userObj) {
-        const token = localStorage.getItem("userToken");
-        console.log("[Welcome Offer] Attempting to mark offer as used for user:", userKey);
-        console.log("[Welcome Offer] Token available:", !!token);
-        
-        fetch("/api/coupons/mark-welcome-used", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            ...(token ? { "Authorization": `Bearer ${token}` } : {})
-          },
-          credentials: "include"
-        })
-          .then(res => {
-            console.log("[Welcome Offer] API response status:", res.status);
-            if (!res.ok) {
-              console.warn(`[Welcome Offer] Server returned ${res.status}`);
-              return res.json().catch(() => ({}));
-            }
-            return res.json();
-          })
-          .then(data => {
-            console.log("[Welcome Offer] API response data:", data);
-            if (data && data.success) {
-              // Also mark it in localStorage for client-side check
-              used.push(userKey);
-              localStorage.setItem("usedDiscounts", JSON.stringify(used));
-              console.log("[Welcome Offer] Successfully marked as used in database and localStorage");
-              // Hide the welcome offer badge in profile if visible
-              const badge = document.getElementById("welcome-offer-badge");
-              if (badge) {
-                badge.style.display = "none";
-                console.log("[Welcome Offer] Hidden badge on current page");
-              } else {
-                console.log("[Welcome Offer] Badge element not found on current page (normal if not on profile page)");
-              }
-            } else if (data && data.error) {
-              console.warn("[Welcome Offer] API error:", data.error);
-            } else {
-              console.warn("[Welcome Offer] Unexpected response format:", data);
-            }
-          })
-          .catch(err => console.error("[Welcome Offer] Fetch error:", err));
-      }
+      if (msg) msg.innerHTML = `<span style="color:#059669; font-weight:700;">✓ ₹100.00 Registration Discount Applied!</span>`;
     }
   } else if (code === "SENPAI25") {
     promoDiscountAmount = 0;

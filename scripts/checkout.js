@@ -882,46 +882,45 @@ window.handleCheckoutSubmit = async function (e) {
       pincode: "560001",
       phone: ""
     };
-  }
-
-  // If the page didn't already set 'isUsingSavedAddress' but the user has saved addresses,
-  // auto-select the default saved address so the checkout uses it instead of forcing manual input.
-  if (!isUsingSavedAddress) {
-    try {
-      const addrsTry = getSavedAddressesList();
-      if (addrsTry && addrsTry.length > 0) {
-        const def = addrsTry.find(a => a.isDefault) || addrsTry[0];
-        if (def && def.id) {
-          isUsingSavedAddress = true;
-          selectedSavedAddressId = def.id;
-          // Update UI to reflect selected saved address
-          loadSavedAddressCard();
-        }
-      }
-    } catch (err) {
-      console.warn('[checkout] auto-select saved address failed', err);
-    }
-  }
-
-  else if (isUsingSavedAddress && selectedSavedAddressId) {
-    const addrs = getSavedAddressesList();
-    const target = addrs.find(a => a.id === selectedSavedAddressId) || addrs[0];
-    if (target) {
-      const nameParts = (target.fullName || "").trim().split(" ");
-      finalAddressObj = {
-        firstName: nameParts[0] || "Collector",
-        lastName: nameParts.slice(1).join(" ") || "",
-        address: `${target.flat}, ${target.street}`,
-        apartment: target.landmark || "",
-        city: target.city,
-        country: target.country,
-        state: target.state,
-        pincode: target.pincode,
-        phone: target.phone
-      };
-    }
   } else {
-    // Read fields safely (some pages may not render every field or IDs may change)
+    // Physical order:
+    // If the page didn't already set 'isUsingSavedAddress' but the user has saved addresses,
+    // auto-select the default saved address so the checkout uses it instead of forcing manual input.
+    if (!isUsingSavedAddress) {
+      try {
+        const addrsTry = getSavedAddressesList();
+        if (addrsTry && addrsTry.length > 0) {
+          const def = addrsTry.find(a => a.isDefault) || addrsTry[0];
+          if (def && def.id) {
+            isUsingSavedAddress = true;
+            selectedSavedAddressId = def.id;
+            loadSavedAddressCard();
+          }
+        }
+      } catch (err) {
+        console.warn('[checkout] auto-select saved address failed', err);
+      }
+    }
+
+    if (isUsingSavedAddress && selectedSavedAddressId) {
+      const addrs = getSavedAddressesList();
+      const target = addrs.find(a => a.id === selectedSavedAddressId) || addrs[0];
+      if (target) {
+        const nameParts = (target.fullName || "").trim().split(" ");
+        finalAddressObj = {
+          firstName: nameParts[0] || "Collector",
+          lastName: nameParts.slice(1).join(" ") || "",
+          address: `${target.flat}, ${target.street}`,
+          apartment: target.landmark || "",
+          city: target.city,
+          country: target.country,
+          state: target.state,
+          pincode: target.pincode,
+          phone: target.phone
+        };
+      }
+    } else {
+      // Read fields safely (some pages may not render every field or IDs may change)
     const firstName = (document.getElementById("chk-first-name")?.value || "").trim();
     const lastName = (document.getElementById("chk-last-name")?.value || "").trim();
     const address = (document.getElementById("chk-address")?.value || "").trim();
@@ -983,6 +982,7 @@ window.handleCheckoutSubmit = async function (e) {
       localStorage.setItem("savedUserAddress", JSON.stringify(finalAddressObj));
     }
   }
+}
 
   const subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
   const discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;

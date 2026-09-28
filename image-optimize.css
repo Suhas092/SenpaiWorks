@@ -2,21 +2,13 @@
 
 /* Prevent layout shift with aspect ratio */
 img {
-  aspect-ratio: auto;
   max-width: 100%;
   height: auto;
-  display: block;
 }
 
 /* Optimize image loading appearance */
 img:not([src]) {
   background-color: #f0f0f0;
-}
-
-/* Better image rendering quality */
-img {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
 }
 
 /* Carousel/slider images */
