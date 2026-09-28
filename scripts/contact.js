@@ -4,7 +4,7 @@ function loadContactSection(imageSrc) {
     if (!document.querySelector('link[href*="contact.css"]')) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
-        link.href = "contact.css?v=2.0";
+        link.href = "css/contact.css?v=2.0";
         document.head.appendChild(link);
     }
 
