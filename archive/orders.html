@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    window.location.replace("profile.html#orders");
+  </script>
+  <link rel="icon" href="assets/Videos/SenpaiWorks logo.png" type="image/png">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Replacements & Orders — SenpaiWorks Official</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="orders.css?v=75">
+</head>
+
+<body>
+
+  <!-- Fixed Header Integration -->
+  <div id="header-placeholder">
+    <script>
+      (function () {
+        var cached = sessionStorage.getItem('cached_header');
+        if (cached) {
+          document.getElementById('header-placeholder').innerHTML = cached;
+        }
+      })();
+    </script>
+  </div>
+  <script src="scripts/header.js?v=5"></script>
+
+  <div class="top-bg-strip"></div>
+
+  <!-- Top Drawer -->
+  <div id="drawer-container"></div>
+  <script src="scripts/drawer.js?v=5"></script>
+
+  <!-- DEDICATED BRAND BAR OVERLAY (LINK TO HOME PAGE) -->
+  <div class="orders-page-header-strip">
+    <div class="orders-page-header-inner">
+      <a href="index.html" class="receipt-header-brand" title="Go to Home Page">
+        <img src="assets/Videos/SenpaiWorks logo.png" alt="SenpaiWorks Logo Icon" class="receipt-logo-icon">
+        <img src="assets/Videos/senpaiworks name logo no bg.png" alt="SenpaiWorks Brand Name" class="receipt-logo-name">
+      </a>
+      <span class="orders-header-badge"><i class="fa-solid fa-shield-halved"></i> Verified Customer Orders</span>
+    </div>
+  </div>
+
+  <!-- MAIN RETURNS & ORDERS DASHBOARD -->
+  <main class="orders-dashboard-container">
+
+    <!-- PAGE HERO HEADER -->
+    <div class="orders-page-top">
+      <div>
+        <h1 class="orders-dashboard-title">Replacements & Orders</h1>
+        <p class="orders-dashboard-subtitle">Track current shipments, manage returns & replacements, or view past order
+          receipts.</p>
+      </div>
+
+      <!-- CONTINUE SHOPPING BUTTON -->
+      <a href="store.html" class="btn-view-order">
+        <i class="fa-solid fa-bag-shopping"></i> Continue Shopping
+      </a>
+    </div>
+
+    <!-- SEARCH & FILTER TABS -->
+    <div class="orders-filter-bar">
+      <div class="orders-tabs">
+        <button class="order-tab-btn active" data-tab="all" onclick="filterOrders('all')">Orders</button>
+        <button class="order-tab-btn" data-tab="buy-again" onclick="filterOrders('buy-again')">Buy Again</button>
+        <button class="order-tab-btn" data-tab="not-shipped" onclick="filterOrders('not-shipped')">Not Yet Shipped</button>
+      </div>
+
+      <div class="orders-search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="order-search-input" placeholder="Search all orders..." onkeyup="searchOrders()">
+      </div>
+    </div>
+
+    <!-- ORDERS LIST CONTAINER -->
+    <div id="orders-history-list" class="orders-list-wrap">
+      <!-- Dynamically filled by scripts/orders.js -->
+    </div>
+
+    <div id="orders-pagination"
+      style="margin-top: 24px; padding-top: 14px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; align-items: center; gap: 12px; display: none;">
+      <span id="orders-page-info" style="color: #64748b; font-size: 0.88rem; font-weight: 600;"></span>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button type="button" id="btn-prev-orders" onclick="changeOrdersPage(-1)" title="Previous page"
+          style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button type="button" id="btn-next-orders" onclick="changeOrdersPage(1)" title="Next page"
+          style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TRACK PACKAGE MODAL -->
+  <div id="track-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content">
+      <button class="orders-modal-close" onclick="closeTrackModal()">&times;</button>
+      <h3 id="track-order-id-title" style="margin-top: 6px;">Tracking Order #ORD-105010</h3>
+
+      <div class="track-info-box">
+        <div><strong>AWB Tracking ID:</strong> <span id="track-awb-val"
+            style="text-decoration: underline;">BD-884920194</span></div>
+        <div><strong>Est. Delivery:</strong> <span id="track-est-date" style="color: #059669; font-weight: 800;">Thu, 30
+            Jul 2026</span></div>
+      </div>
+
+      <!-- PROGRESS TRACKING TIMELINE -->
+      <div class="track-timeline-stepper">
+        <div class="track-step completed">
+          <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+          <div class="step-label">Order Placed</div>
+        </div>
+        <div class="track-step active">
+          <div class="step-icon"><i class="fa-solid fa-boxes-packing"></i></div>
+          <div class="step-label">Shipping</div>
+        </div>
+        <div class="track-step">
+          <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
+          <div class="step-label">In Transit</div>
+        </div>
+        <div class="track-step">
+          <div class="step-icon"><i class="fa-solid fa-house-chimney-crack"></i></div>
+          <div class="step-label">Delivered</div>
+        </div>
+      </div>
+
+      <button class="btn-view-order" onclick="closeTrackModal()" style="width: 100%; margin-top: 20px;">Done</button>
+    </div>
+  </div>
+
+  <!-- RETURN & REPLACE ITEM MODAL -->
+  <div id="return-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content">
+      <button class="orders-modal-close" onclick="closeReturnModal()">&times;</button>
+      <div class="modal-header-tag"><i class="fa-solid fa-rotate-left"></i> Replacement Request</div>
+      <h3>Initiate Replacement for Order <span id="return-order-id-txt">#ORD-105010</span></h3>
+      <p style="font-size: 0.88rem; color: #666; margin-bottom: 16px;">We accept hassle-free returns within 14 days of
+        delivery.</p>
+
+      <form id="return-request-form" onsubmit="handleReturnSubmit(event)">
+        <div id="return-item-selector-container" style="display: none; margin-bottom: 14px;">
+          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Which item needs
+            replacement?</label>
+          <select id="return-item-select"
+            style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
+          </select>
+        </div>
+        <div class="form-group-item" style="margin-bottom: 14px;">
+          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Reason for
+            Replacement</label>
+          <select id="return-reason-select" required
+            style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;">
+            <option value="">Select a reason...</option>
+            <option value="size">Size / Fit issue (Too small or too big)</option>
+            <option value="damaged">Item damaged or print defect</option>
+            <option value="wrong_item">Received wrong item</option>
+            <option value="quality">Quality not as expected</option>
+            <option value="changed_mind">No longer needed / Changed mind</option>
+          </select>
+        </div>
+
+
+        <div class="form-group-item" style="margin-bottom: 20px;">
+          <label style="display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">Additional Comments
+            (Optional)</label>
+          <textarea id="return-comments-text" rows="3" placeholder="Explain any additional details about the item..."
+            style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit; resize: vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="btn-view-order" style="width: 100%;">Submit Replacement Request</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared Order Details Modal (Amazon Style) -->
+  <div id="order-details-modal" class="orders-modal-overlay">
+    <div class="orders-modal-content"
+      style="max-width: 680px; width: 100%; text-align: left; padding: 28px; border-radius: 16px; background: #ffffff; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1); position: relative; max-height: 90vh; overflow-y: auto;">
+      <button class="orders-modal-close" onclick="closeOrderDetailsModal()"
+        style="position: absolute; right: 18px; top: 18px; font-size: 1.4rem; background: none; border: none; cursor: pointer; color: #64748b; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">&times;</button>
+
+      <div style="border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 20px;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Order Details</h2>
+        <div style="font-size: 0.88rem; color: #64748b; display: flex; flex-wrap: wrap; gap: 16px;">
+          <div><strong>Order placed:</strong> <span id="od-modal-date">23 August 2026</span></div>
+          <div><strong>Order number:</strong> <span id="od-modal-order-number" style="font-family: monospace; font-weight: 700; color: #0f172a;">#ORD-123456</span></div>
+        </div>
+      </div>
+
+      <!-- Top info boxes: Shipping Address & Payment Method -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <!-- Ship to Card -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+          <div style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+            <i class="fa-solid fa-location-dot" style="color: #0284c7; margin-right: 4px;"></i> Ship To
+          </div>
+          <div id="od-modal-ship-name" style="font-weight: 700; color: #0f172a; font-size: 0.95rem; margin-bottom: 4px;">Suhas H</div>
+          <div id="od-modal-ship-address" style="font-size: 0.85rem; color: #475569; line-height: 1.5; white-space: pre-line;">
+            House no 08 ground floor
+            Hebbal 1st Stage, 6th Main Road
+            MYSURU, KARNATAKA 570016
+            India
+          </div>
+        </div>
+
+        <!-- Payment Method Card -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+          <div style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+            <i class="fa-solid fa-credit-card" style="color: #0284c7; margin-right: 4px;"></i> Payment Method
+          </div>
+          <div id="od-modal-payment-method" style="font-weight: 700; color: #0f172a; font-size: 0.95rem; margin-bottom: 4px;">
+            BHIM UPI
+          </div>
+          <div style="font-size: 0.85rem; color: #475569;">Payment Status: <span id="od-modal-payment-status" style="color: #16a34a; font-weight: 700;">Completed</span></div>
+        </div>
+      </div>
+
+      <!-- Items Section -->
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">
+          Items in this Order
+        </div>
+        <div id="od-modal-items-list" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+        <div style="font-size: 0.88rem; font-weight: 800; color: #0f172a; margin-bottom: 12px;">
+          Order Summary
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem; color: #475569;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>Item(s) Subtotal:</span>
+            <span id="od-modal-subtotal" style="font-weight: 600; color: #0f172a;">₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Shipping:</span>
+            <span id="od-modal-shipping" style="font-weight: 600; color: #0f172a;">₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Marketplace Fee:</span>
+            <span id="od-modal-platform-fee" style="font-weight: 600; color: #0f172a;">₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 8px; font-weight: 700; color: #0f172a;">
+            <span>Total:</span>
+            <span id="od-modal-total">₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 800; color: #0f172a; border-top: 1px solid #cbd5e1; padding-top: 8px; margin-top: 4px;">
+            <span>Grand Total:</span>
+            <span id="od-modal-grand-total" style="color: #0284c7;">₹0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="button" onclick="closeOrderDetailsModal()"
+          style="background: #0f172a; color: #ffffff; border: none; padding: 10px 28px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEEDBACK & PRODUCT REVIEW MODAL -->
+  <div id="feedback-modal" class="orders-modal-overlay">
+    <div class="orders-modal-card"
+      style="max-width: 480px; width: 90%; background: #ffffff; padding: 24px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+      <div
+        style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-comment-dots"
+            style="color: #0284c7;"></i> Leave Customer Feedback</h3>
+        <button type="button" onclick="closeFeedbackModal()"
+          style="background: none; border: none; font-size: 1.3rem; color: #64748b; cursor: pointer;">&times;</button>
+      </div>
+
+      <form onsubmit="handleFeedbackSubmit(event)">
+        <div style="margin-bottom: 14px;">
+          <label
+            style="display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 6px; color: #334155;">Rating
+            *</label>
+          <select id="feedback-rating" required
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 0.9rem;">
+            <option value="5" selected>⭐⭐⭐⭐⭐ (5.0 Excellent)</option>
+            <option value="4">⭐⭐⭐⭐ (4.0 Very Good)</option>
+            <option value="3">⭐⭐⭐ (3.0 Average)</option>
+            <option value="2">⭐⭐ (2.0 Poor)</option>
+            <option value="1">⭐ (1.0 Terrible)</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label
+            style="display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 6px; color: #334155;">Feedback
+            Category</label>
+          <select id="feedback-category" required
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 0.9rem;">
+            <option value="Product Quality" selected>Product & Print Quality</option>
+            <option value="Delivery Speed">Delivery & Packaging</option>
+            <option value="Website & Checkout">Website & Checkout Experience</option>
+            <option value="Customer Support">Customer Support</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 6px; color: #334155;">Your
+            Comments & Feedback *</label>
+          <textarea id="feedback-comments" rows="4" required placeholder="Share details about your order experience..."
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 0.9rem; resize: vertical;"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" onclick="closeFeedbackModal()"
+            style="background: #ffffff; border: 1.5px solid #cbd5e1; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; color: #0f172a;">Cancel</button>
+          <button type="submit"
+            style="background: #0f172a; color: #ffffff; border: none; padding: 8px 22px; border-radius: 20px; font-weight: 800; cursor: pointer;">Submit
+            Feedback</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contact & Footer Section -->
+  <div id="contact-container"></div>
+  <script src="scripts/contact.js"></script>
+  <script>
+    loadContactSection("https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/suzan_main_bg_zrmgwb.webp");
+  </script>
+
+  <div id="footer-container"></div>
+  <script src="scripts/footer.js"></script>
+
+  <script src="scripts/orders.js?v=75"></script>
+</body>
+
+</html>
