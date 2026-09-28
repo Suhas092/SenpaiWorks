@@ -1943,7 +1943,7 @@ html, body {
    ═══════════════════════════════════════════════════════════ */
 @font-face {
   font-family: 'BankGothic Lt BT';
-  src: url('assets/font_assets/BNKGOTHL.TTF') format('truetype');
+  src: url('../assets/font_assets/BNKGOTHL.TTF') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -1956,7 +1956,7 @@ html, body {
   height: 100%;
   background: 
     linear-gradient(180deg, rgba(9, 13, 22, 0.65) 0%, rgba(9, 13, 22, 0.85) 100%),
-    url('assets/News page assets/admin image.png') no-repeat center center / cover fixed;
+    url('../assets/News page assets/admin image.png') no-repeat center center / cover fixed;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   z-index: 99999;
