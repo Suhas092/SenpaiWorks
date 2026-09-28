@@ -903,12 +903,18 @@ body {
 
 .btn-order-action.outline {
   background: #ffffff;
-  color: #0066cc;
-  border: 1px solid #93c5fd;
+  color: #0f172a;
+  border: 1.5px solid #0f172a;
 }
 
 .btn-order-action.outline:hover {
-  background: #eff6ff;
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.btn-edit-order-address:hover {
+  background: #0f172a !important;
+  color: #ffffff !important;
 }
 
 /* EMPTY STATE */

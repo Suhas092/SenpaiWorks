@@ -32,6 +32,24 @@ function getCurrentUser() {
 
 let userReviewedProductIds = new Set();
 
+function isDonationOrder(order) {
+  if (!order) return false;
+  if (order.orderNumber && order.orderNumber.startsWith("TXN-")) return true;
+  let addr = order.shippingAddress;
+  if (typeof addr === "string") {
+    try { addr = JSON.parse(addr); } catch (e) {}
+  }
+  if (addr && addr.isDonation) return true;
+  if (order.isDonation) return true;
+  return (order.items || []).some(i =>
+    i.productId === 'DONATION' ||
+    i.isDonation ||
+    (i.productName && i.productName.toLowerCase().includes('donation')) ||
+    (i.name && i.name.toLowerCase().includes('donation')) ||
+    (i.product && (i.product.id === 'DONATION' || i.product.category === 'Community' || (i.product.name && i.product.name.toLowerCase().includes('donation'))))
+  );
+}
+
 async function initOrdersDashboard() {
   const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
   if (token) {
@@ -50,7 +68,8 @@ async function initOrdersDashboard() {
     }
   }
 
-  allUserOrders = await getOrders();
+  const fetched = await getOrders();
+  allUserOrders = (fetched || []).filter(o => !isDonationOrder(o));
   window.allUserOrders = allUserOrders;
   renderOrdersList(allUserOrders);
   updateOrdersNavBadge(allUserOrders);
@@ -60,7 +79,7 @@ function updateOrdersNavBadge(orders) {
   const navOrdersCount = document.getElementById("nav-orders-count");
   if (!navOrdersCount) return;
 
-  const pendingOrders = (orders || []).filter(o => {
+  const pendingOrders = (orders || []).filter(o => !isDonationOrder(o)).filter(o => {
     const st = (o.status || "").toLowerCase();
     const isCancelled = st.includes("cancel");
     const isDelivered = st.includes("deliver");
@@ -104,7 +123,9 @@ function renderOrdersList(ordersToRender, resetPage = true) {
   if (resetPage) {
     ordersCurrentPage = 1;
   }
-  currentRenderedOrders = ordersToRender || [];
+  const cleanOrders = (ordersToRender || []).filter(o => !isDonationOrder(o));
+  currentRenderedOrders = cleanOrders;
+  ordersToRender = cleanOrders;
 
   const container = document.getElementById("orders-history-list");
   const paginationDiv = document.getElementById("orders-pagination");
@@ -429,7 +450,7 @@ function renderOrdersList(ordersToRender, resetPage = true) {
               </button>
             ` : ''}
             ${canEditAddress ? `
-              <button onclick="openEditOrderAddressModal('${order.id}', '${orderId}')" class="btn-order-action outline" style="border: 1.5px solid #0284c7; color: #0284c7;">
+              <button onclick="openEditOrderAddressModal('${order.id}', '${orderId}')" class="btn-order-action outline" style="border: 1.5px solid #0f172a; color: #0f172a;">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Address
               </button>
             ` : ''}
@@ -438,8 +459,8 @@ function renderOrdersList(ordersToRender, resetPage = true) {
                 <i class="fa-solid fa-ban"></i> Cancel Order
               </button>
             ` : ''}
-            ${isDigitalItem ? `
-              <a href="${downloadUrl || '#'}" target="_blank" class="btn-order-action primary" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); border: none; text-decoration: none; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;">
+            ${(isDigitalItem && downloadUrl && downloadUrl !== '#' && !isDonationOrder(order)) ? `
+              <a href="${downloadUrl}" target="_blank" class="btn-order-action primary" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); border: none; text-decoration: none; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid fa-cloud-arrow-down"></i> Download
               </a>
             ` : ''}
@@ -470,8 +491,6 @@ function renderOrdersList(ordersToRender, resetPage = true) {
             <div class="meta-label">ORDER ID: ${orderId}</div>
             <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 4px;">
               <a href="javascript:void(0)" onclick="openOrderDetailsModal('${orderId}')" class="link-view-receipt">Order Details</a>
-              <span style="color: #cbd5e1;">|</span>
-              <a href="/api/orders/${encodeURIComponent(orderId)}/invoice" download="SenpaiWorks-Invoice-${orderId}.pdf" target="_blank" class="link-view-receipt" title="Download Official Invoice PDF"><i class="fa-solid fa-file-pdf"></i> Invoice</a>
               <span style="color: #cbd5e1;">|</span>
               <a href="order-confirmation.html?orderId=${orderId}" class="link-view-receipt">View Receipt &rarr;</a>
             </div>
@@ -602,7 +621,7 @@ window.openOrderDetailsModal = function (orderId) {
 
   if (editAddrWrap) {
     if (canEditAddress) {
-      editAddrWrap.innerHTML = `<button type="button" onclick="openEditOrderAddressModal('${order.id}', '${order.orderNumber || order.orderId || order.id}')" class="btn-edit-order-address" style="background: none; border: 1.5px solid #0284c7; color: #0284c7; font-size: 0.75rem; font-weight: 700; border-radius: 6px; padding: 2px 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-pen-to-square"></i> Edit Address</button>`;
+      editAddrWrap.innerHTML = `<button type="button" onclick="openEditOrderAddressModal('${order.id}', '${order.orderNumber || order.orderId || order.id}')" class="btn-edit-order-address" style="background: none; border: 1.5px solid #0f172a; color: #0f172a; font-size: 0.75rem; font-weight: 700; border-radius: 6px; padding: 2px 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-pen-to-square"></i> Edit Address</button>`;
     } else {
       editAddrWrap.innerHTML = "";
     }

@@ -5051,7 +5051,25 @@ app.get("/api/orders", requireUserToken, async (req, res) => {
       },
       orderBy: { createdAt: "desc" }
     });
-    res.json(orders.map(formatOrderResponse));
+    // Exclude community support donations from customer store order history
+    const storeOrders = orders.filter(o => {
+      if (o.orderNumber && o.orderNumber.startsWith("TXN-")) return false;
+      let addr = o.shippingAddress;
+      if (typeof addr === "string") {
+        try { addr = JSON.parse(addr); } catch (e) {}
+      }
+      if (addr && addr.isDonation) return false;
+      const hasDonationItem = (o.items || []).some(it => 
+        it.productId === 'DONATION' ||
+        it.isDonation ||
+        (it.productName && it.productName.toLowerCase().includes('donation')) ||
+        (it.name && it.name.toLowerCase().includes('donation')) ||
+        (it.product && (it.product.id === 'DONATION' || it.product.category === 'Community' || (it.product.name && it.product.name.toLowerCase().includes('donation'))))
+      );
+      return !hasDonationItem;
+    });
+
+    res.json(storeOrders.map(formatOrderResponse));
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).json({ error: "Failed to fetch orders" });
