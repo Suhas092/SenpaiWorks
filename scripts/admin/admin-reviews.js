@@ -9,6 +9,13 @@ let adminReviewsSearchDebounce = null;
 let currentReviewsSubtab = "reviews-moderation";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Auto-initialize reviews module if on the reviews page
+  const reviewsTab = document.getElementById("tab-reviews");
+  if (reviewsTab) {
+    console.log('[admin-reviews] Reviews tab found, initializing module...');
+    loadAdminReviewsModule();
+  }
+  
   // Listen for sidebar link click to Product Reviews
   document.querySelectorAll(".sidebar-link").forEach(link => {
     link.addEventListener("click", () => {
@@ -20,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.loadAdminReviewsModule = function () {
+  console.log('[loadAdminReviewsModule] Loading reviews with subtab:', currentReviewsSubtab || "reviews-moderation");
   // Always default to Moderation Queue (Reported Reviews)
   switchReviewsSubtab(currentReviewsSubtab || "reviews-moderation");
 };
