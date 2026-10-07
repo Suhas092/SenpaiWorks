@@ -315,6 +315,31 @@ module.exports = function ({
         }
       });
 
+      // Step D-1: If this is a donation order, also save to Donation table
+      if (isDonationOrder) {
+        try {
+          const usdToInrRate = 85;
+          const amountInUsd = order.total / usdToInrRate;
+
+          await prisma.donation.create({
+            data: {
+              donorName: order.guestName || 'Anonymous Supporter',
+              donorEmail: order.email,
+              amount: order.total,
+              currency: 'INR',
+              amountInUsd: parseFloat(amountInUsd.toFixed(2)),
+              paymentMethod: 'razorpay',
+              transactionId: order.orderNumber,  // Use the TXN- prefixed order number
+              paymentStatus: 'SUCCESS',
+              message: ''
+            }
+          });
+          console.log('[Payments] Donation record created:', order.orderNumber);
+        } catch (donErr) {
+          console.warn('[Payments] Could not save donation record:', donErr.message);
+        }
+      }
+
       // Step E: Notifications and Email Dispatches
       // 1. In-app Admin Notification
       try {
