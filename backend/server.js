@@ -3929,6 +3929,90 @@ app.post('/api/donate/process', async (req, res) => {
   }
 });
 
+// POST /api/webhook/razorpay - Handle Razorpay payment webhooks
+app.post('/api/webhook/razorpay', async (req, res) => {
+  try {
+    const { event, payload } = req.body;
+    
+    console.log('[Razorpay Webhook] Event:', event);
+    
+    // Handle payment authorization events
+    if (event === 'payment.authorized' || event === 'payment.captured') {
+      const { payment } = payload || {};
+      if (!payment) {
+        return res.status(400).json({ error: 'No payment data' });
+      }
+
+      const {
+        id: razorpayPaymentId,
+        amount,
+        currency,
+        email,
+        contact,
+        notes,
+        method
+      } = payment;
+
+      // Convert amount from paisa to rupees
+      const amountInRupees = amount / 100;
+      const usdToInrRate = 85;
+      const amountInUsd = (amountInRupees / usdToInrRate);
+
+      // Generate SenpaiWorks transaction ID
+      const txnId = `TXN-DON-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      const donationData = {
+        donorName: (notes?.donor_name) || 'Razorpay Donor',
+        donorEmail: email || contact || 'unknown@razorpay.com',
+        amount: parseFloat(amountInRupees.toFixed(2)),
+        currency: currency || 'INR',
+        amountInUsd: parseFloat(amountInUsd.toFixed(2)),
+        paymentMethod: 'razorpay',
+        transactionId: txnId,
+        razorpayPaymentId: razorpayPaymentId,
+        paymentStatus: 'SUCCESS',
+        message: (notes?.message) || '',
+        createdAt: new Date().toISOString()
+      };
+
+      console.log('[Razorpay Webhook] Processing donation:', donationData);
+
+      // Try saving to database
+      try {
+        await prisma.donation.create({
+          data: {
+            donorName: donationData.donorName,
+            donorEmail: donationData.donorEmail,
+            amount: donationData.amount,
+            currency: donationData.currency,
+            amountInUsd: donationData.amountInUsd,
+            paymentMethod: donationData.paymentMethod,
+            transactionId: donationData.transactionId,
+            paymentStatus: donationData.paymentStatus,
+            message: donationData.message
+          }
+        });
+        console.log('[Razorpay Webhook] Saved to database');
+      } catch (dbErr) {
+        console.warn('[Razorpay Webhook] DB save failed, using local storage:', dbErr.message);
+        // Fallback to local storage
+        const localDonations = getLocalDonations();
+        localDonations.unshift(donationData);
+        saveLocalDonations(localDonations);
+      }
+
+      return res.json({ success: true, message: 'Donation recorded', transactionId: txnId });
+    }
+
+    // For other events, just acknowledge
+    res.json({ success: true, acknowledged: true });
+
+  } catch (err) {
+    console.error('[Razorpay Webhook] Error:', err);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
+
 // GET /api/donate/list - List all donation records for admin panel
 app.get('/api/donate/list', async (req, res) => {
   try {
