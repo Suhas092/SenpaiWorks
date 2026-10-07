@@ -25,9 +25,13 @@ window.loadAdminReviewsModule = function () {
 };
 
 window.switchReviewsSubtab = function (subtabId, skipAutoLoad) {
+  console.log('[switchReviewsSubtab] Called with:', subtabId, 'skipAutoLoad:', skipAutoLoad);
   currentReviewsSubtab = subtabId;
   const parentSubpage = document.getElementById("tab-reviews");
-  if (!parentSubpage) return;
+  if (!parentSubpage) {
+    console.log('[switchReviewsSubtab] tab-reviews not found');
+    return;
+  }
 
   const btns = parentSubpage.querySelectorAll(".inner-tab-btn");
   const contents = parentSubpage.querySelectorAll(".inner-tab-content");
@@ -49,8 +53,12 @@ window.switchReviewsSubtab = function (subtabId, skipAutoLoad) {
   });
 
   // Only auto-load if skipAutoLoad is not explicitly true
-  if (skipAutoLoad === true) return;
+  if (skipAutoLoad === true) {
+    console.log('[switchReviewsSubtab] Skipping auto-load as requested');
+    return;
+  }
   
+  console.log('[switchReviewsSubtab] Auto-loading content for:', subtabId);
   if (subtabId === "reviews-moderation") {
     loadReportedModerationQueue();
   } else if (subtabId === "reviews-health") {
