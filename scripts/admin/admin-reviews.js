@@ -183,13 +183,15 @@ window.loadReportedModerationQueue = async function () {
           </td>
           <td>${statusBadge}</td>
           <td style="color: var(--text-secondary); font-size: 0.8rem; white-space: nowrap;">${formattedDate}</td>
-          <td style="text-align: right; white-space: nowrap;">
-            <button onclick="toggleAdminReviewStatus(${rev.id}, '${isPublished ? 'Hidden' : 'Published'}', true)" class="action-btn" title="${isPublished ? 'Hide Review' : 'Publish Review'}" style="margin-right: 6px; background: ${isPublished ? '#eab308' : '#10b981'}; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600;">
-              <i class="fa-solid ${isPublished ? 'fa-eye-slash' : 'fa-eye'}"></i> ${isPublished ? 'Hide' : 'Unhide'}
-            </button>
-            <button onclick="deleteAdminReview(${rev.id}, true)" class="action-btn" title="Delete Review" style="background: #ef4444; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600;">
-              <i class="fa-solid fa-trash"></i> Delete
-            </button>
+          <td style="text-align: right; white-space: normal; padding: 12px 8px;">
+            <div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+              <button onclick="toggleAdminReviewStatus(${rev.id}, '${isPublished ? 'Hidden' : 'Published'}', true)" class="action-btn" title="${isPublished ? 'Hide Review' : 'Publish Review'}" style="background: ${isPublished ? '#eab308' : '#10b981'}; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; min-width: 80px; text-align: center;">
+                <i class="fa-solid ${isPublished ? 'fa-eye-slash' : 'fa-eye'}"></i> ${isPublished ? 'Hide' : 'Unhide'}
+              </button>
+              <button onclick="deleteAdminReview(${rev.id}, true)" class="action-btn" title="Delete Review" style="background: #ef4444; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; min-width: 70px; text-align: center;">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </div>
           </td>
         </tr>
       `;
@@ -316,18 +318,18 @@ window.openProductReviewsSearch = function (productId) {
   if (searchInput) {
     searchInput.value = productId;
   }
-  loadAllAdminReviews();
+  loadAllAdminReviews(productId);  // Pass productId directly to avoid state issues
 };
 
 // ── 3. ALL REVIEWS DATABASE (SEARCH & FILTERS) ─────────────────────────
 window.handleAdminReviewsSearch = function () {
   if (adminReviewsSearchDebounce) clearTimeout(adminReviewsSearchDebounce);
   adminReviewsSearchDebounce = setTimeout(() => {
-    loadAllAdminReviews();
+    loadAllAdminReviews();  // No productId filter - use search input
   }, 350);
 };
 
-window.loadAllAdminReviews = async function () {
+window.loadAllAdminReviews = async function (filterProductId) {
   const tbody = document.getElementById("admin-reviews-table-body");
   const totalBadge = document.getElementById("admin-reviews-total-badge");
   if (!tbody) return;
@@ -347,7 +349,20 @@ window.loadAllAdminReviews = async function () {
   const verifiedFilter = document.getElementById("admin-reviews-filter-verified");
 
   let queryUrl = `/api/admin/reviews?limit=100`;
-  if (searchInput && searchInput.value.trim()) queryUrl += `&search=${encodeURIComponent(searchInput.value.trim())}`;
+  
+  // If filterProductId is explicitly provided, use it directly (bypasses search input detection)
+  if (filterProductId) {
+    queryUrl += `&productId=${encodeURIComponent(filterProductId)}`;
+  } else if (searchInput && searchInput.value.trim()) {
+    const searchValue = searchInput.value.trim();
+    // If search value looks like a product ID (no spaces, short), treat as productId filter
+    // Otherwise treat as text search
+    if (searchValue.length < 50 && !searchValue.includes(" ")) {
+      queryUrl += `&productId=${encodeURIComponent(searchValue)}`;
+    } else {
+      queryUrl += `&search=${encodeURIComponent(searchValue)}`;
+    }
+  }
   if (ratingFilter && ratingFilter.value) queryUrl += `&rating=${encodeURIComponent(ratingFilter.value)}`;
   if (statusFilter && statusFilter.value) queryUrl += `&status=${encodeURIComponent(statusFilter.value)}`;
   if (verifiedFilter && verifiedFilter.checked) queryUrl += `&verifiedOnly=true`;
@@ -451,13 +466,15 @@ window.loadAllAdminReviews = async function () {
           </td>
           <td>${reportsBadge}</td>
           <td style="color: var(--text-secondary); font-size: 0.8rem; white-space: nowrap;">${formattedDate}</td>
-          <td style="text-align: right; white-space: nowrap;">
-            <button onclick="toggleAdminReviewStatus(${rev.id}, '${isPublished ? 'Hidden' : 'Published'}')" class="action-btn" title="${isPublished ? 'Hide Review' : 'Publish Review'}" style="margin-right: 6px; background: ${isPublished ? '#eab308' : '#10b981'}; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600;">
-              <i class="fa-solid ${isPublished ? 'fa-eye-slash' : 'fa-eye'}"></i> ${isPublished ? 'Hide' : 'Unhide'}
-            </button>
-            <button onclick="deleteAdminReview(${rev.id})" class="action-btn" title="Delete Review" style="background: #ef4444; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600;">
-              <i class="fa-solid fa-trash"></i> Delete
-            </button>
+          <td style="text-align: right; white-space: normal; padding: 12px 8px;">
+            <div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+              <button onclick="toggleAdminReviewStatus(${rev.id}, '${isPublished ? 'Hidden' : 'Published'}')" class="action-btn" title="${isPublished ? 'Hide Review' : 'Publish Review'}" style="background: ${isPublished ? '#eab308' : '#10b981'}; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; min-width: 80px; text-align: center;">
+                <i class="fa-solid ${isPublished ? 'fa-eye-slash' : 'fa-eye'}"></i> ${isPublished ? 'Hide' : 'Unhide'}
+              </button>
+              <button onclick="deleteAdminReview(${rev.id})" class="action-btn" title="Delete Review" style="background: #ef4444; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; min-width: 70px; text-align: center;">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </div>
           </td>
         </tr>
       `;
