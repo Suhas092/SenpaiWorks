@@ -7,7 +7,7 @@ let notifsHasMore = false;
 let currentPreviewNotifId = null;
 window.notificationDataStore = {};
 
-window.loadNotificationsInbox = async function(page = 1) {
+window.loadNotificationsInbox = async function (page = 1) {
   const container = document.getElementById("notifications-inbox-list");
   const paginationDiv = document.getElementById("notifications-pagination");
   if (!container) return;
@@ -34,7 +34,7 @@ window.loadNotificationsInbox = async function(page = 1) {
 
   try {
     const res = await fetch(`/api/notifications?page=${page}&limit=10&category=${encodeURIComponent(notifsCategory)}`, {
-      headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
+      headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })() }
     });
 
     if (res.status === 401) {
@@ -45,12 +45,12 @@ window.loadNotificationsInbox = async function(page = 1) {
           <div style="font-size: 0.9rem; margin-top: 4px;">Your session has expired. Please sign out and sign back in to view your notifications.</div>
         </div>
       `;
-      if(paginationDiv) paginationDiv.style.display = 'none';
+      if (paginationDiv) paginationDiv.style.display = 'none';
       return;
     }
 
     const data = await res.json();
-    
+
     if (page === 1 && (!data.notifications || data.notifications.length === 0)) {
       const isTrash = typeof notifsCategory !== 'undefined' && notifsCategory === 'Trash';
       container.innerHTML = `
@@ -60,12 +60,12 @@ window.loadNotificationsInbox = async function(page = 1) {
           <div style="font-size: 0.9rem; margin-top: 4px;">${isTrash ? 'No deleted notifications here.' : 'No new notifications right now.'}</div>
         </div>
       `;
-      if(paginationDiv) paginationDiv.style.display = 'none';
+      if (paginationDiv) paginationDiv.style.display = 'none';
       return;
     }
 
     notifsHasMore = page < data.totalPages;
-    if(paginationDiv) {
+    if (paginationDiv) {
       const total = data.total || 0;
       const limit = 10;
       const startIdx = total === 0 ? 0 : (page - 1) * limit + 1;
@@ -75,12 +75,12 @@ window.loadNotificationsInbox = async function(page = 1) {
 
       const btnPrev = document.getElementById('btn-prev-notifs');
       const btnNext = document.getElementById('btn-next-notifs');
-      if(btnPrev) {
+      if (btnPrev) {
         btnPrev.disabled = page === 1;
         btnPrev.style.opacity = page === 1 ? '0.4' : '1';
         btnPrev.style.cursor = page === 1 ? 'default' : 'pointer';
       }
-      if(btnNext) {
+      if (btnNext) {
         btnNext.disabled = !notifsHasMore;
         btnNext.style.opacity = !notifsHasMore ? '0.4' : '1';
         btnNext.style.cursor = !notifsHasMore ? 'default' : 'pointer';
@@ -98,7 +98,7 @@ window.loadNotificationsInbox = async function(page = 1) {
       let iconClass = 'fa-regular fa-bell';
       let categoryName = 'General';
       if (n.type.includes('order')) { iconClass = 'fa-solid fa-box'; categoryName = 'Order Updates'; }
-      else if (n.type.includes('post') || n.type.includes('support')) { iconClass = 'fa-regular fa-comment-dots'; categoryName = 'Community'; }
+      else if (n.type.includes('post') || n.type.includes('support') || n.type.includes('community') || n.type.includes('mention')) { iconClass = (n.icon && n.icon.startsWith('fa-')) ? `fa-solid ${n.icon}` : 'fa-regular fa-comment-dots'; categoryName = 'Community'; }
       else if (n.type.includes('product') || n.type.includes('wishlist') || n.type.includes('offer') || n.type.includes('sale')) { iconClass = 'fa-solid fa-cart-shopping'; categoryName = 'Store Updates'; }
       else if (n.type.includes('article') || n.type.includes('course') || n.type.includes('broadcast')) { iconClass = 'fa-regular fa-newspaper'; categoryName = 'Studio News'; }
       else { iconClass = 'fa-regular fa-bell'; categoryName = 'Other'; }
@@ -111,6 +111,11 @@ window.loadNotificationsInbox = async function(page = 1) {
         link: n.link,
         type: n.type,
         date: timeStr,
+        createdAt: n.createdAt,
+        actorAvatar: n.actorAvatar,
+        postThumbnail: n.postThumbnail,
+        postTitle: n.postTitle,
+        postCategory: n.postCategory,
         iconClass: iconClass,
         categoryName: categoryName
       };
@@ -187,7 +192,7 @@ window.loadNotificationsInbox = async function(page = 1) {
 
   } catch (err) {
     console.error("Failed to load notifications:", err);
-    if(page === 1) container.innerHTML = '<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load.</div>';
+    if (page === 1) container.innerHTML = '<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load.</div>';
   }
 };
 
@@ -196,17 +201,17 @@ function attachNotificationCheckboxListeners() {
   const selectAllBtn = document.getElementById('notif-select-all-btn');
   const mainCheckbox = document.getElementById('notif-select-all');
   const selectCountDisplay = document.getElementById('notif-select-count');
-  
+
   const selectedActions = document.getElementById('notif-selected-actions');
   const markUnreadSelectedBtn = document.getElementById('notif-mark-unread-selected-btn');
   const markReadSelectedBtn = document.getElementById('notif-mark-read-selected-btn');
   const markAllReadBtn = document.getElementById('notif-mark-all-read-btn');
-  
+
   const updateToolbar = () => {
     const checkedBoxes = document.querySelectorAll('.notif-checkbox:checked');
     const checked = checkedBoxes.length;
     const total = checkboxes.length;
-    
+
     const inboxList = document.getElementById('notifications-inbox-list');
     if (inboxList) {
       if (checked > 0) {
@@ -215,16 +220,16 @@ function attachNotificationCheckboxListeners() {
         inboxList.classList.remove('selection-mode');
       }
     }
-    
+
     if (selectCountDisplay) {
       selectCountDisplay.textContent = checked > 0 ? `${checked} selected` : '';
     }
-    
+
     if (mainCheckbox) {
       mainCheckbox.checked = checked > 0 && checked === total;
       mainCheckbox.indeterminate = checked > 0 && checked < total;
     }
-    
+
     if (selectAllBtn) {
       if (total > 0 && checked === total) {
         selectAllBtn.textContent = 'Deselect All';
@@ -232,7 +237,7 @@ function attachNotificationCheckboxListeners() {
         selectAllBtn.textContent = 'Select All';
       }
     }
-    
+
     if (selectedActions) {
       if (checked > 0) {
         selectedActions.style.display = 'flex';
@@ -246,7 +251,7 @@ function attachNotificationCheckboxListeners() {
     const restoreBtn = document.getElementById('notif-restore-selected-btn');
     const permDelBtn = document.getElementById('notif-permanent-delete-selected-btn');
     const emptyTrashBtn = document.getElementById('notif-empty-trash-btn');
-    
+
     if (typeof notifsCategory !== 'undefined' && notifsCategory === 'Trash') {
       if (delBtn) delBtn.style.display = 'none';
       if (markReadSelectedBtn) markReadSelectedBtn.style.display = 'none';
@@ -285,7 +290,7 @@ function attachNotificationCheckboxListeners() {
   checkboxes.forEach(cb => {
     cb.addEventListener('change', updateToolbar);
   });
-  
+
   if (mainCheckbox) {
     mainCheckbox.onclick = () => {
       const isChecked = mainCheckbox.checked;
@@ -298,7 +303,7 @@ function attachNotificationCheckboxListeners() {
       }
     };
   }
-  
+
   if (selectAllBtn) {
     selectAllBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -312,52 +317,157 @@ function attachNotificationCheckboxListeners() {
   }
 }
 
-window.openNotificationPreview = async function(notif) {
+window.openNotificationPreview = async function (notif) {
   const listView = document.getElementById('notifications-inbox-view') || document.getElementById('notifications-list-view');
   const previewView = document.getElementById('notification-preview-view');
-  
-  if(!listView || !previewView || !notif) return;
-  
-  const titleEl = document.getElementById('notif-preview-title');
-  const bodyEl = document.getElementById('notif-preview-body');
-  const dateEl = document.getElementById('notif-preview-date');
-  if (titleEl) titleEl.textContent = notif.title || '';
-  if (bodyEl) bodyEl.textContent = notif.message || '';
-  if (dateEl) dateEl.textContent = notif.date || '';
-  
-  const iconEl = document.getElementById('notif-preview-icon');
-  if (iconEl) {
-    iconEl.className = notif.iconClass || 'fa-regular fa-bell';
-  }
-  
-  const catEl = document.getElementById('notif-preview-category-name');
-  if (catEl) {
-    catEl.textContent = notif.categoryName ? `• ${notif.categoryName}` : '';
-  }
-  
+
+  if (!listView || !previewView || !notif) return;
   currentPreviewNotifId = notif.id;
-  
+
+  const container = document.getElementById('notif-preview-dynamic-container') || previewView.querySelector('.preview-content');
+
+  function escapePreviewHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function highlightMentions(text) {
+    if (!text) return '';
+    return text.replace(/@([a-zA-Z0-9_\-\.]+)/g, '<span style="color: #0284c7; font-weight: 600;">@$1</span>');
+  }
+
+  const isCommunity = notif.type && (notif.type.includes('post') || notif.type.includes('support') || notif.type.includes('community') || notif.type.includes('mention'));
+
+  let username = '';
+  let actionLabel = 'tagged you in a comment';
+  const titleMatch = (notif.title || '').match(/^([^\s]+)\s+(tagged you in a comment|liked your comment|liked your photo|mentioned you|replied)/i);
+  if (titleMatch) {
+    username = titleMatch[1];
+    actionLabel = titleMatch[2];
+  } else if ((notif.message || '').match(/^([^\s]+)\s+(replied|mentioned you|commented|liked)/i)) {
+    const msgMatch = (notif.message || '').match(/^([^\s]+)\s+(replied|mentioned you|commented|liked)/i);
+    username = msgMatch[1];
+    actionLabel = msgMatch[2];
+  } else if (notif.title) {
+    username = notif.title.split(' ')[0] || 'User';
+  }
+
+  const initial = (username ? username.charAt(0) : 'U').toUpperCase();
+
+  // Extract comment quote snippet
+  let commentSnippet = '';
+  const quoteMatch = (notif.message || '').match(/["“]([^"”]+)["”]/);
+  if (quoteMatch) {
+    commentSnippet = quoteMatch[1];
+  } else {
+    commentSnippet = notif.message || '';
+  }
+
+  let senderAvatarHtml = '';
+  if (isCommunity && notif.actorAvatar) {
+    senderAvatarHtml = `<img src="${notif.actorAvatar}" alt="Avatar" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; flex-shrink: 0; display: block;">`;
+  } else if (isCommunity) {
+    senderAvatarHtml = `<div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #6366f1); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; border: 2px solid #e2e8f0; flex-shrink: 0; text-transform: uppercase;">${initial}</div>`;
+  } else {
+    senderAvatarHtml = `<div style="width: 48px; height: 48px; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; border: 2px solid #e2e8f0; flex-shrink: 0;"><img src="assets/SenpaiWorks%20logo.png" alt="SenpaiWorks" style="width: 26px; height: 26px; object-fit: contain;"></div>`;
+  }
+
+  const formattedDate = notif.createdAt ? new Date(notif.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : (notif.date || '');
+  const categoryBadge = notif.categoryName || (isCommunity ? 'Community' : 'System');
+
+  let postCardHtml = '';
+  if (notif.postThumbnail || (notif.link && notif.link.includes('artworkId'))) {
+    postCardHtml = `
+      <div class="notif-preview-post-card" style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; margin-top: 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+        ${notif.postThumbnail ? `
+          <img src="${notif.postThumbnail}" alt="Artwork" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid #cbd5e1; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.06);">
+        ` : `
+          <div style="width: 80px; height: 80px; border-radius: 8px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 1.8rem; border: 1px solid #cbd5e1; flex-shrink: 0;">
+            <i class="fa-regular fa-image"></i>
+          </div>
+        `}
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #64748b; margin-bottom: 2px;">${escapePreviewHtml(notif.postCategory || 'Art Library')}</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px;">${escapePreviewHtml(notif.postTitle || 'Artwork Discussion')}</div>
+          <a href="${notif.link || '#'}" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; color: #ffffff; background: #0f172a; text-decoration: none; padding: 6px 14px; border-radius: 6px; transition: opacity 0.15s;">
+            <span>View Post & Comment</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
+          </a>
+        </div>
+      </div>
+    `;
+  } else if (notif.link && notif.link !== '#') {
+    postCardHtml = `
+      <div style="margin-top: 20px;">
+        <a href="${notif.link}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; background: #0f172a; color: #ffffff; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+          <span>Open Link</span>
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+      </div>
+    `;
+  }
+
+  if (container) {
+    container.innerHTML = `
+      <div style="max-width: 640px; margin: 0 auto; text-align: left;">
+        <!-- SENDER HEADER (Instagram Style) -->
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f1f5f9;">
+          ${senderAvatarHtml}
+          <div style="flex: 1; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">${escapePreviewHtml(isCommunity ? username : 'SenpaiWorks Team')}</span>
+              <span style="font-size: 0.72rem; font-weight: 600; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 999px;">${escapePreviewHtml(categoryBadge)}</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 500; margin-top: 2px;">${formattedDate}</div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATION TITLE & ACTION -->
+        <div style="margin-bottom: 16px;">
+          <h3 style="margin: 0 0 6px 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">${escapePreviewHtml(notif.title || '')}</h3>
+        </div>
+
+        <!-- COMMENT / MESSAGE BUBBLE -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; font-size: 0.98rem; color: #334155; line-height: 1.6; position: relative;">
+          <div style="display: flex; align-items: flex-start; gap: 10px;">
+            <div style="flex: 1;">
+              ${highlightMentions(escapePreviewHtml(commentSnippet))}
+            </div>
+          </div>
+        </div>
+
+        <!-- POST PREVIEW CARD (If artwork / product attached) -->
+        ${postCardHtml}
+      </div>
+    `;
+  }
+
   // Switch view
   listView.style.display = 'none';
   previewView.style.display = 'block';
-  
+
   // Trigger mark as read automatically
   if (!notif.isRead) {
     try {
       await fetch(`/api/notifications/${notif.id}/read`, {
         method: 'PATCH',
-        headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
+        headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })() }
       });
       notif.isRead = true;
       if (typeof window.fetchUnreadCount === 'function') window.fetchUnreadCount();
-    } catch(e) {}
+    } catch (e) { }
   }
 };
 
-window.openDirectNotificationById = async function(id) {
+window.openDirectNotificationById = async function (id) {
   if (!id) return;
   const numId = parseInt(id);
-  
+
   if (typeof window.switchAccountTab === 'function') {
     window.switchAccountTab('notifications');
   }
@@ -368,7 +478,7 @@ window.openDirectNotificationById = async function(id) {
       const res = await fetch(`/api/notifications/${numId}`, {
         headers: {
           "Authorization": "Bearer " + localStorage.getItem("userToken"),
-          "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })()
+          "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
         }
       });
       if (res.ok) {
@@ -377,7 +487,7 @@ window.openDirectNotificationById = async function(id) {
         let iconClass = 'fa-regular fa-bell';
         let categoryName = 'General';
         if (n.type && n.type.includes('order')) { iconClass = 'fa-solid fa-box'; categoryName = 'Order Updates'; }
-        else if (n.type && (n.type.includes('post') || n.type.includes('support'))) { iconClass = 'fa-regular fa-comment-dots'; categoryName = 'Community'; }
+        else if (n.type && (n.type.includes('post') || n.type.includes('support') || n.type.includes('community') || n.type.includes('mention'))) { iconClass = (n.icon && n.icon.startsWith('fa-')) ? `fa-solid ${n.icon}` : 'fa-regular fa-comment-dots'; categoryName = 'Community'; }
         else if (n.type && (n.type.includes('product') || n.type.includes('wishlist') || n.type.includes('offer') || n.type.includes('sale'))) { iconClass = 'fa-solid fa-cart-shopping'; categoryName = 'Store Updates'; }
         else if (n.type && (n.type.includes('article') || n.type.includes('course') || n.type.includes('broadcast'))) { iconClass = 'fa-regular fa-newspaper'; categoryName = 'Studio News'; }
         else { iconClass = 'fa-regular fa-bell'; categoryName = 'Other'; }
@@ -390,13 +500,18 @@ window.openDirectNotificationById = async function(id) {
           link: n.link,
           type: n.type,
           date: timeStr,
+          createdAt: n.createdAt,
+          actorAvatar: n.actorAvatar,
+          postThumbnail: n.postThumbnail,
+          postTitle: n.postTitle,
+          postCategory: n.postCategory,
           iconClass: iconClass,
           categoryName: categoryName
         };
         if (!window.notificationDataStore) window.notificationDataStore = {};
         window.notificationDataStore[n.id] = notif;
       }
-    } catch(err) {
+    } catch (err) {
       console.warn("Failed to fetch direct notification:", err);
     }
   }
@@ -412,15 +527,15 @@ window.openDirectNotificationById = async function(id) {
   }
 };
 
-window.closeNotificationPreview = function() {
+window.closeNotificationPreview = function () {
   const listView = document.getElementById('notifications-inbox-view') || document.getElementById('notifications-list-view');
   const previewView = document.getElementById('notification-preview-view');
-  
-  if(!listView || !previewView) return;
-  
+
+  if (!listView || !previewView) return;
+
   previewView.style.display = 'none';
   listView.style.display = 'block';
-  
+
   notifsCurrentPage = 1;
   window.loadNotificationsInbox(1);
 };
@@ -430,23 +545,23 @@ function showCustomConfirmModal(message, onConfirm) {
   const msgEl = document.getElementById('delete-confirm-msg');
   const cancelBtn = document.getElementById('btn-cancel-delete');
   const confirmBtn = document.getElementById('btn-confirm-delete');
-  
+
   if (!modal) {
     // fallback if modal not found
-    if(confirm(message)) onConfirm();
+    if (confirm(message)) onConfirm();
     return;
   }
-  
+
   msgEl.textContent = message;
   modal.style.display = 'flex';
   setTimeout(() => modal.style.opacity = '1', 10);
-  
+
   const close = () => {
     modal.style.display = 'none';
     cancelBtn.replaceWith(cancelBtn.cloneNode(true));
     confirmBtn.replaceWith(confirmBtn.cloneNode(true));
   };
-  
+
   cancelBtn.addEventListener('click', close, { once: true });
   confirmBtn.addEventListener('click', () => {
     close();
@@ -455,12 +570,12 @@ function showCustomConfirmModal(message, onConfirm) {
 }
 window.showCustomConfirmModal = showCustomConfirmModal;
 
-window.deleteSelectedNotifications = async function() {
+window.deleteSelectedNotifications = async function () {
   const checked = document.querySelectorAll('.notif-checkbox:checked');
-  if(checked.length === 0) return;
-  
+  if (checked.length === 0) return;
+
   const ids = Array.from(checked).map(cb => parseInt(cb.value));
-  
+
   // In Trash mode, this becomes a permanent delete with a warning
   if (typeof notifsCategory !== 'undefined' && notifsCategory === 'Trash') {
     showCustomConfirmModal(`Permanently delete ${ids.length} notification${ids.length > 1 ? 's' : ''}? This cannot be undone.`, async () => {
@@ -468,18 +583,18 @@ window.deleteSelectedNotifications = async function() {
         // Permanent bulk delete via dedicated endpoint
         const res = await fetch('/api/notifications/bulk/permanent', {
           method: 'DELETE',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             "Authorization": "Bearer " + localStorage.getItem("userToken"),
-            "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })()
+            "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
           },
           body: JSON.stringify({ ids })
         });
-        if(res.ok) {
+        if (res.ok) {
           await window.loadNotificationsInbox(notifsCurrentPage);
           if (typeof window.fetchUnreadCount === 'function') window.fetchUnreadCount();
         }
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         alert("Failed to permanently delete notifications.");
       }
@@ -490,200 +605,200 @@ window.deleteSelectedNotifications = async function() {
   try {
     const res = await fetch('/api/notifications/bulk', {
       method: 'DELETE',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         "Authorization": "Bearer " + localStorage.getItem("userToken"),
-        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })()
+        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
       },
       body: JSON.stringify({ ids })
     });
-    if(res.ok) {
+    if (res.ok) {
       await window.loadNotificationsInbox(notifsCurrentPage);
       if (typeof window.fetchUnreadCount === 'function') window.fetchUnreadCount();
     }
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     alert("Failed to delete notifications.");
   }
 };
 
-window.moveSelectedToTrash = async function() {
+window.moveSelectedToTrash = async function () {
   const checked = document.querySelectorAll('.notif-checkbox:checked');
-  if(checked.length === 0) return;
+  if (checked.length === 0) return;
   const ids = Array.from(checked).map(cb => parseInt(cb.value));
   try {
     const res = await fetch('/api/notifications/bulk', {
       method: 'DELETE',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         "Authorization": "Bearer " + localStorage.getItem("userToken"),
-        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })()
+        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
       },
       body: JSON.stringify({ ids })
     });
-    if(res.ok) {
+    if (res.ok) {
       await window.loadNotificationsInbox(notifsCurrentPage);
       if (typeof window.fetchUnreadCount === 'function') window.fetchUnreadCount();
     }
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     alert("Failed to move to trash.");
   }
 };
 
-window.restoreSelectedNotifications = async function() {
+window.restoreSelectedNotifications = async function () {
   const checked = document.querySelectorAll('.notif-checkbox:checked');
-  if(checked.length === 0) return;
-  
+  if (checked.length === 0) return;
+
   const ids = Array.from(checked).map(cb => parseInt(cb.value));
   try {
     const res = await fetch('/api/notifications/bulk/restore', {
       method: 'PATCH',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         "Authorization": "Bearer " + localStorage.getItem("userToken"),
-        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() 
+        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
       },
       body: JSON.stringify({ ids })
     });
-    if(res.ok) {
+    if (res.ok) {
       await window.loadNotificationsInbox(notifsCurrentPage);
       if (typeof window.fetchUnreadCount === 'function') window.fetchUnreadCount();
     }
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     alert("Failed to restore notifications.");
   }
 };
 
-window.permanentDeleteSelectedNotifications = async function() {
+window.permanentDeleteSelectedNotifications = async function () {
   const checked = document.querySelectorAll('.notif-checkbox:checked');
-  if(checked.length === 0) return;
-  
+  if (checked.length === 0) return;
+
   const ids = Array.from(checked).map(cb => parseInt(cb.value));
-  
+
   showCustomConfirmModal(`Permanently delete ${ids.length} notification${ids.length > 1 ? 's' : ''}? This cannot be undone.`, async () => {
     try {
       const res = await fetch('/api/notifications/bulk/permanent', {
         method: 'DELETE',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           "Authorization": "Bearer " + localStorage.getItem("userToken"),
-          "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })()
+          "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
         },
         body: JSON.stringify({ ids })
       });
-      if(res.ok) {
+      if (res.ok) {
         await window.loadNotificationsInbox(notifsCurrentPage);
         if (typeof window.fetchUnreadCount === 'function') window.fetchUnreadCount();
       }
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       alert("Failed to permanently delete notifications.");
     }
   });
 };
 
-window.emptyTrash = async function() {
+window.emptyTrash = async function () {
   showCustomConfirmModal("Are you sure you want to permanently delete all items in Trash?", async () => {
     try {
       const res = await fetch('/api/notifications/trash/empty', {
         method: 'DELETE',
-        headers: { 
+        headers: {
           "Authorization": "Bearer " + localStorage.getItem("userToken"),
-          "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() 
+          "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
         }
       });
-      if(res.ok) {
+      if (res.ok) {
         await window.loadNotificationsInbox(notifsCurrentPage);
         if (typeof window.fetchUnreadCount === 'function') window.fetchUnreadCount();
       }
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       alert("Failed to empty trash.");
     }
   });
 };
 
-window.markSelectedAsRead = async function() {
+window.markSelectedAsRead = async function () {
   const checked = document.querySelectorAll('.notif-checkbox:checked');
-  if(checked.length === 0) return;
+  if (checked.length === 0) return;
   const ids = Array.from(checked).map(cb => parseInt(cb.value));
-  
+
   try {
     await Promise.all(ids.map(id => fetch(`/api/notifications/${id}/read`, {
       method: 'PATCH',
-      headers: { 
+      headers: {
         "Authorization": "Bearer " + localStorage.getItem("userToken"),
-        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() 
+        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
       }
     })));
     await window.loadNotificationsInbox(notifsCurrentPage);
     if (typeof window.fetchUnreadCount === 'function') {
       window.fetchUnreadCount();
     }
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 };
 
-window.markSelectedAsUnread = async function() {
+window.markSelectedAsUnread = async function () {
   const checked = document.querySelectorAll('.notif-checkbox:checked');
-  if(checked.length === 0) return;
+  if (checked.length === 0) return;
   const ids = Array.from(checked).map(cb => parseInt(cb.value));
-  
+
   try {
     await Promise.all(ids.map(id => fetch(`/api/notifications/${id}/unread`, {
       method: 'PATCH',
-      headers: { 
+      headers: {
         "Authorization": "Bearer " + localStorage.getItem("userToken"),
-        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() 
+        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
       }
     })));
     await window.loadNotificationsInbox(notifsCurrentPage);
     if (typeof window.fetchUnreadCount === 'function') {
       window.fetchUnreadCount();
     }
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 };
 
-window.deleteSingleNotification = async function(id) {
+window.deleteSingleNotification = async function (id) {
   try {
     const res = await fetch(`/api/notifications/${id}`, {
       method: 'DELETE',
-      headers: { 
+      headers: {
         "Authorization": "Bearer " + localStorage.getItem("userToken"),
-        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() 
+        "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })()
       }
     });
-    if(res.ok) {
+    if (res.ok) {
       await window.loadNotificationsInbox(notifsCurrentPage);
       if (typeof window.fetchUnreadCount === 'function') {
         window.fetchUnreadCount();
       }
     }
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     alert("Failed to delete notification.");
   }
 };
 
-window.markSingleNotificationRead = async function(id) {
+window.markSingleNotificationRead = async function (id) {
   let currentUserStr = localStorage.getItem("currentUser");
   const email = currentUserStr ? JSON.parse(currentUserStr).email : null;
-  if(!email) return;
+  if (!email) return;
   try {
     await fetch(`/api/notifications/${id}/read`, {
       method: 'PATCH',
-      headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
+      headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })() }
     });
     await window.loadNotificationsInbox(notifsCurrentPage);
     if (typeof window.fetchUnreadCount === 'function') {
       window.fetchUnreadCount();
     }
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };
@@ -691,17 +806,17 @@ window.markSingleNotificationRead = async function(id) {
 window.markAllNotificationsRead = async function () {
   let currentUserStr = localStorage.getItem("currentUser");
   const email = currentUserStr ? JSON.parse(currentUserStr).email : null;
-  if(!email) return;
+  if (!email) return;
   try {
     await fetch(`/api/notifications/read-all`, {
       method: 'PATCH',
-      headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
+      headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })() }
     });
     await window.loadNotificationsInbox(notifsCurrentPage);
     if (typeof window.fetchUnreadCount === 'function') {
       window.fetchUnreadCount();
     }
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };
@@ -709,31 +824,31 @@ window.markAllNotificationsRead = async function () {
 document.addEventListener("DOMContentLoaded", () => {
   // Wait for profile info if loading
   let currentUserStr = localStorage.getItem("currentUser");
-  if(currentUserStr) {
+  if (currentUserStr) {
     let user = JSON.parse(currentUserStr);
     const profileName = document.getElementById("profile-name");
     const profileEmail = document.getElementById("profile-email");
     const profileInitial = document.getElementById("profile-initial");
-    if(profileName) profileName.textContent = user.name || user.username || "User";
-    if(profileEmail) profileEmail.textContent = user.email || "";
-    if(profileInitial && user.name) profileInitial.textContent = user.name.charAt(0).toUpperCase();
+    if (profileName) profileName.textContent = user.name || user.username || "User";
+    if (profileEmail) profileEmail.textContent = user.email || "";
+    if (profileInitial && user.name) profileInitial.textContent = user.name.charAt(0).toUpperCase();
   }
 
   const prevBtn = document.getElementById('btn-prev-notifs');
   const nextBtn = document.getElementById('btn-next-notifs');
-  
-  if(prevBtn) {
+
+  if (prevBtn) {
     prevBtn.addEventListener('click', () => {
-      if(notifsCurrentPage > 1) {
+      if (notifsCurrentPage > 1) {
         notifsCurrentPage--;
         window.loadNotificationsInbox(notifsCurrentPage);
       }
     });
   }
-  
-  if(nextBtn) {
+
+  if (nextBtn) {
     nextBtn.addEventListener('click', () => {
-      if(notifsHasMore) {
+      if (notifsHasMore) {
         notifsCurrentPage++;
         window.loadNotificationsInbox(notifsCurrentPage);
       }
@@ -747,14 +862,14 @@ document.addEventListener("DOMContentLoaded", () => {
   notifTabs.forEach(tab => {
     tab.addEventListener('click', (e) => {
       notifTabs.forEach(t => t.classList.remove('active'));
-      if(trashTabBtn) trashTabBtn.classList.remove('active-tab');
-      
+      if (trashTabBtn) trashTabBtn.classList.remove('active-tab');
+
       let target = e.target;
       while (target && !target.classList.contains('notif-tab-btn')) {
         target = target.parentElement;
       }
-      if(target) target.classList.add('active');
-      
+      if (target) target.classList.add('active');
+
       notifsCategory = target ? target.getAttribute('data-category') : 'All';
       notifsCurrentPage = 1;
       window.loadNotificationsInbox(1);
@@ -764,13 +879,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (trashTabBtn) {
     trashTabBtn.addEventListener('click', (e) => {
       notifTabs.forEach(t => t.classList.remove('active'));
-      
+
       let target = e.target;
       while (target && target.id !== 'notif-trash-tab-btn') {
         target = target.parentElement;
       }
-      if(target) target.classList.add('active-tab');
-      
+      if (target) target.classList.add('active-tab');
+
       notifsCategory = 'Trash';
       notifsCurrentPage = 1;
       window.loadNotificationsInbox(1);
@@ -778,7 +893,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const delSelectedBtn = document.getElementById('btn-delete-selected-notifs');
-  if(delSelectedBtn) {
+  if (delSelectedBtn) {
     delSelectedBtn.addEventListener('click', window.deleteSelectedNotifications);
   }
 
@@ -791,7 +906,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (moreOptionsBtn && moreDropdown) {
     moreOptionsBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if(selectDropdown) selectDropdown.style.display = 'none';
+      if (selectDropdown) selectDropdown.style.display = 'none';
       moreDropdown.style.display = moreDropdown.style.display === 'none' ? 'block' : 'none';
     });
   }
@@ -799,14 +914,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (selectOptionsBtn && selectDropdown) {
     selectOptionsBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if(moreDropdown) moreDropdown.style.display = 'none';
+      if (moreDropdown) moreDropdown.style.display = 'none';
       selectDropdown.style.display = selectDropdown.style.display === 'none' ? 'block' : 'none';
     });
   }
 
   document.addEventListener('click', () => {
-    if(moreDropdown) moreDropdown.style.display = 'none';
-    if(selectDropdown) selectDropdown.style.display = 'none';
+    if (moreDropdown) moreDropdown.style.display = 'none';
+    if (selectDropdown) selectDropdown.style.display = 'none';
   });
 
   const refreshBtn = document.getElementById('notif-refresh-btn');
@@ -816,52 +931,52 @@ document.addEventListener("DOMContentLoaded", () => {
       window.loadNotificationsInbox(1);
     });
   }
-  
+
   const delSelectedBtn2 = document.getElementById('notif-delete-selected-btn');
-  if(delSelectedBtn2) {
+  if (delSelectedBtn2) {
     delSelectedBtn2.addEventListener('click', window.deleteSelectedNotifications);
   }
 
   const restoreSelectedBtn = document.getElementById('notif-restore-selected-btn');
-  if(restoreSelectedBtn) {
+  if (restoreSelectedBtn) {
     restoreSelectedBtn.addEventListener('click', window.restoreSelectedNotifications);
   }
 
   const permDelSelectedBtn = document.getElementById('notif-permanent-delete-selected-btn');
-  if(permDelSelectedBtn) {
+  if (permDelSelectedBtn) {
     permDelSelectedBtn.addEventListener('click', window.permanentDeleteSelectedNotifications);
   }
 
   const emptyTrashBtn = document.getElementById('notif-empty-trash-btn');
-  if(emptyTrashBtn) {
+  if (emptyTrashBtn) {
     emptyTrashBtn.addEventListener('click', window.emptyTrash);
   }
 
   const moveToTrashDropdownBtn = document.getElementById('notif-move-to-trash-btn');
-  if(moveToTrashDropdownBtn) {
+  if (moveToTrashDropdownBtn) {
     moveToTrashDropdownBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if(selectDropdown) selectDropdown.style.display = 'none';
+      if (selectDropdown) selectDropdown.style.display = 'none';
       window.moveSelectedToTrash();
     });
   }
 
   const restoreDropdownBtn = document.getElementById('notif-restore-dropdown-btn');
-  if(restoreDropdownBtn) {
+  if (restoreDropdownBtn) {
     restoreDropdownBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if(selectDropdown) selectDropdown.style.display = 'none';
+      if (selectDropdown) selectDropdown.style.display = 'none';
       window.restoreSelectedNotifications();
     });
   }
 
   const markReadSelectedBtn = document.getElementById('notif-mark-read-selected-btn');
-  if(markReadSelectedBtn) {
+  if (markReadSelectedBtn) {
     markReadSelectedBtn.addEventListener('click', window.markSelectedAsRead);
   }
-  
+
   const markUnreadSelectedBtn = document.getElementById('notif-mark-unread-selected-btn');
-  if(markUnreadSelectedBtn) {
+  if (markUnreadSelectedBtn) {
     markUnreadSelectedBtn.addEventListener('click', window.markSelectedAsUnread);
   }
 
@@ -873,7 +988,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Preview buttons
   const previewBackBtn = document.getElementById('notif-preview-back-btn');
   if (previewBackBtn) previewBackBtn.addEventListener('click', window.closeNotificationPreview);
-  
+
   const previewDeleteBtn = document.getElementById('notif-preview-delete-btn');
   if (previewDeleteBtn) {
     previewDeleteBtn.addEventListener('click', () => {
@@ -882,7 +997,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  
+
   const previewUnreadBtn = document.getElementById('notif-preview-unread-btn');
   if (previewUnreadBtn) {
     previewUnreadBtn.addEventListener('click', async () => {
@@ -890,10 +1005,10 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           await fetch(`/api/notifications/${currentPreviewNotifId}/unread`, {
             method: 'PATCH',
-            headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch(e){return "";} })() }
+            headers: { "Authorization": "Bearer " + localStorage.getItem("userToken"), "x-user-email": (() => { try { return JSON.parse(localStorage.getItem("currentUser")).email; } catch (e) { return ""; } })() }
           });
           window.closeNotificationPreview();
-        } catch (e) {}
+        } catch (e) { }
       }
     });
   }
@@ -910,7 +1025,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  window.toggleNotificationMute = function() {
+  window.toggleNotificationMute = function () {
     const isMuted = localStorage.getItem('notif-muted') === 'true';
     if (isMuted) {
       localStorage.removeItem('notif-muted');

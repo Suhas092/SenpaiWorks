@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,8 +8,31 @@
 }
 
 /* ------------------------------
-   GLOBAL HTML & BODY BACKGROUND (56px proportional fit)
+   GLOBAL CUSTOM SCROLLBAR & HTML/BODY RESET
 --------------------------------*/
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 140, 160, 0.35) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 140, 160, 0.35);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 140, 160, 0.6);
+}
+
 html,
 body {
   background-color: #ffffff;

@@ -1009,6 +1009,33 @@ body {
   box-sizing: border-box !important;
 }
 
+.related-grid .prod-img-wrap {
+  position: relative !important;
+  width: 100% !important;
+  aspect-ratio: 3 / 4 !important;
+  overflow: hidden !important;
+  background: #f4f4f6 !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.related-grid .prod-img-wrap img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block !important;
+  opacity: 1 !important;
+  padding: 16px !important;
+  background: #f4f4f6 !important;
+  transition: transform 0.35s ease !important;
+}
+
+.related-grid .product-card:hover .prod-img-wrap img {
+  transform: scale(1.05) !important;
+}
+
 .related-grid .prod-meta {
   display: flex !important;
   justify-content: space-between !important;

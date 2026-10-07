@@ -850,6 +850,32 @@ body {
   margin-top: 4px;
 }
 
+/* Instagram-style Notification Preview & Row Enhancements */
+.notification-row {
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.notification-row:hover {
+  background-color: #f8fafc !important;
+}
+
+.notif-post-thumb img {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notification-row:hover .notif-post-thumb img {
+  transform: scale(1.04);
+}
+
+.notif-preview-post-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.notif-preview-post-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
 /* TOGGLE SETTING ROW */
 .toggle-setting-row {
   display: flex;

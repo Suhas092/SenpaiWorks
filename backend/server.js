@@ -376,10 +376,13 @@ app.post('/api/admin/logout', (req, res) => {
 
 // Customer JWT authentication middleware
 async function requireUserToken(req, res, next) {
-  let token = req.cookies?.userToken;
-  if (!token && req.headers['authorization']) {
+  let token = null;
+  if (req.headers['authorization']) {
     const authHeader = req.headers['authorization'];
     token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+  }
+  if (!token && req.cookies?.userToken) {
+    token = req.cookies.userToken;
   }
   if (!token) {
     return res.status(401).json({ error: 'Unauthorized: Please log in to your account.' });
@@ -2024,7 +2027,7 @@ app.get('/api/anime/comments/count', async (req, res) => {
   }
   try {
     const count = await prisma.comment.count({
-      where: { animeId, parentId: null }
+      where: { animeId }
     });
     return res.json({ count });
   } catch (err) {
@@ -2064,22 +2067,27 @@ app.get('/api/anime/comments', async (req, res) => {
       console.log(`[API] /comments - Blocked users for "${actingUsername || actingEmail}":`, blockedUserKeys);
     }
 
-    // 2. Fetch all comments for this artwork
+    // 2. Fetch all comments for this artwork with author user profile data
     const allComments = await prisma.comment.findMany({
       where: { animeId },
+      include: {
+        user: {
+          select: { id: true, username: true, name: true, avatar: true, email: true }
+        }
+      },
       orderBy: { createdAt: 'asc' }
     });
     
     console.log(`[API] GET /comments - User:"${actingUsername || actingEmail}" animeId:"${animeId}" found:${allComments.length} comments, blockedKeys=${blockedUserKeys.length}`);
 
     // 3. Filter out comments from blocked users
-    const filteredComments = allComments.filter(c => !blockedUserKeys.includes(c.username.toLowerCase()));
+    const filteredComments = allComments.filter(c => !blockedUserKeys.includes((c.user?.username || c.username).toLowerCase()));
     
     if (allComments.length > 0 && filteredComments.length === 0) {
       console.log(`[WARNING] ALL ${allComments.length} comments were filtered as blocked!`);
       allComments.slice(0, 5).forEach(c => {
-        const isBlocked = blockedUserKeys.includes(c.username.toLowerCase());
-        console.log(`  - username:"${c.username}" (lowercased: "${c.username.toLowerCase()}") blocked:${isBlocked}, keys: ${JSON.stringify(blockedUserKeys)}`);
+        const isBlocked = blockedUserKeys.includes((c.user?.username || c.username).toLowerCase());
+        console.log(`  - username:"${c.user?.username || c.username}" blocked:${isBlocked}, keys: ${JSON.stringify(blockedUserKeys)}`);
       });
     }
     
@@ -2087,8 +2095,8 @@ app.get('/api/anime/comments', async (req, res) => {
      console.log(`[API] /comments - animeId=${animeId}`);
      console.log(`  Total: ${allComments.length}, Filtered: ${filteredComments.length}`);
      allComments.forEach(c => {
-       const isBlocked = blockedUserKeys.includes(c.username.toLowerCase());
-       console.log(`    - ID:${c.id} username:"${c.username}" parent:${c.parentId} blocked:${isBlocked}`);
+       const isBlocked = blockedUserKeys.includes((c.user?.username || c.username).toLowerCase());
+       console.log(`    - ID:${c.id} username:"${c.user?.username || c.username}" parent:${c.parentId} blocked:${isBlocked}`);
      });
     }
 
@@ -2102,7 +2110,7 @@ app.get('/api/anime/comments', async (req, res) => {
       likedCommentIds = userLikes.map(l => l.commentId);
     }
 
-    // 5. Lookup profile avatars for comment authors
+    // 5. Lookup profile avatars for comment authors (fallback map for any legacy unlinked comments)
     const uniqueUsernames = Array.from(new Set(filteredComments.map(c => c.username).filter(Boolean)));
     const matchedUsers = await prisma.user.findMany({
       where: { username: { in: uniqueUsernames } },
@@ -2124,8 +2132,15 @@ app.get('/api/anime/comments', async (req, res) => {
 
     filteredComments.forEach(comment => {
      const isLikedByViewer = likedCommentIds.includes(comment.id);
-     const userAvatar = comment.username ? (avatarMap.get(comment.username.toLowerCase()) || null) : null;
-     const formattedComment = { ...comment, userAvatar, userHasLiked: isLikedByViewer, replies: [] };
+     const authorName = comment.user?.username || comment.user?.name || comment.username || 'SenpaiFan';
+     const userAvatar = comment.user?.avatar || (comment.username ? avatarMap.get(comment.username.toLowerCase()) : null);
+     const formattedComment = {
+       ...comment,
+       username: authorName,
+       userAvatar,
+       userHasLiked: isLikedByViewer,
+       replies: []
+     };
 
      if (!comment.parentId) {
        parentComments.push(formattedComment);
@@ -2263,24 +2278,98 @@ app.post('/api/anime/comments', requireUserToken, commentPerUserLimiter, async (
     
     console.log(`[POST COMMENT] Created: ID=${comment.id}, animeId="${animeId}", username="${verifiedUsername}", text="${rawText.substring(0, 30)}..."`);
 
-    // Create notifications for replies
-    if (resolvedParentId && parentCommentAuthor?.email && parentCommentAuthor.email !== userEmail) {
+    // 1. Parse @mentions in comment text (e.g. @Suhas, @john_doe, @user.name)
+    const mentionRegex = /@([a-zA-Z0-9_\-\.]+)/g;
+    const rawMentionMatches = [...rawText.matchAll(mentionRegex)].map(m => m[1].toLowerCase().trim());
+    const uniqueMentionHandles = Array.from(new Set(rawMentionMatches.filter(h => h.length > 0)));
+
+    const authorAvatar = (typeof userRecord !== 'undefined' && userRecord?.avatar) ? userRecord.avatar : null;
+    const notificationLink = `/art-library.html?artworkId=${encodeURIComponent(animeId)}&focusComment=${comment.id}`;
+    const notifiedEmails = new Set();
+    notifiedEmails.add(userEmail.toLowerCase()); // Never notify the commenting author themselves
+
+    if (uniqueMentionHandles.length > 0) {
       try {
-        const notificationLink = `/art-library.html?artworkId=${encodeURIComponent(animeId)}&focusComment=${comment.id}`;
-        await prisma.notification.create({
-          data: {
-            userEmail: parentCommentAuthor.email,
-            type: 'community',
-            title: 'New Reply to Your Comment',
-            message: `${verifiedUsername} replied: "${rawText.substring(0, 40)}..."`,
-            link: notificationLink,
-            icon: 'fa-reply',
-            isRead: false
-          }
+        const matchingUsers = await prisma.user.findMany({
+          where: {
+            OR: [
+              { username: { in: uniqueMentionHandles, mode: 'insensitive' } },
+              { name: { in: uniqueMentionHandles, mode: 'insensitive' } },
+              { email: { in: uniqueMentionHandles, mode: 'insensitive' } }
+            ]
+          },
+          select: { id: true, email: true, username: true, name: true }
         });
-        console.log('[Notification] Created reply notification for:', parentCommentAuthor.email, 'link:', notificationLink);
-      } catch (notifErr) {
-        console.error('[Notification] Error creating reply notification:', notifErr.message);
+
+        // Also check if any handle matches email prefix (e.g. "suhas" -> "suhas@domain.com")
+        for (const handle of uniqueMentionHandles) {
+          const alreadyFound = matchingUsers.some(u =>
+            (u.username && u.username.toLowerCase() === handle) ||
+            (u.name && u.name.toLowerCase() === handle) ||
+            (u.email && u.email.toLowerCase() === handle) ||
+            (u.email && u.email.toLowerCase().startsWith(`${handle}@`))
+          );
+          if (!alreadyFound) {
+            const prefixUser = await prisma.user.findFirst({
+              where: { email: { startsWith: `${handle}@`, mode: 'insensitive' } },
+              select: { id: true, email: true, username: true, name: true }
+            });
+            if (prefixUser && !matchingUsers.some(u => u.id === prefixUser.id)) {
+              matchingUsers.push(prefixUser);
+            }
+          }
+        }
+
+        for (const targetUser of matchingUsers) {
+          const targetEmail = (targetUser.email || '').toLowerCase().trim();
+          if (targetEmail && !notifiedEmails.has(targetEmail)) {
+            notifiedEmails.add(targetEmail);
+            try {
+              await prisma.notification.create({
+                data: {
+                  userEmail: targetEmail,
+                  type: 'community',
+                  title: `${verifiedUsername} tagged you in a comment`,
+                  message: `${verifiedUsername} mentioned you in Art Library: "${rawText.substring(0, 50)}${rawText.length > 50 ? '...' : ''}"`,
+                  link: notificationLink,
+                  icon: 'fa-at',
+                  actorAvatar: authorAvatar,
+                  isRead: false
+                }
+              });
+              console.log(`[Notification] Created mention notification for: ${targetEmail}, sender: ${verifiedUsername}`);
+            } catch (mentionNotifErr) {
+              console.error('[Notification] Error creating mention notification:', mentionNotifErr.message);
+            }
+          }
+        }
+      } catch (mentionQueryErr) {
+        console.error('[Notification] Error resolving mentioned users:', mentionQueryErr.message);
+      }
+    }
+
+    // 2. Create notifications for replies (if not already notified via mention)
+    if (resolvedParentId && parentCommentAuthor?.email) {
+      const parentEmail = parentCommentAuthor.email.toLowerCase().trim();
+      if (parentEmail && !notifiedEmails.has(parentEmail)) {
+        notifiedEmails.add(parentEmail);
+        try {
+          await prisma.notification.create({
+            data: {
+              userEmail: parentEmail,
+              type: 'community',
+              title: 'New Reply to Your Comment',
+              message: `${verifiedUsername} replied: "${rawText.substring(0, 50)}${rawText.length > 50 ? '...' : ''}"`,
+              link: notificationLink,
+              icon: 'fa-reply',
+              actorAvatar: authorAvatar,
+              isRead: false
+            }
+          });
+          console.log('[Notification] Created reply notification for:', parentEmail, 'link:', notificationLink);
+        } catch (notifErr) {
+          console.error('[Notification] Error creating reply notification:', notifErr.message);
+        }
       }
     }
 
@@ -4072,6 +4161,145 @@ cleanupOldNotifications();
 // Notification Middlewares: uses single canonical requireUserToken from line 317
 
 
+// Helper: Enrich notifications with media thumbnail, post title, and avatar
+async function enrichNotificationsWithMedia(notifications) {
+  if (!Array.isArray(notifications) || notifications.length === 0) return notifications;
+
+  const artworkKeys = new Set();
+  const productKeys = new Set();
+  const senderNames = new Set();
+
+  const commentIds = new Set();
+  notifications.forEach(n => {
+    if (n.link) {
+      const artMatch = n.link.match(/artworkId=([^&]+)/);
+      if (artMatch) artworkKeys.add(decodeURIComponent(artMatch[1]));
+
+      const prodMatch = n.link.match(/productId=([^&]+)/) || n.link.match(/\/store\/([^?#]+)/);
+      if (prodMatch) productKeys.add(decodeURIComponent(prodMatch[1]));
+
+      const commentMatch = n.link.match(/focusComment=([0-9]+)/);
+      if (commentMatch && !artMatch) {
+        commentIds.add(parseInt(commentMatch[1], 10));
+      }
+    }
+    if (!n.actorAvatar && n.title) {
+      const sMatch = n.title.match(/^([^\s]+)\s+(tagged|mentioned|replied|liked)/i);
+      if (sMatch) senderNames.add(sMatch[1]);
+    }
+  });
+
+  if (commentIds.size > 0) {
+    try {
+      const comments = await prisma.comment.findMany({
+        where: { id: { in: Array.from(commentIds) } },
+        select: { id: true, animeId: true }
+      });
+      comments.forEach(c => {
+        if (c.animeId) artworkKeys.add(c.animeId);
+      });
+    } catch (e) {}
+  }
+
+  const artMap = new Map();
+  if (artworkKeys.size > 0) {
+    for (const key of artworkKeys) {
+      const artNum = parseInt(key.replace(/[^0-9]/g, ''), 10);
+      const artName = key.replace(/^2d_/, '').replace(/_/g, ' ').trim();
+      const artWords = artName.split(' ').filter(w => w.length > 2);
+      try {
+        const art = await prisma.artwork.findFirst({
+          where: {
+            OR: [
+              ...(isNaN(artNum) || artNum <= 0 ? [] : [{ id: artNum }]),
+              { charname: { contains: artName, mode: 'insensitive' } },
+              ...artWords.map(w => ({ charname: { contains: w, mode: 'insensitive' } }))
+            ]
+          },
+          select: { id: true, charname: true, img: true, category: true }
+        });
+        if (art) {
+          artMap.set(key, art);
+        }
+      } catch (e) {}
+    }
+  }
+
+  const prodMap = new Map();
+  if (productKeys.size > 0) {
+    try {
+      const products = await prisma.product.findMany({
+        where: { id: { in: Array.from(productKeys) } },
+        select: { id: true, name: true, img: true, category: true }
+      });
+      products.forEach(p => prodMap.set(p.id, p));
+    } catch (e) {}
+  }
+
+  const avatarFallbackMap = new Map();
+  if (senderNames.size > 0) {
+    try {
+      const users = await prisma.user.findMany({
+        where: { username: { in: Array.from(senderNames), mode: 'insensitive' } },
+        select: { username: true, avatar: true }
+      });
+      users.forEach(u => {
+        if (u.username && u.avatar) {
+          avatarFallbackMap.set(u.username.toLowerCase(), u.avatar);
+        }
+      });
+    } catch (e) {}
+  }
+
+  return notifications.map(n => {
+    let postThumbnail = null;
+    let postTitle = null;
+    let postCategory = null;
+    let actorAvatar = n.actorAvatar || null;
+
+    if (n.link) {
+      const artMatch = n.link.match(/artworkId=([^&]+)/);
+      if (artMatch) {
+        const artKey = decodeURIComponent(artMatch[1]);
+        const art = artMap.get(artKey);
+        if (art) {
+          postThumbnail = art.img;
+          postTitle = art.charname;
+          postCategory = art.category || 'Digital Art';
+        }
+      }
+
+      if (!postThumbnail) {
+        const prodMatch = n.link.match(/productId=([^&]+)/) || n.link.match(/\/store\/([^?#]+)/);
+        if (prodMatch) {
+          const prodKey = decodeURIComponent(prodMatch[1]);
+          const prod = prodMap.get(prodKey);
+          if (prod) {
+            postThumbnail = prod.img;
+            postTitle = prod.name;
+            postCategory = prod.category || 'Store Product';
+          }
+        }
+      }
+    }
+
+    if (!actorAvatar && n.title) {
+      const sMatch = n.title.match(/^([^\s]+)\s+(tagged|mentioned|replied|liked)/i);
+      if (sMatch) {
+        actorAvatar = avatarFallbackMap.get(sMatch[1].toLowerCase()) || null;
+      }
+    }
+
+    return {
+      ...n,
+      actorAvatar,
+      postThumbnail,
+      postTitle,
+      postCategory
+    };
+  });
+}
+
 // 1. Get user notifications
 app.get('/api/notifications', requireUserToken, async (req, res) => {
   const userEmail = req.userEmail;
@@ -4082,7 +4310,7 @@ app.get('/api/notifications', requireUserToken, async (req, res) => {
 
   const categoryMapping = {
     'Orders': ['order_update', 'order_delivered'],
-    'Community': ['post_reply', 'support_reply', 'community'],
+    'Community': ['post_reply', 'support_reply', 'community', 'mention', 'comment_mention'],
     'Store': ['new_product', 'new_offer', 'sale', 'wishlist_restock'],
     'News': ['new_article', 'new_course', 'admin_broadcast']
   };
@@ -4116,7 +4344,8 @@ app.get('/api/notifications', requireUserToken, async (req, res) => {
       take: limit
     });
     const total = await prisma.notification.count({ where });
-    res.json({ notifications, total, page, totalPages: Math.ceil(total / limit) });
+    const enriched = await enrichNotificationsWithMedia(notifications);
+    res.json({ notifications: enriched, total, page, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch notifications' });
   }
@@ -4132,7 +4361,7 @@ app.get('/api/notifications/unread-count', requireUserToken, async (req, res) =>
 
     const categoryMapping = {
       'Orders': ['order_update', 'order_delivered'],
-      'Community': ['post_reply', 'support_reply', 'community'],
+      'Community': ['post_reply', 'support_reply', 'community', 'mention', 'comment_mention'],
       'Store': ['new_product', 'new_offer', 'sale', 'wishlist_restock'],
       'News': ['new_article', 'new_course', 'admin_broadcast']
     };
@@ -4249,7 +4478,8 @@ app.get('/api/notifications/:id', requireUserToken, async (req, res) => {
       where: { id: parseInt(req.params.id), userEmail }
     });
     if (!notif) return res.status(404).json({ error: 'Notification not found' });
-    res.json(notif);
+    const enriched = await enrichNotificationsWithMedia([notif]);
+    res.json(enriched[0]);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch notification' });
   }

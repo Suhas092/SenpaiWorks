@@ -14,6 +14,7 @@ let detailCountsPollInterval = null; // frequent small-count polling (likes/comm
 let detailCommentsPollInterval = null; // less-frequent full comments polling (full list)
 let lastCommentCountShown = 0; // Cache to prevent data loss
 let lastLikeCountShown = 0;
+let expandedReplyCommentIds = new Set(); // Track expanded reply threads across polling
 
 function setEditingComment(commentId, text) {
   cancelReplyingToComment();
@@ -583,6 +584,9 @@ async function fetchAndRenderDatabaseArtworks(grid) {
     initPinterestHoverShareButtons();
     updateVisibleItems();
     layoutMasonry();
+    if (typeof window.handleNotificationLink === 'function') {
+      window.handleNotificationLink();
+    }
   };
 
   try {
@@ -595,10 +599,10 @@ async function fetchAndRenderDatabaseArtworks(grid) {
     if (!res.ok) throw new Error("Failed to fetch artworks");
     const resData = await res.json();
     const artworks = Array.isArray(resData) ? resData : (resData.artworks || []);
-    
+
     try {
       localStorage.setItem("cached_artworks", JSON.stringify(artworks));
-    } catch(e) {}
+    } catch (e) { }
 
     renderList(artworks);
   } catch (err) {
@@ -609,7 +613,7 @@ async function fetchAndRenderDatabaseArtworks(grid) {
         const artworks = JSON.parse(stored);
         renderList(artworks);
       }
-    } catch(e) {}
+    } catch (e) { }
   }
 }
 
@@ -807,11 +811,12 @@ function goToPreviousDetailView() {
 // ── Fetch & Render Likes and Comments ──────────────────────
 async function loadDetailInteractions(artworkId) {
   activeArtworkId = artworkId;
-  
+
   // CRITICAL: Clear stale comments when switching to a new artwork
   currentCommentsList = [];
   lastCommentCountShown = 0;
   lastLikeCountShown = 0;
+  expandedReplyCommentIds.clear();
 
   const container = document.getElementById("detail-comments-container");
   if (container) {
@@ -913,10 +918,10 @@ async function loadDetailInteractions(artworkId) {
       // API returns { comments: [...], likedCommentIds: [...] }
       // Server already sets userHasLiked on each comment
       const comments = data.comments || [];
-      console.log('[Comments] Fetched API Response:', { 
-        data, 
-        url: commentsUrl, 
-        commentCount: comments.length, 
+      console.log('[Comments] Fetched API Response:', {
+        data,
+        url: commentsUrl,
+        commentCount: comments.length,
         artworkId,
         hasComments: !!data.comments,
         hasLikedIds: !!data.likedCommentIds
@@ -942,7 +947,7 @@ async function loadDetailInteractions(artworkId) {
   if (detailInteractionPollInterval) {
     clearInterval(detailInteractionPollInterval);
   }
-  
+
   // Only poll if user is signed in
   if (isUserSignedIn()) {
     detailInteractionPollInterval = setInterval(async () => {
@@ -952,7 +957,7 @@ async function loadDetailInteractions(artworkId) {
         detailInteractionPollInterval = null;
         return;
       }
-      
+
       try {
         const token = getAuthToken();
         const pollUrl = `/api/anime/comments?animeId=${artworkId}`;
@@ -1049,7 +1054,7 @@ function renderSingleCommentHTML(c, isChild = false) {
   const localLiked = localStorage.getItem(localLikedKey) === 'true';
   const isLiked = localLiked || Boolean(c.userHasLiked);
   const likeCount = c.likeCount || 0;
-  
+
   if (isLiked) {
     console.log(`[Comment] ${c.id} - isLiked=true, userHasLiked=${c.userHasLiked}`);
   }
@@ -1060,14 +1065,15 @@ function renderSingleCommentHTML(c, isChild = false) {
 
   const hasReplies = c.replies && c.replies.length > 0;
   const replyCount = hasReplies ? c.replies.length : 0;
+  const isRepliesExpanded = expandedReplyCommentIds.has(c.id);
 
   const repliesHTML = hasReplies
     ? `
       <button type="button" class="comment-replies-toggle-btn" data-comment-id="${c.id}">
         <span class="view-replies-line"></span>
-        <span class="view-replies-text">View replies (${replyCount})</span>
+        <span class="view-replies-text">${isRepliesExpanded ? 'Hide replies' : `View replies (${replyCount})`}</span>
       </button>
-      <div class="comment-replies-container collapsed" id="replies-container-${c.id}" data-count="${replyCount}">
+      <div class="comment-replies-container ${isRepliesExpanded ? '' : 'collapsed'}" id="replies-container-${c.id}" data-count="${replyCount}">
         ${c.replies.map(child => renderSingleCommentHTML(child, true)).join('')}
       </div>
     `
@@ -1140,7 +1146,7 @@ function renderSingleCommentHTML(c, isChild = false) {
 function renderCommentsList(comments) {
   // Extract comments array from various input formats
   let extractedComments = [];
-  
+
   if (Array.isArray(comments)) {
     // Input is already an array
     extractedComments = comments;
@@ -1149,24 +1155,43 @@ function renderCommentsList(comments) {
     extractedComments = comments.comments;
   }
   // Otherwise extractedComments stays empty
-  
   currentCommentsList = extractedComments;
 
+  // Check if there is a focused comment from notification and automatically expand its parent reply thread
+  const focusCommentParam = new URLSearchParams(window.location.search).get('focusComment') || window._pendingFocusCommentId;
+  if (focusCommentParam) {
+    const targetId = parseInt(focusCommentParam, 10);
+    if (!isNaN(targetId)) {
+      extractedComments.forEach(topComment => {
+        if (topComment.replies && topComment.replies.some(r => r.id === targetId)) {
+          expandedReplyCommentIds.add(topComment.id);
+        }
+      });
+    }
+  }
+
   const commentsList = document.getElementById("detail-comments-list");
+  if (commentsList) {
+    commentsList.querySelectorAll(".comment-replies-container:not(.collapsed)").forEach(el => {
+      const cId = parseInt(el.id.replace("replies-container-", ""), 10);
+      if (cId) expandedReplyCommentIds.add(cId);
+    });
+  }
   const commentsCountLabel = document.getElementById("detail-comments-count-label");
   const commentsShortcutCount = document.getElementById("detail-comments-shortcut-count");
   const mobileCommentsShortcutCount = document.getElementById("mobile-detail-comments-shortcut-count");
   const loadMoreCommentsBtn = document.getElementById("load-more-comments-btn");
   const commentForm = document.getElementById("detail-comment-form");
 
-  const totalCount = currentCommentsList.length;
-  
+  // Calculate total count including both main comments and their replies
+  const totalCount = currentCommentsList.reduce((acc, c) => acc + 1 + ((c && Array.isArray(c.replies)) ? c.replies.length : 0), 0);
+
   // Cache comment count to prevent it from disappearing during polling race conditions
   if (totalCount > 0) {
     lastCommentCountShown = totalCount;
   }
   const displayCount = totalCount > 0 ? totalCount : lastCommentCountShown;
-  
+
   if (isUserSignedIn()) {
     if (commentsCountLabel) commentsCountLabel.textContent = `${displayCount}`;
     if (commentsShortcutCount) commentsShortcutCount.textContent = `${displayCount}`;
@@ -1322,16 +1347,22 @@ function attachCommentSocialListeners(container) {
       e.preventDefault();
       e.stopPropagation();
 
-      const commentId = btn.dataset.commentId;
+      const commentId = parseInt(btn.dataset.commentId, 10);
       const repliesContainer = document.getElementById(`replies-container-${commentId}`);
       if (repliesContainer) {
         repliesContainer.classList.toggle("collapsed");
         const isCollapsed = repliesContainer.classList.contains("collapsed");
+        if (isCollapsed) {
+          expandedReplyCommentIds.delete(commentId);
+        } else {
+          expandedReplyCommentIds.add(commentId);
+        }
         const count = repliesContainer.dataset.count || '';
         const textSpan = btn.querySelector(".view-replies-text");
         if (textSpan) {
           textSpan.textContent = isCollapsed ? `View replies (${count})` : `Hide replies`;
         }
+        layoutMasonry();
       }
     });
   });
@@ -1440,8 +1471,9 @@ function attachCommentSocialListeners(container) {
           });
 
           setTimeout(() => {
+            const childReplies = commentBox ? commentBox.querySelectorAll(".is-reply-item").length : 0;
             commentBox.remove();
-            updateCommentCountsUI(-1);
+            updateCommentCountsUI(-(1 + childReplies));
           }, 320);
         }
 
@@ -1689,10 +1721,10 @@ function downloadCurrentArtwork() {
   if (!dbId) return;
 
   const fileName = (charName ? charName.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'senpaiworks_artwork') + '.jpg';
-  
+
   // Use backend endpoint that handles download with proper headers
   const downloadUrl = `/api/artworks/${dbId}/download-image`;
-  
+
   // Create anchor and download
   const a = document.createElement('a');
   a.href = downloadUrl;
@@ -1701,7 +1733,7 @@ function downloadCurrentArtwork() {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  
+
   showArtToast("✓ Image downloading...");
 }
 
@@ -2381,6 +2413,7 @@ function initDetailCardListeners() {
       textInput.value = "";
       const replyParent = activeReplyParentId;
       if (activeReplyParentId) {
+        expandedReplyCommentIds.add(parseInt(activeReplyParentId, 10));
         cancelReplyingToComment();
       }
 
@@ -2801,7 +2834,7 @@ document.addEventListener("DOMContentLoaded", () => {
           hasHydrated = true;
         }
       }
-    } catch(e) {}
+    } catch (e) { }
 
     if (!hasHydrated) {
       renderSkeletonPlaceholderCards(grid);
@@ -2820,7 +2853,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 2. Fetch fresh database artworks in background and seamlessly update
     fetchAndRenderDatabaseArtworks(grid);
-    
+
     // 3. Handle notification links (artwork + comment focus) - try multiple times as artworks load
     window.handleNotificationLink();
     setTimeout(() => {
@@ -2845,13 +2878,13 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelEditingComment();
     cancelReplyingToComment();
     document.getElementById("art-emoji-picker-popover")?.classList.remove("active");
-    
+
     // Stop polling for real-time updates
     if (detailInteractionPollInterval) {
       clearInterval(detailInteractionPollInterval);
       detailInteractionPollInterval = null;
     }
-    
+
     if (pinPageLayout) pinPageLayout.classList.remove("detail-open");
     detailViewHistory = []; // fresh stack next time panel opens
     if (activeCardEl) {
@@ -3178,73 +3211,119 @@ async function loadDynamicCategories() {
 }
 
 // Handle notification links with artwork and comment focus
-window.handleNotificationLink = function() {
+window.handleNotificationLink = function () {
   const params = new URLSearchParams(window.location.search);
   const artworkId = params.get('artworkId');
   const focusCommentId = params.get('focusComment');
-  
-  if (!artworkId) return;
-  
-  console.log(`[Notification] Opening artwork: ${artworkId}, focusComment: ${focusCommentId}`);
-  
-  // Wait for cards to be rendered or try multiple times
+
+  if (!artworkId && !focusCommentId) return;
+  if (focusCommentId) {
+    window._pendingFocusCommentId = focusCommentId;
+  }
+
+  console.log(`[Notification] Opening artwork: "${artworkId}", focusComment: "${focusCommentId}"`);
+
   let attempts = 0;
-  const maxAttempts = 100;
-  
+  const maxAttempts = 80;
+
   const tryOpenArtwork = () => {
     attempts++;
-    const cards = document.querySelectorAll('[data-anime-id]');
-    
-    if (attempts <= 10 || attempts % 10 === 0) {
-      console.log(`[Notification] Attempt ${attempts}: Found ${cards.length} cards`);
+    const cards = document.querySelectorAll('.pinterest-item');
+
+    if (cards.length === 0 && attempts < maxAttempts) {
+      setTimeout(tryOpenArtwork, 100);
+      return;
     }
-    
+
+    const targetNormalized = (artworkId || '').toLowerCase().trim();
+    const targetClean = targetNormalized.replace(/^2d_/, '').replace(/_/g, ' ').trim();
+
+    let matchingCard = null;
     for (let card of cards) {
-      const cardId = card.getAttribute('data-anime-id');
-      if (cardId === artworkId) {
-        console.log(`[Notification] ✅ Found matching card! Clicking...`);
-        card.click();
-        
-        // Wait for detail view to fully render and comments to load
-        if (focusCommentId) {
-          // Give it time for detail view to open and comments to fetch
-          let commentWaitAttempts = 0;
-          const waitForComment = () => {
-            commentWaitAttempts++;
-            const commentEl = document.querySelector(`[data-comment-id="${focusCommentId}"]`);
-            if (commentEl) {
-              console.log(`[Notification] ✅ Found comment element! Scrolling to it...`);
-              // Use requestAnimationFrame for better timing
-              requestAnimationFrame(() => {
-                commentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Highlight with yellow glow
-                commentEl.style.backgroundColor = '#fffacd';
-                commentEl.style.transition = 'background-color 0.5s ease-in-out';
-                setTimeout(() => {
-                  commentEl.style.backgroundColor = 'transparent';
-                }, 1500);
-              });
-            } else if (commentWaitAttempts < 50) {
-              // Keep trying to find the comment
-              setTimeout(waitForComment, 150);
-            } else {
-              console.warn(`[Notification] ⚠️ Could not find comment ${focusCommentId} after ${commentWaitAttempts} attempts`);
-            }
-          };
-          setTimeout(waitForComment, 1000);
-        }
-        return true;
+      const cardChar = (card.getAttribute('data-charname') || '').trim();
+      const cardId = card.getAttribute('data-anime-id') || card.getAttribute('data-db-id');
+      const cardGeneratedId = "2d_" + cardChar.toLowerCase().replace(/[^a-z0-9]/g, "_");
+
+      const isMatch = artworkId && (
+        (cardId && String(cardId) === String(artworkId)) ||
+        (cardGeneratedId === targetNormalized) ||
+        (cardChar.toLowerCase() === targetClean) ||
+        (targetClean.length > 2 && cardChar.toLowerCase().includes(targetClean)) ||
+        (targetClean.length > 2 && targetClean.includes(cardChar.toLowerCase()))
+      );
+
+      if (isMatch) {
+        matchingCard = card;
+        break;
       }
     }
-    
-    // If no card found and we haven't exceeded max attempts, try again
+
+    if (!matchingCard && cards.length > 0 && !artworkId) {
+      matchingCard = cards[0];
+    }
+
+    if (matchingCard) {
+      console.log(`[Notification] ✅ Found matching artwork card: ${matchingCard.getAttribute('data-charname')}`);
+      const img = matchingCard.querySelector('img');
+      openDetailCard(img, matchingCard);
+
+      if (focusCommentId) {
+        // Automatically open comments drawer
+        const cardBody = document.getElementById("detail-card-body");
+        if (cardBody) {
+          cardBody.classList.add("comments-open");
+          commentsVisibleLimit = 100;
+          layoutMasonry();
+        }
+
+        let commentWaitAttempts = 0;
+        const waitForComment = () => {
+          commentWaitAttempts++;
+          const commentEl = document.querySelector(`[data-comment-id="${focusCommentId}"]`);
+          if (commentEl) {
+            console.log(`[Notification] ✅ Found comment element! Scrolling to it...`);
+
+            // If comment is nested inside a collapsed replies container, expand it
+            const collapsedReplies = commentEl.closest(".comment-replies-container");
+            if (collapsedReplies) {
+              collapsedReplies.classList.remove("collapsed");
+              const pId = parseInt(collapsedReplies.id.replace("replies-container-", ""), 10);
+              if (pId) expandedReplyCommentIds.add(pId);
+              const toggleBtn = document.querySelector(`.comment-replies-toggle-btn[data-comment-id="${pId}"] .view-replies-text`);
+              if (toggleBtn) toggleBtn.textContent = "Hide replies";
+              layoutMasonry();
+            }
+
+            requestAnimationFrame(() => {
+              commentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              commentEl.style.backgroundColor = 'rgba(59, 130, 246, 0.18)';
+              commentEl.style.borderRadius = '8px';
+              commentEl.style.transition = 'background-color 0.8s ease-in-out';
+              setTimeout(() => {
+                commentEl.style.backgroundColor = 'transparent';
+              }, 3000);
+            });
+          } else if (commentWaitAttempts < 60) {
+            const cb = document.getElementById("detail-card-body");
+            if (cb && !cb.classList.contains("comments-open")) {
+              cb.classList.add("comments-open");
+            }
+            setTimeout(waitForComment, 150);
+          } else {
+            console.warn(`[Notification] ⚠️ Could not find comment ${focusCommentId} after ${commentWaitAttempts} attempts`);
+          }
+        };
+        setTimeout(waitForComment, 300);
+      }
+      return true;
+    }
+
     if (attempts < maxAttempts) {
-      setTimeout(tryOpenArtwork, 200);
+      setTimeout(tryOpenArtwork, 150);
     } else {
       console.warn(`[Notification] ⚠️ Could not find artwork ${artworkId} after ${maxAttempts} attempts`);
     }
   };
-  
-  // Start trying after a delay to let page settle
+
   tryOpenArtwork();
 };

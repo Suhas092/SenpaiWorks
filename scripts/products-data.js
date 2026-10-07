@@ -1,12 +1,17 @@
 "use strict";
 
-window.PRODUCTS = [];
+try {
+  const stored = localStorage.getItem("admin_custom_products");
+  window.PRODUCTS = stored ? JSON.parse(stored) : [];
+} catch(e) {
+  window.PRODUCTS = [];
+}
 
 // Fetch database products and update PRODUCTS array
-(function () {
+window.dbProductsPromise = (function () {
   const API_URL = "/api/products";
 
-  fetch(API_URL, { cache: "no-store" })
+  return fetch(API_URL, { cache: "no-store" })
     .then(res => {
       if (!res.ok) throw new Error("Failed to fetch products");
       return res.json();

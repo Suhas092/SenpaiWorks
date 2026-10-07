@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
       "course": "learn",
       "courses": "learn",
       "learn": "learn",
+      "store-detail": "store",
+      "store-details": "store",
       "product-detail": "store",
       "product-details": "store",
       "cart": "store",
@@ -64,6 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
       "news-detail": "news",
       "article": "news",
       "motion-player": "motion",
+      "suzens": "suzens",
+      "suzen": "suzens",
       "index": "home"
     };
 
@@ -1351,30 +1355,116 @@ window.togglePasswordVisibility = function (inputId, btnEl) {
     return "just now";
   }
 
-  window.renderNotificationRowHTML = function(n, isDropdown = false) {
-    const bg = n.isRead ? "transparent" : "rgba(59, 130, 246, 0.03)";
-    const dotColor = "#3b82f6"; // SenpaiWorks blue for unread
+  function formatTimeShort(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '';
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return "just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return minutes + "m";
+    const hours = Math.floor(seconds / 3600);
+    if (hours < 24) return hours + "h";
+    const days = Math.floor(seconds / 86400);
+    if (days < 7) return days + "d";
+    if (days < 30) return Math.floor(days / 7) + "w";
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
 
-    let iconHtml = '';
-    const isCommunity = n.type && (n.type.includes('post') || n.type.includes('support'));
+  function escapeNotifHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
-    if (isCommunity && n.actorAvatar) {
-      // Community notification with a real user's avatar
-      iconHtml = `<img src="${n.actorAvatar}" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid #e2e8f0;">`;
-    } else {
-      // Generic system notification (Orders, Store, News, etc) or missing avatar
-      // Using the SenpaiWorks logo as a consistent brand avatar
-      iconHtml = `<div style="width: 40px; height: 40px; border-radius: 50%; background: #000000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e2e8f0; overflow: hidden;">
-                    <img src="assets/SenpaiWorks%20logo.png" alt="SenpaiWorks" style="width: 24px; height: 24px; object-fit: contain;">
-                  </div>`;
+  function formatInstagramContent(n) {
+    const safeTitle = escapeNotifHtml(n.title || '');
+    const safeMsg = escapeNotifHtml(n.message || '');
+    
+    function highlightMentions(text) {
+      if (!text) return '';
+      return text.replace(/@([a-zA-Z0-9_\-\.]+)/g, '<span style="color: #0284c7; font-weight: 600;">@$1</span>');
     }
 
-    const lineClamp = isDropdown ? 1 : 2;
+    const isCommunity = n.type && (n.type.includes('post') || n.type.includes('support') || n.type.includes('community') || n.type.includes('mention'));
+    
+    if (isCommunity) {
+      let username = '';
+      let action = '';
+      const titleMatch = safeTitle.match(/^([^\s]+)\s+(tagged you in a comment|liked your comment|liked your photo|mentioned you|replied)/i);
+      if (titleMatch) {
+        username = titleMatch[1];
+        action = titleMatch[2];
+      } else if (safeMsg.match(/^([^\s]+)\s+(replied|mentioned you|commented|liked)/i)) {
+        const msgMatch = safeMsg.match(/^([^\s]+)\s+(replied|mentioned you|commented|liked)/i);
+        username = msgMatch[1];
+        action = msgMatch[2];
+      }
+
+      let quoteSnippet = '';
+      const quoteMatch = safeMsg.match(/["“]([^"”]+)["”]/);
+      if (quoteMatch) {
+        quoteSnippet = quoteMatch[1];
+      }
+
+      if (username) {
+        let actionLabel = action;
+        if (action.includes('tagged')) actionLabel = 'mentioned you in a comment:';
+        else if (action.includes('replied')) actionLabel = 'replied to your comment:';
+        else if (action.includes('liked')) actionLabel = 'liked your comment.';
+
+        let snippetHtml = quoteSnippet ? ` <span style="color: #475569; font-weight: 400;">"${highlightMentions(quoteSnippet)}"</span>` : '';
+        return `<strong style="font-weight: 700; color: #0f172a;">${username}</strong> <span style="color: #334155;">${actionLabel}</span>${snippetHtml}`;
+      }
+    }
+
+    // Default system notification rendering
+    return `<strong style="font-weight: 700; color: #0f172a;">${safeTitle}</strong> <span style="color: #475569;">${highlightMentions(safeMsg)}</span>`;
+  }
+
+  window.renderNotificationRowHTML = function(n, isDropdown = false) {
+    const bg = n.isRead ? "transparent" : "rgba(59, 130, 246, 0.04)";
+    const isCommunity = n.type && (n.type.includes('post') || n.type.includes('support') || n.type.includes('community') || n.type.includes('mention'));
+
+    let usernameGuess = '';
+    if (n.title) {
+      const uMatch = n.title.match(/^([^\s]+)/);
+      if (uMatch) usernameGuess = uMatch[1];
+    }
+    const initial = (usernameGuess ? usernameGuess.charAt(0) : 'U').toUpperCase();
+
+    let avatarHtml = '';
+    if (isCommunity && n.actorAvatar) {
+      avatarHtml = `<img src="${n.actorAvatar}" alt="User Avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid #e2e8f0; display: block;">`;
+    } else if (isCommunity) {
+      avatarHtml = `<div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #6366f1); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; border: 1px solid #e2e8f0; flex-shrink: 0; text-transform: uppercase;">${initial}</div>`;
+    } else {
+      avatarHtml = `<div style="width: 44px; height: 44px; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e2e8f0; overflow: hidden;">
+                      <img src="assets/SenpaiWorks%20logo.png" alt="SenpaiWorks" style="width: 22px; height: 22px; object-fit: contain;">
+                    </div>`;
+    }
+
+    const timeShort = formatTimeShort(n.createdAt);
+    const contentHtml = formatInstagramContent(n);
+
+    // Right post thumbnail (Instagram style)
+    let postThumbHtml = '';
+    if (n.postThumbnail) {
+      postThumbHtml = `
+        <div class="notif-post-thumb" style="margin-left: 12px; flex-shrink: 0; align-self: center;">
+          <img src="${n.postThumbnail}" alt="Post thumbnail" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; display: block; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+        </div>
+      `;
+    }
 
     let html = `
       <div class="${isDropdown ? 'dropdown-notif-item' : 'notification-row'}" 
            ${isDropdown ? `data-id="${n.id}" data-link="${n.link || '#'}"` : ''}
-           style="display: flex; align-items: flex-start; padding: ${isDropdown ? '14px 20px' : '16px'}; border-bottom: 1px solid #e2e8f0; background: ${bg}; cursor: pointer; transition: all 0.2s; position: relative;" 
+           style="display: flex; align-items: center; padding: ${isDropdown ? '12px 16px' : '14px 18px'}; border-bottom: 1px solid #f1f5f9; background: ${bg}; cursor: pointer; transition: background 0.15s ease; position: relative;" 
            ${!isDropdown ? `onclick="window.openNotificationPreview(window.notificationDataStore[${n.id}])"` : ''}>
     `;
 
@@ -1385,58 +1475,35 @@ window.togglePasswordVisibility = function (inputId, btnEl) {
         </div>
       `;
     }
-    
-    // Add margin-right back for all items, since we no longer wrap the avatar in the swap container
-    html += `<div class="notif-avatar" style="margin-right: 12px; transition: all 0.2s; flex-shrink: 0;">${iconHtml}</div>`;
 
-    const timeDisplay = isDropdown ? formatTimeAgo(n.createdAt) : new Date(n.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    const titleWeight = n.isRead ? '600' : '700';
-    const titleColor = n.isRead ? '#475569' : '#0f172a';
-    
-    const titleFontSize = isDropdown ? '0.85rem' : '0.95rem';
-    const msgFontSize = isDropdown ? '0.75rem' : '0.85rem';
-    
-    function escapeNotifHtml(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    const safeTitle = escapeNotifHtml(n.title);
-    const safeMsg = escapeNotifHtml(n.message);
-    const safeCat = escapeNotifHtml(n.category || 'System');
-
-    // Add category badge
-    const catBadge = isDropdown ? `<span style="font-size: 0.65rem; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #475569; margin-left: 8px;">${safeCat}</span>` : '';
+    html += `<div class="notif-avatar" style="margin-right: 12px; transition: all 0.2s; flex-shrink: 0;">${avatarHtml}</div>`;
 
     html += `
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%;">
-            <span style="font-size: ${titleFontSize}; font-weight: ${titleWeight}; color: ${titleColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; flex: 1; min-width: 0;">
-              <span style="overflow: hidden; text-overflow: ellipsis;">${safeTitle}</span>
-              ${catBadge}
-            </span>
-            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; position: relative;">
-               <span class="notif-row-timestamp" style="font-size: 0.8rem; color: #94a3b8; font-weight: 500; white-space: nowrap;">${timeDisplay}</span>
-               ${!isDropdown ? `
-                 <div class="btn-hover-delete" style="display: none; align-items: center; gap: 4px; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
-                   <button onclick="event.stopPropagation(); window.markSingleNotificationRead(${n.id})" style="background:none; border:none; color:#64748b; font-size: 1rem; cursor: pointer; padding: 4px;" title="Mark as Read">
-                     <i class="fa-regular fa-circle-check"></i>
-                   </button>
-                   <button onclick="event.stopPropagation(); window.deleteSingleNotification(${n.id})" style="background:none; border:none; color:#ef4444; font-size: 1rem; cursor: pointer; padding: 4px;" title="Delete">
-                     <i class="fa-regular fa-trash-can"></i>
-                   </button>
-                 </div>
-               ` : ''}
-            </div>
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+          <div style="font-size: ${isDropdown ? '0.82rem' : '0.9rem'}; line-height: 1.4; color: #0f172a; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+            ${contentHtml}
+            <span class="notif-row-timestamp" style="font-size: 0.78rem; color: #94a3b8; font-weight: 500; margin-left: 6px; white-space: nowrap;">${timeShort}</span>
           </div>
-          <span style="font-size: ${msgFontSize}; color: #64748b; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: ${lineClamp}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">${safeMsg}</span>
         </div>
     `;
+
+    if (postThumbHtml) {
+      html += postThumbHtml;
+    }
+
+    if (!isDropdown) {
+      html += `
+        <div class="btn-hover-delete" style="display: none; align-items: center; gap: 6px; margin-left: 8px; flex-shrink: 0;">
+          <button onclick="event.stopPropagation(); window.markSingleNotificationRead(${n.id})" style="background:#f1f5f9; border:none; color:#475569; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer;" title="Mark as Read">
+            <i class="fa-regular fa-circle-check"></i>
+          </button>
+          <button onclick="event.stopPropagation(); window.deleteSingleNotification(${n.id})" style="background:#fef2f2; border:none; color:#ef4444; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer;" title="Delete">
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </div>
+      `;
+    }
+
     html += `</div>`;
     return html;
   };

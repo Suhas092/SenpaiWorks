@@ -648,25 +648,10 @@
             </button>
           </div>
 
-          <div class="preview-content" style="padding: 0 12px; text-align: left;">
-            <h3 id="notif-preview-title"
-              style="margin: 0 0 16px 0; font-size: 1.5rem; color: #0f172a; text-align: left;">Notification Title</h3>
-            <div id="notif-preview-meta"
-              style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-align: left;">
-              <span id="notif-preview-date">Date</span>
-            </div>
-            <div id="notif-preview-sender"
-              style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px; text-align: left;">
-              <div
-                style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
-                <i class="fa-solid fa-bolt"></i>
-              </div>
-              <span style="font-weight: 600; color: #334155; font-size: 0.95rem; text-align: left;">SenpaiWorks Team
-                <span style="font-weight: 400; color: #94a3b8;" id="notif-preview-category-name"></span></span>
-            </div>
-            <div id="notif-preview-body"
-              style="font-size: 1.05rem; color: #334155; line-height: 1.7; margin-bottom: 32px; min-height: 250px; text-align: left;">
-              Notification body goes here.
+          <div class="preview-content" id="notif-preview-dynamic-container" style="padding: 0 12px; text-align: left;">
+            <div style="padding: 40px 20px; text-align: center; color: #64748b;">
+              <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i>
+              <div style="margin-top: 12px;">Loading notification...</div>
             </div>
           </div>
         </div>

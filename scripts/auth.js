@@ -249,6 +249,9 @@
      * @param {string} [redirectTarget="home.html"]
      */
     logout: function (redirectTarget) {
+      try {
+        fetch("/api/auth/logout", { method: "POST", credentials: "include" }).catch(() => {});
+      } catch (e) {}
       const cur = this.getCurrentUser();
       if (cur && cur.email) {
         localStorage.setItem(STORAGE_KEYS.LAST_USER, JSON.stringify(cur));

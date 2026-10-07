@@ -133,10 +133,9 @@ async function initProductDetailPage() {
   if (breadcrumbCurrent) breadcrumbCurrent.textContent = product.name;
   if (detailBreadcrumbs) {
     detailBreadcrumbs.innerHTML = `
-      <a href="home.html">Home</a> &gt; 
       <a href="store.html">Store</a> &gt; 
-      <a href="store.html?category=${encodeURIComponent(product.category)}">${product.category}</a> &gt; 
-      <span id="breadcrumb-current">${product.name}</span>
+      <a href="store.html?category=${encodeURIComponent(product.category)}">${escapeHtml(product.category)}</a> &gt; 
+      <span id="breadcrumb-current">${escapeHtml(product.name)}</span>
     `;
   }
 
@@ -1012,7 +1011,26 @@ window.showCartModal = function(msg) {
   // 15. Related / recommended grid (Displays up to 10 T-shirt & merchandise products)
   const relatedGrid = document.getElementById("related-products-grid");
   if (relatedGrid) {
-    const catalog = window.PRODUCTS || (typeof PRODUCTS !== "undefined" ? PRODUCTS : []);
+    let catalog = window.PRODUCTS || (typeof PRODUCTS !== "undefined" ? PRODUCTS : []);
+    if (!catalog || catalog.length === 0) {
+      try {
+        if (window.dbProductsPromise) {
+          await window.dbProductsPromise;
+          catalog = window.PRODUCTS || [];
+        }
+        if (!catalog || catalog.length === 0) {
+          const res = await fetch("/api/products");
+          if (res.ok) {
+            catalog = await res.json();
+            window.PRODUCTS = catalog;
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to fetch related products catalog:", e);
+      }
+    }
+
+    catalog = Array.isArray(catalog) ? catalog : [];
     const tshirts = catalog.filter(p => (p.subCategory === "T-Shirts" || p.category === "Merchandise" || p.category === "Oversized T-Shirts" || p.category === "Hoodies") && p.id !== product.id);
     const sameCategory = catalog.filter(p => p.category === product.category && p.id !== product.id && !tshirts.some(t => t.id === p.id));
     const fallbacks = catalog.filter(p => p.id !== product.id && !tshirts.some(t => t.id === p.id) && !sameCategory.some(o => o.id === p.id));
@@ -1215,16 +1233,22 @@ window.voteReviewHelpful = async function (btn, reviewId) {
 
 // 22. Generates cards for related items section
 function generateProductsGridHTML(list) {
+  if (!Array.isArray(list) || list.length === 0) return "";
   return list.map(prod => {
-    const badgeMarkup = prod.badge ? `<span class="prod-badge badge-custom">${prod.badge}</span>` : "";
-    const inrPrice = prod.category === "Merchandise" || prod.type === "physical" ? 1299 : (prod.price > 100 ? prod.price : Math.round(prod.price * 83));
-    const formattedPrice = prod.price === 0 ? "FREE" : `₹${inrPrice.toLocaleString('en-IN')}`;
+    const badgeMarkup = prod.badge ? `<span class="prod-badge badge-custom">${escapeHtml(prod.badge)}</span>` : "";
+    const priceNum = Number(prod.price) || 0;
+    const inrPrice = prod.category === "Merchandise" || prod.type === "physical" ? 1299 : (priceNum > 100 ? priceNum : Math.round(priceNum * 83));
+    const formattedPrice = priceNum === 0 ? "FREE" : `₹${inrPrice.toLocaleString('en-IN')}`;
+    const ratingNum = typeof prod.rating === 'number' ? prod.rating : (parseFloat(prod.rating) || 4.9);
+    const ratingCount = prod.ratingCount || prod.reviewsCount || 15;
+    const imgSrc = prod.img || prod.image || "assets/SenpaiWorks logo.png";
+    const prodType = prod.type || (prod.category === "Merchandise" ? "physical" : "digital");
 
     return `
-      <div class="product-card ${prod.type}">
-        <div class="prod-img-wrap">
-          <a href="store-detail.html?id=${prod.id}">
-            <img src="${prod.img}" alt="${prod.name}">
+      <div class="product-card ${escapeHtml(prodType)}">
+        <div class="prod-img-wrap img-loaded">
+          <a href="store-detail.html?id=${encodeURIComponent(prod.id)}">
+            <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(prod.name || 'Product')}" class="loaded" loading="lazy" decoding="async" onload="this.classList.add('loaded'); this.parentElement.parentElement.classList.add('img-loaded');" onerror="this.src='assets/SenpaiWorks logo.png'; this.classList.add('loaded');">
           </a>
           <div class="prod-badges-row">
             ${badgeMarkup}
@@ -1232,11 +1256,11 @@ function generateProductsGridHTML(list) {
         </div>
         <div class="prod-body">
           <div class="prod-meta">
-            <span class="prod-rating"><i class="fa-solid fa-star"></i> ${prod.rating.toFixed(1)} (${prod.ratingCount})</span>
+            <span class="prod-rating"><i class="fa-solid fa-star"></i> ${ratingNum.toFixed(1)} (${ratingCount})</span>
             <span class="prod-price">${formattedPrice}</span>
           </div>
-          <h3 class="prod-title"><a href="store-detail.html?id=${prod.id}">${prod.name}</a></h3>
-          <p class="prod-desc">${prod.description}</p>
+          <h3 class="prod-title"><a href="store-detail.html?id=${encodeURIComponent(prod.id)}">${escapeHtml(prod.name || '')}</a></h3>
+          <p class="prod-desc">${escapeHtml(prod.description || prod.desc || '')}</p>
         </div>
       </div>
     `;

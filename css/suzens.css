@@ -22,6 +22,25 @@ body {
   overflow-x: hidden;
 }
 
+/* Custom Scrollbar for Suzens */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sz-pink);
+}
+
 /* ── Reusable Buttons & Badges ───────────────────────────── */
 .sz-btn {
   display: inline-flex;
@@ -199,7 +218,142 @@ body {
   color: #d0d0e0;
   line-height: 1.6;
   max-width: 720px;
-  margin: 0 auto 40px auto;
+  margin: 0 auto 24px auto;
+}
+
+/* Official Instagram Hero Follow Pill */
+.sz-sns-hero-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.sz-ig-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 30px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.sz-ig-pill-btn:hover {
+  background: linear-gradient(135deg, rgba(225, 48, 108, 0.25), rgba(131, 58, 180, 0.25));
+  border-color: #e1306c;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(225, 48, 108, 0.35);
+  color: #ffffff;
+}
+
+.sz-ig-icon {
+  font-size: 1.3rem;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sz-ig-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── IDOL BAND CONCEPT STATS BAR ────────────────────────── */
+.sz-concept-bar-section {
+  padding: 0 24px;
+  max-width: 1240px;
+  margin: -20px auto 40px auto;
+  position: relative;
+  z-index: 3;
+}
+
+.sz-concept-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  background: rgba(18, 18, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.sz-concept-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sz-concept-card:last-child {
+  border-right: none;
+}
+
+.sz-concept-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 42, 117, 0.15), rgba(0, 240, 255, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: var(--sz-cyan);
+  flex-shrink: 0;
+}
+
+.sz-concept-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sz-concept-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--sz-muted);
+  text-transform: uppercase;
+}
+
+.sz-concept-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: var(--sz-font-head);
+}
+
+.sz-concept-link {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ff2a75;
+  text-decoration: none;
+  font-family: var(--sz-font-head);
+  transition: color 0.2s ease;
+}
+
+.sz-concept-link:hover {
+  color: #00f0ff;
 }
 
 /* Event Spotlight Box */
@@ -473,6 +627,25 @@ body {
   font-size: 0.98rem;
 }
 
+.sz-char-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.sz-btn-ig {
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(220, 39, 67, 0.4);
+}
+
+.sz-btn-ig:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(220, 39, 67, 0.6);
+  color: #ffffff !important;
+}
+
 /* ── SECTION 3: UPCOMING ALBUMS ───────────────────────────── */
 .sz-albums-grid {
   display: grid;
@@ -707,6 +880,24 @@ body {
   margin-top: 2px;
 }
 
+.sz-featured-row {
+  background: linear-gradient(90deg, rgba(255, 42, 117, 0.12), rgba(0, 240, 255, 0.06)) !important;
+  border-left: 3px solid var(--sz-pink);
+}
+
+.sz-featured-pill {
+  display: inline-block;
+  background: var(--sz-pink);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  vertical-align: middle;
+  margin-left: 6px;
+  letter-spacing: 0.5px;
+}
+
 .sz-venue-title {
   font-family: var(--sz-font-head);
   font-size: 1.1rem;
@@ -876,6 +1067,14 @@ body {
   .sz-albums-grid {
     grid-template-columns: 1fr;
   }
+
+  .sz-concept-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sz-concept-card:nth-child(2) {
+    border-right: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -902,6 +1101,21 @@ body {
 
   .sz-member-tabs {
     grid-template-columns: 1fr;
+  }
+
+  .sz-concept-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sz-concept-card {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 12px;
+  }
+
+  .sz-concept-card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 
   .sz-tour-table th:nth-child(3),
