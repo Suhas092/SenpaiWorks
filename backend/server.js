@@ -7609,6 +7609,95 @@ app.post('/api/support/contact', async (req, res) => {
   }
 });
 
+// POST /api/feedback/reply - Send admin reply email to user
+app.post('/api/feedback/reply', async (req, res) => {
+  try {
+    const { userName, userEmail, subject, adminReply, category } = req.body;
+
+    // Validation
+    if (!userName || !userEmail || !adminReply) {
+      return res.status(400).json({ error: 'Missing required fields: userName, userEmail, adminReply' });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userEmail)) {
+      return res.status(400).json({ error: 'Invalid email address' });
+    }
+
+    console.log('[Feedback Reply] Sending admin reply to', userEmail);
+
+    // Prepare email
+    const transporter = getMailer();
+    const emailContent = `
+Hello ${userName},
+
+Thank you for submitting your feedback to SenpaiWorks!
+
+Our team has reviewed your submission and here's our official response:
+
+${adminReply}
+
+We appreciate your input and look forward to serving you better!
+
+Best regards,
+SenpaiWorks Team
+Mysuru, Karnataka — 570016, India
+    `.trim();
+
+    const mailOptions = {
+      from: 'senpaiworks.official@gmail.com',
+      to: userEmail,
+      subject: `Re: Your ${category || 'General'} Feedback - SenpaiWorks Admin Reply`,
+      text: emailContent,
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+          <p>Hello <strong>${userName}</strong>,</p>
+          
+          <p>Thank you for submitting your feedback to SenpaiWorks!</p>
+          
+          <p>Our team has reviewed your submission and here's our official response:</p>
+          
+          <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #3b82f6; margin: 20px 0;">
+            <p>${adminReply.replace(/\n/g, '<br>')}</p>
+          </div>
+          
+          <p>We appreciate your input and look forward to serving you better!</p>
+          
+          <p>
+            Best regards,<br>
+            <strong>SenpaiWorks Team</strong><br>
+            Mysuru, Karnataka — 570016, India
+          </p>
+        </div>
+      `
+    };
+
+    // Send email
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.error('[Feedback Reply] Email send failed:', err);
+        return res.status(500).json({ error: 'Failed to send email', details: err.message });
+      }
+      
+      console.log('[Feedback Reply] Email sent successfully:', {
+        to: userEmail,
+        messageId: info.messageId,
+        response: info.response
+      });
+      
+      res.json({
+        success: true,
+        message: `Reply sent successfully to ${userEmail}`,
+        messageId: info.messageId
+      });
+    });
+  } catch (error) {
+    console.error('[Feedback Reply Error]', error);
+    res.status(500).json({ error: 'An unexpected error occurred. Please try again.' });
+  }
+});
+
 // Catch-All 404 Fallback Handler for any unknown URL (e.g. /whatever, /xyz, /admin)
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../404.html'));

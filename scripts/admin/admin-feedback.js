@@ -421,10 +421,10 @@ async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category)
   
   try {
     const payload = {
-      name: userName,
-      email: userEmail,
-      subject: `Re: Your ${category || 'General'} Feedback - SenpaiWorks Admin Reply`,
-      message: `Hello ${userName},\n\nThank you for submitting your feedback to SenpaiWorks!\n\nOur team has reviewed your submission and here's our official response:\n\n${adminReply}\n\nBest regards,\nSenpaiWorks Team`
+      userName: userName,
+      userEmail: userEmail,
+      category: category || 'General',
+      adminReply: adminReply
     };
     
     console.log('[Feedback] Email payload:', payload);
@@ -436,9 +436,9 @@ async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category)
       headers['Authorization'] = `Bearer ${token}`;
     }
     
-    console.log('[Feedback] Sending to /api/support/contact');
+    console.log('[Feedback] Sending to /api/feedback/reply');
     
-    const response = await fetch('/api/support/contact', {
+    const response = await fetch('/api/feedback/reply', {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(payload)
@@ -447,12 +447,14 @@ async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category)
     console.log('[Feedback] Response status:', response.status);
     
     if (response.ok) {
+      const result = await response.json();
       console.log('[Feedback] Admin reply email sent successfully to', userEmail);
-      window.showAdminToast(`Email sent to ${userEmail}`, "success");
+      console.log('[Feedback] Message ID:', result.messageId);
+      window.showAdminToast(`✅ Email sent to ${userEmail}`, "success");
     } else {
-      const errorText = await response.text();
-      console.warn('[Feedback] Email API error:', response.status, errorText);
-      window.showAdminToast(`Email failed: ${response.status}`, "warning");
+      const errorData = await response.json();
+      console.warn('[Feedback] Email API error:', response.status, errorData);
+      window.showAdminToast(`Email failed: ${errorData.error}`, "warning");
     }
   } catch (err) {
     console.error('[Feedback] Email send exception:', err);
