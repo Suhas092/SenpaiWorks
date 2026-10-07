@@ -387,7 +387,7 @@ function initHeaderInteractions() {
     }
 
     promptEl.innerHTML = `
-      <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-radius: 16px;">
+      <div onclick="if(event.target === this) window.dismissCartWaitingPrompt()" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div style="background: #ffffff; color: #0f172a; padding: 24px; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); max-width: 440px; width: 100%; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 14px; font-family: 'Plus Jakarta Sans', sans-serif; text-align: left;">
           <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
             <div style="font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; color: #0f172a;">

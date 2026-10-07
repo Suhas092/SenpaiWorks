@@ -1,110 +1,274 @@
 // ============================================================
-//  SenpaiWorks — Suzens Virtual K-Pop Band Showcase Script
+//  SenpaiWorks — Suzens Virtual Idol Band Interactive Script
+//  High-Octane Dynamic K-Pop Visual Showcase & Stage Loops
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ── Virtual Member Character Dossier Data ───────────────────
+  // ── 1. Hero & Concert Video Controllers ──────────────────────
+  const heroVideo = document.getElementById("sz-hero-bg-video");
+  const concertVideo = document.getElementById("sz-concert-video");
+  const audioToggleBtn = document.getElementById("sz-audio-toggle");
+  const audioIcon = document.getElementById("sz-audio-icon");
+  const audioText = document.getElementById("sz-audio-text");
+
+  // Ensure hero video plays continuously
+  if (heroVideo) {
+    heroVideo.play().catch(() => {
+      // Autoplay fallback with user interaction
+      document.body.addEventListener("click", () => heroVideo.play(), { once: true });
+    });
+  }
+
+  // Concert Video: Start at 10 seconds and loop seamlessly between 10s and 23s
+  if (concertVideo) {
+    const LOOP_START_SEC = 10.0;
+    const LOOP_END_SEC = 22.8;
+
+    const initConcertVideo = () => {
+      try {
+        concertVideo.currentTime = LOOP_START_SEC;
+        concertVideo.play().catch(() => {});
+      } catch (e) {}
+    };
+
+    concertVideo.addEventListener("loadedmetadata", initConcertVideo);
+    initConcertVideo();
+
+    concertVideo.addEventListener("timeupdate", () => {
+      if (concertVideo.currentTime >= LOOP_END_SEC || concertVideo.currentTime < LOOP_START_SEC - 0.5) {
+        concertVideo.currentTime = LOOP_START_SEC;
+        concertVideo.play().catch(() => {});
+      }
+    });
+
+    concertVideo.addEventListener("ended", () => {
+      concertVideo.currentTime = LOOP_START_SEC;
+      concertVideo.play().catch(() => {});
+    });
+
+    // Audio Toggle for Concert Arena Sound
+    if (audioToggleBtn) {
+      audioToggleBtn.addEventListener("click", () => {
+        concertVideo.muted = !concertVideo.muted;
+        if (concertVideo.muted) {
+          audioIcon.className = "fa-solid fa-volume-xmark";
+          audioText.textContent = "Unmute Crowd Audio";
+        } else {
+          audioIcon.className = "fa-solid fa-volume-high";
+          audioText.textContent = "Mute Stage Audio";
+          concertVideo.play().catch(() => {});
+        }
+      });
+    }
+  }
+
+  // ── 2. Member Character Dossiers & Stage Data ────────────────
   const memberData = {
     suzana: {
       name: "SUZANA",
+      num: "01",
       roleBadge: "LEADER · MAIN VOCALIST · THE ELECTRIC SPARK",
       title: '"The Radiant Center"',
       img: "assets/suzana all out.png",
-      birthday: "Leader & Main Vocal ⚡",
-      desc: "Charismatic, fiery, and possessing explosive vocal range, Suzana is the leader and heart of Suzens. She commands the virtual stage with unapologetic energy, crafting anthemic melodies that bridge the boundary between code and raw emotion.",
-      instrument: "Custom Cyber Stratocaster & High-Octane Vocals",
-      vocal: "Dynamic Belting Pop & High-Speed Cyber-Rock",
-      color: '<i class="fa-solid fa-circle" style="color: #ff2a75;"></i> Neon Crimson (#FF2A75)',
-      quote: '"We are breaking the boundary between virtual code and real human emotion!"'
+      desc: "Charismatic, fierce, and possessing an explosive vocal range. Suzana commands the virtual stage with unapologetic energy, crafting anthemic melodies that connect code to raw human emotion.",
+      gear: "Custom Cyber Stratocaster",
+      gearIcon: "fa-guitar",
+      color: "#ff2a75",
+      vocalPercent: "98%",
+      syncPercent: "95%",
+      powerPercent: "96%"
     },
     tiara: {
       name: "TIARA",
+      num: "02",
       roleBadge: "LEAD SYNTH & GUITAR · SOUND ARCHITECT · PRODIGY",
       title: '"The Holographic Melody Maker"',
       img: "assets/tiara all out.png",
-      birthday: "Lead Guitar & Synth 💎",
-      desc: "A prodigy sound designer and lead guitarist in the virtual sphere, Tiara infuses high-speed neo-classical guitar riffs with neon cyber-pop textures, giving Suzens their futuristic signature sonic identity.",
-      instrument: "Custom 7-String Cyber Axe & Synthesizer Keyblade",
-      vocal: "Harmonic Cyber-Vox & Vocal Processing",
-      color: '<i class="fa-solid fa-circle" style="color: #00f0ff;"></i> Cyan Electric (#00F0FF)',
-      quote: '"Every chord is calculated to resonate directly inside your soul."'
+      desc: "A prodigy sound designer in the virtual sphere, Tiara infuses high-speed neo-classical guitar riffs with neon cyber-pop textures, defining Suzens' futuristic signature sonic core.",
+      gear: "7-String Cyber Axe & Keyblade Synth",
+      gearIcon: "fa-bolt",
+      color: "#00f0ff",
+      vocalPercent: "88%",
+      syncPercent: "99%",
+      powerPercent: "94%"
     },
     remi: {
       name: "REMI",
+      num: "03",
       roleBadge: "BEATMASTER · DRUMS & BASS · MOOD MAKER",
       title: '"The Kinetic Rhythm Demon"',
       img: "assets/remi all out.png",
-      birthday: "Beatmaster & Drums 🥁",
-      desc: "Explosive, hyper, and full of chaotic charisma, Remi is the powerhouse heartbeat of Suzens. Her crushing acoustic-digital hybrid drum patterns and 808s drive the adrenaline of every beat drop.",
-      instrument: "Roland Cyber-V Kinetic Drum Pads Rig",
-      vocal: "Rhythmic Hype & Screaming Backing Vocals",
-      color: '<i class="fa-solid fa-circle" style="color: #9d4edd;"></i> Neon Violet (#9D4EDD)',
-      quote: '"When my beat drops, even virtual reality trembles!"'
+      desc: "Explosive, hyper, and full of chaotic charisma, Remi is the powerhouse heartbeat of Suzens. Her crushing acoustic-digital drum patterns and 808s drive the adrenaline of every live drop.",
+      gear: "Cyber-V Kinetic Drum Pads Rig",
+      gearIcon: "fa-drum",
+      color: "#9d4edd",
+      vocalPercent: "84%",
+      syncPercent: "92%",
+      powerPercent: "99%"
     },
     ayana: {
       name: "AYANA",
+      num: "04",
       roleBadge: "VISUAL CENTER · BASSIST · SUB-VOCAL & RAP",
       title: '"The Cyber Siren"',
       img: "assets/ayana all out.png",
-      birthday: "Visual Center & Bass 🌙",
-      desc: "Ethereal, mysterious, and effortlessly captivating, Ayana anchors the low frequencies with deep pulsating sub-basslines while delivering sharp rap verses as the visual centerpiece of Suzens.",
-      instrument: "Active 4-String Sub-Harmonic Cyber Bass",
-      vocal: "Sub-Vocal Harmony & Fast Cyber Rap Delivery",
-      color: '<i class="fa-solid fa-circle" style="color: #ffaa00;"></i> Amber Gold (#FFAA00)',
-      quote: '"Under the neon lights, our rhythm comes alive in the shadows."'
+      desc: "Ethereal, mysterious, and effortlessly magnetic, Ayana anchors the low frequencies with deep pulsating sub-basslines while delivering sharp rap verses as the visual centerpiece.",
+      gear: "Sub-Harmonic 4-String Bass",
+      gearIcon: "fa-moon",
+      color: "#ffaa00",
+      vocalPercent: "91%",
+      syncPercent: "97%",
+      powerPercent: "90%"
     }
   };
 
-  // ── Member Tab Switcher Logic ──────────────────────────────
-  const tabBtns = document.querySelectorAll(".sz-tab-btn");
-  const charImg = document.getElementById("sz-char-img");
-  const charRoleBadge = document.getElementById("sz-char-role-badge");
-  const charName = document.getElementById("sz-char-name");
-  const charTitle = document.getElementById("sz-char-title");
-  const charDesc = document.getElementById("sz-char-desc");
-  const charBirthday = document.getElementById("sz-char-birthday");
-  const charInstrument = document.getElementById("sz-char-instrument");
-  const charVocal = document.getElementById("sz-char-vocal");
-  const charColor = document.getElementById("sz-char-color");
-  const charQuote = document.getElementById("sz-char-quote");
+  const memberKeys = ["suzana", "tiara", "remi", "ayana"];
+  let currentMemberIdx = 0;
+  let autoCycleInterval = null;
+  let isAutoCycling = true;
 
-  tabBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const memberKey = btn.getAttribute("data-member");
-      const data = memberData[memberKey];
-      if (!data) return;
+  // DOM Elements for Spotlight Stage
+  const spotlightContainer = document.getElementById("sz-stage-spotlight");
+  const spotlightImg = document.getElementById("sz-spotlight-img");
+  const spotlightBadge = document.getElementById("sz-spotlight-badge");
+  const spotlightName = document.getElementById("sz-spotlight-name");
+  const spotlightTitle = document.getElementById("sz-spotlight-title");
+  const spotlightDesc = document.getElementById("sz-spotlight-desc");
+  const spotlightGear = document.getElementById("sz-gear-text");
+  const spotlightGearIcon = document.querySelector("#sz-gear-pill i");
+  const gaugeVocal = document.getElementById("gauge-vocal");
+  const fillVocal = document.getElementById("fill-vocal");
+  const gaugeSync = document.getElementById("gauge-sync");
+  const fillSync = document.getElementById("fill-sync");
+  const gaugePower = document.getElementById("gauge-power");
+  const fillPower = document.getElementById("fill-power");
+  const pods = document.querySelectorAll(".sz-member-pod");
+  const autoToggle = document.getElementById("sz-autoplay-toggle");
 
-      // Active tab styling
-      tabBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+  function switchMember(key, isManual = false) {
+    const data = memberData[key];
+    if (!data) return;
 
-      // Smooth fade transition
-      if (charImg) {
-        charImg.style.opacity = "0";
-        charImg.style.transform = "scale(0.95)";
+    currentMemberIdx = memberKeys.indexOf(key);
+
+    // Active class on pods
+    pods.forEach((p) => {
+      if (p.getAttribute("data-member") === key) {
+        p.classList.add("active");
+      } else {
+        p.classList.remove("active");
       }
+    });
+
+    // Spotlight image animation
+    if (spotlightImg) {
+      spotlightImg.style.opacity = "0";
+      spotlightImg.style.transform = "scale(0.92) translateY(10px)";
 
       setTimeout(() => {
-        if (charImg) {
-          charImg.src = data.img;
-          charImg.alt = `${data.name} Full Character Photo`;
-          charImg.style.opacity = "1";
-          charImg.style.transform = "scale(1)";
-        }
-        if (charRoleBadge) charRoleBadge.textContent = data.roleBadge;
-        if (charName) charName.textContent = data.name;
-        if (charTitle) charTitle.textContent = data.title;
-        if (charDesc) charDesc.textContent = data.desc;
-        if (charBirthday) charBirthday.textContent = data.birthday;
-        if (charInstrument) charInstrument.textContent = data.instrument;
-        if (charVocal) charVocal.textContent = data.vocal;
-        if (charColor) charColor.innerHTML = data.color;
-        if (charQuote) charQuote.textContent = data.quote;
+        spotlightImg.src = data.img;
+        spotlightImg.alt = `${data.name} 3D Virtual Idol`;
+        spotlightImg.style.opacity = "1";
+        spotlightImg.style.transform = "scale(1) translateY(0)";
       }, 200);
+    }
+
+    // Update text and gauges
+    if (spotlightBadge) {
+      spotlightBadge.textContent = data.roleBadge;
+      spotlightBadge.style.color = data.color;
+      spotlightBadge.style.borderColor = data.color;
+    }
+    if (spotlightName) spotlightName.textContent = data.name;
+    if (spotlightTitle) {
+      spotlightTitle.textContent = data.title;
+      spotlightTitle.style.color = data.color;
+    }
+    if (spotlightDesc) spotlightDesc.textContent = data.desc;
+    if (spotlightGear) spotlightGear.textContent = data.gear;
+    if (spotlightGearIcon) spotlightGearIcon.className = `fa-solid ${data.gearIcon}`;
+
+    // Update Gauges
+    if (gaugeVocal && fillVocal) {
+      gaugeVocal.textContent = data.vocalPercent;
+      fillVocal.style.width = data.vocalPercent;
+    }
+    if (gaugeSync && fillSync) {
+      gaugeSync.textContent = data.syncPercent;
+      fillSync.style.width = data.syncPercent;
+    }
+    if (gaugePower && fillPower) {
+      gaugePower.textContent = data.powerPercent;
+      fillPower.style.width = data.powerPercent;
+    }
+
+    // Dynamic accent glow around spotlight
+    if (spotlightContainer) {
+      spotlightContainer.style.boxShadow = `0 24px 60px rgba(0,0,0,0.5), 0 0 40px ${data.color}25`;
+    }
+
+    // If clicked manually, pause cycle briefly
+    if (isManual && isAutoCycling) {
+      resetAutoCycle();
+    }
+  }
+
+  // Pod click listener
+  pods.forEach((pod) => {
+    pod.addEventListener("click", () => {
+      const key = pod.getAttribute("data-member");
+      switchMember(key, true);
     });
   });
 
-  // ── Debut Teaser Countdown Timer (Targeting Next Teaser Drop) ─
+  // Auto-Cycle Rotator Logic
+  function startAutoCycle() {
+    autoCycleInterval = setInterval(() => {
+      currentMemberIdx = (currentMemberIdx + 1) % memberKeys.length;
+      switchMember(memberKeys[currentMemberIdx], false);
+    }, 4500);
+  }
+
+  function resetAutoCycle() {
+    if (autoCycleInterval) clearInterval(autoCycleInterval);
+    if (isAutoCycling) startAutoCycle();
+  }
+
+  if (autoToggle) {
+    autoToggle.addEventListener("click", () => {
+      isAutoCycling = !isAutoCycling;
+      if (isAutoCycling) {
+        autoToggle.innerHTML = '<i class="fa-solid fa-play"></i> Auto Cycle';
+        autoToggle.style.color = "#00f0ff";
+        startAutoCycle();
+      } else {
+        autoToggle.innerHTML = '<i class="fa-solid fa-pause"></i> Paused';
+        autoToggle.style.color = "#9898ad";
+        if (autoCycleInterval) clearInterval(autoCycleInterval);
+      }
+    });
+  }
+
+  // Start initial cycle
+  startAutoCycle();
+
+  // Interactive 3D Perspective Tilt on Mouse Movement for Spotlight Card
+  if (spotlightContainer && window.innerWidth > 992) {
+    spotlightContainer.addEventListener("mousemove", (e) => {
+      const rect = spotlightContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const tiltX = (y / rect.height) * -8;
+      const tiltY = (x / rect.width) * 8;
+      spotlightContainer.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+    });
+
+    spotlightContainer.addEventListener("mouseleave", () => {
+      spotlightContainer.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
+    });
+  }
+
+  // ── 3. Debut Teaser Countdown Timer ──────────────────────────
   function getNextTeaserDropTimestamp() {
     const now = new Date();
     let targetYear = now.getFullYear();
@@ -149,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateCountdown, 1000);
   updateCountdown();
 
-  // ── Audio Player Play/Pause Simulator Toggle ────────────────
+  // ── 4. Audio Stem Player Simulator ───────────────────────────
   const playBtns = document.querySelectorAll(".sz-play-btn");
   playBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -162,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── Fan Modal Handlers ──────────────────────────────────────
+  // ── 5. Fan Pass Modal Handlers ───────────────────────────────
   const fanModal = document.getElementById("sz-fan-modal");
   const modalClose = document.getElementById("sz-modal-close");
   const fanForm = document.getElementById("sz-fan-form");
@@ -188,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (fanForm) {
     fanForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      alert("Welcome to the Suzenites Fan Club! You'll receive exclusive teaser updates and early audio drops.");
+      alert("Welcome to the Suzenites Fan Club! Your VIP Pre-Debut pass is active.");
       if (fanModal) fanModal.style.display = "none";
       fanForm.reset();
     });
