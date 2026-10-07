@@ -2956,7 +2956,24 @@ app.get('/api/products', async (req, res) => {
     const products = await prisma.product.findMany({
       orderBy: { createdAt: 'desc' }
     });
-    res.json(products);
+
+    // Add real review counts instead of hardcoded ratingCount
+    const productsWithCounts = await Promise.all(
+      products.map(async (p) => {
+        const reviewCount = await prisma.review.count({
+          where: {
+            productId: p.id,
+            status: 'Published'
+          }
+        });
+        return {
+          ...p,
+          ratingCount: reviewCount
+        };
+      })
+    );
+
+    res.json(productsWithCounts);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ error: 'Failed to fetch products' });
@@ -2982,7 +2999,19 @@ app.get('/api/products/:id', async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
     }
-    res.json(product);
+
+    // Count actual published reviews instead of using hardcoded ratingCount
+    const reviewCount = await prisma.review.count({
+      where: {
+        productId: product.id,
+        status: 'Published'
+      }
+    });
+
+    res.json({
+      ...product,
+      ratingCount: reviewCount
+    });
   } catch (error) {
     console.error('Error fetching product by ID:', error);
     res.status(500).json({ error: 'Failed to fetch product' });
@@ -2995,7 +3024,7 @@ app.post('/api/products', requireAdminToken, async (req, res) => {
     additionalImages, badge, software, format, isNew, type, creator,
     whatsIncluded, aboutItem, sizes, colors, material, fabricType,
     printingMethod, washingInstructions, shippingWeight, packageDimensions,
-    available, stockQuantity, variantsData, featureHighlights
+    available, stockQuantity, variantsData, featureHighlights, downloadUrl
   } = req.body;
 
   if (!id || !name || !category || price === undefined || !description || !img) {
@@ -3016,6 +3045,7 @@ app.post('/api/products', requireAdminToken, async (req, res) => {
         category,
         subCategory: subCategory || '',
         price: parseFloat(price),
+        originalPrice: originalPrice ? parseFloat(originalPrice) : null,
         description,
         img,
         additionalImages: typeof additionalImages === 'object' ? JSON.stringify(additionalImages) : (additionalImages || ''),
@@ -3054,6 +3084,7 @@ app.put('/api/products/:id', requireAdminToken, async (req, res) => {
   delete updateData.id;
 
   if (updateData.price !== undefined) updateData.price = parseFloat(updateData.price);
+  if (updateData.originalPrice !== undefined) updateData.originalPrice = parseFloat(updateData.originalPrice);
   if (updateData.stockQuantity !== undefined) updateData.stockQuantity = parseInt(updateData.stockQuantity);
   if (updateData.available !== undefined) updateData.available = Boolean(updateData.available);
   if (updateData.isNew !== undefined) updateData.isNew = Boolean(updateData.isNew);
@@ -6644,19 +6675,30 @@ async function computeMerchSpotlightData() {
     });
   }
 
-  // 3. Score calculation: Rating * log10(ratingCount + 2)
-  // Ties: CreatedAt DESC (newest first), then Name ASC
-  const scoredProducts = physicalProds.map(p => {
-    const rating = typeof p.rating === 'number' ? p.rating : parseFloat(p.rating) || 5.0;
-    const ratingCount = typeof p.ratingCount === 'number' ? p.ratingCount : parseInt(p.ratingCount, 10) || 0;
-    const score = ratingCount > 0 ? rating * Math.log10(ratingCount + 2) : 0;
+  // 3. Calculate REAL review counts and average ratings from Review table
+  const scoredProducts = await Promise.all(physicalProds.map(async (p) => {
+    // Get actual reviews from database (Published reviews only)
+    const reviews = await prisma.review.findMany({
+      where: { productId: p.id, status: 'Published' }
+    });
+
+    const realReviewCount = reviews.length;
+    // Calculate average rating from actual reviews, or fall back to hardcoded rating
+    const realAverageRating = realReviewCount > 0 
+      ? reviews.reduce((sum, r) => sum + r.rating, 0) / realReviewCount
+      : (typeof p.rating === 'number' ? p.rating : parseFloat(p.rating) || 5.0);
+
+    // Score calculation: Rating * log10(reviewCount + 2)
+    // MINIMUM THRESHOLD: Product must have at least 1 real review to be eligible for spotlight
+    const score = realReviewCount >= 1 ? realAverageRating * Math.log10(realReviewCount + 2) : -1;
+
     return {
       ...p,
-      computedRating: rating,
-      computedRatingCount: ratingCount,
+      computedRating: Number(realAverageRating.toFixed(2)),
+      computedRatingCount: realReviewCount,
       popularityScore: Number(score.toFixed(4))
     };
-  });
+  }));
 
   scoredProducts.sort((a, b) => {
     if (Math.abs(b.popularityScore - a.popularityScore) > 0.0001) {
@@ -6682,9 +6724,13 @@ async function computeMerchSpotlightData() {
     }
   }
 
+  // Only allow products with at least 1 review as spotlight (unless admin overrides)
   if (!spotlightProduct && scoredProducts.length > 0) {
-    spotlightProduct = scoredProducts[0];
-    isOverrideActive = false;
+    const eligibleProducts = scoredProducts.filter(p => p.computedRatingCount >= 1);
+    if (eligibleProducts.length > 0) {
+      spotlightProduct = eligibleProducts[0];
+      isOverrideActive = false;
+    }
   }
 
   // 5. Resolve 6 Grid items (strictly excluding spotlight winner)
@@ -6764,7 +6810,7 @@ app.get('/api/homepage/merch-spotlight', async (req, res) => {
     const data = await computeMerchSpotlightData();
     merchSpotlightCache = {
       data,
-      expiresAt: now + 60000
+      expiresAt: now + 20000  // Cache for 20 seconds (reduced from 60s for more real-time updates)
     };
     res.json(data);
   } catch (error) {
@@ -7946,6 +7992,137 @@ async function seedInitialStoreProducts() {
     console.error('Error seeding store products:', err);
   }
 }
+
+// ========================================
+// REAL-TIME DASHBOARD METRICS ENDPOINT
+// ========================================
+app.get('/api/admin/metrics', requireAdminToken, async (req, res) => {
+  try {
+    // 1. Total Artworks
+    const totalArtworks = await prisma.artwork.count();
+
+    // 2. Total Store Products
+    const totalProducts = await prisma.storeProduct.count();
+
+    // 3. Total Sales Revenue (sum all completed orders)
+    const revenueData = await prisma.order.aggregate({
+      where: {
+        status: { in: ['completed', 'shipped', 'delivered'] }
+      },
+      _sum: {
+        grandTotal: true
+      }
+    });
+    const totalRevenue = revenueData._sum.grandTotal || 0;
+
+    // 4. Monthly Page Views (from analytics if available, otherwise 0)
+    // For now, we'll fetch from a hypothetical analytics table or return 0
+    let monthlyViews = 0;
+    try {
+      const analyticsData = await prisma.pageView.aggregate({
+        where: {
+          createdAt: {
+            gte: new Date(new Date().setDate(new Date().getDate() - 30))
+          }
+        },
+        _count: true
+      });
+      monthlyViews = analyticsData._count || 0;
+    } catch (e) {
+      // Table may not exist, default to 0
+      monthlyViews = 0;
+    }
+
+    // 5. Calculate trends (compare with 7 days ago)
+    const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7));
+    
+    const artworksSevenDaysAgo = await prisma.artwork.count({
+      where: { createdAt: { lt: sevenDaysAgo } }
+    });
+    const artworksTrend = totalArtworks > artworksSevenDaysAgo 
+      ? Math.round(((totalArtworks - artworksSevenDaysAgo) / (artworksSevenDaysAgo || 1)) * 100)
+      : 0;
+
+    const productsSevenDaysAgo = await prisma.storeProduct.count({
+      where: { createdAt: { lt: sevenDaysAgo } }
+    });
+    const productsTrend = totalProducts > productsSevenDaysAgo
+      ? Math.round(((totalProducts - productsSevenDaysAgo) / (productsSevenDaysAgo || 1)) * 100)
+      : 0;
+
+    const revenueSevenDaysAgo = await prisma.order.aggregate({
+      where: {
+        status: { in: ['completed', 'shipped', 'delivered'] },
+        createdAt: { lt: sevenDaysAgo }
+      },
+      _sum: { grandTotal: true }
+    });
+    const revenueTrend = totalRevenue > (revenueSevenDaysAgo._sum.grandTotal || 0)
+      ? Math.round(((totalRevenue - (revenueSevenDaysAgo._sum.grandTotal || 0)) / ((revenueSevenDaysAgo._sum.grandTotal || 1))) * 100)
+      : 0;
+
+    const viewsSevenDaysAgo = await prisma.pageView.count({
+      where: { createdAt: { lt: sevenDaysAgo } }
+    }).catch(() => 0);
+    const viewsTrend = monthlyViews > viewsSevenDaysAgo
+      ? Math.round(((monthlyViews - viewsSevenDaysAgo) / (viewsSevenDaysAgo || 1)) * 100)
+      : 0;
+
+    // 6. Get sales by category (for pie chart)
+    const salesByCategory = await prisma.orderItem.groupBy({
+      by: ['category'],
+      where: {
+        order: {
+          status: { in: ['completed', 'shipped', 'delivered'] }
+        }
+      },
+      _sum: {
+        price: true
+      },
+      _count: true
+    });
+
+    // 7. 7-day revenue trend (for line chart)
+    const sevenDayRevenue = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(new Date().setDate(new Date().getDate() - i));
+      const nextDate = new Date(date.getTime() + 86400000);
+      const dayRevenue = await prisma.order.aggregate({
+        where: {
+          status: { in: ['completed', 'shipped', 'delivered'] },
+          createdAt: {
+            gte: date,
+            lt: nextDate
+          }
+        },
+        _sum: { grandTotal: true }
+      });
+      sevenDayRevenue.push({
+        date: date.toISOString().split('T')[0],
+        revenue: dayRevenue._sum.grandTotal || 0
+      });
+    }
+
+    res.json({
+      success: true,
+      metrics: {
+        totalArtworks,
+        artworksTrend,
+        totalProducts,
+        productsTrend,
+        totalRevenue,
+        revenueTrend,
+        monthlyViews,
+        viewsTrend,
+        salesByCategory,
+        sevenDayRevenue
+      }
+    });
+  } catch (err) {
+    console.error('[Metrics API] Error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
