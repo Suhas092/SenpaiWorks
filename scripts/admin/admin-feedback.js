@@ -34,10 +34,10 @@ window.loadCommunityReviews = async function () {
   }
 
   const seedReviews = [
-    { id: "rev-seed-1", author: "ZoroFan42", rating: 5, category: "Order Issue", title: "Incredible print quality!", text: "The green contrast on the Zoro poster is even more vibrant in person. Paper feels very premium.", date: "July 10, 2026", isPublic: true, likes: 24 },
-    { id: "rev-seed-2", author: "RigArtist", rating: 5, category: "3D Character Rig", title: "Perfect blender rig!", text: "Excellent topology and weight painting on the Suzens model.", date: "July 08, 2026", isPublic: true, likes: 15 },
-    { id: "rev-seed-3", author: "BrushesPro", rating: 4, category: "Brushes & Textures", title: "Super clean brushes", text: "Nice digital painting brushes and template guidelines.", date: "July 05, 2026", isPublic: true, likes: 8 },
-    { id: "rev-seed-4", author: "DevSora", rating: 5, category: "General Website", title: "Smooth website UI", text: "The donation page micro-animations are beautiful.", date: "June 29, 2026", isPublic: true, likes: 42 }
+    { id: "rev-seed-1", author: "ZoroFan42", email: "zoro@example.com", rating: 5, category: "Order Issue", title: "Incredible print quality!", text: "The green contrast on the Zoro poster is even more vibrant in person. Paper feels very premium.", date: "July 10, 2026", isPublic: true, likes: 24 },
+    { id: "rev-seed-2", author: "RigArtist", email: "rigartist@example.com", rating: 5, category: "3D Character Rig", title: "Perfect blender rig!", text: "Excellent topology and weight painting on the Suzens model.", date: "July 08, 2026", isPublic: true, likes: 15 },
+    { id: "rev-seed-3", author: "BrushesPro", email: "brushespro@example.com", rating: 4, category: "Brushes & Textures", title: "Super clean brushes", text: "Nice digital painting brushes and template guidelines.", date: "July 05, 2026", isPublic: true, likes: 8 },
+    { id: "rev-seed-4", author: "DevSora", email: "devsora@example.com", rating: 5, category: "General Website", title: "Smooth website UI", text: "The donation page micro-animations are beautiful.", date: "June 29, 2026", isPublic: true, likes: 42 }
   ];
 
   const customReviews = reviewsList.filter(r => r && r.id && !r.id.startsWith("rev-seed-"));
@@ -351,6 +351,7 @@ window.closeFeedbackDetail = function () {
   }
 };
 
+
 window.saveFeedbackDetail = function () {
   const id = document.getElementById("detail-modal-id")?.value;
   if (!id) return;
@@ -361,8 +362,20 @@ window.saveFeedbackDetail = function () {
     if (idx > -1) {
       const oldAdminReply = reviewsList[idx].admin_reply || '';
       const newAdminReply = document.getElementById("detail-modal-admin-reply")?.value || '';
-      const userEmail = reviewsList[idx].email || '';
+      let userEmail = reviewsList[idx].email || '';
       const userName = reviewsList[idx].author || reviewsList[idx].user || 'User';
+      
+      // If email is missing and admin has written a reply, prompt for email
+      if (newAdminReply && newAdminReply !== oldAdminReply && (!userEmail || userEmail === 'N/A')) {
+        const promptEmail = prompt(`Email for ${userName} is missing. Please enter their email to send the reply:`, '');
+        if (promptEmail && promptEmail.trim()) {
+          userEmail = promptEmail.trim();
+          reviewsList[idx].email = userEmail;
+        } else {
+          window.showAdminToast("Email is required to send admin reply. Please update the feedback record with user email.", "warning");
+          return;
+        }
+      }
       
       reviewsList[idx].status = document.getElementById("detail-modal-status")?.value || 'Pending';
       reviewsList[idx].priority = document.getElementById("detail-modal-priority")?.value || 'Low';
@@ -372,12 +385,22 @@ window.saveFeedbackDetail = function () {
       localStorage.setItem("userReviews", JSON.stringify(reviewsList));
       localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
       
+      console.log('[Feedback] Feedback saved:', {
+        id: id,
+        userEmail: userEmail,
+        hasReply: !!newAdminReply,
+        replyChanged: newAdminReply !== oldAdminReply
+      });
+      
       // If admin reply is new (wasn't there before), send email to user
       if (newAdminReply && newAdminReply !== oldAdminReply && userEmail && userEmail !== 'N/A') {
+        console.log('[Feedback] Initiating email send to:', userEmail);
         sendFeedbackReplyEmail(userName, userEmail, newAdminReply, reviewsList[idx].category);
+      } else if (newAdminReply && newAdminReply !== oldAdminReply) {
+        console.warn('[Feedback] Could not send email - missing valid email:', userEmail);
       }
       
-      window.showAdminToast("Feedback updated successfully.", "success");
+      window.showAdminToast("Feedback updated successfully." + (newAdminReply ? " Reply queued for user." : ""), "success");
       
       const modal = document.getElementById("modal-feedback-detail");
       if (modal) {
@@ -387,11 +410,15 @@ window.saveFeedbackDetail = function () {
       
       window.loadCommunityReviews();
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('[Feedback] Error saving feedback:', e);
+  }
 };
 
 // Send admin reply to user via email
 async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category) {
+  console.log('[Feedback] Starting email send:', { userName, userEmail, category });
+  
   try {
     const payload = {
       name: userName,
@@ -400,22 +427,36 @@ async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category)
       message: `Hello ${userName},\n\nThank you for submitting your feedback to SenpaiWorks!\n\nOur team has reviewed your submission and here's our official response:\n\n${adminReply}\n\nBest regards,\nSenpaiWorks Team`
     };
     
+    console.log('[Feedback] Email payload:', payload);
+    
     const token = (typeof getAuthToken === 'function' ? getAuthToken() : (localStorage.getItem('auth_token') || null)) || null;
+    
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    console.log('[Feedback] Sending to /api/support/contact');
     
     const response = await fetch('/api/support/contact', {
       method: 'POST',
-      headers: Object.assign(
-        { 'Content-Type': 'application/json' },
-        token ? { 'Authorization': `Bearer ${token}` } : {}
-      ),
+      headers: headers,
       body: JSON.stringify(payload)
     });
     
+    console.log('[Feedback] Response status:', response.status);
+    
     if (response.ok) {
-      console.log('[Feedback] Admin reply email sent to', userEmail);
+      console.log('[Feedback] Admin reply email sent successfully to', userEmail);
+      window.showAdminToast(`Email sent to ${userEmail}`, "success");
+    } else {
+      const errorText = await response.text();
+      console.warn('[Feedback] Email API error:', response.status, errorText);
+      window.showAdminToast(`Email failed: ${response.status}`, "warning");
     }
   } catch (err) {
-    console.warn('[Feedback] Failed to send admin reply email:', err);
+    console.error('[Feedback] Email send exception:', err);
+    window.showAdminToast(`Email error: ${err.message}`, "error");
   }
 }
 
