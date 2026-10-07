@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Suzens — Virtual K-Pop Anime Idol Band | SenpaiWorks Official Studio</title>
+  <title>Suzens — Virtual Idol Group | SenpaiWorks Official Studio</title>
   <meta name="description"
-    content="Experience Suzens, the flagship 4-member virtual K-pop anime band by SenpaiWorks. Discover 3D virtual idol avatars, dynamic stage choreography teasers, and the road to debut." />
+    content="Experience Suzens, the upcoming 4-member virtual idol group by SenpaiWorks. Discover the starring members, concept visuals, debut single teasers, and production roadmap." />
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="css/header.css?v=11" />
   <link rel="stylesheet" href="css/drawer.css" />
   <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/suzens.css?v=3" />
+  <link rel="stylesheet" href="css/suzens.css?v=4" />
   <link rel="stylesheet" href="css/image-optimize.css" media="screen">
 
   <script src="scripts/image-preload.js"></script>
@@ -46,53 +46,54 @@
 
   <main class="suzens-page-main">
     <!-- ============================================================
-         SECTION 1: TOP SLIDE HERO WITH ROTATED VIDEO BG & COUNTDOWN
+         SECTION 1: TOP SLIDE HERO (TRANSPARENT, ELEGANT K-POP STYLE)
          ============================================================ -->
     <section class="sz-hero-slide-section" id="sz-hero">
-      <!-- Rotated Background Video (Pinterest Pin 866239309576965872, Rotated 90deg to Landscape) -->
+      <!-- Rotated Background Video (Pinterest Pin 866239309576965872) -->
       <div class="sz-hero-video-container">
         <video id="sz-hero-bg-video" autoplay muted loop playsinline preload="auto">
           <source src="assets/Videos/suzens_hero_edit.mp4" type="video/mp4" />
           <source src="https://v1.pinimg.com/videos/iht/720p/88/21/d8/8821d81bf15bde695220b2360fdc2d44.mp4" type="video/mp4" />
         </video>
         <div class="sz-video-vignette-overlay"></div>
-        <div class="sz-video-cyber-grid"></div>
       </div>
 
+      <!-- Top Audio Controls for Hero Slide Video -->
+      <div class="sz-hero-top-controls">
+        <button type="button" class="sz-hero-audio-btn" id="sz-hero-audio-btn" title="Toggle Slide Sound">
+          <i class="fa-solid fa-volume-xmark" id="sz-hero-audio-icon"></i>
+          <span id="sz-hero-audio-text">Unmute Video</span>
+        </button>
+      </div>
+
+      <!-- Hero Center Content: Fully Transparent, Blends Naturally with BG -->
       <div class="sz-hero-content-wrapper">
-        <div class="sz-hero-badge">
-          <span class="sz-pulse-dot"></span>
-          <span>PROJECT : SUZENS · VIRTUAL K-POP IP IN PRODUCTION</span>
+        <div class="sz-hero-pre-title">
+          <span>PROJECT SUZENS</span>
+          <span class="sz-dot-separator"></span>
+          <span>VIRTUAL IDOL GROUP</span>
         </div>
 
         <h1 class="sz-hero-title">
-          SUZENS <span class="sz-gradient-text">VIRTUAL IDOLS</span>
+          SUZENS
         </h1>
 
         <p class="sz-hero-subtitle">
-          SenpaiWorks' flagship 4-member virtual K-pop anime group.
-          Where high-octane 3D CGI anime aesthetics, cyberpunk storytelling, and electric cyber-pop drops converge.
+          SenpaiWorks flagship 4-member virtual group. High-definition 3D aesthetics, cinematic visuals, and modern pop soundscapes.
         </p>
 
-        <!-- Official Instagram SNS Pill -->
+        <!-- Official Instagram Pill -->
         <div class="sz-sns-hero-row">
           <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-ig-pill-btn" title="Follow Suzens on Instagram">
             <i class="fa-brands fa-instagram sz-ig-icon"></i>
-            <span>Official Instagram <strong>@suzensofficial</strong></span>
-            <span class="sz-ig-verified"><i class="fa-solid fa-circle-check"></i> Verified IP</span>
+            <span>Follow <strong>@suzensofficial</strong></span>
+            <span class="sz-ig-verified"><i class="fa-solid fa-circle-check"></i> Official</span>
           </a>
         </div>
 
-        <!-- Integrated Hero Slide Countdown Card (Matches Slide Aesthetic) -->
-        <div class="sz-hero-timer-card">
-          <div class="sz-timer-top-bar">
-            <div class="sz-timer-tag">
-              <i class="fa-solid fa-satellite-dish"></i> OFFICIAL DEBUT TEASER DROP
-            </div>
-            <div class="sz-timer-live-indicator">
-              <span class="live-dot"></span> COUNTDOWN ACTIVE
-            </div>
-          </div>
+        <!-- Fully Transparent Countdown Timer (No Dark Box Blocking Video) -->
+        <div class="sz-hero-timer-transparent">
+          <div class="sz-timer-label">OFFICIAL DEBUT TEASER COUNTDOWN</div>
 
           <div class="sz-countdown-box">
             <div class="sz-cd-unit">
@@ -118,214 +119,187 @@
 
           <div class="sz-timer-actions">
             <button type="button" class="sz-btn sz-btn-primary" onclick="openFanModal()">
-              <i class="fa-solid fa-sparkles"></i> Claim VIP Fan Pass
+              Join Pre-Debut Fan Club
             </button>
             <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-btn sz-btn-outline">
-              <i class="fa-brands fa-instagram"></i> Follow Debut Drops
+              View Teasers
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Slide Bottom Indicator Scroll Hint -->
-      <a href="#sz-stage-section" class="sz-hero-scroll-indicator" aria-label="Scroll to next section">
-        <span>EXPLORE SUZENS STAGE</span>
+      <!-- Slide Bottom Indicator -->
+      <a href="#sz-starring-section" class="sz-hero-scroll-indicator" aria-label="Scroll to Starring Members">
+        <span>STARRING MEMBERS</span>
         <i class="fa-solid fa-chevron-down"></i>
       </a>
     </section>
 
     <!-- ============================================================
-         SECTION 2: DYNAMIC 3D HOLOGRAPHIC IDOL STAGE (FRESH APPROACH)
+         SECTION 2: STARRING MEMBERS (PROMINENT BIG IMAGE + SCALED CARDS)
          ============================================================ -->
-    <section class="sz-section sz-kinetic-stage-section" id="sz-stage-section">
+    <section class="sz-section sz-starring-section" id="sz-starring-section">
       <div class="sz-section-header">
-        <span class="sz-sub-tag"><i class="fa-solid fa-bolt"></i> DYNAMIC VIRTUAL IDOL DECK</span>
-        <h2 class="sz-section-title">THE 4 <span class="sz-gradient-text">VIRTUAL MEMBERS</span></h2>
-        <p class="sz-section-desc">Experience our interactive holographic idol stage. Watch character avatars float dynamically, or click to explore each virtual member's lore and sound role.</p>
+        <span class="sz-sub-tag">THE LINEUP</span>
+        <h2 class="sz-section-title">STARRING MEMBERS</h2>
+        <p class="sz-section-desc">Meet the four virtual idols of Suzens. Select any member to bring them into the center stage spotlight.</p>
       </div>
 
-      <div class="sz-stage-layout">
-        <!-- Left: Interactive Character Spotlight (Dynamic Hologram Projection) -->
-        <div class="sz-stage-spotlight" id="sz-stage-spotlight">
-          <div class="sz-spotlight-holo-ring"></div>
-          <div class="sz-spotlight-scanline"></div>
+      <div class="sz-starring-stage">
+        <!-- Prominent Big Image of Current Starring Member -->
+        <div class="sz-starring-visual-hero">
+          <div class="sz-starring-glow-backdrop"></div>
+          <div class="sz-starring-img-container">
+            <img id="sz-starring-big-img" src="assets/suzana all out.png" alt="Starring Member" />
+          </div>
+          <div class="sz-starring-overlay-tag">
+            <span class="sz-starring-num" id="sz-starring-num">01</span>
+            <span class="sz-starring-name-pill" id="sz-starring-name-pill">SUZANA</span>
+          </div>
+        </div>
 
-          <div class="sz-spotlight-img-wrap">
-            <img id="sz-spotlight-img" src="assets/suzana all out.png" alt="Suzana 3D Virtual Idol" />
+        <!-- Right Side: Details and Scaled Inactive Member Switcher -->
+        <div class="sz-starring-info-panel">
+          <div class="sz-starring-badge" id="sz-starring-role-badge">LEADER · MAIN VOCALIST</div>
+          <h3 class="sz-starring-name" id="sz-starring-name">SUZANA</h3>
+          <p class="sz-starring-title" id="sz-starring-title">"The Radiant Center"</p>
+
+          <p class="sz-starring-desc" id="sz-starring-desc">
+            Charismatic, fierce, and carrying an expansive vocal range. Suzana commands center stage with passion, delivering unforgettable melodies that define the group's sonic heart.
+          </p>
+
+          <div class="sz-starring-specs">
+            <div class="sz-spec-row">
+              <span class="sz-spec-label">Position</span>
+              <span class="sz-spec-val" id="sz-spec-position">Leader / Main Vocal</span>
+            </div>
+            <div class="sz-spec-row">
+              <span class="sz-spec-label">Instrument</span>
+              <span class="sz-spec-val" id="sz-spec-gear">Custom Cyber Stratocaster</span>
+            </div>
+            <div class="sz-spec-row">
+              <span class="sz-spec-label">Vocal Style</span>
+              <span class="sz-spec-val" id="sz-spec-vocal">Power Belting & Melodic Pop</span>
+            </div>
           </div>
 
-          <!-- Live Soundwave Visualizer Bars at Base -->
-          <div class="sz-soundwave-bars" id="sz-soundwave">
-            <span style="--h: 60%"></span>
-            <span style="--h: 90%"></span>
-            <span style="--h: 40%"></span>
-            <span style="--h: 100%"></span>
-            <span style="--h: 75%"></span>
-            <span style="--h: 85%"></span>
-            <span style="--h: 50%"></span>
-            <span style="--h: 95%"></span>
-            <span style="--h: 65%"></span>
-            <span style="--h: 80%"></span>
-          </div>
-
-          <div class="sz-spotlight-info">
-            <div class="sz-spotlight-badge" id="sz-spotlight-badge">LEADER · MAIN VOCALIST · THE ELECTRIC SPARK</div>
-            <h3 class="sz-spotlight-name" id="sz-spotlight-name">SUZANA</h3>
-            <p class="sz-spotlight-title" id="sz-spotlight-title">"The Radiant Center"</p>
-            <p class="sz-spotlight-desc" id="sz-spotlight-desc">
-              Charismatic, fierce, and possessing an explosive vocal range. Suzana commands the virtual stage with unapologetic energy, crafting anthemic melodies that connect code to raw human emotion.
-            </p>
-
-            <!-- Holographic Skill Gauges -->
-            <div class="sz-holo-gauges">
-              <div class="sz-gauge-item">
-                <div class="sz-gauge-head"><span>Vocal Dynamic Range</span><strong id="gauge-vocal">98%</strong></div>
-                <div class="sz-gauge-bar"><div class="sz-gauge-fill" id="fill-vocal" style="width: 98%;"></div></div>
-              </div>
-              <div class="sz-gauge-item">
-                <div class="sz-gauge-head"><span>Virtual Stage Sync</span><strong id="gauge-sync">95%</strong></div>
-                <div class="sz-gauge-bar"><div class="sz-gauge-fill" id="fill-sync" style="width: 95%;"></div></div>
-              </div>
-              <div class="sz-gauge-item">
-                <div class="sz-gauge-head"><span>Cyber Sonic Power</span><strong id="gauge-power">96%</strong></div>
-                <div class="sz-gauge-bar"><div class="sz-gauge-fill" id="fill-power" style="width: 96%;"></div></div>
-              </div>
+          <!-- Scaled Member Cards: Small until their turn comes, smoothly scales up -->
+          <div class="sz-members-selector-group">
+            <div class="sz-selector-header">
+              <span>SELECT MEMBER</span>
+              <button type="button" class="sz-cycle-toggle-btn" id="sz-cycle-toggle-btn">
+                <i class="fa-solid fa-rotate"></i> <span>Auto Cycle</span>
+              </button>
             </div>
 
-            <div class="sz-spotlight-footer">
-              <div class="sz-gear-pill" id="sz-gear-pill">
-                <i class="fa-solid fa-guitar"></i> <span id="sz-gear-text">Custom Cyber Stratocaster</span>
-              </div>
-              <button type="button" class="sz-btn sz-btn-sm sz-btn-primary" onclick="openFanModal()">
-                <i class="fa-solid fa-heart"></i> Support Member
+            <div class="sz-member-thumbs-grid">
+              <!-- Member 1: Suzana -->
+              <button type="button" class="sz-member-thumb-card active" data-member="suzana">
+                <div class="sz-thumb-img-wrap">
+                  <img src="assets/suzana.png" alt="Suzana" />
+                </div>
+                <div class="sz-thumb-text">
+                  <span class="sz-thumb-name">Suzana</span>
+                  <span class="sz-thumb-role">Leader</span>
+                </div>
+              </button>
+
+              <!-- Member 2: Tiara -->
+              <button type="button" class="sz-member-thumb-card" data-member="tiara">
+                <div class="sz-thumb-img-wrap">
+                  <img src="assets/Tiara.png" alt="Tiara" />
+                </div>
+                <div class="sz-thumb-text">
+                  <span class="sz-thumb-name">Tiara</span>
+                  <span class="sz-thumb-role">Lead Guitar</span>
+                </div>
+              </button>
+
+              <!-- Member 3: Remi -->
+              <button type="button" class="sz-member-thumb-card" data-member="remi">
+                <div class="sz-thumb-img-wrap">
+                  <img src="assets/Remi.png" alt="Remi" />
+                </div>
+                <div class="sz-thumb-text">
+                  <span class="sz-thumb-name">Remi</span>
+                  <span class="sz-thumb-role">Beatmaster</span>
+                </div>
+              </button>
+
+              <!-- Member 4: Ayana -->
+              <button type="button" class="sz-member-thumb-card" data-member="ayana">
+                <div class="sz-thumb-img-wrap">
+                  <img src="assets/Ayana.png" alt="Ayana" />
+                </div>
+                <div class="sz-thumb-text">
+                  <span class="sz-thumb-name">Ayana</span>
+                  <span class="sz-thumb-role">Visual / Bass</span>
+                </div>
               </button>
             </div>
           </div>
-        </div>
 
-        <!-- Right: 4 Kinetic Floating Member Pods -->
-        <div class="sz-stage-pods-column">
-          <div class="sz-pods-header">
-            <span>SELECT VIRTUAL IDOL</span>
-            <div class="sz-autoplay-toggle" id="sz-autoplay-toggle" title="Toggle automatic member rotation">
-              <i class="fa-solid fa-play"></i> Auto Cycle
-              <div class="sz-cycle-pie"><span id="sz-cycle-fill"></span></div>
-            </div>
+          <div class="sz-starring-actions">
+            <button type="button" class="sz-btn sz-btn-primary" onclick="openFanModal()">
+              Support Member
+            </button>
+            <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-btn sz-btn-outline">
+              Follow on Instagram
+            </a>
           </div>
-
-          <!-- Pod 1: Suzana -->
-          <div class="sz-member-pod active" data-member="suzana" style="--pod-color: #ff2a75;">
-            <div class="sz-pod-avatar">
-              <img src="assets/suzana.png" alt="Suzana" />
-            </div>
-            <div class="sz-pod-details">
-              <span class="sz-pod-num">01</span>
-              <h4 class="sz-pod-name">SUZANA</h4>
-              <p class="sz-pod-role">Leader · Main Vocal</p>
-            </div>
-            <div class="sz-pod-spark"><i class="fa-solid fa-bolt"></i></div>
-          </div>
-
-          <!-- Pod 2: Tiara -->
-          <div class="sz-member-pod" data-member="tiara" style="--pod-color: #00f0ff;">
-            <div class="sz-pod-avatar">
-              <img src="assets/Tiara.png" alt="Tiara" />
-            </div>
-            <div class="sz-pod-details">
-              <span class="sz-pod-num">02</span>
-              <h4 class="sz-pod-name">TIARA</h4>
-              <p class="sz-pod-role">Lead Guitar & Synth</p>
-            </div>
-            <div class="sz-pod-spark"><i class="fa-solid fa-gem"></i></div>
-          </div>
-
-          <!-- Pod 3: Remi -->
-          <div class="sz-member-pod" data-member="remi" style="--pod-color: #9d4edd;">
-            <div class="sz-pod-avatar">
-              <img src="assets/Remi.png" alt="Remi" />
-            </div>
-            <div class="sz-pod-details">
-              <span class="sz-pod-num">03</span>
-              <h4 class="sz-pod-name">REMI</h4>
-              <p class="sz-pod-role">Beatmaster · Drums</p>
-            </div>
-            <div class="sz-pod-spark"><i class="fa-solid fa-drum"></i></div>
-          </div>
-
-          <!-- Pod 4: Ayana -->
-          <div class="sz-member-pod" data-member="ayana" style="--pod-color: #ffaa00;">
-            <div class="sz-pod-avatar">
-              <img src="assets/Ayana.png" alt="Ayana" />
-            </div>
-            <div class="sz-pod-details">
-              <span class="sz-pod-num">04</span>
-              <h4 class="sz-pod-name">AYANA</h4>
-              <p class="sz-pod-role">Visual Center · Bass & Rap</p>
-            </div>
-            <div class="sz-pod-spark"><i class="fa-solid fa-moon"></i></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kinetic Holographic Marquee Ticker -->
-      <div class="sz-kinetic-ticker-wrap">
-        <div class="sz-kinetic-ticker-track">
-          <span>SUZENS ✦ SUZANA ⚡ TIARA 💎 REMI 🥁 AYANA 🌙 VIRTUAL K-POP IDOLS ✦ SENPAIWORKS ORIGINAL IP ✦ DEBUT TEASER COMING SOON ✦ SUZENITES FANDOM ✦ </span>
-          <span>SUZENS ✦ SUZANA ⚡ TIARA 💎 REMI 🥁 AYANA 🌙 VIRTUAL K-POP IDOLS ✦ SENPAIWORKS ORIGINAL IP ✦ DEBUT TEASER COMING SOON ✦ SUZENITES FANDOM ✦ </span>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-         SECTION 3: CONCERT STAGE SHOWCASE (ROTATED VIDEO 2 + 10S LOOP)
+         SECTION 3: FULL-BLEED LIVE CONCERT BACKGROUND SLIDE (ROTATED VIDEO 2)
          ============================================================ -->
-    <section class="sz-section sz-concert-showcase-section" id="sz-concert">
-      <div class="sz-section-header">
-        <span class="sz-sub-tag"><i class="fa-solid fa-record-vinyl"></i> STAGE PERFORMANCE TEST</span>
-        <h2 class="sz-section-title">HOLOGRAPHIC <span class="sz-gradient-text">LIVE STAGE EXPERIENCE</span></h2>
-        <p class="sz-section-desc">A live stage benchmark preview of how Suzens' 3D holographic virtual performances command the stadium arena floor.</p>
+    <section class="sz-concert-slide-section" id="sz-concert">
+      <!-- Full-bleed background video container (Rotated -90deg, 10s Loop) -->
+      <div class="sz-concert-bg-video-wrap">
+        <video id="sz-concert-video" autoplay muted playsinline preload="auto">
+          <source src="assets/Videos/suzens_stage_concert.mp4" type="video/mp4" />
+          <source src="https://v1.pinimg.com/videos/mc/720p/3d/13/a9/3d13a965c3e55fb9f4142e2f8de26d94.mp4" type="video/mp4" />
+        </video>
+        <div class="sz-concert-slide-overlay"></div>
       </div>
 
-      <div class="sz-concert-stage-wrapper">
-        <!-- Rotated Stage Video (Pinterest Pin 800866746242485783, Rotated 90deg, Looped from 10s) -->
-        <div class="sz-concert-video-viewport">
-          <video id="sz-concert-video" autoplay muted playsinline preload="auto">
-            <source src="assets/Videos/suzens_stage_concert.mp4" type="video/mp4" />
-            <source src="https://v1.pinimg.com/videos/mc/720p/3d/13/a9/3d13a965c3e55fb9f4142e2f8de26d94.mp4" type="video/mp4" />
-          </video>
-          <div class="sz-concert-stage-tint"></div>
-          <div class="sz-concert-scan-lines"></div>
+      <!-- Minimalist Luxury Concert Slide Content -->
+      <div class="sz-concert-slide-content">
+        <div class="sz-concert-slide-pill">
+          <span class="sz-live-dot"></span>
+          <span>STAGE PERFORMANCE CONCEPT</span>
+        </div>
 
-          <!-- Live Arena Concert Telemetry UI Overlays -->
-          <div class="sz-concert-hud-top">
-            <div class="sz-hud-tag"><i class="fa-solid fa-satellite"></i> LIVE SIMULATION STREAM</div>
-            <div class="sz-hud-meta">
-              <span class="sz-live-glow-dot"></span>
-              <span>STAGE BENCHMARK · 3D HOLOGRAPHIC ARENA</span>
-            </div>
-            <button type="button" class="sz-audio-toggle-btn" id="sz-audio-toggle" title="Toggle Stage Audio">
-              <i class="fa-solid fa-volume-xmark" id="sz-audio-icon"></i>
-              <span id="sz-audio-text">Unmute Crowd Audio</span>
-            </button>
+        <h2 class="sz-concert-slide-title">
+          HOLOGRAPHIC LIVE STAGE EXPERIENCE
+        </h2>
+
+        <p class="sz-concert-slide-desc">
+          A preview of how Suzens 3D holographic virtual performances command the stadium floor with spatial audio and synchronised lighting.
+        </p>
+
+        <!-- Concert Audio Unmute/Mute Button -->
+        <div class="sz-concert-audio-controls">
+          <button type="button" class="sz-audio-toggle-btn" id="sz-audio-toggle" title="Toggle Stage Sound">
+            <i class="fa-solid fa-volume-xmark" id="sz-audio-icon"></i>
+            <span id="sz-audio-text">Unmute Crowd Audio</span>
+          </button>
+        </div>
+
+        <!-- Elegant Minimal Telemetry Info Bar -->
+        <div class="sz-concert-telemetry-bar">
+          <div class="sz-telem-item">
+            <span class="sz-telem-label">PROJECTION</span>
+            <span class="sz-telem-val">Ultra-Holo 120 FPS</span>
           </div>
-
-          <div class="sz-concert-hud-bottom">
-            <div class="sz-hud-stat">
-              <span class="hud-label">PROJECTION RESOLUTION</span>
-              <span class="hud-val">8K @ 120 FPS ULTRA-HOLO</span>
-            </div>
-            <div class="sz-hud-stat">
-              <span class="hud-label">ARENA LIGHTSTICK SYNC</span>
-              <span class="hud-val">100% SUZENITES NETWORK</span>
-            </div>
-            <div class="sz-hud-stat">
-              <span class="hud-label">AUDIO FREQUENCY</span>
-              <span class="hud-val">360° SPATIAL CYBER-SURROUND</span>
-            </div>
-            <div class="sz-hud-stat">
-              <span class="hud-label">LOOP WINDOW</span>
-              <span class="hud-val">10s &ndash; 23s CLIMAX DROP</span>
-            </div>
+          <div class="sz-telem-item">
+            <span class="sz-telem-label">SOUND FORMAT</span>
+            <span class="sz-telem-val">360 Spatial Audio</span>
+          </div>
+          <div class="sz-telem-item">
+            <span class="sz-telem-label">PERFORMANCE WINDOW</span>
+            <span class="sz-telem-val">10s to 23s Drop</span>
           </div>
         </div>
       </div>
@@ -336,9 +310,9 @@
          ============================================================ -->
     <section class="sz-section sz-albums-section" id="sz-albums">
       <div class="sz-section-header">
-        <span class="sz-sub-tag"><i class="fa-solid fa-compact-disc"></i> PRODUCTION LAB & SOUND PREVIEWS</span>
-        <h2 class="sz-section-title">DEBUT <span class="sz-gradient-text">MUSIC & TEASERS</span></h2>
-        <p class="sz-section-desc">Sneak peeks into the in-development sound design, vocal stems, and concept demo previews for Suzens' upcoming debut track.</p>
+        <span class="sz-sub-tag">PRODUCTION LAB</span>
+        <h2 class="sz-section-title">DEBUT MUSIC & SOUND PREVIEWS</h2>
+        <p class="sz-section-desc">Sneak peeks into the in-development sound design, vocal stems, and concept demo previews for Suzens upcoming debut track.</p>
       </div>
 
       <div class="sz-albums-grid">
@@ -346,29 +320,29 @@
         <div class="sz-album-card">
           <div class="sz-album-cover">
             <img src="assets/suzens band.png" alt="Suzens Debut Concept Track" />
-            <div class="sz-album-tag">IN PRODUCTION · DEBUT TRACK</div>
+            <div class="sz-album-tag">IN PRODUCTION</div>
           </div>
           <div class="sz-album-content">
-            <h3 class="sz-album-title">PROJECT : FIRST BLOOM</h3>
-            <p class="sz-album-meta">Official Debut Title Track · Cyber-Pop / High-Energy J-Rock</p>
+            <h3 class="sz-album-title">PROJECT: FIRST BLOOM</h3>
+            <p class="sz-album-meta">Official Debut Title Track · Pop & Rock Fusion</p>
 
             <ul class="sz-tracklist">
-              <li><span class="tk-num">01</span> Neon Velocity (Concept Intro) <span class="tk-dur">Teaser</span></li>
+              <li><span class="tk-num">01</span> Neon Velocity (Intro Concept) <span class="tk-dur">Teaser</span></li>
               <li><span class="tk-num">02</span> Tokyo Godrays (Title Demo) <span class="tk-dur">In Studio</span></li>
-              <li><span class="tk-num">03</span> Cybernetic Heartbeat (Synth Mix) <span class="tk-dur">Stem</span></li>
+              <li><span class="tk-num">03</span> Heartbeat Loop (Synth Mix) <span class="tk-dur">Stem</span></li>
             </ul>
 
             <div class="sz-audio-player-sim">
               <button type="button" class="sz-play-btn" id="btn-play-sim-1"><i class="fa-solid fa-play"></i></button>
               <div class="sz-track-info-sim">
-                <span class="sz-sim-track-name">Tokyo Godrays (Demo Synth Loop Preview)</span>
+                <span class="sz-sim-track-name">Tokyo Godrays (Demo Loop Preview)</span>
                 <div class="sz-sim-progress-bar"><div class="sz-sim-progress-fill" style="width: 50%;"></div></div>
               </div>
             </div>
 
             <div class="sz-album-actions">
               <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-btn sz-btn-sm sz-btn-primary"><i class="fa-brands fa-instagram"></i> Watch Instagram Reels</a>
-              <button type="button" onclick="openFanModal()" class="sz-btn sz-btn-sm sz-btn-outline"><i class="fa-solid fa-bell"></i> Pre-Save Notification</button>
+              <button type="button" onclick="openFanModal()" class="sz-btn sz-btn-sm sz-btn-outline">Pre-Save Alerts</button>
             </div>
           </div>
         </div>
@@ -377,29 +351,29 @@
         <div class="sz-album-card">
           <div class="sz-album-cover">
             <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/homepage/suzan_godrays_jggu36.webp" alt="Suzana Solo Vocal Concept" />
-            <div class="sz-album-tag">VOCAL DEMO · STUDIO CLIP</div>
+            <div class="sz-album-tag">VOCAL STUDY</div>
           </div>
           <div class="sz-album-content">
-            <h3 class="sz-album-title">SUZANA — RESONANCE (STUDY)</h3>
-            <p class="sz-album-meta">Vocal Study & Acoustic Teaser · Anime OST Inspiration</p>
+            <h3 class="sz-album-title">SUZANA — RESONANCE</h3>
+            <p class="sz-album-meta">Vocal Stem & Acoustic Melodic Study</p>
 
             <ul class="sz-tracklist">
-              <li><span class="tk-num">01</span> Resonance in Red (Vocal Stem) <span class="tk-dur">Demo</span></li>
+              <li><span class="tk-num">01</span> Resonance (Vocal Stem) <span class="tk-dur">Demo</span></li>
               <li><span class="tk-num">02</span> Melodic Core Preview <span class="tk-dur">Studio Clip</span></li>
-              <li><span class="tk-num">03</span> Acoustic Chords Breakdown <span class="tk-dur">Snippet</span></li>
+              <li><span class="tk-num">03</span> Acoustic Chords <span class="tk-dur">Snippet</span></li>
             </ul>
 
             <div class="sz-audio-player-sim">
               <button type="button" class="sz-play-btn" id="btn-play-sim-2"><i class="fa-solid fa-play"></i></button>
               <div class="sz-track-info-sim">
-                <span class="sz-sim-track-name">Resonance in Red (Acoustic Stem Clip)</span>
+                <span class="sz-sim-track-name">Resonance in Red (Acoustic Stem)</span>
                 <div class="sz-sim-progress-bar"><div class="sz-sim-progress-fill" style="width: 70%;"></div></div>
               </div>
             </div>
 
             <div class="sz-album-actions">
               <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-btn sz-btn-sm sz-btn-primary"><i class="fa-brands fa-instagram"></i> Instagram Teaser</a>
-              <button type="button" onclick="openFanModal()" class="sz-btn sz-btn-sm sz-btn-outline"><i class="fa-solid fa-bell"></i> Get Audio Drop Alerts</button>
+              <button type="button" onclick="openFanModal()" class="sz-btn sz-btn-sm sz-btn-outline">Get Audio Drop Alerts</button>
             </div>
           </div>
         </div>
@@ -411,9 +385,9 @@
          ============================================================ -->
     <section class="sz-section sz-tour-section" id="sz-roadmap">
       <div class="sz-section-header">
-        <span class="sz-sub-tag"><i class="fa-solid fa-route"></i> DEVELOPMENT TIMELINE</span>
-        <h2 class="sz-section-title">ROAD TO <span class="sz-gradient-text">OFFICIAL DEBUT</span></h2>
-        <p class="sz-section-desc">Track the release milestones of Suzens as SenpaiWorks develops the virtual avatars, music video, and debut single.</p>
+        <span class="sz-sub-tag">TIMELINE</span>
+        <h2 class="sz-section-title">ROAD TO OFFICIAL DEBUT</h2>
+        <p class="sz-section-desc">Track the production milestones of Suzens as SenpaiWorks produces the character visuals, music video, and debut track.</p>
       </div>
 
       <div class="sz-roadmap-grid">
@@ -422,16 +396,16 @@
           <div class="sz-roadmap-badge">PHASE 01 · COMPLETED</div>
           <div class="sz-roadmap-icon"><i class="fa-solid fa-id-badge"></i></div>
           <h3 class="sz-roadmap-title">Character & Lore Reveal</h3>
-          <p class="sz-roadmap-desc">Official introduction of Suzana, Tiara, Remi, and Ayana with 3D character design profiles and lore dossiers.</p>
+          <p class="sz-roadmap-desc">Official introduction of Suzana, Tiara, Remi, and Ayana with character design profiles and lore dossiers.</p>
           <div class="sz-roadmap-status"><i class="fa-solid fa-circle-check"></i> Active on Official SNS</div>
         </div>
 
         <!-- Phase 2 -->
         <div class="sz-roadmap-card current-step">
-          <div class="sz-roadmap-badge highlight">PHASE 02 · CURRENT PHASE</div>
+          <div class="sz-roadmap-badge highlight">PHASE 02 · CURRENT</div>
           <div class="sz-roadmap-icon"><i class="fa-solid fa-clapperboard"></i></div>
-          <h3 class="sz-roadmap-title">Teaser Clips & Sound Stems</h3>
-          <p class="sz-roadmap-desc">Releasing behind-the-scenes 3D animation snippets, vocal rehearsals, and song demos on Instagram.</p>
+          <h3 class="sz-roadmap-title">Teaser Clips & Stems</h3>
+          <p class="sz-roadmap-desc">Behind-the-scenes 3D animation snippets, vocal rehearsals, and song demos released on Instagram.</p>
           <div class="sz-roadmap-status in-progress"><i class="fa-solid fa-spinner fa-spin"></i> In Production</div>
         </div>
 
@@ -446,11 +420,11 @@
 
         <!-- Phase 4 -->
         <div class="sz-roadmap-card">
-          <div class="sz-roadmap-badge">PHASE 04 · FUTURE HORIZON</div>
+          <div class="sz-roadmap-badge">PHASE 04 · HORIZON</div>
           <div class="sz-roadmap-icon"><i class="fa-solid fa-cube"></i></div>
           <h3 class="sz-roadmap-title">Virtual Live Showcase</h3>
-          <p class="sz-roadmap-desc">Metaverse & 3D holographic virtual concert performance for Suzenites fans worldwide.</p>
-          <div class="sz-roadmap-status coming-soon"><i class="fa-solid fa-lock"></i> Locked Milestone</div>
+          <p class="sz-roadmap-desc">3D holographic virtual concert performance for fans worldwide.</p>
+          <div class="sz-roadmap-status coming-soon"><i class="fa-solid fa-lock"></i> Milestone</div>
         </div>
       </div>
     </section>
@@ -462,30 +436,30 @@
       <button type="button" class="sz-modal-close" id="sz-modal-close"><i class="fa-solid fa-xmark"></i></button>
       <div class="sz-modal-header">
         <span class="sz-sub-tag">SUZENITES FAN CLUB</span>
-        <h3 class="sz-modal-title">CLAIM PRE-DEBUT VIP PASS</h3>
+        <h3 class="sz-modal-title">PRE-DEBUT FAN PASS</h3>
         <p style="color: var(--sz-muted); font-size: 0.88rem; margin-top: 6px;">Be the first to receive exclusive MV previews, concept wallpapers, and release drop alerts.</p>
       </div>
       <form class="sz-modal-form" id="sz-fan-form">
         <div class="sz-form-group">
           <label>Your Name / Nickname</label>
-          <input type="text" placeholder="e.g. NeoSenpai" required />
+          <input type="text" placeholder="Your Name" required />
         </div>
         <div class="sz-form-group">
           <label>Email Address</label>
           <input type="email" placeholder="you@example.com" required />
         </div>
         <div class="sz-form-group">
-          <label>Favorite Virtual Member</label>
+          <label>Favorite Member</label>
           <select>
             <option value="suzana" selected>Suzana (Leader & Main Vocal)</option>
-            <option value="tiara">Tiara (Lead Guitar & Synth)</option>
+            <option value="tiara">Tiara (Lead Guitar)</option>
             <option value="remi">Remi (Beatmaster & Drums)</option>
             <option value="ayana">Ayana (Visual Center & Bass)</option>
             <option value="all">All 4 Members (Full Suzens Supporter)</option>
           </select>
         </div>
         <button type="submit" class="sz-btn sz-btn-primary" style="width: 100%; margin-top: 10px;">
-          <i class="fa-solid fa-sparkles"></i> Claim Free Fan Pass
+          Claim Free Fan Pass
         </button>
       </form>
     </div>
@@ -502,7 +476,7 @@
   <script src="scripts/footer.js"></script>
 
   <!-- Page Logic Script -->
-  <script src="scripts/suzens.js?v=3"></script>
+  <script src="scripts/suzens.js?v=4"></script>
   <script src="scripts/image-loader.js" defer></script>
 </body>
 
