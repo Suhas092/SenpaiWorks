@@ -1049,6 +1049,11 @@
                   <input type="text" id="artwork-search" class="table-search-input"
                     placeholder="Search character or anime title...">
                 </div>
+                <select id="art-page-size" class="page-size-select" onchange="window.loadArtworks()">
+                  <option value="10">10 per page</option>
+                  <option value="20">20 per page</option>
+                  <option value="50">50 per page</option>
+                </select>
                 <span class="table-count" id="artwork-table-count"></span>
               </div>
               <div class="table-responsive">
@@ -2736,7 +2741,7 @@
   <script src="scripts/admin/admin-reviews.js?v=4.6"></script>
   <script src="scripts/admin/admin-orders.js?v=4.0"></script>
   <script src="scripts/admin/admin-replacements.js?v=4.0"></script>
-  <script src="scripts/admin/admin-art-library.js?v=4.0"></script>
+  <script src="scripts/admin/admin-art-library.js?v=4.2"></script>
   <script src="scripts/admin/admin-motion-rigs.js?v=4.0"></script>
   <script src="scripts/admin/admin-news.js?v=5.0"></script>
   <script src="scripts/admin/admin-homepage.js?v=6.0"></script>
