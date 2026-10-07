@@ -24,7 +24,7 @@ window.loadAdminReviewsModule = function () {
   switchReviewsSubtab(currentReviewsSubtab || "reviews-moderation");
 };
 
-window.switchReviewsSubtab = function (subtabId) {
+window.switchReviewsSubtab = function (subtabId, skipAutoLoad) {
   currentReviewsSubtab = subtabId;
   const parentSubpage = document.getElementById("tab-reviews");
   if (!parentSubpage) return;
@@ -48,6 +48,9 @@ window.switchReviewsSubtab = function (subtabId) {
     }
   });
 
+  // Only auto-load if skipAutoLoad is not explicitly true
+  if (skipAutoLoad === true) return;
+  
   if (subtabId === "reviews-moderation") {
     loadReportedModerationQueue();
   } else if (subtabId === "reviews-health") {
@@ -314,7 +317,7 @@ window.loadProductHealthOverview = async function () {
 
 window.openProductReviewsSearch = function (productId) {
   console.log('[View Reviews] Clicked for product:', productId);
-  switchReviewsSubtab("reviews-all");
+  switchReviewsSubtab("reviews-all", true);  // Pass true to skip auto-load, we'll load with productId
   const searchInput = document.getElementById("admin-reviews-search");
   if (searchInput) {
     searchInput.value = '';  // CLEAR the search input so onkeyup doesn't interfere
