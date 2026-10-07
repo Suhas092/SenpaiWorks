@@ -33,10 +33,13 @@ window.handleAccountFeedbackSubmit = function (e) {
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const authorName = currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : "Profile User";
+  const authorEmail = currentUser.email || '';
 
   const newFeedback = {
     id: "FB-" + Math.floor(1000 + Math.random() * 9000),
     user: authorName,
+    author: authorName,
+    email: authorEmail,
     date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     category: category,
     rating: selectedStarRating,

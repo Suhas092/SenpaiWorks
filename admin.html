@@ -2454,7 +2454,7 @@
       <div class="edit-modal-header">
         <h2>Feedback Detail</h2>
         <button class="edit-modal-close"
-          onclick="document.getElementById('modal-feedback-detail').style.display='none'"><i
+          onclick="window.closeFeedbackDetail()"><i
             class="fa-solid fa-times"></i></button>
       </div>
       <form class="admin-form modal-form-padded">
@@ -2469,6 +2469,11 @@
             <span id="detail-modal-rating"></span>
           </div>
           <div class="feedback-detail-preview-body" id="detail-modal-content"></div>
+        </div>
+
+        <div class="form-group">
+          <label>User Email</label>
+          <input type="email" id="detail-modal-email" readonly class="form-input" />
         </div>
 
         <div class="form-row-2">
@@ -2497,14 +2502,14 @@
         </div>
 
         <div class="form-group">
-          <label for="detail-modal-admin-reply">Official Reply</label>
+          <label for="detail-modal-admin-reply">Official Reply <span style="font-size: 0.85rem; color: #3b82f6;">(Will be emailed to user)</span></label>
           <textarea id="detail-modal-admin-reply" rows="3" class="feedback-detail-textarea"></textarea>
         </div>
 
         <div class="edit-modal-actions modal-actions-clean">
           <button type="button" class="btn-cancel"
-            onclick="document.getElementById('modal-feedback-detail').style.display='none'">Cancel</button>
-          <button type="button" class="btn-save" onclick="saveFeedbackDetail()">Save Changes</button>
+            onclick="window.closeFeedbackDetail()">Cancel</button>
+          <button type="button" class="btn-save" onclick="window.saveFeedbackDetail()">Save Changes</button>
         </div>
       </form>
     </div>
@@ -2747,7 +2752,7 @@
   <script src="scripts/admin/admin-homepage.js?v=6.0"></script>
   <script src="scripts/admin/admin-coupons.js?v=5.0"></script>
   <script src="scripts/admin/admin-community.js?v=4.0"></script>
-  <script src="scripts/admin/admin-feedback.js?v=4.0"></script>
+  <script src="scripts/admin/admin-feedback.js?v=4.1"></script>
   <script src="scripts/admin/admin-notifications.js?v=4.0"></script>
   <script src="scripts/admin/admin-courses.js?v=2.0"></script>
   <script src="scripts/admin/admin-faq.js?v=4.0"></script>

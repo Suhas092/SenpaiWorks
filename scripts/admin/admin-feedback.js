@@ -321,6 +321,7 @@ window.openFeedbackDetail = function (id, event) {
   const priorityField = document.getElementById("detail-modal-priority");
   const notesField = document.getElementById("detail-modal-internal-notes");
   const replyField = document.getElementById("detail-modal-admin-reply");
+  const emailField = document.getElementById("detail-modal-email");
 
   if (idField) idField.value = review.id;
   if (userField) userField.textContent = review.author || review.user || 'Anonymous';
@@ -328,6 +329,7 @@ window.openFeedbackDetail = function (id, event) {
   if (dateField) dateField.textContent = review.date || 'Unknown';
   if (ratingField) ratingField.textContent = review.rating ? '★'.repeat(review.rating) : 'N/A';
   if (contentField) contentField.textContent = review.text || 'No content provided.';
+  if (emailField) emailField.value = review.email || 'N/A';
   
   if (statusField) statusField.value = review.status || 'Pending';
   if (priorityField) priorityField.value = review.priority || 'Low';
@@ -341,6 +343,14 @@ window.openFeedbackDetail = function (id, event) {
   }
 };
 
+window.closeFeedbackDetail = function () {
+  const modal = document.getElementById("modal-feedback-detail");
+  if (modal) {
+    modal.classList.remove("active");
+    modal.style.display = "none";
+  }
+};
+
 window.saveFeedbackDetail = function () {
   const id = document.getElementById("detail-modal-id")?.value;
   if (!id) return;
@@ -349,13 +359,23 @@ window.saveFeedbackDetail = function () {
     let reviewsList = JSON.parse(localStorage.getItem("userReviews") || localStorage.getItem("user_reviews") || "[]");
     const idx = reviewsList.findIndex(r => r.id === id);
     if (idx > -1) {
+      const oldAdminReply = reviewsList[idx].admin_reply || '';
+      const newAdminReply = document.getElementById("detail-modal-admin-reply")?.value || '';
+      const userEmail = reviewsList[idx].email || '';
+      const userName = reviewsList[idx].author || reviewsList[idx].user || 'User';
+      
       reviewsList[idx].status = document.getElementById("detail-modal-status")?.value || 'Pending';
       reviewsList[idx].priority = document.getElementById("detail-modal-priority")?.value || 'Low';
       reviewsList[idx].internal_notes = document.getElementById("detail-modal-internal-notes")?.value || '';
-      reviewsList[idx].admin_reply = document.getElementById("detail-modal-admin-reply")?.value || '';
+      reviewsList[idx].admin_reply = newAdminReply;
       
       localStorage.setItem("userReviews", JSON.stringify(reviewsList));
       localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
+      
+      // If admin reply is new (wasn't there before), send email to user
+      if (newAdminReply && newAdminReply !== oldAdminReply && userEmail && userEmail !== 'N/A') {
+        sendFeedbackReplyEmail(userName, userEmail, newAdminReply, reviewsList[idx].category);
+      }
       
       window.showAdminToast("Feedback updated successfully.", "success");
       
@@ -369,6 +389,35 @@ window.saveFeedbackDetail = function () {
     }
   } catch (e) {}
 };
+
+// Send admin reply to user via email
+async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category) {
+  try {
+    const payload = {
+      name: userName,
+      email: userEmail,
+      subject: `Re: Your ${category || 'General'} Feedback - SenpaiWorks Admin Reply`,
+      message: `Hello ${userName},\n\nThank you for submitting your feedback to SenpaiWorks!\n\nOur team has reviewed your submission and here's our official response:\n\n${adminReply}\n\nBest regards,\nSenpaiWorks Team`
+    };
+    
+    const token = (typeof getAuthToken === 'function' ? getAuthToken() : (localStorage.getItem('auth_token') || null)) || null;
+    
+    const response = await fetch('/api/support/contact', {
+      method: 'POST',
+      headers: Object.assign(
+        { 'Content-Type': 'application/json' },
+        token ? { 'Authorization': `Bearer ${token}` } : {}
+      ),
+      body: JSON.stringify(payload)
+    });
+    
+    if (response.ok) {
+      console.log('[Feedback] Admin reply email sent to', userEmail);
+    }
+  } catch (err) {
+    console.warn('[Feedback] Failed to send admin reply email:', err);
+  }
+}
 
 window.addEventListener("storage", (e) => {
   if (e.key === "userReviews" || e.key === "user_reviews") {
