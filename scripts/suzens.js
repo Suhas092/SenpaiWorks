@@ -1,57 +1,57 @@
 // ============================================================
-//  SenpaiWorks — Suzens Page Interactive Script
+//  SenpaiWorks — Suzens Virtual K-Pop Band Showcase Script
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ── Band Member Character Data ─────────────────────────────
+  // ── Virtual Member Character Dossier Data ───────────────────
   const memberData = {
     suzana: {
       name: "SUZANA",
       roleBadge: "LEADER · MAIN VOCALIST · THE ELECTRIC SPARK",
       title: '"The Radiant Center"',
       img: "assets/suzana all out.png",
-      birthday: "Feb 09 · Aquarius ⚡",
-      desc: "Charismatic, fierce, and possessing explosive vocal range, Suzana is the leader and heart of Suzens. She commands the stage with electric passion, crafting anthemic melodies that connect fans across the physical and virtual dimensions.",
-      instrument: "Custom Cyber Fender Stratocaster & Lead Vocals",
-      vocal: "High-Octane J-Rock & Emotional Belting Pop",
+      birthday: "Leader & Main Vocal ⚡",
+      desc: "Charismatic, fiery, and possessing explosive vocal range, Suzana is the leader and heart of Suzens. She commands the virtual stage with unapologetic energy, crafting anthemic melodies that bridge the boundary between code and raw emotion.",
+      instrument: "Custom Cyber Stratocaster & High-Octane Vocals",
+      vocal: "Dynamic Belting Pop & High-Speed Cyber-Rock",
       color: '<i class="fa-solid fa-circle" style="color: #ff2a75;"></i> Neon Crimson (#FF2A75)',
-      quote: '"Our music isn\'t just sound — it\'s a pulse that connects the real and virtual dimensions!"'
+      quote: '"We are breaking the boundary between virtual code and real human emotion!"'
     },
     tiara: {
       name: "TIARA",
-      roleBadge: "LEAD GUITARIST · SYNTH VIRTUOSO · PRODIGY",
+      roleBadge: "LEAD SYNTH & GUITAR · SOUND ARCHITECT · PRODIGY",
       title: '"The Holographic Melody Maker"',
       img: "assets/tiara all out.png",
-      birthday: "May 14 · Taurus 💎",
-      desc: "A prodigy sound designer and lead guitarist, Tiara infuses high-speed neo-classical guitar riffs with neon synthwave textures, giving Suzens their futuristic signature sound.",
-      instrument: "Ibanez 7-String Custom Cyber Axe & Synthesizer",
-      vocal: "Harmonic Backing & Cyber Synth Vox",
+      birthday: "Lead Guitar & Synth 💎",
+      desc: "A prodigy sound designer and lead guitarist in the virtual sphere, Tiara infuses high-speed neo-classical guitar riffs with neon cyber-pop textures, giving Suzens their futuristic signature sonic identity.",
+      instrument: "Custom 7-String Cyber Axe & Synthesizer Keyblade",
+      vocal: "Harmonic Cyber-Vox & Vocal Processing",
       color: '<i class="fa-solid fa-circle" style="color: #00f0ff;"></i> Cyan Electric (#00F0FF)',
       quote: '"Every chord is calculated to resonate directly inside your soul."'
     },
     remi: {
       name: "REMI",
-      roleBadge: "MAIN DRUMMER · KINETIC BEATMASTER · MOOD MAKER",
-      title: '"The Rhythmic Powerhouse"',
+      roleBadge: "BEATMASTER · DRUMS & BASS · MOOD MAKER",
+      title: '"The Kinetic Rhythm Demon"',
       img: "assets/remi all out.png",
-      birthday: "Nov 02 · Scorpio 🥁",
-      desc: "High-energy, relentless, and full of charisma, Remi is the powerhouse heartbeat of Suzens. Her explosive acoustic-digital hybrid drum patterns drive the adrenaline of every live stage performance.",
-      instrument: "Roland Cyber-V-Drums & Percussion Rig",
-      vocal: "Rhythmic Hype & Screaming Backing",
+      birthday: "Beatmaster & Drums 🥁",
+      desc: "Explosive, hyper, and full of chaotic charisma, Remi is the powerhouse heartbeat of Suzens. Her crushing acoustic-digital hybrid drum patterns and 808s drive the adrenaline of every beat drop.",
+      instrument: "Roland Cyber-V Kinetic Drum Pads Rig",
+      vocal: "Rhythmic Hype & Screaming Backing Vocals",
       color: '<i class="fa-solid fa-circle" style="color: #9d4edd;"></i> Neon Violet (#9D4EDD)',
-      quote: '"When the beat drops, all dimensions sync to our rhythm!"'
+      quote: '"When my beat drops, even virtual reality trembles!"'
     },
     ayana: {
       name: "AYANA",
-      roleBadge: "VISUAL CENTER · BASSIST · SUB-VOCALIST",
-      title: '"The Midnight Siren"',
+      roleBadge: "VISUAL CENTER · BASSIST · SUB-VOCAL & RAP",
+      title: '"The Cyber Siren"',
       img: "assets/ayana all out.png",
-      birthday: "Jul 21 · Cancer 🌙",
-      desc: "Ethereal, mysterious, and captivating, Ayana anchors the rhythm with deep pulsating basslines while shining as the visual centerpiece during holographic performances.",
-      instrument: "4-String Active Cyber Bass",
-      vocal: "Sub-Vocal Harmony & Low Acoustic Layers",
+      birthday: "Visual Center & Bass 🌙",
+      desc: "Ethereal, mysterious, and effortlessly captivating, Ayana anchors the low frequencies with deep pulsating sub-basslines while delivering sharp rap verses as the visual centerpiece of Suzens.",
+      instrument: "Active 4-String Sub-Harmonic Cyber Bass",
+      vocal: "Sub-Vocal Harmony & Fast Cyber Rap Delivery",
       color: '<i class="fa-solid fa-circle" style="color: #ffaa00;"></i> Amber Gold (#FFAA00)',
-      quote: '"Under the neon lights, we create memories that transcend time."'
+      quote: '"Under the neon lights, our rhythm comes alive in the shadows."'
     }
   };
 
@@ -104,16 +104,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── Concert Event Live Countdown Timer (Targeting Feb 09) ───
-  function getNextFeb09Timestamp() {
+  // ── Debut Teaser Countdown Timer (Targeting Next Teaser Drop) ─
+  function getNextTeaserDropTimestamp() {
     const now = new Date();
     let targetYear = now.getFullYear();
-    // Check if Feb 09 20:00 has already passed this calendar year
     const thisYearTarget = new Date(`${targetYear}-02-09T20:00:00+09:00`).getTime();
     if (thisYearTarget > now.getTime()) {
       return thisYearTarget;
     }
-    // Otherwise target next year's Feb 09
     return new Date(`${targetYear + 1}-02-09T20:00:00+09:00`).getTime();
   }
 
@@ -125,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!cdDays) return;
 
-    const targetDate = getNextFeb09Timestamp();
+    const targetDate = getNextTeaserDropTimestamp();
     const now = new Date().getTime();
     const diff = targetDate - now;
 
@@ -164,36 +162,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── Ticket Modal Handlers ────────────────────────────────────
-  const modal = document.getElementById("sz-ticket-modal");
+  // ── Fan Modal Handlers ──────────────────────────────────────
+  const fanModal = document.getElementById("sz-fan-modal");
   const modalClose = document.getElementById("sz-modal-close");
-  const modalVenueName = document.getElementById("sz-modal-venue-name");
-  const ticketForm = document.getElementById("sz-ticket-form");
+  const fanForm = document.getElementById("sz-fan-form");
 
-  window.openTicketModal = function (venueName) {
-    if (modal) {
-      if (modalVenueName) modalVenueName.textContent = venueName || "Tokyo Cyberdome";
-      modal.style.display = "flex";
+  window.openFanModal = function () {
+    if (fanModal) {
+      fanModal.style.display = "flex";
     }
   };
 
   if (modalClose) {
     modalClose.addEventListener("click", () => {
-      if (modal) modal.style.display = "none";
+      if (fanModal) fanModal.style.display = "none";
     });
   }
 
-  if (modal) {
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) modal.style.display = "none";
+  if (fanModal) {
+    fanModal.addEventListener("click", (e) => {
+      if (e.target === fanModal) fanModal.style.display = "none";
     });
   }
 
-  if (ticketForm) {
-    ticketForm.addEventListener("submit", (e) => {
+  if (fanForm) {
+    fanForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      alert("Ticket Reservation Confirmed! Check your email for details.");
-      if (modal) modal.style.display = "none";
+      alert("Welcome to the Suzenites Fan Club! You'll receive exclusive teaser updates and early audio drops.");
+      if (fanModal) fanModal.style.display = "none";
+      fanForm.reset();
     });
   }
 });

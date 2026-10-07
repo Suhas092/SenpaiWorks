@@ -132,11 +132,11 @@ body {
 .sz-section-desc {
   color: var(--sz-muted);
   font-size: 1.05rem;
-  max-width: 620px;
+  max-width: 650px;
   margin: 0 auto;
 }
 
-/* ── SECTION 1: HERO & EVENT COUNTDOWN ──────────────────── */
+/* ── SECTION 1: HERO & TEASER COUNTDOWN ─────────────────── */
 .sz-hero-section {
   position: relative;
   min-height: 85vh;
@@ -183,7 +183,7 @@ body {
 .sz-hero-container {
   position: relative;
   z-index: 2;
-  max-width: 900px;
+  max-width: 920px;
   text-align: center;
 }
 
@@ -205,19 +205,19 @@ body {
 
 .sz-hero-title {
   font-family: var(--sz-font-head);
-  font-size: 4.5rem;
+  font-size: 4.2rem;
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.08;
   color: #ffffff;
   margin: 0 0 20px 0;
   letter-spacing: -1.5px;
 }
 
 .sz-hero-subtitle {
-  font-size: 1.18rem;
+  font-size: 1.15rem;
   color: #d0d0e0;
   line-height: 1.6;
-  max-width: 720px;
+  max-width: 740px;
   margin: 0 auto 24px auto;
 }
 
@@ -273,87 +273,6 @@ body {
   border-radius: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-/* ── IDOL BAND CONCEPT STATS BAR ────────────────────────── */
-.sz-concept-bar-section {
-  padding: 0 24px;
-  max-width: 1240px;
-  margin: -20px auto 40px auto;
-  position: relative;
-  z-index: 3;
-}
-
-.sz-concept-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  background: rgba(18, 18, 28, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  border-radius: 20px;
-  padding: 20px 24px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-}
-
-.sz-concept-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 8px 12px;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.sz-concept-card:last-child {
-  border-right: none;
-}
-
-.sz-concept-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255, 42, 117, 0.15), rgba(0, 240, 255, 0.15));
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
-  color: var(--sz-cyan);
-  flex-shrink: 0;
-}
-
-.sz-concept-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.sz-concept-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  color: var(--sz-muted);
-  text-transform: uppercase;
-}
-
-.sz-concept-val {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #ffffff;
-  font-family: var(--sz-font-head);
-}
-
-.sz-concept-link {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #ff2a75;
-  text-decoration: none;
-  font-family: var(--sz-font-head);
-  transition: color 0.2s ease;
-}
-
-.sz-concept-link:hover {
-  color: #00f0ff;
 }
 
 /* Event Spotlight Box */
@@ -438,7 +357,88 @@ body {
   flex-wrap: wrap;
 }
 
-/* ── SECTION 2: MEMBER SHOWCASE ───────────────────────────── */
+/* ── VIRTUAL BAND CONCEPT STATS BAR ──────────────────────── */
+.sz-concept-bar-section {
+  padding: 0 24px;
+  max-width: 1240px;
+  margin: -20px auto 40px auto;
+  position: relative;
+  z-index: 3;
+}
+
+.sz-concept-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  background: rgba(18, 18, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.sz-concept-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sz-concept-card:last-child {
+  border-right: none;
+}
+
+.sz-concept-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 42, 117, 0.15), rgba(0, 240, 255, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: var(--sz-cyan);
+  flex-shrink: 0;
+}
+
+.sz-concept-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sz-concept-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--sz-muted);
+  text-transform: uppercase;
+}
+
+.sz-concept-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: var(--sz-font-head);
+}
+
+.sz-concept-link {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ff2a75;
+  text-decoration: none;
+  font-family: var(--sz-font-head);
+  transition: color 0.2s ease;
+}
+
+.sz-concept-link:hover {
+  color: #00f0ff;
+}
+
+/* ── SECTION 2: MEMBER SHOWCASE (DOSSIERS) ───────────────── */
 .sz-members-showcase-container {
   display: flex;
   flex-direction: column;
@@ -646,7 +646,7 @@ body {
   color: #ffffff !important;
 }
 
-/* ── SECTION 3: UPCOMING ALBUMS ───────────────────────────── */
+/* ── SECTION 3: IN THE LAB / DEBUT TEASERS ───────────────── */
 .sz-albums-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -752,8 +752,9 @@ body {
 
 .tk-dur {
   margin-left: auto;
-  color: var(--sz-muted);
+  color: var(--sz-cyan);
   font-size: 0.82rem;
+  font-weight: 600;
 }
 
 /* Audio Player Simulator */
@@ -820,164 +821,115 @@ body {
   margin-top: auto;
 }
 
-/* ── SECTION 4: TOUR STAGE SCHEDULE ───────────────────────── */
-.sz-tour-table-wrapper {
+/* ── SECTION 4: PRODUCTION ROADMAP ───────────────────────── */
+.sz-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.sz-roadmap-card {
   background: rgba(18, 18, 28, 0.75);
   border: 1px solid var(--sz-card-border);
-  border-radius: 24px;
-  overflow: hidden;
-  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
-.sz-tour-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
+.sz-roadmap-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-.sz-tour-table th {
+.sz-roadmap-card.active-step {
+  border-color: rgba(0, 255, 136, 0.4);
+  background: linear-gradient(180deg, rgba(0, 255, 136, 0.06), rgba(18, 18, 28, 0.75));
+}
+
+.sz-roadmap-card.current-step {
+  border-color: var(--sz-pink);
+  background: linear-gradient(180deg, rgba(255, 42, 117, 0.12), rgba(18, 18, 28, 0.85));
+  box-shadow: 0 10px 30px rgba(255, 42, 117, 0.2);
+}
+
+.sz-roadmap-badge {
   font-family: var(--sz-font-head);
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--sz-muted);
-  padding: 20px 24px;
-  background: rgba(0, 0, 0, 0.4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+  margin-bottom: 16px;
 }
 
-.sz-tour-table td {
-  padding: 22px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  vertical-align: middle;
+.sz-roadmap-badge.highlight {
+  color: var(--sz-pink);
 }
 
-.sz-tour-table tbody tr {
-  transition: background 0.25s ease;
-}
-
-.sz-tour-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.sz-date-col {
+.sz-roadmap-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  flex-direction: column;
-}
-
-.sz-date-day {
-  font-family: var(--sz-font-head);
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--sz-pink);
-  line-height: 1;
-}
-
-.sz-date-mo {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--sz-muted);
-  margin-top: 2px;
-}
-
-.sz-featured-row {
-  background: linear-gradient(90deg, rgba(255, 42, 117, 0.12), rgba(0, 240, 255, 0.06)) !important;
-  border-left: 3px solid var(--sz-pink);
-}
-
-.sz-featured-pill {
-  display: inline-block;
-  background: var(--sz-pink);
-  color: #ffffff;
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 10px;
-  vertical-align: middle;
-  margin-left: 6px;
-  letter-spacing: 0.5px;
-}
-
-.sz-venue-title {
-  font-family: var(--sz-font-head);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.sz-venue-sub {
-  font-size: 0.85rem;
-  color: var(--sz-muted);
-  margin-top: 2px;
-}
-
-.sz-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 12px;
-
-}
-
-.sz-badge-holo {
-  background: rgba(0, 240, 255, 0.15);
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
   color: var(--sz-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  margin-bottom: 18px;
 }
 
-.sz-badge-hybrid {
-  background: rgba(157, 78, 221, 0.15);
-  color: var(--sz-purple);
-  border: 1px solid rgba(157, 78, 221, 0.3);
-}
-
-.sz-badge-vr {
-  background: rgba(255, 42, 117, 0.15);
-  color: var(--sz-pink);
-  border: 1px solid rgba(255, 42, 117, 0.3);
-}
-
-.sz-status {
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.sz-status-fast { color: #ff9900; }
-.sz-status-available { color: #00ff88; }
-.sz-status-vip { color: var(--sz-pink); }
-.sz-status-soon { color: var(--sz-muted); }
-
-.sz-ticket-btn {
-  background: linear-gradient(135deg, var(--sz-pink), #cc0052);
+.sz-roadmap-card.current-step .sz-roadmap-icon {
+  background: rgba(255, 42, 117, 0.2);
+  border-color: var(--sz-pink);
   color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
+}
+
+.sz-roadmap-title {
   font-family: var(--sz-font-head);
-  font-size: 0.85rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  cursor: pointer;
-  transition: all 0.25s ease;
+  color: #ffffff;
+  margin: 0 0 10px 0;
 }
 
-.sz-ticket-btn:hover:not(.disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(255, 42, 117, 0.4);
+.sz-roadmap-desc {
+  font-size: 0.9rem;
+  color: #a0a0b5;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1;
 }
 
-.sz-ticket-btn.disabled {
-  background: rgba(255, 255, 255, 0.08);
+.sz-roadmap-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #00ff88;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sz-roadmap-status.in-progress {
+  color: var(--sz-pink);
+}
+
+.sz-roadmap-status.coming-soon {
   color: var(--sz-muted);
-  cursor: not-allowed;
 }
 
 /* ── MODAL BACKDROP ───────────────────────────────────────── */
 .sz-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -993,7 +945,7 @@ body {
   max-width: 440px;
   padding: 32px;
   position: relative;
-  box-shadow: 0 20px 60px rgba(255, 42, 117, 0.3);
+  box-shadow: 0 20px 60px rgba(255, 42, 117, 0.35);
 }
 
 .sz-modal-close {
@@ -1010,11 +962,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s;
+}
+
+.sz-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .sz-modal-title {
   font-family: var(--sz-font-head);
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   color: #fff;
   margin: 4px 0 0 0;
 }
@@ -1054,6 +1011,12 @@ body {
 }
 
 /* ── RESPONSIVE MOBILE STYLES ────────────────────────────── */
+@media (max-width: 1100px) {
+  .sz-roadmap-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 992px) {
   .sz-character-spotlight-card {
     grid-template-columns: 1fr;
@@ -1079,7 +1042,7 @@ body {
 
 @media (max-width: 768px) {
   .sz-hero-title {
-    font-size: 3rem;
+    font-size: 2.8rem;
   }
 
   .sz-hero-subtitle {
@@ -1118,12 +1081,7 @@ body {
     padding-bottom: 0;
   }
 
-  .sz-tour-table th:nth-child(3),
-  .sz-tour-table td:nth-child(3) {
-    display: none;
-  }
-
-  .sz-tour-table td {
-    padding: 16px 12px;
+  .sz-roadmap-grid {
+    grid-template-columns: 1fr;
   }
 }
