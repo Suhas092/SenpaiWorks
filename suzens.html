@@ -20,7 +20,8 @@
   <link rel="stylesheet" href="css/header.css?v=11" />
   <link rel="stylesheet" href="css/drawer.css" />
   <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/suzens.css?v=4" />
+  <link rel="stylesheet" href="css/showcase.css?v=4" />
+  <link rel="stylesheet" href="css/suzens.css?v=5" />
   <link rel="stylesheet" href="css/image-optimize.css" media="screen">
 
   <script src="scripts/image-preload.js"></script>
@@ -46,7 +47,7 @@
 
   <main class="suzens-page-main">
     <!-- ============================================================
-         SECTION 1: TOP SLIDE HERO (TRANSPARENT, ELEGANT K-POP STYLE)
+         SECTION 1: TOP SLIDE HERO (TRANSPARENT, COMING SOON, AUDIO ICON)
          ============================================================ -->
     <section class="sz-hero-slide-section" id="sz-hero">
       <!-- Rotated Background Video (Pinterest Pin 866239309576965872) -->
@@ -58,15 +59,14 @@
         <div class="sz-video-vignette-overlay"></div>
       </div>
 
-      <!-- Top Audio Controls for Hero Slide Video -->
+      <!-- Top Right Audio Toggle (Icon-only) -->
       <div class="sz-hero-top-controls">
-        <button type="button" class="sz-hero-audio-btn" id="sz-hero-audio-btn" title="Toggle Slide Sound">
+        <button type="button" class="sz-hero-audio-btn-icon" id="sz-hero-audio-btn" aria-label="Toggle Sound" title="Toggle Sound">
           <i class="fa-solid fa-volume-xmark" id="sz-hero-audio-icon"></i>
-          <span id="sz-hero-audio-text">Unmute Video</span>
         </button>
       </div>
 
-      <!-- Hero Center Content: Fully Transparent, Blends Naturally with BG -->
+      <!-- Hero Center Content: Seamlessly Blended with Video -->
       <div class="sz-hero-content-wrapper">
         <div class="sz-hero-pre-title">
           <span>PROJECT SUZENS</span>
@@ -91,38 +91,17 @@
           </a>
         </div>
 
-        <!-- Fully Transparent Countdown Timer (No Dark Box Blocking Video) -->
-        <div class="sz-hero-timer-transparent">
-          <div class="sz-timer-label">OFFICIAL DEBUT TEASER COUNTDOWN</div>
+        <!-- Elegant COMING SOON Teaser Section (Replaced Numerical Countdown) -->
+        <div class="sz-hero-coming-soon">
+          <div class="sz-coming-soon-pill">COMING SOON</div>
+          <div class="sz-coming-soon-meta">OFFICIAL DEBUT & SINGLE RELEASE IN PRODUCTION</div>
 
-          <div class="sz-countdown-box">
-            <div class="sz-cd-unit">
-              <span id="cd-days">--</span>
-              <label>DAYS</label>
-            </div>
-            <div class="sz-cd-colon">:</div>
-            <div class="sz-cd-unit">
-              <span id="cd-hours">--</span>
-              <label>HOURS</label>
-            </div>
-            <div class="sz-cd-colon">:</div>
-            <div class="sz-cd-unit">
-              <span id="cd-mins">--</span>
-              <label>MINS</label>
-            </div>
-            <div class="sz-cd-colon">:</div>
-            <div class="sz-cd-unit">
-              <span id="cd-secs">--</span>
-              <label>SECS</label>
-            </div>
-          </div>
-
-          <div class="sz-timer-actions">
+          <div class="sz-coming-soon-actions">
             <button type="button" class="sz-btn sz-btn-primary" onclick="openFanModal()">
               Join Pre-Debut Fan Club
             </button>
             <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-btn sz-btn-outline">
-              View Teasers
+              View Instagram Teasers
             </a>
           </div>
         </div>
@@ -136,116 +115,66 @@
     </section>
 
     <!-- ============================================================
-         SECTION 2: STARRING MEMBERS (PROMINENT BIG IMAGE + SCALED CARDS)
+         SECTION 2: STARRING MEMBERS (3D SLANTED CARD DECK LIKE HOME EVENT)
          ============================================================ -->
-    <section class="sz-section sz-starring-section" id="sz-starring-section">
-      <div class="sz-section-header">
+    <section class="suzens-showcase-section" id="sz-starring-section">
+      <div class="showcase-bg-glow"></div>
+
+      <!-- Section Headline -->
+      <div class="showcase-header">
         <span class="sz-sub-tag">THE LINEUP</span>
-        <h2 class="sz-section-title">STARRING MEMBERS</h2>
-        <p class="sz-section-desc">Meet the four virtual idols of Suzens. Select any member to bring them into the center stage spotlight.</p>
+        <h2 class="section-title">STARRING MEMBERS</h2>
       </div>
 
-      <div class="sz-starring-stage">
-        <!-- Prominent Big Image of Current Starring Member -->
-        <div class="sz-starring-visual-hero">
-          <div class="sz-starring-glow-backdrop"></div>
-          <div class="sz-starring-img-container">
-            <img id="sz-starring-big-img" src="assets/suzana all out.png" alt="Starring Member" />
-          </div>
-          <div class="sz-starring-overlay-tag">
-            <span class="sz-starring-num" id="sz-starring-num">01</span>
-            <span class="sz-starring-name-pill" id="sz-starring-name-pill">SUZANA</span>
+      <div class="showcase-container">
+        <!-- Left Column: Member Details (40% split) -->
+        <div class="showcase-details">
+          <div class="showcase-meta">VIRTUAL POP · IDOL GROUP</div>
+          <h2 class="showcase-title" id="showcase-member-name">AYANA</h2>
+          <div class="showcase-subtitle">of <span class="group-name">SUZENS</span></div>
+          <div class="showcase-role" id="showcase-member-role">VISUAL · SUB VOCALIST</div>
+          <p class="showcase-desc" id="showcase-member-desc">
+            Ethereal and magnetic. Ayana is the visual centrepiece of SUZENS — her striking presence and soft harmonic
+            layers add depth and mystery to the group's signature sound.
+          </p>
+          <div class="showcase-counter" id="showcase-member-counter">04 / 04</div>
+          <div class="sz-showcase-btn-row">
+            <button type="button" class="explore-suzens-btn" onclick="openFanModal()">
+              SUPPORT MEMBER <span class="arrow-icon">→</span>
+            </button>
+            <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-btn sz-btn-outline sz-showcase-sub-btn">
+              VIEW INSTAGRAM
+            </a>
           </div>
         </div>
 
-        <!-- Right Side: Details and Scaled Inactive Member Switcher -->
-        <div class="sz-starring-info-panel">
-          <div class="sz-starring-badge" id="sz-starring-role-badge">LEADER · MAIN VOCALIST</div>
-          <h3 class="sz-starring-name" id="sz-starring-name">SUZANA</h3>
-          <p class="sz-starring-title" id="sz-starring-title">"The Radiant Center"</p>
-
-          <p class="sz-starring-desc" id="sz-starring-desc">
-            Charismatic, fierce, and carrying an expansive vocal range. Suzana commands center stage with passion, delivering unforgettable melodies that define the group's sonic heart.
-          </p>
-
-          <div class="sz-starring-specs">
-            <div class="sz-spec-row">
-              <span class="sz-spec-label">Position</span>
-              <span class="sz-spec-val" id="sz-spec-position">Leader / Main Vocal</span>
+        <!-- Right Column: 3D Stack of Cards (60% split) -->
+        <div class="showcase-cards-wrapper">
+          <div class="showcase-cards-container">
+            <!-- Card 1: Suzana -->
+            <div class="showcase-card pos-left" data-index="0">
+              <div class="card-bg-overlay"></div>
+              <img src="assets/suzana all out.png" alt="Suzana" loading="eager" decoding="async">
+              <div class="card-name-overlay">SUZANA</div>
             </div>
-            <div class="sz-spec-row">
-              <span class="sz-spec-label">Instrument</span>
-              <span class="sz-spec-val" id="sz-spec-gear">Custom Cyber Stratocaster</span>
+            <!-- Card 2: Tiara -->
+            <div class="showcase-card pos-hidden-right" data-index="1">
+              <div class="card-bg-overlay"></div>
+              <img src="assets/tiara all out.png" alt="Tiara" loading="eager" decoding="async">
+              <div class="card-name-overlay">TIARA</div>
             </div>
-            <div class="sz-spec-row">
-              <span class="sz-spec-label">Vocal Style</span>
-              <span class="sz-spec-val" id="sz-spec-vocal">Power Belting & Melodic Pop</span>
+            <!-- Card 3: Remi -->
+            <div class="showcase-card pos-right" data-index="2">
+              <div class="card-bg-overlay"></div>
+              <img src="assets/remi all out.png" alt="Remi" loading="eager" decoding="async">
+              <div class="card-name-overlay">REMI</div>
             </div>
-          </div>
-
-          <!-- Scaled Member Cards: Small until their turn comes, smoothly scales up -->
-          <div class="sz-members-selector-group">
-            <div class="sz-selector-header">
-              <span>SELECT MEMBER</span>
-              <button type="button" class="sz-cycle-toggle-btn" id="sz-cycle-toggle-btn">
-                <i class="fa-solid fa-rotate"></i> <span>Auto Cycle</span>
-              </button>
+            <!-- Card 4: Ayana -->
+            <div class="showcase-card pos-center" data-index="3">
+              <div class="card-bg-overlay"></div>
+              <img src="assets/ayana all out.png" alt="Ayana" loading="eager" decoding="async">
+              <div class="card-name-overlay">AYANA</div>
             </div>
-
-            <div class="sz-member-thumbs-grid">
-              <!-- Member 1: Suzana -->
-              <button type="button" class="sz-member-thumb-card active" data-member="suzana">
-                <div class="sz-thumb-img-wrap">
-                  <img src="assets/suzana.png" alt="Suzana" />
-                </div>
-                <div class="sz-thumb-text">
-                  <span class="sz-thumb-name">Suzana</span>
-                  <span class="sz-thumb-role">Leader</span>
-                </div>
-              </button>
-
-              <!-- Member 2: Tiara -->
-              <button type="button" class="sz-member-thumb-card" data-member="tiara">
-                <div class="sz-thumb-img-wrap">
-                  <img src="assets/Tiara.png" alt="Tiara" />
-                </div>
-                <div class="sz-thumb-text">
-                  <span class="sz-thumb-name">Tiara</span>
-                  <span class="sz-thumb-role">Lead Guitar</span>
-                </div>
-              </button>
-
-              <!-- Member 3: Remi -->
-              <button type="button" class="sz-member-thumb-card" data-member="remi">
-                <div class="sz-thumb-img-wrap">
-                  <img src="assets/Remi.png" alt="Remi" />
-                </div>
-                <div class="sz-thumb-text">
-                  <span class="sz-thumb-name">Remi</span>
-                  <span class="sz-thumb-role">Beatmaster</span>
-                </div>
-              </button>
-
-              <!-- Member 4: Ayana -->
-              <button type="button" class="sz-member-thumb-card" data-member="ayana">
-                <div class="sz-thumb-img-wrap">
-                  <img src="assets/Ayana.png" alt="Ayana" />
-                </div>
-                <div class="sz-thumb-text">
-                  <span class="sz-thumb-name">Ayana</span>
-                  <span class="sz-thumb-role">Visual / Bass</span>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <div class="sz-starring-actions">
-            <button type="button" class="sz-btn sz-btn-primary" onclick="openFanModal()">
-              Support Member
-            </button>
-            <a href="https://www.instagram.com/suzensofficial" target="_blank" rel="noopener noreferrer" class="sz-btn sz-btn-outline">
-              Follow on Instagram
-            </a>
           </div>
         </div>
       </div>
@@ -451,10 +380,10 @@
         <div class="sz-form-group">
           <label>Favorite Member</label>
           <select>
-            <option value="suzana" selected>Suzana (Leader & Main Vocal)</option>
+            <option value="suzana">Suzana (Leader & Main Vocal)</option>
             <option value="tiara">Tiara (Lead Guitar)</option>
             <option value="remi">Remi (Beatmaster & Drums)</option>
-            <option value="ayana">Ayana (Visual Center & Bass)</option>
+            <option value="ayana" selected>Ayana (Visual Center & Bass)</option>
             <option value="all">All 4 Members (Full Suzens Supporter)</option>
           </select>
         </div>
@@ -476,7 +405,7 @@
   <script src="scripts/footer.js"></script>
 
   <!-- Page Logic Script -->
-  <script src="scripts/suzens.js?v=4"></script>
+  <script src="scripts/suzens.js?v=5"></script>
   <script src="scripts/image-loader.js" defer></script>
 </body>
 

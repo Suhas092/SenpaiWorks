@@ -1,29 +1,28 @@
 // ============================================================
-//  SenpaiWorks — Suzens Virtual Idol Group Script
-//  Luxury K-Pop Visual Showcase & Media Controllers
+//  SenpaiWorks — Suzens Virtual Idol Group Interactive Script
+//  Luxury K-Pop Visual Showcase & 3D Slanted Card Deck
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ── 1. Hero Slide Background Video Controls ─────────────────
+  // ── 1. Hero Slide Background Video Controls (Icon-only) ──────
   const heroVideo = document.getElementById("sz-hero-bg-video");
   const heroAudioBtn = document.getElementById("sz-hero-audio-btn");
   const heroAudioIcon = document.getElementById("sz-hero-audio-icon");
-  const heroAudioText = document.getElementById("sz-hero-audio-text");
 
   if (heroVideo) {
     heroVideo.play().catch(() => {
       document.body.addEventListener("click", () => heroVideo.play(), { once: true });
     });
 
-    if (heroAudioBtn) {
+    if (heroAudioBtn && heroAudioIcon) {
       heroAudioBtn.addEventListener("click", () => {
         heroVideo.muted = !heroVideo.muted;
         if (heroVideo.muted) {
           heroAudioIcon.className = "fa-solid fa-volume-xmark";
-          heroAudioText.textContent = "Unmute Video";
+          heroAudioBtn.title = "Unmute Video";
         } else {
           heroAudioIcon.className = "fa-solid fa-volume-high";
-          heroAudioText.textContent = "Mute Video";
+          heroAudioBtn.title = "Mute Video";
           heroVideo.play().catch(() => {});
         }
       });
@@ -67,211 +66,206 @@ document.addEventListener("DOMContentLoaded", () => {
         concertVideo.muted = !concertVideo.muted;
         if (concertVideo.muted) {
           concertAudioIcon.className = "fa-solid fa-volume-xmark";
-          concertAudioText.textContent = "Unmute Crowd Audio";
+          if (concertAudioText) concertAudioText.textContent = "Unmute Crowd Audio";
         } else {
           concertAudioIcon.className = "fa-solid fa-volume-high";
-          concertAudioText.textContent = "Mute Stage Audio";
+          if (concertAudioText) concertAudioText.textContent = "Mute Stage Audio";
           concertVideo.play().catch(() => {});
         }
       });
     }
   }
 
-  // ── 3. Starring Members Showcase Data & Logic ───────────────
-  const starringData = {
-    suzana: {
-      num: "01",
+  // ── 3. Starring Members: 3D Slanted Card Deck (From Home Page) ─
+  const members = [
+    {
       name: "SUZANA",
-      badge: "LEADER · MAIN VOCALIST",
-      title: '"The Radiant Center"',
-      bigImg: "assets/suzana all out.png",
-      desc: "Charismatic, fierce, and carrying an expansive vocal range. Suzana commands center stage with passion, delivering unforgettable melodies that define the group's sonic heart.",
-      position: "Leader / Main Vocal",
-      gear: "Custom Cyber Stratocaster",
-      vocal: "Power Belting & Melodic Pop"
+      subtitle: "of SUZENS",
+      role: "LEADER · MAIN VOCALIST",
+      description: "The heart and voice of SUZENS. Suzana leads the group with grace and power, her crystalline vocals anchoring the group's sonic identity. Bold, determined, and deeply passionate about music.",
+      image: "assets/suzana all out.png",
+      color1: "#ff3366",
+      color2: "#e11d48",
+      glowColor: "rgba(255, 51, 102, 0.32)",
+      shadowColor: "rgba(255, 51, 102, 0.45)"
     },
-    tiara: {
-      num: "02",
+    {
       name: "TIARA",
-      badge: "LEAD GUITARIST · SYNTH SOUND DESIGN",
-      title: '"The Holographic Melody Maker"',
-      bigImg: "assets/tiara all out.png",
-      desc: "A sound architect in the digital sphere, Tiara weaves intricate guitar solos with rich synthesizer textures, defining Suzens signature futuristic soundscape.",
-      position: "Lead Guitarist / Sound Design",
-      gear: "7-String Cyber Axe & Synthesizer",
-      vocal: "Harmonic Backing & Synth Vocal"
+      subtitle: "of SUZENS",
+      role: "MAIN RAPPER · LEAD GUITARIST",
+      description: "Raw energy and rhythm personified. Tiara's razor-sharp delivery and explosive stage presence make her the electrifying force at the center of every SUZENS performance. Fearless and unstoppable.",
+      image: "assets/tiara all out.png",
+      color1: "#00f0ff",
+      color2: "#0088ff",
+      glowColor: "rgba(0, 240, 255, 0.32)",
+      shadowColor: "rgba(0, 240, 255, 0.45)"
     },
-    remi: {
-      num: "03",
+    {
       name: "REMI",
-      badge: "BEATMASTER · DRUMS & PERCUSSION",
-      title: '"The Kinetic Rhythm Powerhouse"',
-      bigImg: "assets/remi all out.png",
-      desc: "Explosive, hyper, and full of charisma, Remi anchors the rhythmic drive of Suzens. Her hybrid digital-acoustic drum patterns deliver dynamic stage impact.",
-      position: "Drums & Sub-Bass Percussion",
-      gear: "Kinetic V-Drum Rig",
-      vocal: "Hype Vocals & Dynamic Ad-libs"
+      subtitle: "of SUZENS",
+      role: "MAIN DANCER · BEATMASTER",
+      description: "The youngest and most spirited member. Remi's dance style blends fluid contemporary movement with sharp K-pop precision. Her cheerful energy is the emotional soul of the group.",
+      image: "assets/remi all out.png",
+      color1: "#9d4edd",
+      color2: "#7928ca",
+      glowColor: "rgba(157, 78, 221, 0.32)",
+      shadowColor: "rgba(157, 78, 221, 0.45)"
     },
-    ayana: {
-      num: "04",
+    {
       name: "AYANA",
-      badge: "VISUAL CENTER · BASSIST · SUB-VOCAL",
-      title: '"The Midnight Siren"',
-      bigImg: "assets/ayana all out.png",
-      desc: "Ethereal, magnetic, and effortlessly captivating, Ayana grounds the lower harmonies with deep pulsating basslines while shining as the group's visual anchor.",
-      position: "Visual Center / Bass & Rap",
-      gear: "Sub-Harmonic 4-String Bass",
-      vocal: "Sub-Vocal Harmony & Fast Rap Flow"
+      subtitle: "of SUZENS",
+      role: "VISUAL · SUB VOCALIST",
+      description: "Ethereal and magnetic. Ayana is the visual centrepiece of SUZENS — her striking presence and soft harmonic layers add depth and mystery to the group's signature sound.",
+      image: "assets/ayana all out.png",
+      color1: "#ff3366",
+      color2: "#ffaa00",
+      glowColor: "rgba(255, 51, 102, 0.32)",
+      shadowColor: "rgba(255, 51, 102, 0.45)"
     }
-  };
+  ];
 
-  const memberKeys = ["suzana", "tiara", "remi", "ayana"];
-  let currentIndex = 0;
-  let autoCycleInterval = null;
-  let isAutoCycling = true;
+  const cards = document.querySelectorAll(".showcase-card");
+  const detailsEl = document.querySelector(".showcase-details");
+  const nameEl = document.getElementById("showcase-member-name");
+  const roleEl = document.getElementById("showcase-member-role");
+  const descEl = document.getElementById("showcase-member-desc");
+  const counterEl = document.getElementById("showcase-member-counter");
 
-  // DOM Elements
-  const bigImg = document.getElementById("sz-starring-big-img");
-  const numTag = document.getElementById("sz-starring-num");
-  const namePill = document.getElementById("sz-starring-name-pill");
-  const roleBadge = document.getElementById("sz-starring-role-badge");
-  const nameEl = document.getElementById("sz-starring-name");
-  const titleEl = document.getElementById("sz-starring-title");
-  const descEl = document.getElementById("sz-starring-desc");
-  const specPosition = document.getElementById("sz-spec-position");
-  const specGear = document.getElementById("sz-spec-gear");
-  const specVocal = document.getElementById("sz-spec-vocal");
-  const thumbCards = document.querySelectorAll(".sz-member-thumb-card");
-  const cycleToggleBtn = document.getElementById("sz-cycle-toggle-btn");
+  let activeIdx = 3; // Start with AYANA (index 3) as active center card
+  let autoPlayTimer = null;
 
-  function setStarringMember(key, isManual = false) {
-    const data = starringData[key];
+  function updateShowcase(nextIdx, direction = 1) {
+    activeIdx = nextIdx;
+    const data = members[activeIdx];
     if (!data) return;
 
-    currentIndex = memberKeys.indexOf(key);
+    // Update showcase CSS variables for character-specific colors
+    const sectionEl = document.querySelector(".suzens-showcase-section");
+    if (sectionEl) {
+      sectionEl.style.setProperty("--active-color-1", data.color1);
+      sectionEl.style.setProperty("--active-color-2", data.color2);
+      sectionEl.style.setProperty("--active-glow", data.glowColor);
+      sectionEl.style.setProperty("--active-shadow", data.shadowColor);
+    }
 
-    // Update active thumbnail scaling
-    thumbCards.forEach((card) => {
-      if (card.getAttribute("data-member") === key) {
-        card.classList.add("active");
-      } else {
-        card.classList.remove("active");
+    // 1. Text Details Fade/Slide Transition
+    if (detailsEl) {
+      detailsEl.classList.add("fade-out");
+    }
+
+    setTimeout(() => {
+      if (nameEl) nameEl.textContent = data.name;
+      if (roleEl) roleEl.textContent = data.role;
+      if (descEl) descEl.textContent = data.description;
+      if (counterEl) counterEl.textContent = `0${activeIdx + 1} / 04`;
+
+      if (detailsEl) {
+        detailsEl.classList.remove("fade-out");
+      }
+    }, 400);
+
+    // 2. Card 3D Carousel Transition Logic
+    cards.forEach((card) => {
+      const idx = parseInt(card.getAttribute("data-index"), 10);
+
+      if (idx === activeIdx) {
+        card.className = "showcase-card pos-center";
+      } else if (idx === (activeIdx - 1 + 4) % 4) {
+        if (direction === -1 && card.classList.contains("pos-hidden-right")) {
+          card.style.transition = "none";
+          card.className = "showcase-card pos-hidden-left";
+          card.offsetHeight;
+          card.style.transition = "";
+        }
+        card.className = "showcase-card pos-left";
+      } else if (idx === (activeIdx + 1) % 4) {
+        if (direction === 1 && card.classList.contains("pos-hidden-left")) {
+          card.style.transition = "none";
+          card.className = "showcase-card pos-hidden-right";
+          card.offsetHeight;
+          card.style.transition = "";
+        }
+        card.className = "showcase-card pos-right";
+      } else if (idx === (activeIdx + 2) % 4) {
+        if (direction === 1) {
+          card.className = "showcase-card pos-hidden-left";
+        } else {
+          card.className = "showcase-card pos-hidden-right";
+        }
       }
     });
-
-    // Animate Big Starring Image
-    if (bigImg) {
-      bigImg.style.opacity = "0";
-      bigImg.style.transform = "scale(0.94) translateY(12px)";
-
-      setTimeout(() => {
-        bigImg.src = data.bigImg;
-        bigImg.alt = `${data.name} Starring Idol`;
-        bigImg.style.opacity = "1";
-        bigImg.style.transform = "scale(1) translateY(0)";
-      }, 200);
-    }
-
-    // Update Text Details
-    if (numTag) numTag.textContent = data.num;
-    if (namePill) namePill.textContent = data.name;
-    if (roleBadge) roleBadge.textContent = data.badge;
-    if (nameEl) nameEl.textContent = data.name;
-    if (titleEl) titleEl.textContent = data.title;
-    if (descEl) descEl.textContent = data.desc;
-    if (specPosition) specPosition.textContent = data.position;
-    if (specGear) specGear.textContent = data.gear;
-    if (specVocal) specVocal.textContent = data.vocal;
-
-    if (isManual && isAutoCycling) {
-      resetCycleTimer();
-    }
   }
 
-  // Thumb card clicks
-  thumbCards.forEach((card) => {
+  // Card click event listeners
+  cards.forEach((card) => {
     card.addEventListener("click", () => {
-      const key = card.getAttribute("data-member");
-      setStarringMember(key, true);
+      const idx = parseInt(card.getAttribute("data-index"), 10);
+      if (card.classList.contains("pos-left")) {
+        updateShowcase(idx, -1);
+        resetAutoPlay();
+      } else if (card.classList.contains("pos-right")) {
+        updateShowcase(idx, 1);
+        resetAutoPlay();
+      }
     });
   });
 
-  // Auto-Cycle Rotator
-  function startCycleTimer() {
-    autoCycleInterval = setInterval(() => {
-      currentIndex = (currentIndex + 1) % memberKeys.length;
-      setStarringMember(memberKeys[currentIndex], false);
+  // Autoplay function (triggers next member every 4 seconds)
+  function startAutoPlay() {
+    autoPlayTimer = setInterval(() => {
+      const nextIdx = (activeIdx + 1) % 4;
+      updateShowcase(nextIdx, 1);
     }, 4500);
   }
 
-  function resetCycleTimer() {
-    if (autoCycleInterval) clearInterval(autoCycleInterval);
-    if (isAutoCycling) startCycleTimer();
+  function resetAutoPlay() {
+    if (autoPlayTimer) clearInterval(autoPlayTimer);
+    startAutoPlay();
   }
 
-  if (cycleToggleBtn) {
-    cycleToggleBtn.addEventListener("click", () => {
-      isAutoCycling = !isAutoCycling;
-      if (isAutoCycling) {
-        cycleToggleBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> <span>Auto Cycle</span>';
-        cycleToggleBtn.style.color = "#ffffff";
-        startCycleTimer();
-      } else {
-        cycleToggleBtn.innerHTML = '<i class="fa-solid fa-pause"></i> <span>Paused</span>';
-        cycleToggleBtn.style.color = "#9e9ea7";
-        if (autoCycleInterval) clearInterval(autoCycleInterval);
+  // Drag & Swipe Navigation
+  const cardsWrapper = document.querySelector(".showcase-cards-wrapper");
+  if (cardsWrapper) {
+    let startX = 0;
+    let isDragging = false;
+
+    cardsWrapper.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      startX = e.clientX;
+    });
+
+    window.addEventListener("mouseup", (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diffX = e.clientX - startX;
+      if (diffX > 50) {
+        updateShowcase((activeIdx - 1 + 4) % 4, -1);
+        resetAutoPlay();
+      } else if (diffX < -50) {
+        updateShowcase((activeIdx + 1) % 4, 1);
+        resetAutoPlay();
       }
     });
+
+    cardsWrapper.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    cardsWrapper.addEventListener("touchend", (e) => {
+      const diffX = e.changedTouches[0].clientX - startX;
+      if (diffX > 50) {
+        updateShowcase((activeIdx - 1 + 4) % 4, -1);
+        resetAutoPlay();
+      } else if (diffX < -50) {
+        updateShowcase((activeIdx + 1) % 4, 1);
+        resetAutoPlay();
+      }
+    }, { passive: true });
   }
 
-  startCycleTimer();
+  startAutoPlay();
 
-  // ── 4. Transparent Hero Countdown Timer ──────────────────────
-  function getNextTeaserDropTimestamp() {
-    const now = new Date();
-    let targetYear = now.getFullYear();
-    const thisYearTarget = new Date(`${targetYear}-02-09T20:00:00+09:00`).getTime();
-    if (thisYearTarget > now.getTime()) {
-      return thisYearTarget;
-    }
-    return new Date(`${targetYear + 1}-02-09T20:00:00+09:00`).getTime();
-  }
-
-  function updateCountdown() {
-    const cdDays = document.getElementById("cd-days");
-    const cdHours = document.getElementById("cd-hours");
-    const cdMins = document.getElementById("cd-mins");
-    const cdSecs = document.getElementById("cd-secs");
-
-    if (!cdDays) return;
-
-    const targetDate = getNextTeaserDropTimestamp();
-    const now = new Date().getTime();
-    const diff = targetDate - now;
-
-    if (diff <= 0) {
-      cdDays.textContent = "00";
-      cdHours.textContent = "00";
-      cdMins.textContent = "00";
-      cdSecs.textContent = "00";
-      return;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-    cdDays.textContent = String(days).padStart(2, "0");
-    cdHours.textContent = String(hours).padStart(2, "0");
-    cdMins.textContent = String(mins).padStart(2, "0");
-    cdSecs.textContent = String(secs).padStart(2, "0");
-  }
-
-  setInterval(updateCountdown, 1000);
-  updateCountdown();
-
-  // ── 5. Audio Stem Simulator Toggle ───────────────────────────
+  // ── 4. Audio Stem Simulator Toggle ───────────────────────────
   const playBtns = document.querySelectorAll(".sz-play-btn");
   playBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -284,13 +278,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── 6. Fan Modal Handlers ────────────────────────────────────
+  // ── 5. Fan Modal Handlers ────────────────────────────────────
   const fanModal = document.getElementById("sz-fan-modal");
   const modalClose = document.getElementById("sz-modal-close");
   const fanForm = document.getElementById("sz-fan-form");
 
   window.openFanModal = function () {
-    if (fanModal) fanModal.style.display = "flex";
+    if (fanModal) {
+      fanModal.style.display = "flex";
+    }
   };
 
   if (modalClose) {
