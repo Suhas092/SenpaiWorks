@@ -317,7 +317,7 @@ window.openProductReviewsSearch = function (productId) {
   switchReviewsSubtab("reviews-all");
   const searchInput = document.getElementById("admin-reviews-search");
   if (searchInput) {
-    searchInput.value = productId;
+    searchInput.value = '';  // CLEAR the search input so onkeyup doesn't interfere
   }
   console.log('[View Reviews] Calling loadAllAdminReviews with:', productId);
   loadAllAdminReviews(productId);  // Pass productId directly to avoid state issues
