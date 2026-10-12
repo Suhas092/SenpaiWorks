@@ -8,7 +8,7 @@ window.feedbackSortDir = 'desc';
 window.feedbackCurrentPage = 1;
 
 window.loadCommunityReviews = async function () {
-  const tbody = document.getElementById("community-reviews-list");
+  const tbody = document.getElementById("community-list-body");
   const feedbackTbody = document.getElementById("customer-feedback-list-body");
   const feedbackAdminTbody = document.getElementById("feedback-admin-list-body");
   const countBadge = document.getElementById("admin-comm-reviews-count");
@@ -74,7 +74,7 @@ window.loadCommunityReviews = async function () {
     allReviews = allReviews.filter(r => (r.status || 'Pending') === statusFilter.value);
   }
 
-  const cols = ['author', 'rating', 'date'];
+  const cols = ['author', 'email', 'date'];
   cols.forEach(col => {
     const icon = document.getElementById(`sort-icon-${col}`);
     if (icon) {
@@ -92,9 +92,9 @@ window.loadCommunityReviews = async function () {
     if (window.feedbackSortCol === 'date') {
       valA = new Date(valA || 0).getTime();
       valB = new Date(valB || 0).getTime();
-    } else if (window.feedbackSortCol === 'rating') {
-      valA = a.rating || 0;
-      valB = b.rating || 0;
+    } else if (window.feedbackSortCol === 'email') {
+      valA = (a.email || '').toLowerCase();
+      valB = (b.email || '').toLowerCase();
     } else if (window.feedbackSortCol === 'author') {
       valA = (a.author || a.user || 'Anonymous').toLowerCase();
       valB = (b.author || b.user || 'Anonymous').toLowerCase();
@@ -150,7 +150,7 @@ window.loadCommunityReviews = async function () {
           ${r.email ? `<small class="feedback-author-email">${window.escapeHtml(r.email)}</small>` : ''}
         </td>
         <td>
-          <div class="feedback-rating-stars">${stars} <span class="feedback-rating-num">(${r.rating || 5}.0)</span></div>
+          <div class="feedback-email">${window.escapeHtml(r.email || '—')}</div>
           <strong class="feedback-item-title">${window.escapeHtml(r.title || 'Review')}</strong>
         </td>
         <td>

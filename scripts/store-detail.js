@@ -1413,7 +1413,7 @@ async function renderReviewsSection(product) {
                 <button class="helpful-vote-btn ${isVoted ? 'voted' : ''}" onclick="window.voteReviewHelpful(this, ${rev.id})">
                   <i class="fa-${isVoted ? 'solid' : 'regular'} fa-thumbs-up"></i> Helpful ${helpfulCount > 0 ? `(${helpfulCount})` : ''}
                 </button>
-                <button type="button" class="report-review-btn" onclick="window.openReportReviewModal(${rev.id})" style="background: transparent; border: none; color: #64748b; font-size: 0.78rem; cursor: pointer; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s;" title="Report this review">
+                <button type="button" class="report-review-btn" data-review-id="${rev.id}" style="background: transparent; border: none; color: #64748b; font-size: 0.78rem; cursor: pointer; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s;" title="Report this review">
                   <i class="fa-regular fa-flag"></i> Report
                 </button>
                 ${helpfulCount > 0 ? `<span class="helpful-people-count" style="font-size: 0.78rem; color: #94a3b8;">${helpfulText}</span>` : ''}
@@ -1435,7 +1435,14 @@ async function renderReviewsSection(product) {
       } else {
         loadMoreWrap.style.display = "none";
       }
-    }
+
+      // Set up report button click handler
+      const reportBtns = document.querySelectorAll(".report-review-btn");
+      reportBtns.forEach(btn => {
+        btn.removeEventListener("click", handleReportButtonClick);
+        btn.addEventListener("click", handleReportButtonClick);
+      });
+     }
   } catch (err) {
     console.error("Error rendering reviews section:", err);
   }
@@ -1511,6 +1518,13 @@ window.closeReportReviewModal = function () {
   const form = document.getElementById("report-review-form");
   if (form) form.reset();
 };
+
+// Report button click handler
+function handleReportButtonClick(e) {
+  e.preventDefault();
+  const reviewId = this.getAttribute("data-review-id");
+  window.openReportReviewModal(parseInt(reviewId, 10));
+}
 
 window.handleReportReviewSubmit = async function (e) {
   if (e) e.preventDefault();

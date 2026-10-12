@@ -1,11 +1,14 @@
 "use strict";
 
 let cartData = [];
-let promoDiscountAmount = 0;
-let promoDiscountPercent = 0;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   renderCartPage();
+  if (window.SenpaiCoupon && window.SenpaiCoupon.getAppliedCoupon()) {
+    const result = await window.SenpaiCoupon.revalidateAppliedCoupon();
+    renderCartPage();
+    if (result && result.error) setCartPromoMessage(`<span style="color:#ef4444; font-weight:700;">✕ ${result.error}</span>`);
+  }
 });
 
 function getCartData() {
@@ -189,7 +192,11 @@ function renderCartPage() {
 
   // 2. POPULATED CART LAYOUT
   let subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
-  let discount = promoDiscountAmount > 0 ? promoDiscountAmount : (subtotal * promoDiscountPercent) / 100;
+  const appliedCoupon = window.SenpaiCoupon.getAppliedCoupon();
+  const discount = window.SenpaiCoupon.computeCouponDiscount(appliedCoupon, subtotal);
+  const promoAppliedHtml = appliedCoupon
+    ? `<span style="color:#059669; font-weight:700;">✓ ${appliedCoupon.code} applied (${window.SenpaiCoupon.describeCoupon(appliedCoupon)})</span> <button type="button" onclick="removeCartPromoCode()" style="background:none; border:none; color:#ef4444; font-weight:600; cursor:pointer; margin-left:6px;">Remove</button>`
+    : "";
   let hasPhysical = cartData.some(i => i.type === 'physical');
   let shipping = hasPhysical ? (subtotal >= 999 ? 0 : 99) : 0;
   let grandTotal = Math.max(0, subtotal - discount + shipping);
@@ -259,10 +266,10 @@ function renderCartPage() {
 
           <!-- Promo Code Box -->
           <div class="cart-promo-input-row">
-            <input type="text" id="cart-promo-input" class="cart-promo-input" placeholder="Promo code (e.g. SENPAI100)">
+            <input type="text" id="cart-promo-input" class="cart-promo-input" placeholder="Discount code">
             <button type="button" class="btn-cart-apply-promo" onclick="applyCartPromoCode()">Apply</button>
           </div>
-          <div id="cart-promo-message" class="cart-promo-feedback"></div>
+          <div id="cart-promo-message" class="cart-promo-feedback">${promoAppliedHtml}</div>
 
           <div class="cart-totals-breakdown">
             <div class="cart-total-row">
@@ -393,38 +400,34 @@ window.removeWishlistItem = function(idx) {
   renderCartPage();
 };
 
-window.applyCartPromoCode = function() {
-  const input = document.getElementById("cart-promo-input");
+function setCartPromoMessage(html) {
   const msg = document.getElementById("cart-promo-message");
-  if (!input) return;
+  if (msg) msg.innerHTML = html;
+}
 
-  const code = input.value.trim().toUpperCase();
+window.applyCartPromoCode = async function() {
+  const input = document.getElementById("cart-promo-input");
+  if (!input || !window.SenpaiCoupon) return;
 
-  if (code === "SENPAI100") {
-    let used = localStorage.getItem("usedDiscounts");
-    used = used ? JSON.parse(used) : [];
-    const currentUser = localStorage.getItem("currentUser");
-    const userObj = currentUser ? JSON.parse(currentUser) : null;
-    const userKey = userObj ? (userObj.email || userObj.username) : "guest";
-
-    if (used.includes(userKey)) {
-      promoDiscountAmount = 0;
-      promoDiscountPercent = 0;
-      if (msg) msg.innerHTML = `<span style="color:#ef4444; font-weight:700;">SENPAI100 code has already been used on your account.</span>`;
-    } else {
-      promoDiscountAmount = 100;
-      promoDiscountPercent = 0;
-      if (msg) msg.innerHTML = `<span style="color:#059669; font-weight:700;">✓ ₹100.00 Registration Discount Applied!</span>`;
-    }
-  } else if (code === "SENPAI25") {
-    promoDiscountAmount = 0;
-    promoDiscountPercent = 25;
-    if (msg) msg.innerHTML = `<span style="color:#059669; font-weight:700;">✓ 25% Discount Applied!</span>`;
-  } else {
-    promoDiscountAmount = 0;
-    promoDiscountPercent = 0;
-    if (msg) msg.innerHTML = `<span style="color:#ef4444; font-weight:700;">✕ Invalid discount code.</span>`;
+  const code = input.value.trim();
+  if (!code) {
+    setCartPromoMessage(`<span style="color:#ef4444; font-weight:700;">✕ Enter a discount code.</span>`);
+    return;
   }
 
+  const result = await window.SenpaiCoupon.validateCouponCode(code);
+  if (result.error) {
+    window.SenpaiCoupon.setAppliedCoupon(null);
+    renderCartPage();
+    setCartPromoMessage(`<span style="color:#ef4444; font-weight:700;">✕ ${result.error}</span>`);
+    return;
+  }
+
+  window.SenpaiCoupon.setAppliedCoupon(result.coupon);
+  renderCartPage();
+};
+
+window.removeCartPromoCode = function() {
+  window.SenpaiCoupon.setAppliedCoupon(null);
   renderCartPage();
 };

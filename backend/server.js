@@ -10,6 +10,7 @@ const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
 const { sendTelegramAlert } = require('./telegram');
 const {
+  sendEmail,
   sendSignupOtpEmail,
   sendPasswordResetOtpEmail,
   sendPasswordChangedConfirmationEmail,
@@ -70,7 +71,7 @@ app.use(helmet({
 
 
 // Live Reload setup for development auto-refreshing on save
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.DISABLE_LIVERELOAD !== 'true') {
   const liveReloadServer = livereload.createServer({
     exts: ['html', 'css', 'js'],
     exclusions: [/node_modules\//, /\.git\//, /backend\//]
@@ -152,6 +153,9 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'senpai_works_default_fallback_jwt_key_99';
 const ADMIN_ROUTE = process.env.ADMIN_ROUTE || '/senpaiworks-console';
 
+// Path to optional new admin frontend (static SPA build output)
+const ADMIN_FRONTEND_DIR = path.join(__dirname, '..', 'admin-frontend', 'dist', 'client');
+
 const LIVERELOAD_SCRIPT = `<script src="http://localhost:35729/livereload.js?snipver=1"></script>`;
 
 function sendHtmlFile(res, filePath, status = 200) {
@@ -181,10 +185,21 @@ app.get('/', (req, res) => {
   sendHtmlFile(res, path.join(__dirname, '../home.html'));
 });
 
-// Serve Admin Dashboard ONLY on the secret route specified in .env
-app.get(ADMIN_ROUTE, (req, res) => {
-  sendHtmlFile(res, path.join(__dirname, '../admin.html'));
-});
+// If the new admin frontend build exists, serve its static assets under the admin route
+if (fs.existsSync(ADMIN_FRONTEND_DIR)) {
+  console.log('Admin frontend detected at', ADMIN_FRONTEND_DIR, '- serving it at', ADMIN_ROUTE);
+  // Serve static assets for everything under the admin route
+  app.use(ADMIN_ROUTE, express.static(ADMIN_FRONTEND_DIR, { index: false }));
+
+  // For any admin route path, return the SPA index.html (so client-side routing works)
+  const adminIndexPath = path.join(ADMIN_FRONTEND_DIR, 'index.html');
+  app.get([ADMIN_ROUTE, `${ADMIN_ROUTE}/*`], (req, res) => res.sendFile(adminIndexPath));
+} else {
+  // Fallback: serve legacy admin.html (existing UI)
+  app.get(ADMIN_ROUTE, (req, res) => {
+    sendHtmlFile(res, path.join(__dirname, '../admin.html'));
+  });
+}
 
 // Explicitly return TRUE HTTP 404 for standard /admin or /admin.html attempts
 app.get(['/admin', '/admin.html'], (req, res) => {
@@ -291,8 +306,11 @@ const adminLoginLimiter = rateLimit({
   validate: { trustProxy: false }
 });
 
-// Admin JWT authentication middleware
-function requireAdminToken(req, res, next) {
+// Admin JWT authentication middleware.
+// Two token types: the super administrator (role 'admin') and staff members (role 'staff').
+// Staff tokens are checked against the database on every request so deactivation takes effect
+// immediately, and each request path must be inside the staff member's role permissions.
+async function requireAdminToken(req, res, next) {
   let token = req.cookies?.adminToken;
 
   if (!token && req.headers['authorization']) {
@@ -301,19 +319,51 @@ function requireAdminToken(req, res, next) {
   }
 
   if (!token || token === 'undefined' || token === 'null') {
+    console.log('[Auth] Missing or invalid token. Cookies:', Object.keys(req.cookies || {}));
     return res.status(401).json({ error: 'Unauthorized: Missing or invalid admin token' });
   }
 
+  let decoded;
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded && decoded.role === 'admin') {
-      req.adminUser = decoded;
-      return next();
-    }
-    return res.status(401).json({ error: 'Unauthorized: Invalid token payload' });
+    decoded = jwt.verify(token, JWT_SECRET);
   } catch (err) {
+    console.log('[Auth] Token verification failed:', err.message);
     return res.status(401).json({ error: 'Unauthorized: Token verification failed' });
   }
+
+  if (decoded && decoded.role === 'admin') {
+    req.adminUser = { username: decoded.username, role: 'admin', isSuper: true };
+    return next();
+  }
+
+  if (decoded && decoded.role === 'staff' && decoded.staffId) {
+    try {
+      const member = await prisma.staffMember.findUnique({ where: { id: Number(decoded.staffId) } });
+      if (!member || !member.isActive) {
+        return res.status(401).json({ error: 'Unauthorized: Account is inactive or no longer exists' });
+      }
+      if (!staffAccess.canAccessPath(member.role, req.originalUrl, req.method, member.pageAccess)) {
+        return res.status(403).json({ error: 'Your role does not have access to this page.' });
+      }
+      req.adminUser = {
+        username: member.username,
+        name: member.name,
+        role: member.role,
+        // Admin role has the same reach as the super administrator (team, settings, payments).
+        isSuper: staffAccess.hasFullAccess(member.role),
+        staffId: member.id,
+        avatar: member.avatar ?? '',
+        pages: staffAccess.pagesFor(member.role, member.pageAccess)
+      };
+      return next();
+    } catch (err) {
+      console.error('[Auth] Staff check failed:', err);
+      return res.status(500).json({ error: 'Authentication failed due to a server error.' });
+    }
+  }
+
+  console.log('[Auth] Token payload invalid - missing admin role');
+  return res.status(401).json({ error: 'Unauthorized: Invalid token payload' });
 }
 
 // Admin Login Endpoint (sets httpOnly cookie for persistent, secure auth)
@@ -326,19 +376,7 @@ app.post('/api/admin/login', adminLoginLimiter, async (req, res) => {
     return res.status(400).json({ error: 'Username and password are required.' });
   }
 
-  if (username !== adminUser) {
-    return res.status(401).json({ error: 'Invalid admin credentials.' });
-  }
-
-  try {
-    const isMatch = await bcrypt.compare(password, adminHash);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid admin credentials.' });
-    }
-
-    // Issue 8-hour JWT token and set in httpOnly, Secure cookie
-    const token = jwt.sign({ username: adminUser, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
-
+  const setAdminCookie = (token) =>
     res.cookie('adminToken', token, {
       maxAge: 8 * 60 * 60 * 1000, // 8 hours
       httpOnly: true,
@@ -346,6 +384,34 @@ app.post('/api/admin/login', adminLoginLimiter, async (req, res) => {
       sameSite: 'lax',
       path: '/'
     });
+
+  try {
+    if (username !== adminUser) {
+      // Not the super administrator: try a staff account.
+      const staff = await prisma.staffMember.findUnique({
+        where: { username: String(username).trim().toLowerCase() }
+      });
+      const isStaffMatch =
+        !!staff && staff.isActive && (await bcrypt.compare(password, staff.passwordHash));
+      if (!isStaffMatch) {
+        return res.status(401).json({ error: 'Invalid admin credentials.' });
+      }
+
+      await prisma.staffMember.update({ where: { id: staff.id }, data: { lastLoginAt: new Date() } });
+      // No username claim on staff tokens, so older checks that treat any username as admin do not apply.
+      setAdminCookie(jwt.sign({ role: 'staff', staffId: staff.id, name: staff.name }, JWT_SECRET, { expiresIn: '8h' }));
+      return res.json({ success: true, message: 'Staff authentication successful', username: staff.username, role: staff.role });
+    }
+
+    const storedHash = await siteSettings.loadAdminPasswordHash(prisma);
+    const isMatch = await bcrypt.compare(password, storedHash || adminHash);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid admin credentials.' });
+    }
+
+    // Issue 8-hour JWT token and set in httpOnly, Secure cookie
+    const token = jwt.sign({ username: adminUser, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
+    setAdminCookie(token);
 
     return res.json({ success: true, message: 'Admin authentication successful', username: adminUser });
   } catch (err) {
@@ -355,7 +421,19 @@ app.post('/api/admin/login', adminLoginLimiter, async (req, res) => {
 });
 
 // Admin Session Verification Endpoint
-app.get('/api/admin/me', requireAdminToken, (req, res) => {
+app.get('/api/admin/me', requireAdminToken, async (req, res) => {
+  // The super administrator has no staff record, so name and photo come from the admin profile settings.
+  if (!req.adminUser.staffId) {
+    try {
+      const profile = await siteSettings.loadAdminProfile(prisma, req.adminUser.username);
+      return res.json({
+        success: true,
+        adminUser: { ...req.adminUser, name: profile.name, avatar: profile.avatar }
+      });
+    } catch (err) {
+      console.error('[Admin] Profile lookup failed:', err);
+    }
+  }
   return res.json({ success: true, adminUser: req.adminUser });
 });
 
@@ -404,6 +482,17 @@ async function requireUserToken(req, res, next) {
 // Product Reviews Router (Batch A Customer-Facing & Batch B Moderation)
 const reviewsRouter = require('./routes/reviews')(prisma, requireUserToken, requireAdminToken, JWT_SECRET);
 app.use(reviewsRouter);
+// Customer feedback (profile submissions, admin moderation replies)
+app.use(require('./routes/feedback')(prisma, requireUserToken, requireAdminToken));
+const adminConsoleRouter = require('./routes/adminConsole')(prisma, requireAdminToken);
+app.use(adminConsoleRouter);
+const siteSettings = require('./routes/siteSettings');
+app.use(siteSettings(prisma, requireAdminToken));
+const staffAccess = require('./utils/staffAccess');
+const couponUtils = require('./utils/coupons');
+app.use(require('./routes/staff')(prisma, requireAdminToken));
+const staffRouter = require('./routes/staff');
+app.use(staffRouter(prisma, requireAdminToken));
 
 // Initialize In-App Review Nudge Cron
 const { initReviewNudgeCron } = require('./cron/review-nudge');
@@ -2611,6 +2700,7 @@ app.post('/api/users/block', requireUserToken, async (req, res) => {
 app.get('/api/community/reviews', async (req, res) => {
   try {
     let dbReviews = await prisma.communityReview.findMany({
+      where: { isPublic: true },
       orderBy: { createdAt: 'desc' }
     });
     res.json(dbReviews);
@@ -3020,11 +3110,12 @@ app.get('/api/products/:id', async (req, res) => {
 
 app.post('/api/products', requireAdminToken, async (req, res) => {
   const {
-    id, name, category, subCategory, price, description, img,
+    id, name, category, subCategory, price, originalPrice, description, img,
     additionalImages, badge, software, format, isNew, type, creator,
     whatsIncluded, aboutItem, sizes, colors, material, fabricType,
-    printingMethod, washingInstructions, shippingWeight, packageDimensions,
-    available, stockQuantity, variantsData, featureHighlights, downloadUrl
+    rating, ratingCount, printingMethod, washingInstructions, shippingWeight,
+    available, stockQuantity, variantsData, featureHighlights, downloadUrl,
+    sku, costPrice, productStatus
   } = req.body;
 
   if (!id || !name || !category || price === undefined || !description || !img) {
@@ -3038,6 +3129,7 @@ app.post('/api/products', requireAdminToken, async (req, res) => {
       finalId = `${finalId}-${Date.now().toString(36)}`;
     }
 
+    console.log(`[Product Create] Creating new product: ${finalId}`);
     const product = await prisma.product.create({
       data: {
         id: finalId,
@@ -3046,6 +3138,8 @@ app.post('/api/products', requireAdminToken, async (req, res) => {
         subCategory: subCategory || '',
         price: parseFloat(price),
         originalPrice: originalPrice ? parseFloat(originalPrice) : null,
+        rating: rating ? parseFloat(rating) : 5.0,
+        ratingCount: ratingCount ? parseInt(ratingCount) : 0,
         description,
         img,
         additionalImages: typeof additionalImages === 'object' ? JSON.stringify(additionalImages) : (additionalImages || ''),
@@ -3055,6 +3149,9 @@ app.post('/api/products', requireAdminToken, async (req, res) => {
         isNew: isNew !== undefined ? Boolean(isNew) : true,
         type: type || 'physical',
         downloadUrl: downloadUrl || null,
+        sku: sku ? String(sku).trim() : null,
+        costPrice: costPrice === undefined || costPrice === null || costPrice === '' ? null : parseFloat(costPrice),
+        productStatus: productStatus || 'Active',
         creator: creator || 'SenpaiWorks',
         whatsIncluded: typeof whatsIncluded === 'object' ? JSON.stringify(whatsIncluded) : (whatsIncluded || ''),
         aboutItem: typeof aboutItem === 'object' ? JSON.stringify(aboutItem) : (aboutItem || ''),
@@ -3071,10 +3168,11 @@ app.post('/api/products', requireAdminToken, async (req, res) => {
         featureHighlights: typeof featureHighlights === 'object' ? JSON.stringify(featureHighlights) : (featureHighlights || '')
       }
     });
+    console.log(`[Product Create] Successfully created product: ${finalId}`);
     res.json(product);
   } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({ error: 'Failed to create product' });
+    console.error(`[Product Create Error] Failed to create product:`, error.message || error);
+    res.status(500).json({ error: 'Failed to create product: ' + (error.message || 'Unknown error') });
   }
 });
 
@@ -3083,38 +3181,70 @@ app.put('/api/products/:id', requireAdminToken, async (req, res) => {
   const updateData = { ...req.body };
   delete updateData.id;
 
+  // Numeric fields
   if (updateData.price !== undefined) updateData.price = parseFloat(updateData.price);
-  if (updateData.originalPrice !== undefined) updateData.originalPrice = parseFloat(updateData.originalPrice);
+  if (updateData.originalPrice !== undefined) updateData.originalPrice = updateData.originalPrice ? parseFloat(updateData.originalPrice) : null;
+  if (updateData.rating !== undefined) updateData.rating = updateData.rating ? parseFloat(updateData.rating) : 5.0;
+  if (updateData.ratingCount !== undefined) updateData.ratingCount = updateData.ratingCount ? parseInt(updateData.ratingCount) : 0;
   if (updateData.stockQuantity !== undefined) updateData.stockQuantity = parseInt(updateData.stockQuantity);
+  if (updateData.costPrice !== undefined) {
+    updateData.costPrice = updateData.costPrice === '' || updateData.costPrice === null ? null : parseFloat(updateData.costPrice);
+  }
+  if (updateData.sku !== undefined) updateData.sku = updateData.sku ? String(updateData.sku).trim() : null;
+  
+  // Boolean fields
   if (updateData.available !== undefined) updateData.available = Boolean(updateData.available);
   if (updateData.isNew !== undefined) updateData.isNew = Boolean(updateData.isNew);
+  
+  // Handle JSON fields
   if (Array.isArray(updateData.additionalImages)) updateData.additionalImages = updateData.additionalImages.join("\n");
   else if (typeof updateData.additionalImages === 'object' && updateData.additionalImages !== null) updateData.additionalImages = JSON.stringify(updateData.additionalImages);
   if (typeof updateData.variantsData === 'object' && updateData.variantsData !== null) updateData.variantsData = JSON.stringify(updateData.variantsData);
   if (typeof updateData.featureHighlights === 'object' && updateData.featureHighlights !== null) updateData.featureHighlights = JSON.stringify(updateData.featureHighlights);
+  if (typeof updateData.software === 'object' && updateData.software !== null) updateData.software = JSON.stringify(updateData.software);
+  if (typeof updateData.format === 'object' && updateData.format !== null) updateData.format = JSON.stringify(updateData.format);
+  if (typeof updateData.whatsIncluded === 'object' && updateData.whatsIncluded !== null) updateData.whatsIncluded = JSON.stringify(updateData.whatsIncluded);
+  if (typeof updateData.aboutItem === 'object' && updateData.aboutItem !== null) updateData.aboutItem = JSON.stringify(updateData.aboutItem);
 
   try {
+    console.log(`[Product Update] Updating product ${id} with data:`, Object.keys(updateData));
     const updated = await prisma.product.update({
       where: { id },
       data: updateData
     });
+    console.log(`[Product Update] Successfully updated product ${id}`);
     res.json(updated);
   } catch (error) {
-    console.error('Error updating product:', error);
-    res.status(500).json({ error: 'Failed to update product' });
+    console.error(`[Product Update Error] Failed to update product ${id}:`, error.message || error);
+    res.status(500).json({ error: 'Failed to update product: ' + (error.message || 'Unknown error') });
   }
 });
 
 app.delete('/api/products/:id', requireAdminToken, async (req, res) => {
   const { id } = req.params;
   try {
+    console.log(`[Product Delete] Attempting to delete product: ${id}`);
+    
+    // Check if product has any associated orders before deleting
+    const orderItems = await prisma.orderItem.findMany({
+      where: { productId: id }
+    });
+    
+    if (orderItems.length > 0) {
+      console.log(`[Product Delete] Cannot delete product ${id} - has ${orderItems.length} associated order(s)`);
+      return res.status(409).json({ 
+        error: `Cannot delete product - it has ${orderItems.length} associated order(s). Products with orders cannot be deleted for data integrity.` 
+      });
+    }
+    
     await prisma.product.delete({
       where: { id }
     });
+    console.log(`[Product Delete] Successfully deleted product: ${id}`);
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    console.error('Error deleting product:', error);
-    res.status(500).json({ error: 'Failed to delete product' });
+    console.error(`[Product Delete Error] Failed to delete product ${id}:`, error.message || error);
+    res.status(500).json({ error: 'Failed to delete product: ' + (error.message || 'Unknown error') });
   }
 });
 
@@ -3148,17 +3278,11 @@ app.get('/api/artworks', async (req, res) => {
         where: { animeId: { in: animeIdKeys } }
       });
 
-      // Likes count
-      const likeRecord = await prisma.like.findFirst({
-        where: { animeId: { in: animeIdKeys } }
-      });
-      const likeCount = likeRecord ? likeRecord.count : 0;
+      const likeRecords = await prisma.like.findMany({ where: { animeId: { in: animeIdKeys } } });
+      const likeCount = likeRecords.reduce((sum, r) => sum + r.count, 0);
 
-      // Interested count
-      const interestRecord = await prisma.artworkInterest.findFirst({
-        where: { artworkId: { in: animeIdKeys } }
-      });
-      const interestCount = interestRecord ? interestRecord.count : 0;
+      const interestRecords = await prisma.artworkInterest.findMany({ where: { artworkId: { in: animeIdKeys } } });
+      const interestCount = interestRecords.reduce((sum, r) => sum + r.count, 0);
 
       return {
         ...art,
@@ -3223,20 +3347,15 @@ app.put('/api/artworks/:id', requireAdminToken, async (req, res) => {
   }
 
   try {
+    // Only write fields the client actually sent; omitted fields keep their stored values.
+    const artworkUpdate = {};
+    const incoming = { category, charname, artist, source, sex, artstyle, software, description, aboutDesc, img };
+    for (const [key, value] of Object.entries(incoming)) {
+      if (value !== undefined) artworkUpdate[key] = value;
+    }
     const artwork = await prisma.artwork.update({
       where: { id: parseInt(id) },
-      data: {
-        category,
-        charname,
-        artist: artist || 'SenpaiWorks Official',
-        source,
-        sex: sex || 'Female',
-        artstyle: artstyle || 'Digital Art',
-        software: software || 'Photoshop',
-        description: description || '',
-        aboutDesc: aboutDesc || '',
-        img
-      }
+      data: artworkUpdate
     });
     res.json(artwork);
   } catch (error) {
@@ -4116,6 +4235,55 @@ app.post('/api/upload', requireAdminToken, async (req, res) => {
   }
 });
 
+// Profile photo (base64 JSON, 3 MB limit, magic-byte check). Team accounts and the super administrator.
+app.post('/api/admin/profile/avatar', requireAdminToken, async (req, res) => {
+  const staffId = req.adminUser?.staffId;
+
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ error: 'No image data provided' });
+
+    const buffer = Buffer.from(imageBase64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    if (buffer.length > 3 * 1024 * 1024) {
+      return res.status(400).json({ error: 'Profile photo must be 3 MB or smaller' });
+    }
+    if (!validateImageMagicBytes(buffer)) {
+      return res.status(400).json({ error: 'Only PNG, JPG, WEBP, and GIF images are accepted' });
+    }
+
+    const currentAvatar = staffId
+      ? (await prisma.staffMember.findUnique({ where: { id: staffId }, select: { avatar: true } }))?.avatar
+      : (await prisma.siteSetting.findUnique({ where: { key: siteSettings.ADMIN_AVATAR_KEY } }))?.value;
+    const { uploadAvatarToR2, moveToTrash, keyFromUrl } = require('./utils/r2upload');
+
+    const PUBLIC_URL = (process.env.R2_PUBLIC_URL || '').replace(/\/$/, '');
+    if (typeof currentAvatar === 'string' && currentAvatar.startsWith(PUBLIC_URL + '/avatars/')) {
+      try {
+        await moveToTrash(keyFromUrl(currentAvatar));
+      } catch (delErr) {
+        console.warn('[Trash] Could not move old avatar to trash (non-fatal):', delErr.message);
+      }
+    }
+
+    const baseName = staffId ? `staff_${staffId}_${Date.now()}` : `superadmin_${Date.now()}`;
+    const avatarUrl = await uploadAvatarToR2(buffer, baseName);
+    if (staffId) {
+      await prisma.staffMember.update({ where: { id: staffId }, data: { avatar: avatarUrl } });
+    } else {
+      await prisma.siteSetting.upsert({
+        where: { key: siteSettings.ADMIN_AVATAR_KEY },
+        create: { key: siteSettings.ADMIN_AVATAR_KEY, value: avatarUrl },
+        update: { value: avatarUrl }
+      });
+    }
+
+    return res.json({ success: true, avatarUrl });
+  } catch (err) {
+    console.error('Staff avatar upload error:', err);
+    return res.status(500).json({ error: 'Failed to upload profile photo' });
+  }
+});
+
 
 
 // Seed Initial Store Products (19 Products total: 6 T-Shirts, 6 Hoodies, 7 Digital Assets/Courses)
@@ -4481,13 +4649,7 @@ app.post('/api/admin/notifications/broadcast', requireAdminToken, async (req, re
 app.get('/api/admin/alerts', requireAdminToken, async (req, res) => {
   try {
     const alerts = await prisma.notification.findMany({
-      where: {
-        OR: [
-          { userEmail: 'suhas_admin' },
-          { type: { in: ['order_created', 'replacement_requested', 'donation_received'] } }
-        ],
-        deletedAt: null
-      },
+      where: await siteSettings.adminAlertWhere(prisma),
       orderBy: { createdAt: 'desc' },
       take: 20
     });
@@ -4513,12 +4675,7 @@ app.patch('/api/admin/alerts/:id/read', requireAdminToken, async (req, res) => {
 app.patch('/api/admin/alerts/read-all', requireAdminToken, async (req, res) => {
   try {
     await prisma.notification.updateMany({
-      where: {
-        OR: [
-          { userEmail: 'suhas_admin' },
-          { type: { in: ['order_created', 'replacement_requested', 'donation_received'] } }
-        ]
-      },
+      where: await siteSettings.adminAlertWhere(prisma),
       data: { isRead: true }
     });
     res.json({ success: true });
@@ -4598,7 +4755,9 @@ app.get('/api/admin/dashboard/stats', requireAdminToken, async (req, res) => {
       select: { total: true, subtotal: true, shipping: true, discount: true }
     });
     const totalRevenue = validOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-    const totalOrders = validOrders.length;
+    const allOrderEmails = await prisma.order.findMany({ select: { email: true } });
+    const totalOrders = allOrderEmails.length;
+    const totalCustomers = new Set(allOrderEmails.map((o) => (o.email || '').trim().toLowerCase()).filter(Boolean)).size;
     const productGmv = Object.values(categoryRevenueMap).reduce((sum, v) => sum + v, 0);
     const shippingCollected = validOrders.reduce((sum, o) => sum + (o.shipping || 0), 0);
     const discountsApplied = validOrders.reduce((sum, o) => sum + (o.discount || 0), 0);
@@ -4619,6 +4778,7 @@ app.get('/api/admin/dashboard/stats', requireAdminToken, async (req, res) => {
         totalProducts,
         totalRevenue,
         totalOrders,
+        totalCustomers,
         productGmv,
         shippingCollected,
         discountsApplied
@@ -4873,7 +5033,7 @@ app.use('/api/payments', createPaymentsRouter({
 app.post("/api/orders", optionalUserToken, async (req, res) => {
 
   try {
-    const { email, address, items, subtotal, discountAmount, shipping, grandTotal, paymentType, paymentId } = req.body;
+    const { email, address, items, subtotal, couponCode, shipping, grandTotal, paymentType, paymentId } = req.body;
 
     let customerId = null;
     let finalEmail = email;
@@ -4979,7 +5139,18 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
     const prefix = isDonationOrder ? 'TXN-' : 'ORD-';
     const orderNumber = `${prefix}${Date.now().toString(36).toUpperCase()}-${randSuffix}`;
     const computedShipping = isDigitalOnly ? 0 : (computedSubtotal >= 999 ? 0 : 99);
-    const computedTotal = computedSubtotal + computedShipping - (discountAmount || 0);
+    // Coupon is resolved server-side; any client-sent discount amount is ignored
+    let appliedCouponCode = null;
+    let appliedDiscount = 0;
+    if (couponCode) {
+      const resolved = await couponUtils.resolveCoupon(prisma, couponCode, { userEmail: req.userEmail || null });
+      if (resolved.error) {
+        return res.status(resolved.status).json({ error: resolved.error, couponRejected: true });
+      }
+      appliedCouponCode = resolved.coupon.code;
+      appliedDiscount = couponUtils.calculateCouponDiscount(resolved.coupon, computedSubtotal);
+    }
+    const computedTotal = computedSubtotal + computedShipping - appliedDiscount;
 
     const initialHistory = [
       { status: isDonationOrder ? "Confirmed" : "Placed", timestamp: new Date().toISOString() }
@@ -5007,7 +5178,7 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
         shippingAddress: JSON.stringify(shippingAddressObj),
         subtotal: computedSubtotal,
         shipping: computedShipping,
-        discount: discountAmount || 0,
+        discount: appliedDiscount,
         total: computedTotal,
         status: isDigitalOnly ? "Delivered" : "Processing",
         deliveredAt: isDigitalOnly ? new Date() : null,
@@ -5025,8 +5196,17 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
       }
     });
 
-    // Mark welcome offer as used if the discount is ₹100 (SENPAI100 code)
-    if (customerId && discountAmount === 100 && req.userEmail) {
+    // Count the coupon redemption now that the order is saved
+    if (appliedCouponCode) {
+      try {
+        await couponUtils.recordCouponRedemption(prisma, appliedCouponCode);
+      } catch (couponErr) {
+        console.warn("[Coupon] Failed to record redemption:", couponErr.message);
+      }
+    }
+
+    // Mark welcome offer as used only when a welcome coupon was applied
+    if (customerId && couponUtils.isWelcomeCoupon(appliedCouponCode)) {
       try {
         await prisma.user.update({
           where: { id: customerId },
@@ -5046,7 +5226,7 @@ app.post("/api/orders", optionalUserToken, async (req, res) => {
           type: "order_created",
           title: `New Order: ${order.orderNumber}`,
           message: `Order ID: ${order.orderNumber} placed by ${order.guestName || order.email} for ₹${order.total.toLocaleString()}.`,
-          link: "admin.html#tab-orders",
+          link: `/orders?order=${order.id}`,
           icon: "fa-solid fa-box"
         }
       });
@@ -5271,6 +5451,29 @@ app.get("/api/admin/orders", requireAdminToken, async (req, res) => {
   } catch (error) {
     console.error("Error fetching admin orders:", error);
     res.status(500).json({ error: "Failed to fetch admin orders" });
+  }
+});
+
+app.get("/api/admin/orders/:id/invoice", requireAdminToken, async (req, res) => {
+  try {
+    const orderId = parseInt(req.params.id, 10);
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ error: "Invalid order ID" });
+    }
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: { include: { product: true } },
+        customer: { select: { id: true, username: true, name: true, email: true } }
+      }
+    });
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    generateOrderInvoicePDF(order, res, { inline: true });
+  } catch (error) {
+    console.error("Error generating admin order invoice:", error.stack || error);
+    res.status(500).json({ error: "Failed to generate order invoice PDF" });
   }
 });
 
@@ -5628,7 +5831,7 @@ app.post("/api/orders/:id/replace", requireUserToken, async (req, res) => {
           type: "replacement_requested",
           title: `Replacement Requested: ${order.orderNumber}`,
           message: `Replacement requested for Order ID: ${order.orderNumber} by ${customerDisplayName}. Reason: ${reason || 'Defective/Damaged'}`,
-          link: "admin.html#tab-replacements",
+          link: "/replacements",
           icon: "🔄"
         }
       });
@@ -7377,34 +7580,14 @@ async function seedInitialCourses() {
 // ── Public: Validate a coupon and return server-computed discount ──────────────
 // POST /api/coupons/validate  body: { code, courseId }
 // courseId may be a slug or UUID — we fetch the real price server-side.
-app.post("/api/coupons/validate", couponValidateLimiter, async (req, res) => {
+app.post("/api/coupons/validate", couponValidateLimiter, optionalUserToken, async (req, res) => {
   try {
     const { code, courseId } = req.body;
-    if (!code) return res.status(400).json({ error: "Coupon code is required." });
 
-    // 1. Look up coupon
-    const coupon = await prisma.coupon.findUnique({ where: { code: String(code).trim().toUpperCase() } });
-    if (!coupon) return res.status(404).json({ error: "Invalid coupon code." });
-
-    // 2. Check active status
-    if (coupon.status !== "Active") {
-      return res.status(400).json({ error: "This coupon is no longer active." });
-    }
-
-    // 3. Check expiry
-    if (coupon.expiryDate) {
-      const expiry = new Date(coupon.expiryDate);
-      if (!isNaN(expiry) && expiry < new Date()) {
-        return res.status(400).json({ error: "This coupon has expired." });
-      }
-    }
-
-    // 4. Check usage cap
-    if (coupon.maxUses !== null && coupon.maxUses !== undefined) {
-      if (coupon.usageCount >= coupon.maxUses) {
-        return res.status(400).json({ error: "This coupon has reached its maximum usage limit." });
-      }
-    }
+    // Eligibility check only; usage is counted when an order is paid
+    const resolved = await couponUtils.resolveCoupon(prisma, code, { userEmail: req.userEmail || null });
+    if (resolved.error) return res.status(resolved.status).json({ error: resolved.error });
+    const coupon = resolved.coupon;
 
     // 5. Fetch real course price server-side (never trust client-sent price)
     let originalPriceNum = null;
@@ -7424,31 +7607,17 @@ app.post("/api/coupons/validate", couponValidateLimiter, async (req, res) => {
       }
     }
 
-    // 6. Compute discount
+    // 6. Compute discount with the same rules the order endpoints apply
     const discountVal = parseFloat(coupon.discountValue);
+    const discountDisplay = coupon.discountType === 'percentage'
+      ? `${discountVal}% off`
+      : `${currency}${discountVal} off`;
     let discountAmount = 0;
     let finalPrice = null;
-    let discountDisplay = '';
-
-    if (coupon.discountType === 'percentage') {
-      discountDisplay = `${discountVal}% off`;
-      if (originalPriceNum !== null) {
-        discountAmount = parseFloat((originalPriceNum * discountVal / 100).toFixed(2));
-        finalPrice = parseFloat((originalPriceNum - discountAmount).toFixed(2));
-      }
-    } else {
-      discountDisplay = `${currency}${discountVal} off`;
-      discountAmount = discountVal;
-      if (originalPriceNum !== null) {
-        finalPrice = Math.max(0, parseFloat((originalPriceNum - discountAmount).toFixed(2)));
-      }
+    if (originalPriceNum !== null) {
+      discountAmount = couponUtils.calculateCouponDiscount(coupon, originalPriceNum);
+      finalPrice = parseFloat((originalPriceNum - discountAmount).toFixed(2));
     }
-
-    // 7. Increment usageCount atomically
-    await prisma.coupon.update({
-      where: { code: coupon.code },
-      data: { usageCount: { increment: 1 } }
-    });
 
     res.json({
       success: true,
@@ -7555,7 +7724,7 @@ app.get("/api/admin/coupons", requireAdminToken, async (req, res) => {
 // ── Admin: Toggle coupon status ───────────────────────────────────────────────
 app.patch("/api/admin/coupons/:code/toggle", requireAdminToken, async (req, res) => {
   try {
-    const code = req.params.code;
+    const code = couponUtils.normalizeCouponCode(req.params.code);
     const coupon = await prisma.coupon.findUnique({ where: { code } });
     if (!coupon) return res.status(404).json({ error: "Not found" });
     const newStatus = coupon.status === "Active" ? "Inactive" : "Active";
@@ -7612,7 +7781,7 @@ app.post('/api/support/contact', async (req, res) => {
 // POST /api/feedback/reply - Send admin reply email to user
 app.post('/api/feedback/reply', async (req, res) => {
   try {
-    const { userName, userEmail, subject, adminReply, category } = req.body;
+    const { userName, userEmail, adminReply, category } = req.body;
 
     // Validation
     if (!userName || !userEmail || !adminReply) {
@@ -7627,74 +7796,63 @@ app.post('/api/feedback/reply', async (req, res) => {
 
     console.log('[Feedback Reply] Sending admin reply to', userEmail);
 
-    // Prepare email
-    const transporter = getMailer();
-    const emailContent = `
-Hello ${userName},
-
-Thank you for submitting your feedback to SenpaiWorks!
-
-Our team has reviewed your submission and here's our official response:
-
-${adminReply}
-
-We appreciate your input and look forward to serving you better!
-
-Best regards,
-SenpaiWorks Team
-Mysuru, Karnataka — 570016, India
-    `.trim();
-
-    const mailOptions = {
-      from: 'senpaiworks.official@gmail.com',
-      to: userEmail,
-      subject: `Re: Your ${category || 'General'} Feedback - SenpaiWorks Admin Reply`,
-      text: emailContent,
-      html: `
-        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+    // Build HTML email content
+    const htmlContent = `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.6;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">SenpaiWorks</h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0;">Admin Response to Your Feedback</p>
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px;">
           <p>Hello <strong>${userName}</strong>,</p>
           
-          <p>Thank you for submitting your feedback to SenpaiWorks!</p>
+          <p>Thank you for submitting your feedback to SenpaiWorks! We value your input and take every suggestion seriously.</p>
           
-          <p>Our team has reviewed your submission and here's our official response:</p>
+          <p><strong>Our Official Response:</strong></p>
           
-          <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #3b82f6; margin: 20px 0;">
-            <p>${adminReply.replace(/\n/g, '<br>')}</p>
+          <div style="background-color: white; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <p style="margin: 0; white-space: pre-wrap; color: #222;">${adminReply}</p>
           </div>
           
           <p>We appreciate your input and look forward to serving you better!</p>
           
-          <p>
+          <p style="border-top: 1px solid #e0e0e0; padding-top: 20px; margin-top: 30px; font-size: 13px; color: #666;">
             Best regards,<br>
-            <strong>SenpaiWorks Team</strong><br>
-            Mysuru, Karnataka — 570016, India
+            <strong style="color: #333;">SenpaiWorks Team</strong><br>
+            Mysuru, Karnataka — 570016, India<br>
+            <a href="https://senpaiworks.com" style="color: #667eea; text-decoration: none;">senpaiworks.com</a>
           </p>
         </div>
-      `
-    };
+      </div>
+    `;
 
-    // Send email
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.error('[Feedback Reply] Email send failed:', err);
-        return res.status(500).json({ error: 'Failed to send email', details: err.message });
-      }
-      
+    // Send email using universal dispatcher
+    const result = await sendEmail({
+      from: 'SenpaiWorks <feedback@senpaiworks.com>',
+      to: userEmail,
+      subject: `Re: Your ${category || 'General'} Feedback - SenpaiWorks Admin Reply`,
+      html: htmlContent
+    });
+
+    if (result.success) {
       console.log('[Feedback Reply] Email sent successfully:', {
         to: userEmail,
-        messageId: info.messageId,
-        response: info.response
+        provider: result.provider,
+        messageId: result.id || result.messageId
       });
       
-      res.json({
+      return res.json({
         success: true,
         message: `Reply sent successfully to ${userEmail}`,
-        messageId: info.messageId
+        messageId: result.id || result.messageId
       });
-    });
+    } else {
+      throw new Error(result.error || 'Email send failed');
+    }
   } catch (error) {
     console.error('[Feedback Reply Error]', error);
-    res.status(500).json({ error: 'An unexpected error occurred. Please try again.' });
+    res.status(500).json({ error: 'An unexpected error occurred. Please try again.', details: error.message });
   }
 });
 

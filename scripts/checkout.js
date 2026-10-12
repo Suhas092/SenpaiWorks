@@ -1,8 +1,6 @@
 "use strict";
 
 let cartData = [];
-let discountPercentage = 0;
-let flatDiscountAmount = 0;
 let selectedPaymentMethod = null;
 let isUsingSavedAddress = false;
 
@@ -222,6 +220,13 @@ function initCheckoutPage() {
   if (!isDonationMode) {
     renderSummaryItems();
     updateSummaryTotals();
+    renderCheckoutPromoMessage();
+    if (window.SenpaiCoupon && window.SenpaiCoupon.getAppliedCoupon()) {
+      window.SenpaiCoupon.revalidateAppliedCoupon().then((result) => {
+        updateSummaryTotals();
+        renderCheckoutPromoMessage(result && result.error ? `<span style="color:#ef4444; font-weight:700;">✕ ${result.error}</span>` : "");
+      });
+    }
   }
   initPaymentSelection();
 }
@@ -702,7 +707,7 @@ window.removeCheckoutItem = function (index) {
 // 6. CALCULATE & UPDATE TOTALS
 function updateSummaryTotals() {
   let subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
-  let discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;
+  let discountAmount = getCheckoutDiscount(subtotal);
   let hasPhysical = cartData.some(i => i.type === 'physical');
   let shipping = hasPhysical ? (subtotal >= 999 ? 0 : 99) : 0;
   let grandTotal = Math.max(0, subtotal - discountAmount + shipping);
@@ -720,47 +725,57 @@ function updateSummaryTotals() {
   if (rzpModalAmountEl) rzpModalAmountEl.textContent = formatINR(grandTotal);
 }
 
-// 7. APPLY PROMO CODE (SENPAI100 or SENPAI25)
-window.applyPromoCode = function () {
-  const input = document.getElementById("chk-promo-input");
+// 7. DISCOUNT CODES (validated by the server; the stored coupon is display-only here)
+function getCheckoutCouponCode() {
+  const applied = window.SenpaiCoupon ? window.SenpaiCoupon.getAppliedCoupon() : null;
+  return applied ? applied.code : null;
+}
+
+function getCheckoutDiscount(subtotal) {
+  const applied = window.SenpaiCoupon ? window.SenpaiCoupon.getAppliedCoupon() : null;
+  return window.SenpaiCoupon ? window.SenpaiCoupon.computeCouponDiscount(applied, subtotal) : 0;
+}
+
+function renderCheckoutPromoMessage(errorHtml) {
   const msgEl = document.getElementById("promo-message");
-  if (!input) return;
-
-  const currentUser = getCurrentUser();
-  const code = input.value.trim().toUpperCase();
-
-  if (code === "SENPAI100") {
-    let usedDiscounts = localStorage.getItem("usedDiscounts");
-    usedDiscounts = usedDiscounts ? JSON.parse(usedDiscounts) : [];
-
-    const userKey = currentUser ? (currentUser.email || currentUser.username) : "guest";
-    if (usedDiscounts.includes(userKey)) {
-      flatDiscountAmount = 0;
-      discountPercentage = 0;
-      if (msgEl) {
-        msgEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">✕ SENPAI100 code has already been used on this account.</span>`;
-      }
-    } else {
-      flatDiscountAmount = 100;
-      discountPercentage = 0;
-      if (msgEl) {
-        msgEl.innerHTML = `<span style="color:#059669; font-weight:700;">✓ ₹100.00 Registration Discount Applied (SENPAI100)</span>`;
-      }
-    }
-  } else if (code === "SENPAI25") {
-    flatDiscountAmount = 0;
-    discountPercentage = 25;
-    if (msgEl) {
-      msgEl.innerHTML = `<span style="color:#059669; font-weight:700;">✓ 25% Discount Applied (SENPAI25)</span>`;
-    }
+  if (!msgEl) return;
+  const applied = window.SenpaiCoupon ? window.SenpaiCoupon.getAppliedCoupon() : null;
+  if (applied) {
+    msgEl.innerHTML = `<span style="color:#059669; font-weight:700;">✓ ${applied.code} applied (${window.SenpaiCoupon.describeCoupon(applied)})</span> <button type="button" onclick="removeCheckoutPromoCode()" style="background:none; border:none; color:#ef4444; font-weight:600; cursor:pointer; margin-left:6px;">Remove</button>`;
   } else {
-    flatDiscountAmount = 0;
-    discountPercentage = 0;
-    if (msgEl) {
-      msgEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">✕ Invalid code. Use SENPAI100 for ₹100 OFF!</span>`;
-    }
+    msgEl.innerHTML = errorHtml || "";
   }
+}
+
+window.applyPromoCode = async function () {
+  const input = document.getElementById("chk-promo-input");
+  if (!input || !window.SenpaiCoupon) return;
+
+  const code = input.value.trim();
+  if (!code) {
+    window.SenpaiCoupon.setAppliedCoupon(null);
+    updateSummaryTotals();
+    renderCheckoutPromoMessage(`<span style="color:#ef4444; font-weight:700;">✕ Enter a discount code.</span>`);
+    return;
+  }
+
+  const result = await window.SenpaiCoupon.validateCouponCode(code);
+  if (result.error) {
+    window.SenpaiCoupon.setAppliedCoupon(null);
+    updateSummaryTotals();
+    renderCheckoutPromoMessage(`<span style="color:#ef4444; font-weight:700;">✕ ${result.error}</span>`);
+    return;
+  }
+
+  window.SenpaiCoupon.setAppliedCoupon(result.coupon);
   updateSummaryTotals();
+  renderCheckoutPromoMessage();
+};
+
+window.removeCheckoutPromoCode = function () {
+  window.SenpaiCoupon.setAppliedCoupon(null);
+  updateSummaryTotals();
+  renderCheckoutPromoMessage();
 };
 
 // 8. SEPARATE PAYMENT METHOD HANDLER (AMAZON-STYLE)
@@ -985,7 +1000,7 @@ window.handleCheckoutSubmit = async function (e) {
 }
 
   const subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
-  const discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;
+  const discountAmount = getCheckoutDiscount(subtotal);
   const hasPhysical = cartData.some(i => i.type === 'physical');
   const isDonationOrder = cartData.some(i => i && (i.isDonation || i.productId === "DONATION" || (i.id && String(i.id).startsWith("donation"))));
   const shipping = (hasPhysical && !isDonationOrder) ? (subtotal >= 999 ? 0 : 99) : 0;
@@ -1010,6 +1025,7 @@ window.handleCheckoutSubmit = async function (e) {
     address: finalAddressObj,
     items: cartData,
     subtotal,
+    couponCode: getCheckoutCouponCode(),
     discountAmount,
     shipping,
     grandTotal,
@@ -1053,7 +1069,7 @@ async function triggerRazorpaySDKPayment(orderData) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         items: orderData.items,
-        discountAmount: orderData.discountAmount,
+        couponCode: orderData.couponCode,
         email: orderData.email,
         address: orderData.address
       })
@@ -1061,6 +1077,11 @@ async function triggerRazorpaySDKPayment(orderData) {
 
     const createData = await createRes.json();
     if (!createRes.ok || !createData.success) {
+      if (createData.couponRejected) {
+        window.SenpaiCoupon.setAppliedCoupon(null);
+        updateSummaryTotals();
+        renderCheckoutPromoMessage();
+      }
       throw new Error(createData.error || "Failed to initialize payment.");
     }
 
@@ -1208,6 +1229,8 @@ async function triggerRazorpaySDKPayment(orderData) {
             throw new Error(verifyData.error || "Payment signature verification failed.");
           }
 
+          // Clear coupon and shopping cart or single item
+          if (window.SenpaiCoupon) window.SenpaiCoupon.setAppliedCoupon(null);
           // Clear shopping cart or single item
           const singleStr = sessionStorage.getItem("checkoutSingleItem");
           if (singleStr) {
@@ -1229,7 +1252,7 @@ async function triggerRazorpaySDKPayment(orderData) {
           // Redirect to Order Confirmation Page with donation flag if applicable
           const emailParam = verifyData.email ? `&email=${encodeURIComponent(verifyData.email)}` : "";
           const donationParam = isDonationOrder ? "&isDonation=true" : "";
-          window.location.href = `order-confirmation.html?orderId=${verifyData.orderNumber}${emailParam}${donationParam}`;
+          window.location.replace(`order-confirmation.html?orderId=${verifyData.orderNumber}${emailParam}${donationParam}`);
         } catch (verErr) {
           console.error("Payment verification failed:", verErr);
           if (submitBtn) {
@@ -1282,8 +1305,6 @@ async function triggerRazorpaySDKPayment(orderData) {
 
 
 async function processVerifiedOrderSuccess(orderData) {
-  const currentUser = getCurrentUser() || { username: orderData.address ? orderData.address.firstName : "Collector", email: orderData.email };
-
   // Sync donation records to backend if order contains a donation item
   if (orderData.items && orderData.items.length > 0) {
     const donationItem = orderData.items.find(i => i && i.isDonation);
@@ -1303,17 +1324,6 @@ async function processVerifiedOrderSuccess(orderData) {
           })
         }).catch(e => console.warn("Donation API background sync error:", e));
       } catch (e) { }
-    }
-  }
-
-  // Record discount usage if SENPAI100 was applied
-  if (flatDiscountAmount === 100) {
-    let usedDiscounts = localStorage.getItem("usedDiscounts");
-    usedDiscounts = usedDiscounts ? JSON.parse(usedDiscounts) : [];
-    const userKey = currentUser ? (currentUser.email || currentUser.username) : "guest";
-    if (!usedDiscounts.includes(userKey)) {
-      usedDiscounts.push(userKey);
-      localStorage.setItem("usedDiscounts", JSON.stringify(usedDiscounts));
     }
   }
 
@@ -1352,7 +1362,7 @@ async function processVerifiedOrderSuccess(orderData) {
     return; // STOP! Do not clear cart or redirect to fake success page
   }
 
-  // Clear shopping cart or just the checked out single item
+  // Clear coupon and shopping cart or just the checked out single item
   const singleStr = sessionStorage.getItem("checkoutSingleItem");
   if (singleStr) {
     let singleItem = JSON.parse(singleStr);
@@ -1377,7 +1387,7 @@ async function processVerifiedOrderSuccess(orderData) {
   
   // order-confirmation page uses query params for lookup now
   const emailParam = finalOrder.email ? `&email=${encodeURIComponent(finalOrder.email)}` : '';
-  window.location.href = `order-confirmation.html?orderId=${finalId}${emailParam}${donationParam}`;
+  window.location.replace(`order-confirmation.html?orderId=${finalId}${emailParam}${donationParam}`);
 }
 
 window.processTestPayment = function (paymentType) {
@@ -1385,7 +1395,7 @@ window.processTestPayment = function (paymentType) {
   const email = document.getElementById("chk-email") ? document.getElementById("chk-email").value.trim() : "collector@senpaiworks.com";
   const address = getSavedAddress() || { firstName: "Guest", lastName: "Collector", city: "Bengaluru", state: "Karnataka" };
   const subtotal = cartData.reduce((sum, item) => sum + (getItemNumericPrice(item) * item.quantity), 0);
-  const discountAmount = flatDiscountAmount > 0 ? flatDiscountAmount : (subtotal * discountPercentage) / 100;
+  const discountAmount = getCheckoutDiscount(subtotal);
   const hasPhysical = cartData.some(i => i.type === 'physical');
   const isDonationOrder = cartData.some(i => i && (i.isDonation || i.productId === "DONATION" || (i.id && String(i.id).startsWith("donation"))));
   const shipping = (hasPhysical && !isDonationOrder) ? (subtotal >= 999 ? 0 : 99) : 0;
@@ -1401,6 +1411,7 @@ window.processTestPayment = function (paymentType) {
     address: pending ? pending.address : address,
     items: pending ? pending.items : cartData,
     subtotal: pending ? pending.subtotal : subtotal,
+    couponCode: pending ? pending.couponCode : getCheckoutCouponCode(),
     discountAmount: pending ? pending.discountAmount : discountAmount,
     shipping: pending ? pending.shipping : shipping,
     grandTotal: pending ? pending.grandTotal : grandTotal,

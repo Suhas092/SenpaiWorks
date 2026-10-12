@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
+const { resolveCoupon, calculateCouponDiscount, recordCouponRedemption, isWelcomeCoupon } = require('../utils/coupons');
 
 module.exports = function ({
   prisma,
@@ -28,7 +29,7 @@ module.exports = function ({
    * Helper: Calculate authoritative cart prices directly from Neon database.
    * Prevents client-side price tampering.
    */
-  async function computeAuthoritativeOrder(items, discountAmount = 0) {
+  async function computeAuthoritativeOrder(items, { couponCode = null, userEmail = null, enforceLimits = true } = {}) {
     if (!Array.isArray(items) || items.length === 0) {
       throw new Error('Order must contain at least one item.');
     }
@@ -118,13 +119,27 @@ module.exports = function ({
     const isDigitalOnly = hasDigital && !hasPhysical;
     // Free shipping above ₹999 for physical items; ₹0 for purely digital orders
     const shipping = isDigitalOnly ? 0 : (computedSubtotal >= 999 ? 0 : 99);
-    const validDiscount = Math.min(computedSubtotal, Math.max(0, Number(discountAmount) || 0));
+
+    let appliedCouponCode = null;
+    let validDiscount = 0;
+    if (couponCode) {
+      const resolved = await resolveCoupon(prisma, couponCode, { userEmail, enforceLimits });
+      if (resolved.error) {
+        const couponErr = new Error(resolved.error);
+        couponErr.status = resolved.status;
+        couponErr.couponRejected = true;
+        throw couponErr;
+      }
+      appliedCouponCode = resolved.coupon.code;
+      validDiscount = calculateCouponDiscount(resolved.coupon, computedSubtotal);
+    }
     const grandTotal = Math.max(1, computedSubtotal + shipping - validDiscount);
 
     return {
       computedSubtotal,
       shipping,
       discount: validDiscount,
+      couponCode: appliedCouponCode,
       grandTotal,
       isDigitalOnly,
       hasPhysical,
@@ -139,13 +154,13 @@ module.exports = function ({
   // ──────────────────────────────────────────────────────────────────────────
   router.post('/create-order', optionalUserToken, async (req, res) => {
     try {
-      const { items, discountAmount, email, address } = req.body;
+      const { items, couponCode, email, address } = req.body;
 
       if (!keyId || !keySecret) {
         return res.status(500).json({ error: 'Razorpay payment gateway is not configured on the server.' });
       }
 
-      const orderCalc = await computeAuthoritativeOrder(items, discountAmount);
+      const orderCalc = await computeAuthoritativeOrder(items, { couponCode, userEmail: req.userEmail });
 
       // Amount in paise (1 INR = 100 paise)
       const amountInPaise = Math.round(orderCalc.grandTotal * 100);
@@ -158,7 +173,8 @@ module.exports = function ({
         notes: {
           customerEmail: email || req.userEmail || 'collector@senpaiworks.com',
           itemCount: String(items.length),
-          isDigital: String(orderCalc.isDigitalOnly)
+          isDigital: String(orderCalc.isDigitalOnly),
+          couponCode: orderCalc.couponCode || ''
         }
       });
 
@@ -175,7 +191,7 @@ module.exports = function ({
       });
     } catch (err) {
       console.error('[Razorpay Create-Order Error]:', err);
-      res.status(400).json({ error: err.message || 'Failed to initialize payment.' });
+      res.status(err.status || 400).json({ error: err.message || 'Failed to initialize payment.', couponRejected: !!err.couponRejected });
     }
   });
 
@@ -214,7 +230,12 @@ module.exports = function ({
       }
 
       // Step B: Calculate authoritative pricing directly from Neon database
-      const orderCalc = await computeAuthoritativeOrder(orderData.items, orderData.discountAmount);
+      // Payment is already captured, so the coupon is priced without re-checking usage limits
+      const orderCalc = await computeAuthoritativeOrder(orderData.items, {
+        couponCode: orderData.couponCode,
+        userEmail: req.userEmail,
+        enforceLimits: false
+      });
 
       // Step C: Determine customer identity
       let customerId = null;
@@ -315,6 +336,22 @@ module.exports = function ({
         }
       });
 
+      if (orderCalc.couponCode) {
+        try {
+          await recordCouponRedemption(prisma, orderCalc.couponCode);
+        } catch (couponErr) {
+          console.warn('[Coupon] Failed to record redemption:', couponErr.message);
+        }
+      }
+
+      if (customerId && isWelcomeCoupon(orderCalc.couponCode)) {
+        try {
+          await prisma.user.update({ where: { id: customerId }, data: { welcomeOfferUsed: true } });
+        } catch (welcomeErr) {
+          console.warn('[Welcome Offer] Failed to mark as used:', welcomeErr.message);
+        }
+      }
+
       // Step D-1: If this is a donation order, also save to Donation table
       if (isDonationOrder) {
         try {
@@ -349,7 +386,7 @@ module.exports = function ({
             type: 'order_created',
             title: `Paid Order: ${order.orderNumber}`,
             message: `Order ID: ${order.orderNumber} placed by ${order.guestName || order.email} for ₹${order.total.toLocaleString('en-IN')}. (Razorpay: ${razorpay_payment_id})`,
-            link: 'admin.html#tab-orders',
+            link: `/orders?order=${order.id}`,
             icon: 'fa-solid fa-box'
           }
         });

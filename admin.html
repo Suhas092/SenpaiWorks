@@ -383,9 +383,10 @@
                     <tr>
                       <th>Thumbnail</th>
                       <th>Product Name</th>
-                      <th>ID</th>
                       <th>Price</th>
                       <th>Category</th>
+                      <th>Likes</th>
+                      <th>Availability</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -590,9 +591,14 @@
                   </div>
                 </div>
 
-                <button type="submit" class="admin-submit-btn">
-                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Store Product
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button type="submit" class="admin-submit-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Store Product
+                  </button>
+                  <button type="button" class="admin-cancel-btn" id="btn-cancel-product" onclick="window.cancelProductForm()">
+                    <i class="fa-solid fa-ban"></i> Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -1124,9 +1130,14 @@
                     placeholder="Describe the illustration style, lighting, and theme..."></textarea>
                 </div>
 
-                <button type="submit" class="admin-submit-btn">
-                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Artwork Asset
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button type="submit" class="admin-submit-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Artwork Asset
+                  </button>
+                  <button type="button" class="admin-cancel-btn" onclick="window.cancelAdminForm('form-add-artwork','art-list')">
+                    <i class="fa-solid fa-ban"></i> Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -1342,9 +1353,14 @@
                     placeholder="Write or paste your article body here. Supports standard HTML like <p>, <h3>, <ul>, <li>, <strong>, <code>..."></textarea>
                 </div>
 
-                <button type="submit" class="admin-submit-btn">
-                  <i class="fa-solid fa-cloud-arrow-up"></i> Publish News Article
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button type="submit" class="admin-submit-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Publish News Article
+                  </button>
+                  <button type="button" class="admin-cancel-btn" onclick="window.cancelAdminForm('form-add-news','news-list')">
+                    <i class="fa-solid fa-ban"></i> Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -1954,8 +1970,7 @@
                         onchange="toggleAllFeedback(this)"></th>
                     <th onclick="toggleFeedbackSort('author')">User <i class="fa-solid fa-sort"
                         id="sort-icon-author"></i></th>
-                    <th onclick="toggleFeedbackSort('rating')">Rating <i class="fa-solid fa-sort"
-                        id="sort-icon-rating"></i></th>
+                    <th onclick="toggleFeedbackSort('email')">Email <i class="fa-solid fa-sort" id="sort-icon-email"></i></th>
                     <th>Review Content</th>
                     <th>Category</th>
                     <th>Status</th>
@@ -2740,7 +2755,7 @@
   <!-- MODULAR SCRIPTS LOADER                     -->
   <!-- ========================================== -->
   <script src="scripts/admin/admin-core.js?v=5.1"></script>
-  <script src="scripts/admin/admin-auth.js?v=4.0"></script>
+  <script src="scripts/admin/admin-auth.js?v=4.1"></script>
   <script src="scripts/admin/admin-dashboard.js?v=4.0"></script>
   <script src="scripts/admin/admin-products.js?v=4.0"></script>
   <script src="scripts/admin/admin-reviews.js?v=4.6"></script>

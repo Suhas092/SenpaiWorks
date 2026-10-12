@@ -1,0 +1,3 @@
+import { Modal } from './Modal';
+import { Button } from './button';
+export function ConfirmModal({ title, body, confirmLabel = 'Confirm', onConfirm, onCancel, intent = 'danger', busy = false }: { title: string; body: string; confirmLabel?: string; onConfirm: () => void; onCancel: () => void; intent?: 'danger' | 'normal'; busy?: boolean }) { return <Modal title={title} open onClose={onCancel}><p className="text-muted-foreground leading-6">{body}</p><div className="flex justify-end gap-2 mt-6"><Button variant="outline" onClick={onCancel}>Cancel</Button><Button variant={intent === 'danger' ? 'destructive' : 'default'} disabled={busy} onClick={onConfirm}>{busy ? 'Working…' : confirmLabel}</Button></div></Modal>; }

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `).join("");
 
-    let apiReviews = [];
+    let apiReviews = null;
     try {
       const res = await fetch("/api/community/reviews");
       if (res.ok) {
@@ -31,13 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (e) { }
 
-    let userReviews = localStorage.getItem("userReviews");
-    let reviewsList = [];
-    if (userReviews) {
+    // The server is the source of truth for visibility; the local cache is used only when the API is unreachable.
+    let cachedReviews = [];
+    if (!Array.isArray(apiReviews)) {
       try {
-        reviewsList = JSON.parse(userReviews) || [];
+        cachedReviews = JSON.parse(localStorage.getItem("userReviews") || "[]") || [];
       } catch (e) {
-        reviewsList = [];
+        cachedReviews = [];
       }
     }
 
@@ -48,10 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
       { id: "rev-seed-4", author: "DevSora", rating: 5, category: "General Website", title: "Smooth website UI", text: "The donation page micro-animations are beautiful.", date: "June 29, 2026", isPublic: true, likes: 42 }
     ];
 
-    const customReviews = reviewsList.filter(r => r && r.id && !r.id.startsWith("rev-seed-"));
+    const serverReviews = Array.isArray(apiReviews)
+      ? apiReviews
+      : cachedReviews.filter(r => r && r.id && !r.id.startsWith("rev-seed-"));
 
     const reviewMap = new Map();
-    [...apiReviews, ...customReviews, ...seedReviews].forEach(r => {
+    [...serverReviews, ...seedReviews].forEach(r => {
       if (r && r.id && !reviewMap.has(r.id)) {
         reviewMap.set(r.id, r);
       }
