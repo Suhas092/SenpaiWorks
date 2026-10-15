@@ -185,21 +185,22 @@ app.get('/', (req, res) => {
   sendHtmlFile(res, path.join(__dirname, '../home.html'));
 });
 
-// If the new admin frontend build exists, serve its static assets under the admin route
-if (fs.existsSync(ADMIN_FRONTEND_DIR)) {
-  console.log('Admin frontend detected at', ADMIN_FRONTEND_DIR, '- serving it at', ADMIN_ROUTE);
-  // Serve static assets for everything under the admin route
-  app.use(ADMIN_ROUTE, express.static(ADMIN_FRONTEND_DIR, { index: false }));
+// Serve static assets from new admin frontend build if present
+app.use(ADMIN_ROUTE, (req, res, next) => {
+  if (fs.existsSync(ADMIN_FRONTEND_DIR)) {
+    return express.static(ADMIN_FRONTEND_DIR, { index: false })(req, res, next);
+  }
+  next();
+});
 
-  // For any admin route path, return the SPA index.html (so client-side routing works)
+// Admin Route handler: serves modern SPA if built, otherwise falls back to legacy admin.html
+app.get([ADMIN_ROUTE, `${ADMIN_ROUTE}/*`], (req, res) => {
   const adminIndexPath = path.join(ADMIN_FRONTEND_DIR, 'index.html');
-  app.get([ADMIN_ROUTE, `${ADMIN_ROUTE}/*`], (req, res) => res.sendFile(adminIndexPath));
-} else {
-  // Fallback: serve legacy admin.html (existing UI)
-  app.get(ADMIN_ROUTE, (req, res) => {
-    sendHtmlFile(res, path.join(__dirname, '../admin.html'));
-  });
-}
+  if (fs.existsSync(adminIndexPath)) {
+    return res.sendFile(adminIndexPath);
+  }
+  sendHtmlFile(res, path.join(__dirname, '../admin.html'));
+});
 
 // Explicitly return TRUE HTTP 404 for standard /admin or /admin.html attempts
 app.get(['/admin', '/admin.html'], (req, res) => {

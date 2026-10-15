@@ -14,12 +14,19 @@ export async function request<T>(path: string, method = "GET", data?: unknown): 
     .startsWith("/")
     .max(500)
     .refine((v) => !v.includes("..") && !v.startsWith("//"))
-    .parse(path);
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("adminToken") ||
+        localStorage.getItem("admin_token") ||
+        localStorage.getItem("token")
+      : null;
+
   const response = await fetch(`${API_BASE}${path}`, {
     method,
     credentials: "include",
     headers: {
       Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(data ? { "Content-Type": "application/json" } : {}),
     },
     ...(data ? { body: JSON.stringify(data) } : {}),
