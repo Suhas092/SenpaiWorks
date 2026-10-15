@@ -332,14 +332,12 @@ window.loadProductHealthOverview = async function () {
 };
 
 window.openProductReviewsSearch = function (productId) {
-  console.log('[View Reviews] Clicked for product:', productId);
-  switchReviewsSubtab("reviews-all", true);  // Pass true to skip auto-load, we'll load with productId
+  switchReviewsSubtab("reviews-all", true);
   const searchInput = document.getElementById("admin-reviews-search");
   if (searchInput) {
-    searchInput.value = '';  // CLEAR the search input so onkeyup doesn't interfere
+    searchInput.value = '';
   }
-  console.log('[View Reviews] Calling loadAllAdminReviews with:', productId);
-  loadAllAdminReviews(productId);  // Pass productId directly to avoid state issues
+  loadAllAdminReviews(productId);
 };
 
 // ── 3. ALL REVIEWS DATABASE (SEARCH & FILTERS) ─────────────────────────
@@ -371,25 +369,10 @@ window.loadAllAdminReviews = async function (filterProductId) {
 
   let queryUrl = `/api/admin/reviews?limit=100`;
   
-  console.log('[loadAllAdminReviews] filterProductId param:', filterProductId);
-  
-  // If filterProductId is explicitly provided, use it directly (bypasses search input detection)
   if (filterProductId) {
     queryUrl += `&productId=${encodeURIComponent(filterProductId)}`;
-    console.log('[loadAllAdminReviews] Using direct filter. URL:', queryUrl);
   } else if (searchInput && searchInput.value.trim()) {
-    const searchValue = searchInput.value.trim();
-    // If search value looks like a product ID (no spaces, short), treat as productId filter
-    // Otherwise treat as text search
-    if (searchValue.length < 50 && !searchValue.includes(" ")) {
-      queryUrl += `&productId=${encodeURIComponent(searchValue)}`;
-      console.log('[loadAllAdminReviews] Using search as productId. URL:', queryUrl);
-    } else {
-      queryUrl += `&search=${encodeURIComponent(searchValue)}`;
-      console.log('[loadAllAdminReviews] Using search as text search. URL:', queryUrl);
-    }
-  } else {
-    console.log('[loadAllAdminReviews] No filter, showing all reviews');
+    queryUrl += `&search=${encodeURIComponent(searchInput.value.trim())}`;
   }
   if (ratingFilter && ratingFilter.value) queryUrl += `&rating=${encodeURIComponent(ratingFilter.value)}`;
   if (statusFilter && statusFilter.value) queryUrl += `&status=${encodeURIComponent(statusFilter.value)}`;

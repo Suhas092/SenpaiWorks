@@ -32,7 +32,8 @@ window.loadDonations = async function () {
 
     renderDonationsTable(allDonationsData);
 
-    if (searchInput) {
+    if (searchInput && !searchInput.dataset.bound) {
+      searchInput.dataset.bound = "true";
       searchInput.addEventListener("input", () => {
         const q = searchInput.value.toLowerCase().trim();
         if (!q) {
@@ -65,7 +66,7 @@ function startDonationsPolling() {
     clearInterval(donationsPollingInterval);
   }
 
-  // Poll every 5 seconds for new donations
+  // Poll every 30 seconds for new donations
   donationsPollingInterval = setInterval(async () => {
     try {
       const res = await fetch("/api/donate/list");

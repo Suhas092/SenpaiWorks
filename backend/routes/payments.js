@@ -383,10 +383,9 @@ module.exports = function ({
         await prisma.notification.create({
           data: {
             userEmail: 'suhas_admin',
-            type: 'order_created',
             title: `Paid Order: ${order.orderNumber}`,
             message: `Order ID: ${order.orderNumber} placed by ${order.guestName || order.email} for ₹${order.total.toLocaleString('en-IN')}. (Razorpay: ${razorpay_payment_id})`,
-            link: `/orders?order=${order.id}`,
+            link: 'admin.html#tab-orders',
             icon: 'fa-solid fa-box'
           }
         });

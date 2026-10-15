@@ -278,8 +278,17 @@ window.initTaskList = async function () {
 // ────────────────────────────────────────
 // REAL-TIME DASHBOARD METRICS POLLING
 // ────────────────────────────────────────
+window.stopRealtimeMetricsPolling = function () {
+  if (window.dashboardPollingInterval) {
+    clearInterval(window.dashboardPollingInterval);
+    window.dashboardPollingInterval = null;
+  }
+};
+
 window.startRealtimeMetricsPolling = function () {
-  // Poll every 5 seconds for live metrics
+  window.stopRealtimeMetricsPolling();
+
+  // Poll every 15 seconds for live metrics
   window.dashboardPollingInterval = setInterval(async () => {
     try {
       // httpOnly cookie is automatically sent; no manual Authorization header needed
@@ -289,58 +298,55 @@ window.startRealtimeMetricsPolling = function () {
       });
 
       if (!res.ok) {
-        console.warn("[Dashboard Polling] Response not ok:", res.status, res.statusText);
         return;
       }
       
       const data = await res.json();
 
       if (!data.success || !data.metrics) {
-        console.warn("[Dashboard Polling] Invalid response:", data);
         return;
       }
 
       const { metrics } = data;
-      console.log("[Dashboard Polling] Metrics updated:", metrics);
 
       // Update KPI Stat Cards
       const statArtworks = document.getElementById("stat-artworks");
       const statArtworksTrend = document.getElementById("stat-artworks-trend");
-      if (statArtworks) {
+      if (statArtworks && metrics.totalArtworks !== undefined) {
         statArtworks.textContent = metrics.totalArtworks.toLocaleString();
       }
-      if (statArtworksTrend) {
-        const trendDir = metrics.artworksTrend > 0 ? 'up' : 'down';
+      if (statArtworksTrend && metrics.artworksTrend !== undefined) {
+        const trendDir = metrics.artworksTrend >= 0 ? 'up' : 'down';
         statArtworksTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.artworksTrend > 0 ? '+' : ''}${metrics.artworksTrend}%`;
       }
 
       const statProducts = document.getElementById("stat-products");
       const statProductsTrend = document.getElementById("stat-products-trend");
-      if (statProducts) {
+      if (statProducts && metrics.totalProducts !== undefined) {
         statProducts.textContent = metrics.totalProducts.toLocaleString();
       }
-      if (statProductsTrend) {
-        const trendDir = metrics.productsTrend > 0 ? 'up' : 'down';
+      if (statProductsTrend && metrics.productsTrend !== undefined) {
+        const trendDir = metrics.productsTrend >= 0 ? 'up' : 'down';
         statProductsTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.productsTrend > 0 ? '+' : ''}${metrics.productsTrend}%`;
       }
 
       const statRevenue = document.getElementById("stat-revenue");
       const statRevenueTrend = document.getElementById("stat-revenue-trend");
-      if (statRevenue) {
+      if (statRevenue && metrics.totalRevenue !== undefined) {
         statRevenue.textContent = '₹' + Math.round(metrics.totalRevenue).toLocaleString('en-IN');
       }
-      if (statRevenueTrend) {
-        const trendDir = metrics.revenueTrend > 0 ? 'up' : 'down';
+      if (statRevenueTrend && metrics.revenueTrend !== undefined) {
+        const trendDir = metrics.revenueTrend >= 0 ? 'up' : 'down';
         statRevenueTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.revenueTrend > 0 ? '+' : ''}${metrics.revenueTrend}%`;
       }
 
       const statViews = document.getElementById("stat-views");
       const statViewsTrend = document.getElementById("stat-views-trend");
-      if (statViews) {
+      if (statViews && metrics.monthlyViews !== undefined) {
         statViews.textContent = metrics.monthlyViews.toLocaleString();
       }
-      if (statViewsTrend) {
-        const trendDir = metrics.viewsTrend > 0 ? 'up' : 'down';
+      if (statViewsTrend && metrics.viewsTrend !== undefined) {
+        const trendDir = metrics.viewsTrend >= 0 ? 'up' : 'down';
         statViewsTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.viewsTrend > 0 ? '+' : ''}${metrics.viewsTrend}%`;
       }
 
@@ -357,7 +363,7 @@ window.startRealtimeMetricsPolling = function () {
       // Update Category Chart
       if (window.categoryChart && metrics.salesByCategory && metrics.salesByCategory.length > 0) {
         const labels = metrics.salesByCategory.map(cat => cat.category || 'Other');
-        const data = metrics.salesByCategory.map(cat => cat._sum.price || 0);
+        const data = metrics.salesByCategory.map(cat => (cat._sum && cat._sum.price) ? cat._sum.price : 0);
         const colors = [
           '#3b82f6', '#a855f7', '#10b981',
           '#f59e0b', '#ef4444', '#06b6d4',
@@ -371,16 +377,16 @@ window.startRealtimeMetricsPolling = function () {
       }
 
       // Update GMV subtitle with total
-      const totalGMV = metrics.salesByCategory.reduce((sum, cat) => sum + (cat._sum.price || 0), 0);
-      const gmvSubtitle = document.getElementById("category-chart-subtitle");
-      if (gmvSubtitle) {
-        gmvSubtitle.textContent = `₹${Math.round(totalGMV).toLocaleString('en-IN')} Gross Merchandise Value (GMV)`;
+      if (metrics.salesByCategory && metrics.salesByCategory.length > 0) {
+        const totalGMV = metrics.salesByCategory.reduce((sum, cat) => sum + ((cat._sum && cat._sum.price) ? cat._sum.price : 0), 0);
+        const gmvSubtitle = document.getElementById("category-chart-subtitle");
+        if (gmvSubtitle) {
+          gmvSubtitle.textContent = `₹${Math.round(totalGMV).toLocaleString('en-IN')} Gross Merchandise Value (GMV)`;
+        }
       }
 
     } catch (err) {
       console.warn("[Dashboard Polling] Error fetching real-time metrics:", err);
     }
-  }, 5000); // Poll every 5 seconds
-  
-  console.log("[Dashboard] Polling interval started, updating every 5 seconds");
+  }, 15000);
 };

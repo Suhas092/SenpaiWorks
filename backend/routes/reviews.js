@@ -630,7 +630,7 @@ module.exports = function (prisma, requireUserToken, requireAdminToken, JWT_SECR
             type: 'review_reported',
             title: `Review Reported: #${reviewId}`,
             message: `Review #${reviewId} was reported for "${reason}".`,
-            link: `/reviews?review=${reviewId}`
+            link: 'admin.html#tab-reviews'
           }
         });
       } catch (notifErr) {

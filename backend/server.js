@@ -488,9 +488,7 @@ const adminConsoleRouter = require('./routes/adminConsole')(prisma, requireAdmin
 app.use(adminConsoleRouter);
 const siteSettings = require('./routes/siteSettings');
 app.use(siteSettings(prisma, requireAdminToken));
-const staffAccess = require('./utils/staffAccess');
 const couponUtils = require('./utils/coupons');
-app.use(require('./routes/staff')(prisma, requireAdminToken));
 const staffRouter = require('./routes/staff');
 app.use(staffRouter(prisma, requireAdminToken));
 
@@ -4049,83 +4047,99 @@ app.post('/api/donate/process', async (req, res) => {
 });
 
 // POST /api/webhook/razorpay - Handle Razorpay payment webhooks
+// POST /api/webhook/razorpay - Handle Razorpay payment webhooks with signature verification
 app.post('/api/webhook/razorpay', async (req, res) => {
   try {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || process.env.RAZORPAY_KEY_SECRET;
+    const signature = req.headers['x-razorpay-signature'];
+
+    // Verify webhook signature if secret configured
+    if (webhookSecret && signature) {
+      const shasum = crypto.createHmac('sha256', webhookSecret);
+      shasum.update(JSON.stringify(req.body));
+      const digest = shasum.digest('hex');
+      if (digest !== signature) {
+        console.warn('[Razorpay Webhook] Invalid webhook signature detected.');
+        return res.status(400).json({ error: 'Invalid webhook signature' });
+      }
+    }
+
     const { event, payload } = req.body;
-    
     console.log('[Razorpay Webhook] Event:', event);
-    
-    // Handle payment authorization events
-    if (event === 'payment.authorized' || event === 'payment.captured') {
+
+    // Only process captured payments (avoids double-counting with authorized)
+    if (event === 'payment.captured') {
       const { payment } = payload || {};
-      if (!payment) {
-        return res.status(400).json({ error: 'No payment data' });
+      if (!payment || !payment.entity) {
+        return res.status(400).json({ error: 'No payment entity data' });
       }
 
+      const p = payment.entity;
       const {
         id: razorpayPaymentId,
         amount,
         currency,
         email,
         contact,
-        notes,
-        method
-      } = payment;
+        notes
+      } = p;
+
+      // Only handle donation transactions; do not record store product purchases as donations
+      const isDonation = notes?.isDonation === 'true' || notes?.isDonation === true || notes?.type === 'donation' || notes?.purpose === 'donation';
+      if (!isDonation) {
+        return res.json({ success: true, acknowledged: true, note: 'Non-donation order acknowledged' });
+      }
 
       // Convert amount from paisa to rupees
       const amountInRupees = amount / 100;
       const usdToInrRate = 85;
       const amountInUsd = (amountInRupees / usdToInrRate);
 
+      // Check if already recorded to prevent duplicates
+      const donorEmail = email || contact || 'unknown@razorpay.com';
+      const parsedAmount = parseFloat(amountInRupees.toFixed(2));
+      const existing = await prisma.donation.findFirst({
+        where: {
+          donorEmail,
+          amount: parsedAmount,
+          createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+        }
+      });
+
+      if (existing) {
+        console.log('[Razorpay Webhook] Donation already recorded:', existing.transactionId);
+        return res.json({ success: true, message: 'Donation already recorded', transactionId: existing.transactionId });
+      }
+
       // Generate SenpaiWorks transaction ID
       const txnId = `TXN-DON-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
-
       const donationData = {
-        donorName: (notes?.donor_name) || 'Razorpay Donor',
-        donorEmail: email || contact || 'unknown@razorpay.com',
-        amount: parseFloat(amountInRupees.toFixed(2)),
+        donorName: (notes?.donor_name) || 'Razorpay Supporter',
+        donorEmail,
+        amount: parsedAmount,
         currency: currency || 'INR',
         amountInUsd: parseFloat(amountInUsd.toFixed(2)),
         paymentMethod: 'razorpay',
         transactionId: txnId,
-        razorpayPaymentId: razorpayPaymentId,
         paymentStatus: 'SUCCESS',
-        message: (notes?.message) || '',
-        createdAt: new Date().toISOString()
+        message: (notes?.message) || ''
       };
 
-      console.log('[Razorpay Webhook] Processing donation:', donationData);
-
-      // Try saving to database
       try {
-        await prisma.donation.create({
-          data: {
-            donorName: donationData.donorName,
-            donorEmail: donationData.donorEmail,
-            amount: donationData.amount,
-            currency: donationData.currency,
-            amountInUsd: donationData.amountInUsd,
-            paymentMethod: donationData.paymentMethod,
-            transactionId: donationData.transactionId,
-            paymentStatus: donationData.paymentStatus,
-            message: donationData.message
-          }
-        });
-        console.log('[Razorpay Webhook] Saved to database');
+        await prisma.donation.create({ data: donationData });
+        console.log('[Razorpay Webhook] Donation saved to database:', txnId);
       } catch (dbErr) {
-        console.warn('[Razorpay Webhook] DB save failed, using local storage:', dbErr.message);
-        // Fallback to local storage
+        console.warn('[Razorpay Webhook] DB save failed, saving local copy:', dbErr.message);
         const localDonations = getLocalDonations();
-        localDonations.unshift(donationData);
+        localDonations.unshift({ ...donationData, createdAt: new Date().toISOString() });
         saveLocalDonations(localDonations);
       }
 
       return res.json({ success: true, message: 'Donation recorded', transactionId: txnId });
     }
 
-    // For other events, just acknowledge
+    // For other events, acknowledge receipt
     res.json({ success: true, acknowledged: true });
-
   } catch (err) {
     console.error('[Razorpay Webhook] Error:', err);
     res.status(500).json({ error: 'Webhook processing failed' });
@@ -7778,10 +7792,10 @@ app.post('/api/support/contact', async (req, res) => {
   }
 });
 
-// POST /api/feedback/reply - Send admin reply email to user
-app.post('/api/feedback/reply', async (req, res) => {
+// POST /api/feedback/reply - Send admin reply email to user (Admin Protected)
+app.post('/api/feedback/reply', requireAdminToken, async (req, res) => {
   try {
-    const { userName, userEmail, adminReply, category } = req.body;
+    const { userName, userEmail, adminReply, category, feedbackId } = req.body;
 
     // Validation
     if (!userName || !userEmail || !adminReply) {
@@ -7795,6 +7809,23 @@ app.post('/api/feedback/reply', async (req, res) => {
     }
 
     console.log('[Feedback Reply] Sending admin reply to', userEmail);
+
+    // If feedbackId is provided, update the feedback record in database
+    if (feedbackId) {
+      try {
+        await prisma.feedback.update({
+          where: { id: Number(feedbackId) },
+          data: {
+            adminReply,
+            adminReplyAt: new Date(),
+            status: 'Reviewed'
+          }
+        });
+        console.log('[Feedback Reply] Updated database record for feedback ID:', feedbackId);
+      } catch (dbErr) {
+        console.warn('[Feedback Reply] Could not update feedback record:', dbErr.message);
+      }
+    }
 
     // Build HTML email content
     const htmlContent = `
@@ -7853,6 +7884,135 @@ app.post('/api/feedback/reply', async (req, res) => {
   } catch (error) {
     console.error('[Feedback Reply Error]', error);
     res.status(500).json({ error: 'An unexpected error occurred. Please try again.', details: error.message });
+  }
+});
+
+// ========================================
+// REAL-TIME DASHBOARD METRICS ENDPOINT (Placed before 404 handler)
+// ========================================
+app.get('/api/admin/metrics', requireAdminToken, async (req, res) => {
+  try {
+    // 1. Total Artworks
+    const totalArtworks = await prisma.artwork.count();
+
+    // 2. Total Store Products (using Product model)
+    const totalProducts = await prisma.product.count();
+
+    // 3. Total Sales Revenue
+    const revenueData = await prisma.order.aggregate({
+      where: {
+        status: { not: 'Cancelled' }
+      },
+      _sum: {
+        total: true
+      }
+    });
+    const totalRevenue = revenueData._sum.total || 0;
+
+    // 4. Monthly Views (placeholder 0 if no analytics table)
+    let monthlyViews = 0;
+
+    // 5. Calculate trends (compare with 7 days ago)
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    
+    const artworksSevenDaysAgo = await prisma.artwork.count({
+      where: { createdAt: { lt: sevenDaysAgo } }
+    });
+    const artworksTrend = totalArtworks > artworksSevenDaysAgo 
+      ? Math.round(((totalArtworks - artworksSevenDaysAgo) / (artworksSevenDaysAgo || 1)) * 100)
+      : 0;
+
+    const productsSevenDaysAgo = await prisma.product.count({
+      where: { createdAt: { lt: sevenDaysAgo } }
+    });
+    const productsTrend = totalProducts > productsSevenDaysAgo
+      ? Math.round(((totalProducts - productsSevenDaysAgo) / (productsSevenDaysAgo || 1)) * 100)
+      : 0;
+
+    const revenueSevenDaysAgo = await prisma.order.aggregate({
+      where: {
+        status: { not: 'Cancelled' },
+        createdAt: { lt: sevenDaysAgo }
+      },
+      _sum: { total: true }
+    });
+    const oldRevenue = revenueSevenDaysAgo._sum.total || 0;
+    const revenueTrend = totalRevenue > oldRevenue
+      ? Math.round(((totalRevenue - oldRevenue) / (oldRevenue || 1)) * 100)
+      : 0;
+
+    const viewsTrend = 0;
+
+    // 6. Get sales by category
+    const orderItems = await prisma.orderItem.findMany({
+      where: {
+        order: { status: { not: 'Cancelled' } }
+      },
+      include: {
+        product: { select: { category: true } }
+      }
+    });
+
+    const categoryMap = {};
+    orderItems.forEach(item => {
+      const cat = (item.product && item.product.category) ? item.product.category : (item.productName || 'Other');
+      const itemTotal = (item.price || 0) * (item.quantity || 1);
+      if (!categoryMap[cat]) categoryMap[cat] = { category: cat, _sum: { price: 0 }, _count: 0 };
+      categoryMap[cat]._sum.price += itemTotal;
+      categoryMap[cat]._count += (item.quantity || 1);
+    });
+    const salesByCategory = Object.values(categoryMap);
+
+    // 7. 7-day revenue trend
+    const sevenDayRevenue = [];
+    const istOffsetMs = 5.5 * 60 * 60 * 1000;
+    const now = new Date();
+    const istNow = new Date(now.getTime() + istOffsetMs);
+
+    for (let i = 6; i >= 0; i--) {
+      const targetIST = new Date(istNow.getTime() - i * 24 * 60 * 60 * 1000);
+      const year = targetIST.getUTCFullYear();
+      const month = targetIST.getUTCMonth();
+      const day = targetIST.getUTCDate();
+
+      const startOfDayUTC = new Date(Date.UTC(year, month, day, 0, 0, 0, 0) - istOffsetMs);
+      const endOfDayUTC = new Date(Date.UTC(year, month, day, 23, 59, 59, 999) - istOffsetMs);
+
+      const dayOrders = await prisma.order.findMany({
+        where: {
+          status: { not: 'Cancelled' },
+          createdAt: {
+            gte: startOfDayUTC,
+            lte: endOfDayUTC
+          }
+        },
+        select: { total: true }
+      });
+      const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+      sevenDayRevenue.push({
+        date: `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        revenue: dayRevenue
+      });
+    }
+
+    res.json({
+      success: true,
+      metrics: {
+        totalArtworks,
+        artworksTrend,
+        totalProducts,
+        productsTrend,
+        totalRevenue,
+        revenueTrend,
+        monthlyViews,
+        viewsTrend,
+        salesByCategory,
+        sevenDayRevenue
+      }
+    });
+  } catch (err) {
+    console.error('[Metrics API] Error:', err);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -8323,137 +8483,6 @@ async function seedInitialStoreProducts() {
     console.error('Error seeding store products:', err);
   }
 }
-
-// ========================================
-// REAL-TIME DASHBOARD METRICS ENDPOINT
-// ========================================
-app.get('/api/admin/metrics', requireAdminToken, async (req, res) => {
-  try {
-    // 1. Total Artworks
-    const totalArtworks = await prisma.artwork.count();
-
-    // 2. Total Store Products
-    const totalProducts = await prisma.storeProduct.count();
-
-    // 3. Total Sales Revenue (sum all completed orders)
-    const revenueData = await prisma.order.aggregate({
-      where: {
-        status: { in: ['completed', 'shipped', 'delivered'] }
-      },
-      _sum: {
-        grandTotal: true
-      }
-    });
-    const totalRevenue = revenueData._sum.grandTotal || 0;
-
-    // 4. Monthly Page Views (from analytics if available, otherwise 0)
-    // For now, we'll fetch from a hypothetical analytics table or return 0
-    let monthlyViews = 0;
-    try {
-      const analyticsData = await prisma.pageView.aggregate({
-        where: {
-          createdAt: {
-            gte: new Date(new Date().setDate(new Date().getDate() - 30))
-          }
-        },
-        _count: true
-      });
-      monthlyViews = analyticsData._count || 0;
-    } catch (e) {
-      // Table may not exist, default to 0
-      monthlyViews = 0;
-    }
-
-    // 5. Calculate trends (compare with 7 days ago)
-    const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7));
-    
-    const artworksSevenDaysAgo = await prisma.artwork.count({
-      where: { createdAt: { lt: sevenDaysAgo } }
-    });
-    const artworksTrend = totalArtworks > artworksSevenDaysAgo 
-      ? Math.round(((totalArtworks - artworksSevenDaysAgo) / (artworksSevenDaysAgo || 1)) * 100)
-      : 0;
-
-    const productsSevenDaysAgo = await prisma.storeProduct.count({
-      where: { createdAt: { lt: sevenDaysAgo } }
-    });
-    const productsTrend = totalProducts > productsSevenDaysAgo
-      ? Math.round(((totalProducts - productsSevenDaysAgo) / (productsSevenDaysAgo || 1)) * 100)
-      : 0;
-
-    const revenueSevenDaysAgo = await prisma.order.aggregate({
-      where: {
-        status: { in: ['completed', 'shipped', 'delivered'] },
-        createdAt: { lt: sevenDaysAgo }
-      },
-      _sum: { grandTotal: true }
-    });
-    const revenueTrend = totalRevenue > (revenueSevenDaysAgo._sum.grandTotal || 0)
-      ? Math.round(((totalRevenue - (revenueSevenDaysAgo._sum.grandTotal || 0)) / ((revenueSevenDaysAgo._sum.grandTotal || 1))) * 100)
-      : 0;
-
-    const viewsSevenDaysAgo = await prisma.pageView.count({
-      where: { createdAt: { lt: sevenDaysAgo } }
-    }).catch(() => 0);
-    const viewsTrend = monthlyViews > viewsSevenDaysAgo
-      ? Math.round(((monthlyViews - viewsSevenDaysAgo) / (viewsSevenDaysAgo || 1)) * 100)
-      : 0;
-
-    // 6. Get sales by category (for pie chart)
-    const salesByCategory = await prisma.orderItem.groupBy({
-      by: ['category'],
-      where: {
-        order: {
-          status: { in: ['completed', 'shipped', 'delivered'] }
-        }
-      },
-      _sum: {
-        price: true
-      },
-      _count: true
-    });
-
-    // 7. 7-day revenue trend (for line chart)
-    const sevenDayRevenue = [];
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(new Date().setDate(new Date().getDate() - i));
-      const nextDate = new Date(date.getTime() + 86400000);
-      const dayRevenue = await prisma.order.aggregate({
-        where: {
-          status: { in: ['completed', 'shipped', 'delivered'] },
-          createdAt: {
-            gte: date,
-            lt: nextDate
-          }
-        },
-        _sum: { grandTotal: true }
-      });
-      sevenDayRevenue.push({
-        date: date.toISOString().split('T')[0],
-        revenue: dayRevenue._sum.grandTotal || 0
-      });
-    }
-
-    res.json({
-      success: true,
-      metrics: {
-        totalArtworks,
-        artworksTrend,
-        totalProducts,
-        productsTrend,
-        totalRevenue,
-        revenueTrend,
-        monthlyViews,
-        viewsTrend,
-        salesByCategory,
-        sevenDayRevenue
-      }
-    });
-  } catch (err) {
-    console.error('[Metrics API] Error:', err);
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

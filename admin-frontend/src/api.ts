@@ -1,6 +1,6 @@
 import { z } from "zod";
 export const API_BASE = import.meta.env["VITE_API_BASE_URL"] || "/api";
-export const DEMO_MODE = import.meta.env["VITE_DEMO_MODE"] !== "false";
+export const DEMO_MODE = import.meta.env["VITE_DEMO_MODE"] === "true";
 export class ApiError extends Error {
   constructor(
     public status: number,

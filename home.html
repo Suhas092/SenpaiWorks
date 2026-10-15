@@ -1484,12 +1484,6 @@
 
         // Initial render
         await renderMerchSpotlight();
-
-        // Setup real-time polling (update every 30 seconds)
-        window.merchSpotlightPollingInterval = setInterval(async () => {
-          console.log("[Merch Spotlight] Fetching fresh spotlight data...");
-          await renderMerchSpotlight();
-        }, 30000);
       }
 
       initDynamicHomeMerch();

@@ -394,8 +394,7 @@ window.saveFeedbackDetail = function () {
       
       // If admin reply is new (wasn't there before), send email to user
       if (newAdminReply && newAdminReply !== oldAdminReply && userEmail && userEmail !== 'N/A') {
-        console.log('[Feedback] Initiating email send to:', userEmail);
-        sendFeedbackReplyEmail(userName, userEmail, newAdminReply, reviewsList[idx].category);
+        sendFeedbackReplyEmail(userName, userEmail, newAdminReply, reviewsList[idx].category, id);
       } else if (newAdminReply && newAdminReply !== oldAdminReply) {
         console.warn('[Feedback] Could not send email - missing valid email:', userEmail);
       }
@@ -416,31 +415,23 @@ window.saveFeedbackDetail = function () {
 };
 
 // Send admin reply to user via email
-async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category) {
-  console.log('[Feedback] Starting email send:', { userName, userEmail, category });
-  
+async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category, feedbackId) {
   try {
     const payload = {
       userName: userName,
       userEmail: userEmail,
       category: category || 'General',
-      adminReply: adminReply
+      adminReply: adminReply,
+      feedbackId: feedbackId || undefined
     };
     
-    console.log('[Feedback] Email payload:', payload);
-    
-    const token = (typeof getAuthToken === 'function' ? getAuthToken() : (localStorage.getItem('auth_token') || null)) || null;
-    
-    const headers = { 'Content-Type': 'application/json' };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-    
-    console.log('[Feedback] Sending to /api/feedback/reply');
+    const adminHeaders = typeof window.getAdminTokenHeaders === 'function' ? window.getAdminTokenHeaders() : {};
+    const headers = { 'Content-Type': 'application/json', ...adminHeaders };
     
     const response = await fetch('/api/feedback/reply', {
       method: 'POST',
       headers: headers,
+      credentials: 'include',
       body: JSON.stringify(payload)
     });
     
