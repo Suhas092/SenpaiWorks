@@ -404,11 +404,11 @@
           onSuccess(userData, userData._token);
         } catch (cbErr) {
           console.error("[Auth] onSuccess callback error:", cbErr);
-          window.location.href = "/home";
+          window.location.replace("/home");
         }
       } else {
         console.log("[Auth] No onSuccess callback, redirecting directly to /home");
-        window.location.href = "/home";
+        window.location.replace("/home");
       }
 
       // Safety net: if still on a login/register page after 2 seconds, force redirect
@@ -416,7 +416,7 @@
         const path = window.location.pathname.toLowerCase();
         if (path.includes("login") || path.includes("register") || path.includes("signin")) {
           console.log("[Auth] Safety-net redirect triggered — still on auth page after OAuth login");
-          window.location.href = "/home";
+          window.location.replace("/home");
         }
       }, 2000);
     },

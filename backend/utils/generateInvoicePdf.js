@@ -181,7 +181,7 @@ function ensureDarkBrandAssets() {
  * @param {Object} order - Order object containing items, address, payment details
  * @param {Stream} res - Express response stream to pipe the PDF to
  */
-function generateOrderInvoicePDF(order, res) {
+function generateOrderInvoicePDF(order, res, options = {}) {
   const isDonation = (order.orderNumber && order.orderNumber.startsWith('TXN-')) ||
     (order.items || []).some(i => i && (i.isDonation || i.productId === 'DONATION' || (i.name && i.name.toLowerCase().includes('donation'))));
 
@@ -201,7 +201,8 @@ function generateOrderInvoicePDF(order, res) {
   const filenamePrefix = isDonation ? 'SenpaiWorks-Donation-Receipt' : 'SenpaiWorks-Invoice';
   if (typeof res.setHeader === 'function') {
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${filenamePrefix}-${order.orderNumber || order.id}.pdf"`);
+    const disposition = options.inline ? 'inline' : 'attachment';
+    res.setHeader('Content-Disposition', `${disposition}; filename="${filenamePrefix}-${order.orderNumber || order.id}.pdf"`);
   }
 
   doc.pipe(res);

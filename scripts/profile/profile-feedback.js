@@ -24,100 +24,118 @@ function setupStarPicker() {
 }
 window.setupStarPicker = setupStarPicker;
 
-// 7. FEEDBACK SUBMISSION
-window.handleAccountFeedbackSubmit = function (e) {
-  if (e) e.preventDefault();
-  const category = document.getElementById("feedback-category-select").value;
-  const msg = document.getElementById("feedback-msg-input").value.trim();
-  if (!msg) return;
+// 7. FEEDBACK (stored on the server; admin replies are shown in the history)
+function getProfileUserToken() {
+  return localStorage.getItem("userToken") || sessionStorage.getItem("userToken") || "";
+}
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+function feedbackEscape(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatFeedbackDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+}
+
+function notifyFeedbackResult(message, isError = false) {
+  if (!isError && typeof showToast === "function") showToast(message);
+  else alert(message);
+}
+
+function notifyAdminOfFeedback(category, rating, message) {
+  let currentUser = {};
+  try {
+    currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  } catch (err) {}
   const authorName = currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : "Profile User";
 
-  const newFeedback = {
-    id: "FB-" + Math.floor(1000 + Math.random() * 9000),
-    user: authorName,
-    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-    category: category,
-    rating: selectedStarRating,
-    title: "Profile Feedback",
-    text: msg,
-    isPublic: true,
-    helpfulCount: 0,
-    status: "Pending",
-    admin_reply: null,
-    internal_notes: null,
-    priority: null
-  };
+  fetch("/api/support/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: authorName,
+      email: currentUser.email || "",
+      subject: `User Feedback: ${category}`,
+      message: `Profile Feedback\n\nRating: ${rating}/5\n\n${message}`
+    })
+  }).catch(err => console.warn("[Feedback] Admin email notification failed:", err));
+}
 
-  let reviewsList = [];
+window.handleAccountFeedbackSubmit = async function (e) {
+  if (e) e.preventDefault();
+  const categoryEl = document.getElementById("feedback-category-select");
+  const msgEl = document.getElementById("feedback-msg-input");
+  const category = (categoryEl && categoryEl.value) || "General";
+  const message = msgEl.value.trim();
+  if (!message) return;
+
+  const token = getProfileUserToken();
+  if (!token) {
+    notifyFeedbackResult("Please log in to submit feedback.", true);
+    return;
+  }
+
+  const submitBtn = e && e.target ? e.target.querySelector('button[type="submit"]') : null;
+  if (submitBtn) submitBtn.disabled = true;
+
   try {
-    const raw = localStorage.getItem("userReviews") || localStorage.getItem("user_reviews");
-    if (raw) reviewsList = JSON.parse(raw) || [];
-  } catch (err) {}
-
-  reviewsList.unshift(newFeedback);
-  localStorage.setItem("userReviews", JSON.stringify(reviewsList));
-  localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
-
-  // Send an email notification to SenpaiWorks admin (server will deliver)
-  (async function sendFeedbackToServer() {
-    try {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-      const authorName = currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : "Profile User";
-      const payload = {
-        name: authorName,
-        email: currentUser.email || '',
-        subject: `User Feedback: ${category}`,
-        message: `${newFeedback.title}\n\nRating: ${newFeedback.rating}/5\n\n${newFeedback.text}`
-      };
-
-      // Include auth token if available (optional)
-      const token = (typeof getAuthToken === 'function' ? getAuthToken() : (localStorage.getItem('auth_token') || null)) || null;
-
-      await fetch('/api/support/contact', {
-        method: 'POST',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'Authorization': `Bearer ${token}` } : {}),
-        body: JSON.stringify(payload)
-      }).then(async (res) => {
-        if (res.ok) {
-          // fire-and-forget success
-          console.log('[Feedback] Server notified and admin email triggered');
-        } else {
-          console.warn('[Feedback] Server contact endpoint returned', res.status);
-        }
-      }).catch(err => console.warn('[Feedback] Failed to notify server:', err));
-    } catch (err) {
-      console.warn('[Feedback] Error preparing server feedback:', err);
+    const res = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      body: JSON.stringify({ category, rating: selectedStarRating, message })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      notifyFeedbackResult(data.error || "Could not submit feedback. Please try again.", true);
+      return;
     }
-  })();
 
-  document.getElementById("feedback-msg-input").value = "";
-  if (typeof showToast === 'function') showToast("Thank you for your feedback! Your review has been recorded.");
-  else alert("Thank you for your feedback! Your review has been recorded.");
-  window.loadFeedbackHistory();
+    notifyAdminOfFeedback(category, selectedStarRating, message);
+    msgEl.value = "";
+    notifyFeedbackResult("Thank you for your feedback! Our team will review it.");
+    window.profileFeedbackLimit = 5;
+    await window.loadFeedbackHistory();
+  } catch (err) {
+    console.warn("[Feedback] Submit failed:", err);
+    notifyFeedbackResult("Network error. Please try again.", true);
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
 };
 
 window.profileFeedbackLimit = 5;
 
-window.loadFeedbackHistory = function() {
+window.loadFeedbackHistory = async function () {
   const container = document.getElementById("feedback-history-list");
   if (!container) return;
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-  const authorName = currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : "Profile User";
+  const token = getProfileUserToken();
+  if (!token) {
+    container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 24px;">Log in to view your feedback.</div>`;
+    return;
+  }
 
-  let reviewsList = [];
+  let history = [];
   try {
-    const raw = localStorage.getItem("userReviews") || localStorage.getItem("user_reviews");
-    if (raw) reviewsList = JSON.parse(raw) || [];
-  } catch (err) {}
-
-  // Filter to only show feedback submitted by the current user
-  let history = reviewsList.filter(r => r.user === authorName || r.author === authorName);
-  
-  // Sort newest first
-  history.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+    const res = await fetch("/api/users/me/feedback", {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    history = Array.isArray(data.feedback) ? data.feedback : [];
+  } catch (err) {
+    console.warn("[Feedback] Could not load history:", err);
+    container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 24px;">Could not load your feedback. Please refresh the page.</div>`;
+    return;
+  }
 
   if (history.length === 0) {
     container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 24px;">No past feedback found.</div>`;
@@ -126,32 +144,33 @@ window.loadFeedbackHistory = function() {
 
   const visibleHistory = history.slice(0, window.profileFeedbackLimit);
   let html = "";
-  
+
   visibleHistory.forEach(item => {
     let starsHtml = "";
     for (let i = 1; i <= 5; i++) {
       starsHtml += `<i class="fa-solid fa-star" style="color: ${i <= item.rating ? '#f59e0b' : '#cbd5e1'}; font-size: 0.75rem;"></i>`;
     }
 
-    const statusColor = item.status === 'Resolved' ? '#10b981' : (item.status === 'Reviewed' ? '#3b82f6' : (item.status === 'Flagged' ? '#ef4444' : '#94a3b8'));
+    const status = item.status || "Pending";
+    const statusColor = status === 'Resolved' ? '#10b981' : (status === 'Reviewed' ? '#3b82f6' : (status === 'Flagged' ? '#ef4444' : '#94a3b8'));
+    const replyDate = formatFeedbackDate(item.adminReplyAt);
+    const replyHtml = item.adminReply ? `
+        <div style="margin-top: 10px; padding: 10px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 6px;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #1d4ed8; margin-bottom: 4px;">SenpaiWorks replied${replyDate ? ` on ${feedbackEscape(replyDate)}` : ""}</div>
+          <p style="font-size: 0.85rem; color: #1e293b; margin: 0; white-space: pre-wrap;">${feedbackEscape(item.adminReply)}</p>
+        </div>
+      ` : "";
 
     html += `
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f8fafc; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px; flex-wrap: nowrap; overflow: hidden;">
-        <div style="flex-shrink: 0; width: 140px;">
-          <span style="font-size: 0.75rem; font-weight: 700; color: #0f172a; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;" title="${item.category || 'General'}">${item.category || 'General'}</span>
+      <div style="background: #f8fafc; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; font-weight: 700; color: #0f172a; background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">${feedbackEscape(item.category || "General")}</span>
+          <span>${starsHtml}</span>
+          <span style="font-size: 0.7rem; font-weight: 700; color: ${statusColor}; border: 1px solid ${statusColor}; padding: 2px 6px; border-radius: 4px;">${feedbackEscape(status)}</span>
+          <span style="font-size: 0.75rem; color: #64748b; white-space: nowrap;">${feedbackEscape(formatFeedbackDate(item.createdAt))}</span>
         </div>
-        <div style="flex-shrink: 0; width: 70px;">
-          ${starsHtml}
-        </div>
-        <div style="flex-grow: 1; flex-shrink: 1; min-width: 0;">
-          <p style="font-size: 0.85rem; color: #334155; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.text || item.message || ''}">${item.text || item.message || ''}</p>
-        </div>
-        <div style="flex-shrink: 0; width: 80px; text-align: center;">
-          <span style="font-size: 0.7rem; font-weight: 700; color: ${statusColor}; border: 1px solid ${statusColor}; padding: 2px 6px; border-radius: 4px;">${item.status || 'Pending'}</span>
-        </div>
-        <div style="flex-shrink: 0; width: 90px; text-align: right;">
-          <span style="font-size: 0.75rem; color: #64748b; white-space: nowrap;">${item.date}</span>
-        </div>
+        <p style="font-size: 0.85rem; color: #334155; margin: 8px 0 0; white-space: pre-wrap;">${feedbackEscape(item.message)}</p>
+        ${replyHtml}
       </div>
     `;
   });

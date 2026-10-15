@@ -1067,6 +1067,7 @@ async function sendContactConfirmationToUser(userEmail, userName, subject) {
 }
 
 module.exports = {
+  sendEmail,
   sendSignupOtpEmail,
   sendPasswordResetOtpEmail,
   sendPasswordChangedConfirmationEmail,

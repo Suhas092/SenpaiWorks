@@ -8,7 +8,7 @@ window.feedbackSortDir = 'desc';
 window.feedbackCurrentPage = 1;
 
 window.loadCommunityReviews = async function () {
-  const tbody = document.getElementById("community-reviews-list");
+  const tbody = document.getElementById("community-list-body");
   const feedbackTbody = document.getElementById("customer-feedback-list-body");
   const feedbackAdminTbody = document.getElementById("feedback-admin-list-body");
   const countBadge = document.getElementById("admin-comm-reviews-count");
@@ -34,10 +34,10 @@ window.loadCommunityReviews = async function () {
   }
 
   const seedReviews = [
-    { id: "rev-seed-1", author: "ZoroFan42", rating: 5, category: "Order Issue", title: "Incredible print quality!", text: "The green contrast on the Zoro poster is even more vibrant in person. Paper feels very premium.", date: "July 10, 2026", isPublic: true, likes: 24 },
-    { id: "rev-seed-2", author: "RigArtist", rating: 5, category: "3D Character Rig", title: "Perfect blender rig!", text: "Excellent topology and weight painting on the Suzens model.", date: "July 08, 2026", isPublic: true, likes: 15 },
-    { id: "rev-seed-3", author: "BrushesPro", rating: 4, category: "Brushes & Textures", title: "Super clean brushes", text: "Nice digital painting brushes and template guidelines.", date: "July 05, 2026", isPublic: true, likes: 8 },
-    { id: "rev-seed-4", author: "DevSora", rating: 5, category: "General Website", title: "Smooth website UI", text: "The donation page micro-animations are beautiful.", date: "June 29, 2026", isPublic: true, likes: 42 }
+    { id: "rev-seed-1", author: "ZoroFan42", email: "zoro@example.com", rating: 5, category: "Order Issue", title: "Incredible print quality!", text: "The green contrast on the Zoro poster is even more vibrant in person. Paper feels very premium.", date: "July 10, 2026", isPublic: true, likes: 24 },
+    { id: "rev-seed-2", author: "RigArtist", email: "rigartist@example.com", rating: 5, category: "3D Character Rig", title: "Perfect blender rig!", text: "Excellent topology and weight painting on the Suzens model.", date: "July 08, 2026", isPublic: true, likes: 15 },
+    { id: "rev-seed-3", author: "BrushesPro", email: "brushespro@example.com", rating: 4, category: "Brushes & Textures", title: "Super clean brushes", text: "Nice digital painting brushes and template guidelines.", date: "July 05, 2026", isPublic: true, likes: 8 },
+    { id: "rev-seed-4", author: "DevSora", email: "devsora@example.com", rating: 5, category: "General Website", title: "Smooth website UI", text: "The donation page micro-animations are beautiful.", date: "June 29, 2026", isPublic: true, likes: 42 }
   ];
 
   const customReviews = reviewsList.filter(r => r && r.id && !r.id.startsWith("rev-seed-"));
@@ -74,7 +74,7 @@ window.loadCommunityReviews = async function () {
     allReviews = allReviews.filter(r => (r.status || 'Pending') === statusFilter.value);
   }
 
-  const cols = ['author', 'rating', 'date'];
+  const cols = ['author', 'email', 'date'];
   cols.forEach(col => {
     const icon = document.getElementById(`sort-icon-${col}`);
     if (icon) {
@@ -92,9 +92,9 @@ window.loadCommunityReviews = async function () {
     if (window.feedbackSortCol === 'date') {
       valA = new Date(valA || 0).getTime();
       valB = new Date(valB || 0).getTime();
-    } else if (window.feedbackSortCol === 'rating') {
-      valA = a.rating || 0;
-      valB = b.rating || 0;
+    } else if (window.feedbackSortCol === 'email') {
+      valA = (a.email || '').toLowerCase();
+      valB = (b.email || '').toLowerCase();
     } else if (window.feedbackSortCol === 'author') {
       valA = (a.author || a.user || 'Anonymous').toLowerCase();
       valB = (b.author || b.user || 'Anonymous').toLowerCase();
@@ -150,7 +150,7 @@ window.loadCommunityReviews = async function () {
           ${r.email ? `<small class="feedback-author-email">${window.escapeHtml(r.email)}</small>` : ''}
         </td>
         <td>
-          <div class="feedback-rating-stars">${stars} <span class="feedback-rating-num">(${r.rating || 5}.0)</span></div>
+          <div class="feedback-email">${window.escapeHtml(r.email || '—')}</div>
           <strong class="feedback-item-title">${window.escapeHtml(r.title || 'Review')}</strong>
         </td>
         <td>
@@ -321,6 +321,7 @@ window.openFeedbackDetail = function (id, event) {
   const priorityField = document.getElementById("detail-modal-priority");
   const notesField = document.getElementById("detail-modal-internal-notes");
   const replyField = document.getElementById("detail-modal-admin-reply");
+  const emailField = document.getElementById("detail-modal-email");
 
   if (idField) idField.value = review.id;
   if (userField) userField.textContent = review.author || review.user || 'Anonymous';
@@ -328,6 +329,7 @@ window.openFeedbackDetail = function (id, event) {
   if (dateField) dateField.textContent = review.date || 'Unknown';
   if (ratingField) ratingField.textContent = review.rating ? '★'.repeat(review.rating) : 'N/A';
   if (contentField) contentField.textContent = review.text || 'No content provided.';
+  if (emailField) emailField.value = review.email || 'N/A';
   
   if (statusField) statusField.value = review.status || 'Pending';
   if (priorityField) priorityField.value = review.priority || 'Low';
@@ -341,6 +343,15 @@ window.openFeedbackDetail = function (id, event) {
   }
 };
 
+window.closeFeedbackDetail = function () {
+  const modal = document.getElementById("modal-feedback-detail");
+  if (modal) {
+    modal.classList.remove("active");
+    modal.style.display = "none";
+  }
+};
+
+
 window.saveFeedbackDetail = function () {
   const id = document.getElementById("detail-modal-id")?.value;
   if (!id) return;
@@ -349,15 +360,46 @@ window.saveFeedbackDetail = function () {
     let reviewsList = JSON.parse(localStorage.getItem("userReviews") || localStorage.getItem("user_reviews") || "[]");
     const idx = reviewsList.findIndex(r => r.id === id);
     if (idx > -1) {
+      const oldAdminReply = reviewsList[idx].admin_reply || '';
+      const newAdminReply = document.getElementById("detail-modal-admin-reply")?.value || '';
+      let userEmail = reviewsList[idx].email || '';
+      const userName = reviewsList[idx].author || reviewsList[idx].user || 'User';
+      
+      // If email is missing and admin has written a reply, prompt for email
+      if (newAdminReply && newAdminReply !== oldAdminReply && (!userEmail || userEmail === 'N/A')) {
+        const promptEmail = prompt(`Email for ${userName} is missing. Please enter their email to send the reply:`, '');
+        if (promptEmail && promptEmail.trim()) {
+          userEmail = promptEmail.trim();
+          reviewsList[idx].email = userEmail;
+        } else {
+          window.showAdminToast("Email is required to send admin reply. Please update the feedback record with user email.", "warning");
+          return;
+        }
+      }
+      
       reviewsList[idx].status = document.getElementById("detail-modal-status")?.value || 'Pending';
       reviewsList[idx].priority = document.getElementById("detail-modal-priority")?.value || 'Low';
       reviewsList[idx].internal_notes = document.getElementById("detail-modal-internal-notes")?.value || '';
-      reviewsList[idx].admin_reply = document.getElementById("detail-modal-admin-reply")?.value || '';
+      reviewsList[idx].admin_reply = newAdminReply;
       
       localStorage.setItem("userReviews", JSON.stringify(reviewsList));
       localStorage.setItem("user_reviews", JSON.stringify(reviewsList));
       
-      window.showAdminToast("Feedback updated successfully.", "success");
+      console.log('[Feedback] Feedback saved:', {
+        id: id,
+        userEmail: userEmail,
+        hasReply: !!newAdminReply,
+        replyChanged: newAdminReply !== oldAdminReply
+      });
+      
+      // If admin reply is new (wasn't there before), send email to user
+      if (newAdminReply && newAdminReply !== oldAdminReply && userEmail && userEmail !== 'N/A') {
+        sendFeedbackReplyEmail(userName, userEmail, newAdminReply, reviewsList[idx].category, id);
+      } else if (newAdminReply && newAdminReply !== oldAdminReply) {
+        console.warn('[Feedback] Could not send email - missing valid email:', userEmail);
+      }
+      
+      window.showAdminToast("Feedback updated successfully." + (newAdminReply ? " Reply queued for user." : ""), "success");
       
       const modal = document.getElementById("modal-feedback-detail");
       if (modal) {
@@ -367,8 +409,49 @@ window.saveFeedbackDetail = function () {
       
       window.loadCommunityReviews();
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('[Feedback] Error saving feedback:', e);
+  }
 };
+
+// Send admin reply to user via email
+async function sendFeedbackReplyEmail(userName, userEmail, adminReply, category, feedbackId) {
+  try {
+    const payload = {
+      userName: userName,
+      userEmail: userEmail,
+      category: category || 'General',
+      adminReply: adminReply,
+      feedbackId: feedbackId || undefined
+    };
+    
+    const adminHeaders = typeof window.getAdminTokenHeaders === 'function' ? window.getAdminTokenHeaders() : {};
+    const headers = { 'Content-Type': 'application/json', ...adminHeaders };
+    
+    const response = await fetch('/api/feedback/reply', {
+      method: 'POST',
+      headers: headers,
+      credentials: 'include',
+      body: JSON.stringify(payload)
+    });
+    
+    console.log('[Feedback] Response status:', response.status);
+    
+    if (response.ok) {
+      const result = await response.json();
+      console.log('[Feedback] Admin reply email sent successfully to', userEmail);
+      console.log('[Feedback] Message ID:', result.messageId);
+      window.showAdminToast(`✅ Email sent to ${userEmail}`, "success");
+    } else {
+      const errorData = await response.json();
+      console.warn('[Feedback] Email API error:', response.status, errorData);
+      window.showAdminToast(`Email failed: ${errorData.error}`, "warning");
+    }
+  } catch (err) {
+    console.error('[Feedback] Email send exception:', err);
+    window.showAdminToast(`Email error: ${err.message}`, "error");
+  }
+}
 
 window.addEventListener("storage", (e) => {
   if (e.key === "userReviews" || e.key === "user_reviews") {

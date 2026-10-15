@@ -433,19 +433,19 @@ window.loadProducts = async function () {
       let deletedCount = 0;
       for (const id of idsToDelete) {
         try {
-          await fetch(`/api/products/${id}`, {
+          const res = await fetch(`/api/products/${id}`, {
             method: "DELETE",
-            headers: window.getAdminTokenHeaders()
+            headers: window.getAdminTokenHeaders(),
+            credentials: "include"
           });
-          deletedCount++;
+          if (res.ok) deletedCount++;
         } catch (e) {
           console.error("Bulk delete error:", e);
         }
       }
 
-      window.adminProductsList = window.adminProductsList.filter(p => !idsToDelete.includes(p.id));
-      renderProductsTable(window.adminProductsList);
-      window.showAdminToast(`Successfully deleted ${deletedCount || idsToDelete.length} product(s)!`, "success", "Bulk Delete Complete");
+      window.loadProducts(); // Reload product list from backend
+      window.showAdminToast(`Successfully deleted ${deletedCount} product(s)!`, "success", "Bulk Delete Complete");
     };
   }
 
@@ -536,31 +536,30 @@ function renderProductsTable(products) {
     return `
       <tr>
         <td class="select-col-td"><input type="checkbox" class="tbl-checkbox" value="${p.id}" onchange="window.updateStoreBulkSelection()"></td>
-        <td><img src="${p.img || 'https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/rem_happy_evhesz.webp'}" alt="${window.escapeHtml(p.name)}" class="table-thumb" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px;"></td>
+        <td><img src="${p.img || 'https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/rem_happy_evhesz.webp'}" alt="${window.escapeHtml(p.name)}" class="table-thumb" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px;"></td>
         <td>
-          <strong style="color: var(--text-primary);">${window.escapeHtml(p.name)}</strong>${badgePill}<br>
-          <code style="font-size: 0.76rem; color: var(--text-muted);">${p.id}</code>
+          <strong style="color: var(--text-primary); display: block;">${window.escapeHtml(p.name)}</strong>
+          <code style="font-size: 0.75rem; color: var(--text-muted);">${p.id}</code>
         </td>
         <td>
-          <span class="badge badge-type">${window.escapeHtml(p.category || 'General')}</span>
-          ${p.subCategory ? `<br><span style="font-size: 0.76rem; color: var(--text-muted);">${window.escapeHtml(p.subCategory)}</span>` : ''}
+          <div style="font-weight: 700; color: #38bdf8; display: block;">${priceDisplay}</div>
+          ${origPriceDisplay}
         </td>
         <td>
-          <span style="font-weight: 700; color: #38bdf8;">${priceDisplay}</span>${origPriceDisplay}
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span class="badge badge-type">${window.escapeHtml(p.category || 'General')}</span>
+            ${prodType}
+          </div>
         </td>
-        <td>
-          ${prodType}<br>
-          ${ratingDisplay}
-        </td>
-        <td>
+        <td style="text-align: center;">
           ${wishlistDisplay}
         </td>
-        <td style="font-weight: 600;">${stockDisplay}</td>
-        <td>${statusBadge}</td>
+        <td style="text-align: center; font-weight: 600;">
+          <span style="background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 4px 8px; border-radius: 6px; display: inline-block;">${stockDisplay}</span>
+        </td>
         <td class="actions-cell">
           <button type="button" class="action-btn btn-view" onclick="window.viewProductModal('${p.id}')" title="Quick View Product Details"><i class="fa-solid fa-eye"></i></button>
           <button type="button" class="action-btn btn-edit" onclick="window.editProduct('${p.id}')" title="Edit Product"><i class="fa-solid fa-pen"></i></button>
-          <button type="button" class="action-btn" onclick="window.toggleProductAvailability('${p.id}', ${isAvail})" title="${toggleTitle}">${toggleIcon}</button>
           <button type="button" class="action-btn btn-delete" onclick="window.deleteProduct('${p.id}')" title="Delete Product"><i class="fa-solid fa-trash"></i></button>
         </td>
       </tr>
@@ -688,20 +687,23 @@ window.deleteProduct = async function (id) {
   try {
     const res = await fetch(`/api/products/${id}`, {
       method: "DELETE",
-      headers: window.getAdminTokenHeaders()
+      headers: window.getAdminTokenHeaders(),
+      credentials: "include"
     });
     if (res.ok) {
       window.showAdminToast("Product deleted successfully!", "success");
-      window.loadProducts();
+      window.loadProducts(); // Reload product list
+      // Also trigger dashboard metrics update if polling is active
+      if (typeof window.dashboardPollingInterval !== 'undefined' && window.dashboardPollingInterval) {
+        console.log("[Admin] Triggering dashboard metrics update after product deletion");
+      }
     } else {
-      window.adminProductsList = window.adminProductsList.filter(p => p.id !== id);
-      renderProductsTable(window.adminProductsList);
-      window.showAdminToast("Product removed from catalog.", "info");
+      const errData = await res.json().catch(() => ({}));
+      window.showAdminToast(errData.error || "Failed to delete product.", "error");
     }
   } catch (err) {
-    window.adminProductsList = window.adminProductsList.filter(p => p.id !== id);
-    renderProductsTable(window.adminProductsList);
-    window.showAdminToast("Product removed from catalog.", "info");
+    console.error("Delete product error:", err);
+    window.showAdminToast("Error deleting product: " + err.message, "error");
   }
 };
 
@@ -908,11 +910,6 @@ window.initProductAddForm = function () {
     const available = document.getElementById("prod-available-status").value === "true";
     const badge = document.getElementById("prod-badge").value.trim();
     
-    const sku = document.getElementById("prod-sku")?.value.trim() || "";
-    const costPrice = parseFloat(document.getElementById("prod-cost-price")?.value) || 0;
-    const status = document.getElementById("prod-status")?.value || "Active";
-    const slug = id;
-    
     const ratingStats = calculateProductRating({ id, name });
     const rating = ratingStats.rating;
     const ratingCount = ratingStats.ratingCount;
@@ -927,9 +924,6 @@ window.initProductAddForm = function () {
       { id: "col-half", name: "Colored Half Print", available: document.getElementById("v-print-col-half")?.checked },
       { id: "col-full", name: "Colored Full Print", available: document.getElementById("v-print-col-full")?.checked }
     ];
-
-    const colorVariants = getColorVariantsData();
-    const colors = colorVariants;
 
     const sizes = [
       { name: "S", available: document.getElementById("v-size-s")?.checked },
@@ -957,7 +951,7 @@ window.initProductAddForm = function () {
       }
     ];
 
-    const variantsData = { printTypes, colors, sizes };
+    const variantsData = { printTypes, sizes };
 
     const payload = {
       id,
@@ -971,15 +965,10 @@ window.initProductAddForm = function () {
       stockQuantity,
       available,
       badge,
-      sku,
-      costPrice,
-      status,
-      slug,
       rating,
       ratingCount,
       img,
       additionalImages,
-      colorVariants,
       description,
       variantsData,
       featureHighlights
@@ -992,34 +981,100 @@ window.initProductAddForm = function () {
       const res = await fetch(url, {
         method,
         headers: window.getAdminTokenHeaders(),
+        credentials: "include",
         body: JSON.stringify(payload)
       });
 
       if (res.ok) {
+        const savedProduct = await res.json();
         window.showAdminToast(`Product '${name}' ${isEdit ? 'updated' : 'created'} successfully!`, "success");
+        
+        if (isEdit) {
+          const idx = window.adminProductsList.findIndex(p => p.id === editingProductId);
+          if (idx !== -1) window.adminProductsList[idx] = savedProduct;
+        } else {
+          window.adminProductsList.unshift(savedProduct);
+        }
       } else {
-        window.showAdminToast(`Product '${name}' saved.`, "info");
+        const errData = await res.json().catch(() => ({}));
+        window.showAdminToast(errData.error || `Failed to ${isEdit ? 'update' : 'create'} product.`, "error");
       }
     } catch (err) {
-      window.showAdminToast(`Product '${name}' saved.`, "info");
+      window.showAdminToast(`Error: ${err.message}`, "error");
     }
 
-    if (isEdit) {
-      const idx = window.adminProductsList.findIndex(p => p.id === editingProductId);
-      if (idx !== -1) window.adminProductsList[idx] = payload;
-    } else {
-      window.adminProductsList.unshift(payload);
+    if (!isEdit) {
+      editingProductId = null;
+      form.reset();
+      renderAdditionalImageUrls([]);
+      renderColorVariantsContainer([]);
+      window.updateProductTypeFields("physical");
+      document.getElementById("prod-id").readOnly = false;
     }
 
-    editingProductId = null;
-    form.reset();
-    renderAdditionalImageUrls([]);
-    renderColorVariantsContainer([]);
-    window.updateProductTypeFields("physical");
-    document.getElementById("prod-id").readOnly = false;
     renderProductsTable(window.adminProductsList);
 
     const listTabBtn = document.querySelector('.inner-tab-btn[data-subtab="store-list"]');
     if (listTabBtn) listTabBtn.click();
   });
+};
+
+// ── Cancel Product Form ────────────────────────────────
+window.cancelProductForm = function () {
+  const form = document.getElementById("form-add-product");
+  if (!form) return;
+
+  // Reset form to initial state
+  form.reset();
+  try { renderAdditionalImageUrls([]); } catch (e) {}
+  try { renderColorVariantsContainer([]); } catch (e) {}
+  try { window.updateProductTypeFields("physical"); } catch (e) {}
+  
+  // Reset editing state
+  editingProductId = null;
+  const idInput = document.getElementById("prod-id");
+  if (idInput) idInput.readOnly = false;
+
+  // Show confirmation toast
+  if (typeof window.showAdminToast === 'function') window.showAdminToast("Product form cancelled", "info");
+
+  // Switch back to product list tab
+  const listTabBtn = document.querySelector('.inner-tab-btn[data-subtab="store-list"]');
+  if (listTabBtn) listTabBtn.click();
+};
+
+// ── Generic Cancel Handler for Admin Forms ─────────────
+window.cancelAdminForm = function (formId, listSubtab) {
+  if (!formId) return;
+  const form = document.getElementById(formId);
+  if (!form) return;
+
+  // Reset generic form
+  form.reset();
+
+  // Try common helpers if available
+  try { if (typeof renderAdditionalImageUrls === 'function') renderAdditionalImageUrls([]); } catch (e) {}
+  try { if (typeof renderColorVariantsContainer === 'function') renderColorVariantsContainer([]); } catch (e) {}
+  try { if (typeof window.updateProductTypeFields === 'function') window.updateProductTypeFields('physical'); } catch (e) {}
+
+  // If a specific editing id field exists, clear it
+  const hiddenId = form.querySelector('input[type=hidden]');
+  if (hiddenId) hiddenId.value = '';
+
+  // Inform user
+  if (typeof window.showAdminToast === 'function') window.showAdminToast('Form cancelled', 'info');
+
+  // Switch to provided tab (if any)
+  if (listSubtab) {
+    const btn = document.querySelector(`.inner-tab-btn[data-subtab="${listSubtab}"]`);
+    if (btn) btn.click();
+  } else {
+    // Attempt to close modal if present
+    const modal = form.closest('.edit-modal-overlay') || form.closest('.faq-modal-card');
+    if (modal) {
+      const closeBtn = modal.querySelector('.edit-modal-close, .faq-btn-cancel');
+      if (closeBtn && typeof closeBtn.click === 'function') closeBtn.click();
+      else modal.style.display = 'none';
+    }
+  }
 };

@@ -8,12 +8,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Control Center - SenpaiWorks</title>
-  
   <!-- Preconnect to Google Fonts for faster loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/admin.css?v=4.0">
+  <link rel="stylesheet" href="css/admin.css?v=4.2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/image-optimize.css" media="screen">
 
@@ -388,9 +387,10 @@
                     <tr>
                       <th>Thumbnail</th>
                       <th>Product Name</th>
-                      <th>ID</th>
                       <th>Price</th>
                       <th>Category</th>
+                      <th>Likes</th>
+                      <th>Availability</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -595,9 +595,14 @@
                   </div>
                 </div>
 
-                <button type="submit" class="admin-submit-btn">
-                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Store Product
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button type="submit" class="admin-submit-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Store Product
+                  </button>
+                  <button type="button" class="admin-cancel-btn" id="btn-cancel-product" onclick="window.cancelProductForm()">
+                    <i class="fa-solid fa-ban"></i> Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -1054,6 +1059,11 @@
                   <input type="text" id="artwork-search" class="table-search-input"
                     placeholder="Search character or anime title...">
                 </div>
+                <select id="art-page-size" class="page-size-select" onchange="window.loadArtworks()">
+                  <option value="10">10 per page</option>
+                  <option value="20">20 per page</option>
+                  <option value="50">50 per page</option>
+                </select>
                 <span class="table-count" id="artwork-table-count"></span>
               </div>
               <div class="table-responsive">
@@ -1124,9 +1134,14 @@
                     placeholder="Describe the illustration style, lighting, and theme..."></textarea>
                 </div>
 
-                <button type="submit" class="admin-submit-btn">
-                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Artwork Asset
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button type="submit" class="admin-submit-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Artwork Asset
+                  </button>
+                  <button type="button" class="admin-cancel-btn" onclick="window.cancelAdminForm('form-add-artwork','art-list')">
+                    <i class="fa-solid fa-ban"></i> Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -1342,9 +1357,14 @@
                     placeholder="Write or paste your article body here. Supports standard HTML like <p>, <h3>, <ul>, <li>, <strong>, <code>..."></textarea>
                 </div>
 
-                <button type="submit" class="admin-submit-btn">
-                  <i class="fa-solid fa-cloud-arrow-up"></i> Publish News Article
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button type="submit" class="admin-submit-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Publish News Article
+                  </button>
+                  <button type="button" class="admin-cancel-btn" onclick="window.cancelAdminForm('form-add-news','news-list')">
+                    <i class="fa-solid fa-ban"></i> Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -1954,8 +1974,7 @@
                         onchange="toggleAllFeedback(this)"></th>
                     <th onclick="toggleFeedbackSort('author')">User <i class="fa-solid fa-sort"
                         id="sort-icon-author"></i></th>
-                    <th onclick="toggleFeedbackSort('rating')">Rating <i class="fa-solid fa-sort"
-                        id="sort-icon-rating"></i></th>
+                    <th onclick="toggleFeedbackSort('email')">Email <i class="fa-solid fa-sort" id="sort-icon-email"></i></th>
                     <th>Review Content</th>
                     <th>Category</th>
                     <th>Status</th>
@@ -2454,7 +2473,7 @@
       <div class="edit-modal-header">
         <h2>Feedback Detail</h2>
         <button class="edit-modal-close"
-          onclick="document.getElementById('modal-feedback-detail').style.display='none'"><i
+          onclick="window.closeFeedbackDetail()"><i
             class="fa-solid fa-times"></i></button>
       </div>
       <form class="admin-form modal-form-padded">
@@ -2469,6 +2488,11 @@
             <span id="detail-modal-rating"></span>
           </div>
           <div class="feedback-detail-preview-body" id="detail-modal-content"></div>
+        </div>
+
+        <div class="form-group">
+          <label>User Email</label>
+          <input type="email" id="detail-modal-email" readonly class="form-input" />
         </div>
 
         <div class="form-row-2">
@@ -2497,14 +2521,14 @@
         </div>
 
         <div class="form-group">
-          <label for="detail-modal-admin-reply">Official Reply</label>
+          <label for="detail-modal-admin-reply">Official Reply <span style="font-size: 0.85rem; color: #3b82f6;">(Will be emailed to user)</span></label>
           <textarea id="detail-modal-admin-reply" rows="3" class="feedback-detail-textarea"></textarea>
         </div>
 
         <div class="edit-modal-actions modal-actions-clean">
           <button type="button" class="btn-cancel"
-            onclick="document.getElementById('modal-feedback-detail').style.display='none'">Cancel</button>
-          <button type="button" class="btn-save" onclick="saveFeedbackDetail()">Save Changes</button>
+            onclick="window.closeFeedbackDetail()">Cancel</button>
+          <button type="button" class="btn-save" onclick="window.saveFeedbackDetail()">Save Changes</button>
         </div>
       </form>
     </div>
@@ -2734,26 +2758,26 @@
   <!-- ========================================== -->
   <!-- MODULAR SCRIPTS LOADER                     -->
   <!-- ========================================== -->
-  <script src="scripts/admin/admin-core.js?v=5.0"></script>
-  <script src="scripts/admin/admin-auth.js?v=4.0"></script>
+  <script src="scripts/admin/admin-core.js?v=5.1"></script>
+  <script src="scripts/admin/admin-auth.js?v=4.1"></script>
   <script src="scripts/admin/admin-dashboard.js?v=4.0"></script>
   <script src="scripts/admin/admin-products.js?v=4.0"></script>
-  <script src="scripts/admin/admin-reviews.js?v=4.0"></script>
+  <script src="scripts/admin/admin-reviews.js?v=4.6"></script>
   <script src="scripts/admin/admin-orders.js?v=4.0"></script>
   <script src="scripts/admin/admin-replacements.js?v=4.0"></script>
-  <script src="scripts/admin/admin-art-library.js?v=4.0"></script>
+  <script src="scripts/admin/admin-art-library.js?v=4.2"></script>
   <script src="scripts/admin/admin-motion-rigs.js?v=4.0"></script>
   <script src="scripts/admin/admin-news.js?v=5.0"></script>
   <script src="scripts/admin/admin-homepage.js?v=6.0"></script>
   <script src="scripts/admin/admin-coupons.js?v=5.0"></script>
   <script src="scripts/admin/admin-community.js?v=4.0"></script>
-  <script src="scripts/admin/admin-feedback.js?v=4.0"></script>
+  <script src="scripts/admin/admin-feedback.js?v=4.1"></script>
   <script src="scripts/admin/admin-notifications.js?v=4.0"></script>
   <script src="scripts/admin/admin-courses.js?v=2.0"></script>
   <script src="scripts/admin/admin-faq.js?v=4.0"></script>
   <script src="scripts/admin/admin-account.js?v=4.0"></script>
   <script src="scripts/admin/admin-payments.js?v=1.0"></script>
-  <script src="scripts/admin/admin-donations.js?v=4.0"></script>
+  <script src="scripts/admin/admin-donations.js?v=4.1"></script>
   <script src="scripts/admin/admin-users.js?v=4.0"></script>
   <script src="scripts/admin/admin-trash.js?v=1.0"></script>
 

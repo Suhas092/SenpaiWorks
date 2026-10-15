@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const orderIdInput = document.getElementById("feedback-order-id");
   const titleInput = document.getElementById("feedback-title");
   const commentInput = document.getElementById("feedback-comment");
-  const publicCheckbox = document.getElementById("feedback-public-checkbox");
   const errorEl = document.getElementById("feedback-error");
   const successState = document.getElementById("feedback-success-state");
 
@@ -117,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const doSubmitReview = () => {
+      const doSubmitReview = async () => {
         if (errorEl) {
           errorEl.style.display = "none";
         }
@@ -130,36 +129,40 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const nameVal = nameInput.value.trim();
-        const emailVal = emailInput.value.trim();
-        const categoryVal = categorySelect.value;
+        const categoryVal = categorySelect.value || "General";
         const orderIdVal = orderIdInput.value.trim();
         const titleVal = titleInput.value.trim();
         const commentVal = commentInput.value.trim();
-        const isPublicVal = publicCheckbox ? publicCheckbox.checked : true;
+        const message = [
+          titleVal,
+          orderIdVal ? `Order: ${orderIdVal}` : "",
+          commentVal
+        ].filter(Boolean).join("\n\n");
 
-        const reviewObject = {
-          id: "rev-" + Date.now(),
-          author: nameVal,
-          rating: selectedRating,
-          category: categoryVal,
-          orderId: orderIdVal || null,
-          title: titleVal,
-          text: commentVal,
-          date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-          isPublic: isPublicVal,
-          helpfulCount: 0,
-          status: "Pending",
-          admin_reply: null,
-          internal_notes: null,
-          priority: null
-        };
-
-        // Save to userReviews list in localStorage
-        let userReviews = localStorage.getItem("userReviews");
-        userReviews = userReviews ? JSON.parse(userReviews) : [];
-        userReviews.unshift(reviewObject);
-        localStorage.setItem("userReviews", JSON.stringify(userReviews));
+        // Save to the server so admins can see and reply in Moderation
+        const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken") || "";
+        try {
+          const res = await fetch("/api/feedback", {
+            method: "POST",
+            headers: Object.assign({ "Content-Type": "application/json" }, token ? { "Authorization": `Bearer ${token}` } : {}),
+            body: JSON.stringify({ category: categoryVal, rating: selectedRating, message })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            if (errorEl) {
+              errorEl.textContent = data.error || "Could not submit feedback. Please try again.";
+              errorEl.style.display = "block";
+            }
+            return;
+          }
+        } catch (err) {
+          console.warn("[Feedback] Submit failed:", err);
+          if (errorEl) {
+            errorEl.textContent = "Network error. Please try again.";
+            errorEl.style.display = "block";
+          }
+          return;
+        }
 
         // Reset Form & Show Success Modal
         form.reset();

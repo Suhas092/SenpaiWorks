@@ -70,7 +70,7 @@ window.loadArtworks = async function () {
     countSpan.textContent = totalItems === 0 ? "Showing 0 items" : `Showing ${startIdx + 1} - ${endIdx} of ${totalItems} items`;
   }
 
-  window.renderPagination("art-page-controls", totalItems, artCurrentPage, artPageSize, "window.changeArtPage");
+  window.renderPagination("artworks-pagination", totalItems, artCurrentPage, artPageSize, "window.changeArtPage");
 
   if (paginated.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">No matching artworks found.</td></tr>`;

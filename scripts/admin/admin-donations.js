@@ -4,6 +4,7 @@
  */
 
 let allDonationsData = [];
+let donationsPollingInterval = null;
 
 window.loadDonations = async function () {
   const tbody = document.getElementById("donations-list-body");
@@ -31,7 +32,8 @@ window.loadDonations = async function () {
 
     renderDonationsTable(allDonationsData);
 
-    if (searchInput) {
+    if (searchInput && !searchInput.dataset.bound) {
+      searchInput.dataset.bound = "true";
       searchInput.addEventListener("input", () => {
         const q = searchInput.value.toLowerCase().trim();
         if (!q) {
@@ -48,12 +50,75 @@ window.loadDonations = async function () {
       });
     }
 
+    // Start real-time polling for new donations
+    startDonationsPolling();
+
   } catch (err) {
     console.warn("Could not fetch donations list:", err);
     if (emptyState) emptyState.style.display = "block";
     if (tbody) tbody.innerHTML = "";
   }
 };
+
+function startDonationsPolling() {
+  // Clear existing polling if any
+  if (donationsPollingInterval) {
+    clearInterval(donationsPollingInterval);
+  }
+
+  // Poll every 30 seconds for new donations
+  donationsPollingInterval = setInterval(async () => {
+    try {
+      const res = await fetch("/api/donate/list");
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const newDonations = data.donations || [];
+      const totalRaisedEl = document.getElementById("donations-total-raised");
+      const donorCountEl = document.getElementById("donations-donor-count");
+      const goalProgressEl = document.getElementById("donations-goal-progress");
+      const searchInput = document.getElementById("donations-search");
+
+      // Update totals if changed
+      if (totalRaisedEl) {
+        totalRaisedEl.textContent = `$${(data.totalUsd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+      if (donorCountEl) {
+        donorCountEl.textContent = (data.totalDonors || 0).toLocaleString();
+      }
+      if (goalProgressEl) {
+        const goalPct = Math.min(100, Math.round(((data.totalUsd || 0) / (data.goalUsd || 1500)) * 100));
+        goalProgressEl.textContent = `${goalPct}%`;
+      }
+
+      // Update donations list if data changed
+      allDonationsData = newDonations;
+      
+      // Re-render if no search active, otherwise filter and re-render
+      if (searchInput && searchInput.value.trim()) {
+        const q = searchInput.value.toLowerCase().trim();
+        const filtered = newDonations.filter(d =>
+          (d.donorName || "").toLowerCase().includes(q) ||
+          (d.donorEmail || "").toLowerCase().includes(q) ||
+          (d.transactionId || "").toLowerCase().includes(q) ||
+          (d.paymentMethod || "").toLowerCase().includes(q)
+        );
+        renderDonationsTable(filtered);
+      } else {
+        renderDonationsTable(newDonations);
+      }
+    } catch (err) {
+      console.warn("Donations polling error:", err);
+    }
+  }, 5000); // Poll every 5 seconds
+}
+
+function stopDonationsPolling() {
+  if (donationsPollingInterval) {
+    clearInterval(donationsPollingInterval);
+    donationsPollingInterval = null;
+  }
+}
 
 function renderDonationsTable(donations) {
   const tbody = document.getElementById("donations-list-body");

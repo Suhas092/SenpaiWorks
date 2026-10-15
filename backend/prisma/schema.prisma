@@ -67,6 +67,7 @@ model Product {
   category            String
   subCategory         String
   price               Float
+  originalPrice       Float?
   rating              Float    @default(5.0)
   ratingCount         Int      @default(0)
   description         String
@@ -92,6 +93,9 @@ model Product {
   variantsData        String   @default("")
   featureHighlights   String   @default("")
   downloadUrl         String?
+  sku                 String?
+  costPrice           Float?
+  productStatus       String   @default("Active")
   createdAt           DateTime @default(now())
   orderItems          OrderItem[]
   reviews             Review[]
@@ -415,6 +419,23 @@ model ReviewReport {
   @@unique([reviewId, reporterId])
 }
 
+model Feedback {
+  id            Int       @id @default(autoincrement())
+  userId        Int?
+  customerName  String
+  customerEmail String
+  category      String
+  rating        Int
+  message       String
+  status        String    @default("Pending") // Pending | Reviewed | Resolved | Flagged
+  adminReply    String?
+  adminReplyAt  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
+}
+
 model Course {
   id                  String   @id @default(uuid())
   slug                String   @default("")
@@ -494,6 +515,30 @@ model Wishlist {
   @@unique([userEmail, itemId, itemType])
   @@index([userEmail])
   @@index([itemId])
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// Staff accounts created by the super administrator. Role keys map to
+// permissions in utils/staffAccess.js. Only the bcrypt hash is stored.
+model StaffMember {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String?
+  phone        String?
+  avatar       String?
+  username     String    @unique
+  passwordHash String
+  role         String
+  pageAccess   Json      @default("{}")
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastLoginAt  DateTime?
 }
 
 

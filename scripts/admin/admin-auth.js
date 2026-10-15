@@ -18,6 +18,29 @@ window.getAdminTokenHeaders = function () {
   };
 };
 
+// Refresh token by making a request to /api/admin/me every 6 hours to keep session alive
+window.startAdminTokenRefresh = function () {
+  const refreshInterval = 6 * 60 * 60 * 1000; // 6 hours
+  setInterval(async () => {
+    try {
+      const res = await fetch("/api/admin/me", {
+        method: "GET",
+        credentials: "include"
+      });
+      if (res.ok) {
+        console.log("[Admin Auth] Token refresh successful - session extended");
+      } else if (res.status === 401) {
+        console.warn("[Admin Auth] Token expired - admin needs to re-login");
+        if (typeof window.showAdminToast === 'function') {
+          window.showAdminToast("Admin session expired. Please log in again.", "warning");
+        }
+      }
+    } catch (err) {
+      console.error("[Admin Auth] Token refresh error:", err);
+    }
+  }, refreshInterval);
+};
+
 window.handleAdminResponse = function (res) {
   if (res.status === 401) {
     const overlay = document.getElementById("admin-auth-overlay");
@@ -109,7 +132,7 @@ window.initAdminAuth = async function () {
   function setupLogoutBtn(btn) {
     if (!btn || btn.dataset.hasLogout) return;
     btn.dataset.hasLogout = "true";
-    btn.onclick = async (e) => {
+    btn.addEventListener("click", async (e) => {
       e.preventDefault();
       e.stopPropagation();
       const confirmed = await window.showAdminConfirm(
@@ -118,13 +141,19 @@ window.initAdminAuth = async function () {
         "Sign Out",
         "warning"
       );
-      if (confirmed) {
-        try {
-          await fetch("/api/admin/logout", { method: "POST" });
-        } catch (e) {}
-        location.reload();
+      if (!confirmed) return;
+
+      try {
+        await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+      } catch (err) {
+        console.error("Admin logout error:", err);
       }
-    };
+
+      // Show the login overlay directly so sign-out does not depend on a page reload.
+      if (loginForm) loginForm.reset();
+      if (errorMsg) errorMsg.style.display = "none";
+      if (overlay) overlay.classList.add("active");
+    });
   }
 
   setupLogoutBtn(document.getElementById("sidebar-btn-logout"));
@@ -142,4 +171,7 @@ window.initAdminAuth = async function () {
       toggleIcon.className = isPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
     });
   }
+
+  // Start automatic token refresh every 6 hours to keep session alive
+  window.startAdminTokenRefresh();
 };

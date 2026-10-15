@@ -28,7 +28,8 @@ window.loadDashboardStats = function () {
 
   // Fetch real dashboard stats from backend
   fetch("/api/admin/dashboard/stats", {
-    headers: window.getAdminTokenHeaders()
+    headers: window.getAdminTokenHeaders(),
+    credentials: "include"
   })
     .then(res => {
       if (window.handleAdminResponse) window.handleAdminResponse(res);
@@ -161,6 +162,14 @@ window.loadDashboardStats = function () {
       }
     })
     .catch(err => console.warn("Failed to fetch live admin dashboard stats:", err));
+
+  // Start real-time polling after initial stats load
+  setTimeout(() => {
+    if (typeof window.startRealtimeMetricsPolling === "function") {
+      window.startRealtimeMetricsPolling();
+      console.log("[Dashboard] Real-time metrics polling started");
+    }
+  }, 1000);
 };
 
 function renderRecentActivity() {
@@ -264,4 +273,120 @@ window.initTaskList = async function () {
   }
 
   renderTasks();
+};
+
+// ────────────────────────────────────────
+// REAL-TIME DASHBOARD METRICS POLLING
+// ────────────────────────────────────────
+window.stopRealtimeMetricsPolling = function () {
+  if (window.dashboardPollingInterval) {
+    clearInterval(window.dashboardPollingInterval);
+    window.dashboardPollingInterval = null;
+  }
+};
+
+window.startRealtimeMetricsPolling = function () {
+  window.stopRealtimeMetricsPolling();
+
+  // Poll every 15 seconds for live metrics
+  window.dashboardPollingInterval = setInterval(async () => {
+    try {
+      // httpOnly cookie is automatically sent; no manual Authorization header needed
+      const res = await fetch("/api/admin/metrics", {
+        headers: { "Content-Type": "application/json" },
+        credentials: "include" // Ensure cookies are sent
+      });
+
+      if (!res.ok) {
+        return;
+      }
+      
+      const data = await res.json();
+
+      if (!data.success || !data.metrics) {
+        return;
+      }
+
+      const { metrics } = data;
+
+      // Update KPI Stat Cards
+      const statArtworks = document.getElementById("stat-artworks");
+      const statArtworksTrend = document.getElementById("stat-artworks-trend");
+      if (statArtworks && metrics.totalArtworks !== undefined) {
+        statArtworks.textContent = metrics.totalArtworks.toLocaleString();
+      }
+      if (statArtworksTrend && metrics.artworksTrend !== undefined) {
+        const trendDir = metrics.artworksTrend >= 0 ? 'up' : 'down';
+        statArtworksTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.artworksTrend > 0 ? '+' : ''}${metrics.artworksTrend}%`;
+      }
+
+      const statProducts = document.getElementById("stat-products");
+      const statProductsTrend = document.getElementById("stat-products-trend");
+      if (statProducts && metrics.totalProducts !== undefined) {
+        statProducts.textContent = metrics.totalProducts.toLocaleString();
+      }
+      if (statProductsTrend && metrics.productsTrend !== undefined) {
+        const trendDir = metrics.productsTrend >= 0 ? 'up' : 'down';
+        statProductsTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.productsTrend > 0 ? '+' : ''}${metrics.productsTrend}%`;
+      }
+
+      const statRevenue = document.getElementById("stat-revenue");
+      const statRevenueTrend = document.getElementById("stat-revenue-trend");
+      if (statRevenue && metrics.totalRevenue !== undefined) {
+        statRevenue.textContent = '₹' + Math.round(metrics.totalRevenue).toLocaleString('en-IN');
+      }
+      if (statRevenueTrend && metrics.revenueTrend !== undefined) {
+        const trendDir = metrics.revenueTrend >= 0 ? 'up' : 'down';
+        statRevenueTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.revenueTrend > 0 ? '+' : ''}${metrics.revenueTrend}%`;
+      }
+
+      const statViews = document.getElementById("stat-views");
+      const statViewsTrend = document.getElementById("stat-views-trend");
+      if (statViews && metrics.monthlyViews !== undefined) {
+        statViews.textContent = metrics.monthlyViews.toLocaleString();
+      }
+      if (statViewsTrend && metrics.viewsTrend !== undefined) {
+        const trendDir = metrics.viewsTrend >= 0 ? 'up' : 'down';
+        statViewsTrend.innerHTML = `<i class="fa-solid fa-arrow-trend-${trendDir}"></i> ${metrics.viewsTrend > 0 ? '+' : ''}${metrics.viewsTrend}%`;
+      }
+
+      // Update 7-Day Revenue Chart
+      if (window.timelineChart && metrics.sevenDayRevenue && metrics.sevenDayRevenue.length > 0) {
+        const dates = metrics.sevenDayRevenue.map(d => d.date);
+        const revenues = metrics.sevenDayRevenue.map(d => (d.revenue / 100000).toFixed(2)); // Convert to lakhs
+        
+        window.timelineChart.data.labels = dates;
+        window.timelineChart.data.datasets[0].data = revenues;
+        window.timelineChart.update();
+      }
+
+      // Update Category Chart
+      if (window.categoryChart && metrics.salesByCategory && metrics.salesByCategory.length > 0) {
+        const labels = metrics.salesByCategory.map(cat => cat.category || 'Other');
+        const data = metrics.salesByCategory.map(cat => (cat._sum && cat._sum.price) ? cat._sum.price : 0);
+        const colors = [
+          '#3b82f6', '#a855f7', '#10b981',
+          '#f59e0b', '#ef4444', '#06b6d4',
+          '#ec4899', '#14b8a6', '#f97316', '#8b5cf6'
+        ];
+
+        window.categoryChart.data.labels = labels;
+        window.categoryChart.data.datasets[0].data = data;
+        window.categoryChart.data.datasets[0].backgroundColor = colors.slice(0, labels.length);
+        window.categoryChart.update();
+      }
+
+      // Update GMV subtitle with total
+      if (metrics.salesByCategory && metrics.salesByCategory.length > 0) {
+        const totalGMV = metrics.salesByCategory.reduce((sum, cat) => sum + ((cat._sum && cat._sum.price) ? cat._sum.price : 0), 0);
+        const gmvSubtitle = document.getElementById("category-chart-subtitle");
+        if (gmvSubtitle) {
+          gmvSubtitle.textContent = `₹${Math.round(totalGMV).toLocaleString('en-IN')} Gross Merchandise Value (GMV)`;
+        }
+      }
+
+    } catch (err) {
+      console.warn("[Dashboard Polling] Error fetching real-time metrics:", err);
+    }
+  }, 15000);
 };

@@ -623,6 +623,20 @@ module.exports = function (prisma, requireUserToken, requireAdminToken, JWT_SECR
         }
       });
 
+      try {
+        await prisma.notification.create({
+          data: {
+            userEmail: 'suhas_admin',
+            type: 'review_reported',
+            title: `Review Reported: #${reviewId}`,
+            message: `Review #${reviewId} was reported for "${reason}".`,
+            link: 'admin.html#tab-reviews'
+          }
+        });
+      } catch (notifErr) {
+        console.warn('[Notification] Failed to create review report alert:', notifErr.message);
+      }
+
       return res.json({
         success: true,
         alreadyReported: false,
@@ -641,6 +655,7 @@ module.exports = function (prisma, requireUserToken, requireAdminToken, JWT_SECR
   // GET /api/admin/reviews/product-health (Ratings Health Overview sorted ascending by rating)
   router.get('/api/admin/reviews/product-health', requireAdminToken, async (req, res) => {
     try {
+      // Get all products
       const products = await prisma.product.findMany({
         select: {
           id: true,
@@ -649,16 +664,30 @@ module.exports = function (prisma, requireUserToken, requireAdminToken, JWT_SECR
           category: true,
           type: true,
           price: true,
-          rating: true,
-          ratingCount: true
+          rating: true
         },
         orderBy: [
-          { rating: 'asc' },
-          { ratingCount: 'desc' }
+          { rating: 'asc' }
         ]
       });
 
-      return res.json({ success: true, products });
+      // For each product, count actual published reviews
+      const productsWithCounts = await Promise.all(
+        products.map(async (p) => {
+          const reviewCount = await prisma.review.count({
+            where: {
+              productId: p.id,
+              status: 'Published'
+            }
+          });
+          return {
+            ...p,
+            ratingCount: reviewCount
+          };
+        })
+      );
+
+      return res.json({ success: true, products: productsWithCounts });
     } catch (err) {
       console.error('Error fetching product ratings health:', err);
       return res.status(500).json({ error: 'Failed to fetch product ratings health.' });

@@ -1366,118 +1366,124 @@
         const gridContainer = document.getElementById("home-merch-grid");
         if (!featureCard || !gridContainer) return;
 
-        try {
-          let spotlight = null;
-          let gridProds = [];
+        // Render function (extracted so it can be reused for polling)
+        async function renderMerchSpotlight() {
+          try {
+            let spotlight = null;
+            let gridProds = [];
 
-          const res = await fetch("/api/homepage/merch-spotlight");
-          if (res.ok) {
-            const data = await res.json();
-            if (data && data.spotlight) {
-              spotlight = data.spotlight;
-              gridProds = Array.isArray(data.grid) ? data.grid : [];
+            const res = await fetch("/api/homepage/merch-spotlight");
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.spotlight) {
+                spotlight = data.spotlight;
+                gridProds = Array.isArray(data.grid) ? data.grid : [];
+              }
             }
-          }
 
-          // Fallback to /api/products if spotlight endpoint fails
-          if (!spotlight) {
-            const fallbackRes = await fetch("/api/products");
-            if (!fallbackRes.ok) {
-              console.warn("[Merch API] Could not fetch store products for home merch (HTTP " + fallbackRes.status + "), cleanly using static fallback markup.");
-              return;
+            // Fallback to /api/products if spotlight endpoint fails
+            if (!spotlight) {
+              const fallbackRes = await fetch("/api/products");
+              if (!fallbackRes.ok) {
+                console.warn("[Merch API] Could not fetch store products for home merch (HTTP " + fallbackRes.status + "), cleanly using static fallback markup.");
+                return;
+              }
+              const products = await fallbackRes.json();
+              if (!Array.isArray(products) || products.length === 0) return;
+              
+              // Try physical products first, then any available product
+              let physicalProds = products.filter(p => p.type === 'physical' && p.available !== false);
+              if (physicalProds.length === 0) {
+                // Fallback: any available product regardless of type
+                physicalProds = products.filter(p => p.available !== false);
+              }
+              if (physicalProds.length === 0) {
+                // Ultimate fallback: use first product if nothing else available
+                physicalProds = products.slice(0, 1);
+              }
+              if (physicalProds.length === 0) return;
+              
+              spotlight = physicalProds[0];
+              gridProds = physicalProds.slice(1, 7);
             }
-            const products = await fallbackRes.json();
-            if (!Array.isArray(products) || products.length === 0) return;
-            
-            // Try physical products first, then any available product
-            let physicalProds = products.filter(p => p.type === 'physical' && p.available !== false);
-            if (physicalProds.length === 0) {
-              // Fallback: any available product regardless of type
-              physicalProds = products.filter(p => p.available !== false);
-            }
-            if (physicalProds.length === 0) {
-              // Ultimate fallback: use first product if nothing else available
-              physicalProds = products.slice(0, 1);
-            }
-            if (physicalProds.length === 0) return;
-            
-            spotlight = physicalProds[0];
-            gridProds = physicalProds.slice(1, 7);
-          }
 
-          const featImg = safeUrl(spotlight.img || "assets/SenpaiWorks logo bg.png");
-          const price = typeof spotlight.price === 'number' ? spotlight.price : (parseInt(spotlight.price, 10) || 1299);
-          const origPrice = spotlight.originalPrice ? (typeof spotlight.originalPrice === 'number' ? spotlight.originalPrice : parseInt(spotlight.originalPrice, 10)) : Math.round(price * 1.6);
-          const discountPct = Math.max(5, Math.round(((origPrice - price) / origPrice) * 100));
-          const rating = spotlight.computedRating !== undefined ? spotlight.computedRating : (spotlight.rating || 5.0);
-          const ratingCount = spotlight.computedRatingCount !== undefined ? spotlight.computedRatingCount : (spotlight.ratingCount || 52);
-          const badgeText = spotlight.badge ? escapeHtml(spotlight.badge) : "BESTSELLER";
+            const featImg = safeUrl(spotlight.img || "assets/SenpaiWorks logo bg.png");
+            const price = typeof spotlight.price === 'number' ? spotlight.price : (parseInt(spotlight.price, 10) || 1299);
+            const origPrice = spotlight.originalPrice ? (typeof spotlight.originalPrice === 'number' ? spotlight.originalPrice : parseInt(spotlight.originalPrice, 10)) : Math.round(price * 1.6);
+            const discountPct = Math.max(5, Math.round(((origPrice - price) / origPrice) * 100));
+            const rating = spotlight.computedRating !== undefined ? spotlight.computedRating : (spotlight.rating || 5.0);
+            const ratingCount = spotlight.computedRatingCount !== undefined ? spotlight.computedRatingCount : (spotlight.ratingCount || 52);
+            const badgeText = spotlight.badge ? escapeHtml(spotlight.badge) : "BESTSELLER";
 
-          featureCard.href = `store-detail.html?id=${encodeURIComponent(spotlight.id)}`;
-              featureCard.innerHTML = `
-            <div class="feature-card-img-wrap">
-              <div class="prod-badges-row">
-                <span class="prod-badge badge-bestseller">${badgeText}</span>
-                <span class="prod-discount-badge">${discountPct}% OFF</span>
+            featureCard.href = `store-detail.html?id=${encodeURIComponent(spotlight.id)}`;
+                featureCard.innerHTML = `
+              <div class="feature-card-img-wrap">
+                <div class="prod-badges-row">
+                  <span class="prod-badge badge-bestseller">${badgeText}</span>
+                  <span class="prod-discount-badge">${discountPct}% OFF</span>
+                </div>
+                <img src="${escapeAttr(featImg)}" alt="${escapeAttr(spotlight.name)}" class="feature-card-image" loading="eager" decoding="async" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
               </div>
-              <img src="${escapeAttr(featImg)}" alt="${escapeAttr(spotlight.name)}" class="feature-card-image" loading="eager" decoding="async" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
-            </div>
-            <div class="merch-feature-card-content">
-              <div class="prod-sub-row">
-                <span class="prod-sub-text">${escapeHtml(spotlight.category || 'Hoodies')}</span>
-                <span class="prod-rating-text"><i class="fa-solid fa-star"></i> ${rating} <span>(${ratingCount})</span></span>
+              <div class="merch-feature-card-content">
+                <div class="prod-sub-row">
+                  <span class="prod-sub-text">${escapeHtml(spotlight.category || 'Hoodies')}</span>
+                  <span class="prod-rating-text"><i class="fa-solid fa-star"></i> ${rating} <span>(${ratingCount})</span></span>
+                </div>
+                <h2 class="feature-card-title">${escapeHtml(spotlight.name)}</h2>
+                <div class="prod-price-row">
+                  <span class="prod-price">₹${price.toLocaleString('en-IN')}</span>
+                  <span class="prod-orig-price">₹${origPrice.toLocaleString('en-IN')}</span>
+                </div>
+                <div class="explore-btn">Explore Store &rarr;</div>
               </div>
-              <h2 class="feature-card-title">${escapeHtml(spotlight.name)}</h2>
-              <div class="prod-price-row">
-                <span class="prod-price">₹${price.toLocaleString('en-IN')}</span>
-                <span class="prod-orig-price">₹${origPrice.toLocaleString('en-IN')}</span>
-              </div>
-              <div class="explore-btn">Explore Store &rarr;</div>
-            </div>
-          `;
+            `;
 
-          // Update Right Grid
-          if (gridProds.length > 0) {
-            gridContainer.innerHTML = gridProds.map(p => {
-              const pImg = safeUrl(p.img || "assets/SenpaiWorks logo bg.png");
-              const pPrice = typeof p.price === 'number' ? p.price : (parseInt(p.price, 10) || 899);
-              const pOrigPrice = p.originalPrice ? (typeof p.originalPrice === 'number' ? p.originalPrice : parseInt(p.originalPrice, 10)) : Math.round(pPrice * 1.6);
-              const pDiscountPct = Math.max(5, Math.round(((pOrigPrice - pPrice) / pOrigPrice) * 100));
-              const pRating = p.computedRating !== undefined ? p.computedRating : (p.rating || 4.9);
-              const pRatingCount = p.computedRatingCount !== undefined ? p.computedRatingCount : (p.ratingCount || 40);
-              const pBadgeMarkup = p.badge ? `<span class="prod-badge">${escapeHtml(p.badge)}</span>` : '';
+            // Update Right Grid
+            if (gridProds.length > 0) {
+              gridContainer.innerHTML = gridProds.map(p => {
+                const pImg = safeUrl(p.img || "assets/SenpaiWorks logo bg.png");
+                const pPrice = typeof p.price === 'number' ? p.price : (parseInt(p.price, 10) || 899);
+                const pOrigPrice = p.originalPrice ? (typeof p.originalPrice === 'number' ? p.originalPrice : parseInt(p.originalPrice, 10)) : Math.round(pPrice * 1.6);
+                const pDiscountPct = Math.max(5, Math.round(((pOrigPrice - pPrice) / pOrigPrice) * 100));
+                const pRating = p.computedRating !== undefined ? p.computedRating : (p.rating || 4.9);
+                const pRatingCount = p.computedRatingCount !== undefined ? p.computedRatingCount : (p.ratingCount || 40);
+                const pBadgeMarkup = p.badge ? `<span class="prod-badge">${escapeHtml(p.badge)}</span>` : '';
 
-              return `
-                <a href="store-detail.html?id=${encodeURIComponent(p.id)}" class="grid-card">
-                  <div class="grid-card-img-wrap">
-                    <div class="prod-badges-row">
-                      ${pBadgeMarkup}
-                      <span class="prod-discount-badge">${pDiscountPct}% OFF</span>
+                return `
+                  <a href="store-detail.html?id=${encodeURIComponent(p.id)}" class="grid-card">
+                    <div class="grid-card-img-wrap">
+                      <div class="prod-badges-row">
+                        ${pBadgeMarkup}
+                        <span class="prod-discount-badge">${pDiscountPct}% OFF</span>
+                      </div>
+                      <img src="${escapeAttr(pImg)}" alt="${escapeAttr(p.name)}" class="grid-card-image" loading="eager" decoding="async" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
                     </div>
-                    <img src="${escapeAttr(pImg)}" alt="${escapeAttr(p.name)}" class="grid-card-image" loading="eager" decoding="async" onerror="this.onerror=null; this.src='assets/SenpaiWorks logo bg.png';">
-                  </div>
-                  <div class="grid-card-content">
-                    <div class="prod-sub-row">
-                      <span class="prod-sub-text">${escapeHtml(p.category || 'T-Shirts')}</span>
-                      <span class="prod-rating-text"><i class="fa-solid fa-star"></i> ${pRating} <span>(${pRatingCount})</span></span>
+                    <div class="grid-card-content">
+                      <div class="prod-sub-row">
+                        <span class="prod-sub-text">${escapeHtml(p.category || 'T-Shirts')}</span>
+                        <span class="prod-rating-text"><i class="fa-solid fa-star"></i> ${pRating} <span>(${pRatingCount})</span></span>
+                      </div>
+                      <h3 class="grid-card-title">${escapeHtml(p.name)}</h3>
+                      <div class="prod-price-row">
+                        <span class="prod-price">₹${pPrice.toLocaleString('en-IN')}</span>
+                        <span class="prod-orig-price">₹${pOrigPrice.toLocaleString('en-IN')}</span>
+                      </div>
                     </div>
-                    <h3 class="grid-card-title">${escapeHtml(p.name)}</h3>
-                    <div class="prod-price-row">
-                      <span class="prod-price">₹${pPrice.toLocaleString('en-IN')}</span>
-                      <span class="prod-orig-price">₹${pOrigPrice.toLocaleString('en-IN')}</span>
-                    </div>
-                  </div>
-                </a>
-              `;
-            }).join('');
+                  </a>
+                `;
+              }).join('');
+            }
+
+            if (typeof bindHomeProgressiveSkeletons === 'function') {
+              bindHomeProgressiveSkeletons();
+            }
+          } catch (err) {
+            console.warn("[Merch Render] Error rendering spotlight:", err);
           }
-
-          if (typeof bindHomeProgressiveSkeletons === 'function') {
-            bindHomeProgressiveSkeletons();
-          }
-        } catch (err) {
-          console.warn("[Failure Path] Could not load dynamic home merch, cleanly using static fallback markup:", err);
         }
+
+        // Initial render
+        await renderMerchSpotlight();
       }
 
       initDynamicHomeMerch();
