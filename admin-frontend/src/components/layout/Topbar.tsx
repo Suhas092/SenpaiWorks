@@ -14,6 +14,9 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
   const identity = useAdminIdentity();
   const handleSignOut = async () => {
     await post("/admin/logout", {}).catch(() => undefined);
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("token");
     // Set the session first so the mounted gate re-renders to the login screen.
     client.setQueryData(ADMIN_SESSION_KEY, null);
     client.removeQueries({ predicate: (q) => q.queryKey[0] !== ADMIN_SESSION_KEY[0] });

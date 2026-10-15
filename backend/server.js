@@ -400,12 +400,19 @@ app.post('/api/admin/login', adminLoginLimiter, async (req, res) => {
 
       await prisma.staffMember.update({ where: { id: staff.id }, data: { lastLoginAt: new Date() } });
       // No username claim on staff tokens, so older checks that treat any username as admin do not apply.
-      setAdminCookie(jwt.sign({ role: 'staff', staffId: staff.id, name: staff.name }, JWT_SECRET, { expiresIn: '8h' }));
-      return res.json({ success: true, message: 'Staff authentication successful', username: staff.username, role: staff.role });
+      const staffToken = jwt.sign({ role: 'staff', staffId: staff.id, name: staff.name }, JWT_SECRET, { expiresIn: '8h' });
+      setAdminCookie(staffToken);
+      return res.json({ success: true, message: 'Staff authentication successful', username: staff.username, role: staff.role, token: staffToken });
     }
 
     const storedHash = await siteSettings.loadAdminPasswordHash(prisma);
-    const isMatch = await bcrypt.compare(password, storedHash || adminHash);
+    const targetHash = storedHash || adminHash;
+    if (!targetHash) {
+      console.error('[Admin Auth] No admin password hash found in DB or environment.');
+      return res.status(500).json({ error: 'Admin authentication is not configured properly.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, targetHash);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid admin credentials.' });
     }
@@ -414,7 +421,7 @@ app.post('/api/admin/login', adminLoginLimiter, async (req, res) => {
     const token = jwt.sign({ username: adminUser, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
     setAdminCookie(token);
 
-    return res.json({ success: true, message: 'Admin authentication successful', username: adminUser });
+    return res.json({ success: true, message: 'Admin authentication successful', username: adminUser, token });
   } catch (err) {
     console.error('Admin login error:', err);
     return res.status(500).json({ error: 'Authentication failed due to a server error.' });

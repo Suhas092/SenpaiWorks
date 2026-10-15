@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ADMIN_SESSION_KEY } from "@/hooks/useAdminSession";
 
-type LoginResponse = { success: boolean; username: string };
+type LoginResponse = { success: boolean; username: string; token?: string };
 
 export function LoginPage() {
   const client = useQueryClient();
@@ -16,9 +16,12 @@ export function LoginPage() {
 
   const login = useMutation({
     mutationFn: () => post<LoginResponse>("/admin/login", { username, password }),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setError(null);
       setPassword("");
+      if (data?.token) {
+        localStorage.setItem("adminToken", data.token);
+      }
       client.invalidateQueries({ queryKey: ADMIN_SESSION_KEY });
     },
     onError: (err) => {

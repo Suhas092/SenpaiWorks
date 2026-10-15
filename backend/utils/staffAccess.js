@@ -22,7 +22,7 @@ const PAGES = {
   products: { label: 'Products', paths: ['/api/products', '/api/categories'] },
   orders: { label: 'Orders', paths: ['/api/admin/orders'] },
   replacements: { label: 'Replacements', paths: ['/api/admin/replacements'] },
-  reviews: { label: 'Product reviews', paths: ['/api/admin/reviews', '/api/admin/feedback'] },
+  reviews: { label: 'Product reviews', paths: ['/api/admin/reviews', '/api/admin/feedback', '/api/feedback/reply'] },
   community: { label: 'Community', paths: ['/api/community'] },
   polls: { label: 'Polls', paths: ['/api/admin/polls'] },
   art: { label: 'Art library', paths: ['/api/artworks'] },
