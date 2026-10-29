@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
       subtitle: "of SUZENS",
       role: "LEADER · MAIN VOCALIST",
       description: "The heart and voice of SUZENS. Suzana leads the group with grace and power, her crystalline vocals anchoring the group's sonic identity. Bold, determined, and deeply passionate about music.",
-      image: "assets/suzana.png",
+      image: "assets/suzana-web.png",
       color1: "#b76bff", // Purple
       color2: "#6e3eff",
       glowColor: "rgba(183, 107, 255, 0.32)",
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
       subtitle: "of SUZENS",
       role: "MAIN RAPPER · LEAD DANCER",
       description: "Raw energy and rhythm personified. Tiara's razor-sharp delivery and explosive stage presence make her the electrifying force at the center of every SUZENS performance. Fearless and unstoppable.",
-      image: "assets/Tiara.png",
+      image: "assets/Tiara-web.png",
       color1: "#b76bff", // Purple
       color2: "#6e3eff",
       glowColor: "rgba(183, 107, 255, 0.32)",
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       subtitle: "of SUZENS",
       role: "MAIN DANCER · MAKNAE",
       description: "The youngest and most spirited member. Remi's dance style blends fluid contemporary movement with sharp K-pop precision. Her cheerful energy is the emotional soul of the group.",
-      image: "assets/Remi.png",
+      image: "assets/Remi-web.png",
       color1: "#b76bff", // Purple
       color2: "#6e3eff",
       glowColor: "rgba(183, 107, 255, 0.32)",
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
       subtitle: "of SUZENS",
       role: "VISUAL · SUB VOCALIST",
       description: "Ethereal and magnetic. Ayana is the visual centrepiece of SUZENS — her striking presence and soft harmonic layers add depth and mystery to the group's signature sound.",
-      image: "assets/Ayana.png",
+      image: "assets/Ayana-web.png",
       color1: "#b76bff", // Purple
       color2: "#6e3eff",
       glowColor: "rgba(183, 107, 255, 0.32)",

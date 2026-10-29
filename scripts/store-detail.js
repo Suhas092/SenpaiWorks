@@ -202,7 +202,7 @@ async function initProductDetailPage() {
   const stockStatus = document.getElementById("stock-status");
 
   const priceVal = typeof product.price === "number" ? product.price : 899;
-  const origVal = product.originalPrice ? product.originalPrice : (isClothing ? Math.round(priceVal * 1.6) : Math.round(priceVal * 1.5));
+  const origVal = product.originalPrice ? product.originalPrice : Math.round(priceVal * 1.6);
   const savingsPct = Math.round(((origVal - priceVal) / origVal) * 100);
 
   if (productPrice) productPrice.textContent = `₹${priceVal.toLocaleString('en-IN')}`;

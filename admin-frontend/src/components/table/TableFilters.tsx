@@ -1,7 +1,7 @@
 export function TableFilters({
   value,
   onChange,
-  options = ["All statuses", "Active", "Draft", "Archived"],
+  options = ["All", "Active", "Draft", "Archived"],
 }: {
   value: string;
   onChange: (value: string) => void;

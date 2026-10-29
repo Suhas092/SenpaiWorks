@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type DragEvent, type FormEvent, type ReactNode } from "react";
 import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,12 @@ import type { Field } from "@/types";
 export type Rankable = { id: string; order: number };
 export type ListRow = Rankable & { title: string; published: boolean };
 
-export const LINK_ERROR = "Use a local path starting with / or a secure https:// link.";
+export const LINK_ERROR = "Use a page such as news.html or /store, an # anchor, or a secure https:// link.";
 
-export const isSafeLink = (value: string) => !value || /^(\/(?!\/)|https:\/\/)/.test(value);
+export const isSafeLink = (value: string) =>
+  !value ||
+  (!value.startsWith("//") &&
+    (/^https:\/\//i.test(value) || !/^[a-z][a-z0-9+.-]*:/i.test(value)));
 
 /** Stored media paths such as "assets/..." are resolved against the site root so they load inside the console. */
 export function mediaUrl(url: string) {
@@ -30,8 +33,15 @@ export const nextOrder = (rows: Rankable[]) =>
 export const errorMessage = (error: unknown, fallback: string) =>
   error instanceof Error && error.message ? error.message : fallback;
 
-/** Local ranking state for a list. Saving writes `order` (its position) for every row that moved. */
-export function useRanking<T extends Rankable>(serverRows: T[], path: string) {
+/**
+ * Local ranking state for a list. A move updates the local order. With `autoSave` each moved row
+ * is written immediately; otherwise `saveOrder` writes the positions that differ from the server.
+ */
+export function useRanking<T extends Rankable>(
+  serverRows: T[],
+  path: string,
+  { autoSave = false }: { autoSave?: boolean } = {},
+) {
   const [rows, setRows] = useState<T[]>(serverRows);
   const mutation = useMutate<{ order: number }>(path);
 
@@ -39,26 +49,40 @@ export function useRanking<T extends Rankable>(serverRows: T[], path: string) {
     setRows(serverRows);
   }, [serverRows]);
 
-  // Only the sequence of ids matters here. Order values are rewritten to match positions on save.
+  // Only the sequence of ids matters here.
   const changed = rows.some((row, i) => serverRows[i]?.id !== row.id);
+
+  const writeOrders = (updates: Rankable[]) =>
+    Promise.all(
+      updates.map((u) =>
+        mutation.mutateAsync({ method: "PUT", id: u.id, data: { order: u.order } }),
+      ),
+    );
 
   const moveTo = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0 || from >= rows.length || to >= rows.length) return;
-    const next = [...rows];
-    const [item] = next.splice(from, 1);
+    const moved = [...rows];
+    const [item] = moved.splice(from, 1);
     if (!item) return;
-    next.splice(to, 0, item);
+    moved.splice(to, 0, item);
+    const next = moved.map((row, i) => ({ ...row, order: i }));
+    const before = new Map(rows.map((row) => [row.id, row.order]));
     setRows(next);
+    if (!autoSave) return;
+    const updates = next.filter((row) => before.get(row.id) !== row.order);
+    writeOrders(updates).catch((err) => {
+      setRows(rows);
+      toast.error(errorMessage(err, "Unable to save the order"));
+    });
   };
 
   const saveOrder = async () => {
-    const updates = rows.flatMap((row, i) => (row.order !== i ? [{ id: row.id, order: i }] : []));
+    const updates = rows.flatMap((row, i) => {
+      const saved = serverRows.find((s) => s.id === row.id);
+      return saved?.order === i ? [] : [{ id: row.id, order: i }];
+    });
     try {
-      await Promise.all(
-        updates.map((u) =>
-          mutation.mutateAsync({ method: "PUT", id: u.id, data: { order: u.order } }),
-        ),
-      );
+      await writeOrders(updates);
       toast.success("Order saved");
     } catch (err) {
       toast.error(errorMessage(err, "Unable to save the order"));
@@ -71,6 +95,8 @@ export function useRanking<T extends Rankable>(serverRows: T[], path: string) {
 type RankedListProps<T extends ListRow> = {
   rows: T[];
   changed: boolean;
+  arrowsOnly?: boolean;
+  autoSave?: boolean;
   saving: boolean;
   loading: boolean;
   loadError: string | undefined;
@@ -90,6 +116,8 @@ type RankedListProps<T extends ListRow> = {
 export function RankedList<T extends ListRow>({
   rows,
   changed,
+  arrowsOnly = false,
+  autoSave = false,
   saving,
   loading,
   loadError,
@@ -109,7 +137,9 @@ export function RankedList<T extends ListRow>({
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
-          Drag rows or use the arrows to change the order, then save the order.
+          {autoSave
+            ? `${arrowsOnly ? "Use the arrows" : "Drag rows or use the arrows"} to change the order. Changes save automatically.`
+            : "Drag rows or use the arrows to change the order, then save the order."}
         </p>
         <Button onClick={onAdd}>
           <Plus /> {addLabel}
@@ -131,18 +161,22 @@ export function RankedList<T extends ListRow>({
         <div
           key={row.id}
           className="featured-row flex items-center gap-3"
-          draggable
-          onDragStart={(e) => {
-            e.dataTransfer.effectAllowed = "move";
-            e.dataTransfer.setData("text/plain", String(i));
-          }}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            onMove(Number(e.dataTransfer.getData("text/plain")), i);
-          }}
+          {...(arrowsOnly
+            ? {}
+            : {
+                draggable: true,
+                onDragStart: (e: DragEvent<HTMLDivElement>) => {
+                  e.dataTransfer.effectAllowed = "move";
+                  e.dataTransfer.setData("text/plain", String(i));
+                },
+                onDragOver: (e: DragEvent<HTMLDivElement>) => e.preventDefault(),
+                onDrop: (e: DragEvent<HTMLDivElement>) => {
+                  e.preventDefault();
+                  onMove(Number(e.dataTransfer.getData("text/plain")), i);
+                },
+              })}
         >
-          <GripVertical size={17} aria-hidden="true" />
+          {!arrowsOnly && <GripVertical size={17} aria-hidden="true" />}
           {renderThumb(row)}
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{row.title}</p>
@@ -161,7 +195,7 @@ export function RankedList<T extends ListRow>({
             variant="ghost"
             size="icon"
             aria-label={`Move ${row.title} up`}
-            disabled={i === 0}
+            disabled={saving || i === 0}
             onClick={() => onMove(i, i - 1)}
           >
             <ArrowUp />
@@ -170,7 +204,7 @@ export function RankedList<T extends ListRow>({
             variant="ghost"
             size="icon"
             aria-label={`Move ${row.title} down`}
-            disabled={i === rows.length - 1}
+            disabled={saving || i === rows.length - 1}
             onClick={() => onMove(i, i + 1)}
           >
             <ArrowDown />
@@ -193,9 +227,11 @@ export function RankedList<T extends ListRow>({
           </Button>
         </div>
       ))}
-      <Button className="mt-5" disabled={!changed || saving} onClick={onSaveOrder}>
-        Save order
-      </Button>
+      {!autoSave && (
+        <Button className="mt-5" disabled={!changed || saving} onClick={onSaveOrder}>
+          Save order
+        </Button>
+      )}
     </div>
   );
 }
@@ -206,6 +242,8 @@ type ItemFormModalProps = {
   initialValues: Record<string, string>;
   initialPublished: boolean;
   linkKeys: string[];
+  /** Read-only position text kept in sync with the list (arrows and drag update it live). */
+  positionLabel?: string | undefined;
   onSubmit: (values: Record<string, string>, published: boolean) => Promise<void>;
   onClose: () => void;
 };
@@ -216,6 +254,7 @@ export function ItemFormModal({
   initialValues,
   initialPublished,
   linkKeys,
+  positionLabel,
   onSubmit,
   onClose,
 }: ItemFormModalProps) {
@@ -252,6 +291,12 @@ export function ItemFormModal({
   return (
     <Modal title={title} open onClose={onClose}>
       <form onSubmit={submit} noValidate>
+        {positionLabel && (
+          <div className="mb-4 rounded-md border bg-muted/40 px-3 py-2 text-sm">
+            <span className="text-muted-foreground">Position: </span>
+            <span className="font-medium">{positionLabel}</span>
+          </div>
+        )}
         <div className="grid gap-4 sm:grid-cols-2">
           {fields.map((f) => (
             <FormField

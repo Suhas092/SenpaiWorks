@@ -15,7 +15,6 @@ import {
 } from "./shared";
 
 const SHOWCASE_PATH = "/admin/homepage/showcase-items";
-const SECTION = "things_you_might_like";
 
 export type ShowcaseItem = {
   id: string;
@@ -37,12 +36,15 @@ const SHOWCASE_FIELDS: Field[] = [
   { key: "imageUrl", label: "Image URL", required: true },
   { key: "btnText", label: "Button text" },
   { key: "linkUrl", label: "Button link" },
-  { key: "order", label: "Display order", type: "number" },
 ];
 
 const SHOWCASE_LINK_KEYS = ["linkUrl"];
 
-const toValues = (item: ShowcaseItem | undefined, order: number): Record<string, string> =>
+const toValues = (
+  item: ShowcaseItem | undefined,
+  order: number,
+  defaultBtnText: string,
+): Record<string, string> =>
   item
     ? {
         title: item.title ?? "",
@@ -58,25 +60,54 @@ const toValues = (item: ShowcaseItem | undefined, order: number): Record<string,
         subtitle: "",
         description: "",
         imageUrl: "",
-        btnText: "Explore",
+        btnText: defaultBtnText,
         linkUrl: "",
         order: String(order),
       };
 
+type ShowcaseListEditorProps = {
+  section: string;
+  sectionLabel: string;
+  defaultBtnText: string;
+};
+
 export function FeaturedListEditor() {
+  return (
+    <ShowcaseListEditor
+      section="things_you_might_like"
+      sectionLabel="Things You Might Like"
+      defaultBtnText="Explore"
+    />
+  );
+}
+
+export function ShowcaseListEditor({
+  section,
+  sectionLabel,
+  defaultBtnText,
+}: ShowcaseListEditorProps) {
   const items = useFetch<ShowcaseItem[]>(SHOWCASE_PATH);
   const serverRows = useMemo(
     () =>
       sortByOrder(
-        (Array.isArray(items.data) ? items.data : []).filter((item) => item.section === SECTION),
+        (Array.isArray(items.data) ? items.data : []).filter((item) => item.section === section),
       ),
-    [items.data],
+    [items.data, section],
   );
-  const ranking = useRanking(serverRows, SHOWCASE_PATH);
+  const ranking = useRanking(serverRows, SHOWCASE_PATH, { autoSave: true });
   const mutation = useMutate<Record<string, unknown>>(SHOWCASE_PATH);
   const [editing, setEditing] = useState<ShowcaseItem | "new" | null>(null);
   const [removing, setRemoving] = useState<ShowcaseItem | null>(null);
   const editingItem = editing && editing !== "new" ? editing : undefined;
+  // Looked up by id so the position follows the list after every move.
+  const editingIndex = editingItem
+    ? ranking.rows.findIndex((row) => row.id === editingItem.id)
+    : -1;
+  const positionLabel = editingItem
+    ? editingIndex >= 0
+      ? `#${editingIndex + 1} of ${ranking.rows.length}`
+      : undefined
+    : `#${ranking.rows.length + 1} (added at the end)`;
 
   const saveItem = async (
     values: Record<string, string>,
@@ -84,7 +115,7 @@ export function FeaturedListEditor() {
     item: ShowcaseItem | undefined,
   ) => {
     const data = {
-      section: SECTION,
+      section,
       title: values["title"],
       subtitle: values["subtitle"],
       description: values["description"],
@@ -134,6 +165,7 @@ export function FeaturedListEditor() {
       <RankedList<ShowcaseItem>
         rows={ranking.rows}
         changed={ranking.changed}
+        autoSave
         saving={ranking.saving}
         loading={items.isLoading}
         loadError={
@@ -172,9 +204,10 @@ export function FeaturedListEditor() {
         <ItemFormModal
           title={editingItem ? "Edit showcase item" : "Add showcase item"}
           fields={SHOWCASE_FIELDS}
-          initialValues={toValues(editingItem, nextOrder(ranking.rows))}
+          initialValues={toValues(editingItem, nextOrder(ranking.rows), defaultBtnText)}
           initialPublished={editingItem ? editingItem.published : true}
           linkKeys={SHOWCASE_LINK_KEYS}
+          positionLabel={positionLabel}
           onSubmit={(values, published) => saveItem(values, published, editingItem)}
           onClose={() => setEditing(null)}
         />
@@ -182,7 +215,7 @@ export function FeaturedListEditor() {
       {removing && (
         <ConfirmModal
           title="Delete showcase item?"
-          body={`"${removing.title}" will be removed from Things You Might Like. Its image is kept in trash for 14 days.`}
+          body={`"${removing.title}" will be removed from ${sectionLabel}. Its image is kept in trash for 14 days.`}
           confirmLabel="Delete"
           busy={mutation.isPending}
           onConfirm={() => void confirmDelete()}

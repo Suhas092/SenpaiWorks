@@ -71,8 +71,8 @@
     <div class="mv-showcase-container">
 
       <!-- Featured MV 1: Suzens Band (Full-Width Viewport) -->
-      <div class="mv-player-viewport">
-        <img src="assets/Suzens band.png" alt="Suzens Band MV" class="mv-player-img" loading="eager" decoding="async">
+      <div class="mv-player-viewport" data-motion-id="1">
+        <img src="assets/suzens band-web.jpg" alt="Suzens Band MV" class="mv-player-img" loading="eager" decoding="async">
         <div class="mv-player-overlay-content">
           <span class="mv-label-badge"><i class="fa-solid fa-star"></i> FEATURED ANIME MUSIC VIDEO</span>
           <h3 class="mv-hero-track-title">Suzens Band — Official Anime Music Video</h3>
@@ -83,7 +83,7 @@
             <a href="https://www.youtube.com/watch?v=SsoV6Mdjr6A" target="_blank" rel="noopener" class="mv-play-link-btn">
               <i class="fa-solid fa-play"></i> <span>Watch Full MV on YouTube</span>
             </a>
-            <span class="mv-duration-tag"><i class="fa-regular fa-clock"></i> 3:45 MIN · 4K HIGH FRAME REEL</span>
+            <span class="mv-duration-tag"><i class="fa-regular fa-clock"></i> <span class="mv-duration-text">3:45 MIN · 4K HIGH FRAME REEL</span></span>
           </div>
         </div>
       </div>
@@ -92,9 +92,9 @@
       <div class="mv-split-showcase">
         <!-- Deadpool MV -->
         <div class="mv-split-media">
-          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool MV" loading="eager" decoding="async">
+          <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/artworks/deadpool_poster_krntp0.webp" alt="Deadpool MV" loading="lazy" decoding="async">
         </div>
-        <div class="mv-split-info">
+        <div class="mv-split-info" data-motion-id="2">
           <span class="mv-label-badge" style="background: #dc2626;"><i class="fa-solid fa-bolt"></i> ACTION REEL</span>
           <h3 class="mv-split-title">Deadpool Action Choreography MV</h3>
           <p class="mv-split-desc">
@@ -109,9 +109,9 @@
       <!-- Fantasy MV Split -->
       <div class="mv-split-showcase" style="direction: rtl;">
         <div class="mv-split-media" style="direction: ltr;">
-          <img src="assets/suzana.png" alt="Suzana Fantasy MV" loading="eager" decoding="async">
+          <img src="assets/suzana-web.png" alt="Suzana Fantasy MV" loading="lazy" decoding="async">
         </div>
-        <div class="mv-split-info" style="direction: ltr;">
+        <div class="mv-split-info" style="direction: ltr;" data-motion-id="3">
           <span class="mv-label-badge" style="background: #d4af37;"><i class="fa-solid fa-dragon"></i> STORYBOOK MV</span>
           <h3 class="mv-split-title">Realms of Fire & Ice — Story MV</h3>
           <p class="mv-split-desc">
@@ -138,9 +138,9 @@
 
     <div class="editorial-split-block">
       <div class="editorial-media-frame">
-        <img src="assets/art-others-1.png" alt="2D Anime Animation" loading="eager" decoding="async">
+        <img src="assets/art-others-1.png" alt="2D Anime Animation" loading="lazy" decoding="async">
       </div>
-      <div class="editorial-text-content">
+      <div class="editorial-text-content" data-motion-id="4">
         <span class="editorial-feature-tag">HAND-DRAWN KEYFRAMING</span>
         <h3 class="editorial-heading">Anime Cel Character Motion</h3>
         <p class="editorial-body-text">
@@ -178,9 +178,9 @@
     </div>
 
     <div class="wide-vfx-banner">
-      <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/chronos_plays_fl47xm.webp" alt="4D VFX" class="vfx-banner-bg-img" loading="eager" decoding="async">
+      <img src="https://pub-fcaa22b002b74b8a93604c85b4342984.r2.dev/brand/chronos_plays_fl47xm.webp" alt="4D VFX" class="vfx-banner-bg-img" loading="lazy" decoding="async">
       
-      <div class="vfx-banner-content">
+      <div class="vfx-banner-content" data-motion-id="5">
         <span class="vfx-tag">HOUDINI & UNREAL ENGINE 5</span>
         <h3 class="vfx-title">4D Spatial Fluid & Smoke VFX</h3>
         <p class="vfx-desc">
@@ -246,6 +246,7 @@
   <div id="footer-container"></div>
   <script src="scripts/footer.js"></script>
 <script src="scripts/image-loader.js" defer></script>
+<script src="scripts/motion.js" defer></script>
 </body>
 
 </html>

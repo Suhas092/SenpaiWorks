@@ -5,6 +5,10 @@ let currentTabFilter = "all";
 let activeModalOrderId = null;
 let activeModalOrderDbId = null;
 
+// Open until its replacement order is delivered or cancelled.
+const isReplacementOpen = r => r.status === "Requested" || (r.status === "Approved" && !(["Delivered", "Cancelled"].includes(r.newOrder?.status)));
+const isReplacementDelivered = r => r.status === "Approved" && r.newOrder?.status === "Delivered";
+
 document.addEventListener("DOMContentLoaded", () => {
   initOrdersDashboard();
 });
@@ -84,8 +88,8 @@ function updateOrdersNavBadge(orders) {
     const isCancelled = st.includes("cancel");
     const isDelivered = st.includes("deliver");
 
-    // Check for active replacement request (Requested or Approved)
-    const hasActiveReplacement = (o.replacements || []).some(r => r.status === "Requested" || r.status === "Approved");
+    // Check for open replacement request
+    const hasActiveReplacement = (o.replacements || []).some(isReplacementOpen);
     if (hasActiveReplacement) return true;
 
     // If order is delivered or cancelled, it is NOT pending delivery
@@ -357,7 +361,8 @@ function renderOrdersList(ordersToRender, resetPage = true) {
     const deliveredAt = order.deliveredAt ? new Date(order.deliveredAt) : null;
     
     // Replacement availability: ONLY shown once delivered for physical items
-    const activeReplacement = (order.replacements || []).find(r => r.status === "Requested" || r.status === "Approved");
+    const activeReplacement = (order.replacements || []).find(isReplacementOpen);
+    const deliveredReplacement = (order.replacements || []).find(isReplacementDelivered);
     let canShowReplaceBtn = false;
     let isReplaceable = false;
     let replaceBtnText = "Replace Items";
@@ -367,6 +372,9 @@ function renderOrdersList(ordersToRender, resetPage = true) {
       if (activeReplacement) {
         isReplaceable = false;
         replaceBtnText = activeReplacement.status === "Approved" ? "Replacement Approved" : "Replacement Pending";
+      } else if (deliveredReplacement) {
+        isReplaceable = false;
+        replaceBtnText = "Replacement Delivered";
       } else if (deliveredAt && !isNaN(deliveredAt.getTime())) {
         const daysSince = (Date.now() - deliveredAt.getTime()) / (1000 * 3600 * 24);
         if (daysSince <= 7) {

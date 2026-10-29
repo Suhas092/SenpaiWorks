@@ -34,7 +34,7 @@
 
       // Clear existing cards and regenerate from API
       cardsContainer.innerHTML = members.map((member, index) => {
-        const memberImg = member.imageUrl || "assets/suzana all out old.png";
+        const memberImg = member.imageUrl || "assets/suzana all out old-web.jpg";
         const memberName = member.name || "MEMBER";
         return `
           <div class="showcase-card" data-index="${index}">

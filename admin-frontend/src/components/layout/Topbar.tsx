@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, Search, ArrowUpRight, ChevronDown, LogOut } from "lucide-react";
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { Menu, Search, ArrowUpRight, LogOut, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DEMO_MODE, post } from "@/api";
-import { ADMIN_SESSION_KEY, useAdminIdentity } from "@/hooks/useAdminSession";
+import { ADMIN_SESSION_KEY } from "@/hooks/useAdminSession";
+import { useTheme } from "@/hooks/useTheme";
 import { navigation } from "./navigation";
 import { NotificationBell } from "./NotificationBell";
 export function Topbar({ onMenu }: { onMenu: () => void }) {
   const [search, setSearch] = useState("");
   const client = useQueryClient();
-  const identity = useAdminIdentity();
+  const { theme, toggleTheme } = useTheme();
   const handleSignOut = async () => {
     await post("/admin/logout", {}).catch(() => undefined);
     // Set the session first so the mounted gate re-renders to the login screen.
@@ -70,34 +70,17 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
             Sign out
           </Button>
         )}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+        </Button>
         <span className="topbar-divider" />
         <NotificationBell />
-        <Popover>
-          <PopoverButton
-            as={Button}
-            variant="ghost"
-            className="avatar-button"
-            aria-label="Account menu"
-          >
-            <span className="avatar">
-              {identity.avatar ? (
-                <img src={identity.avatar} alt="" className="size-full rounded-full object-cover" />
-              ) : (
-                identity.initials
-              )}
-            </span>
-            <ChevronDown size={14} />
-          </PopoverButton>
-          <PopoverPanel anchor="bottom end" className="popover-panel">
-            <strong>{identity.name}</strong>
-            <p className="text-muted-foreground text-xs mt-1 mb-4">
-              {identity.role} · {identity.username}
-            </p>
-            <Link to="/my-profile" className="text-primary">
-              My profile →
-            </Link>
-          </PopoverPanel>
-        </Popover>
       </div>
     </header>
   );

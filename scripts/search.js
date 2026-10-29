@@ -108,7 +108,7 @@
       subCategory: "Idol Showcase",
       type: "band",
       desc: "Official homepage of Suzens 3D anime band — featuring Suzana, Tiara, Remi, and Ayana with live concert dates and album previews.",
-      img: "assets/suzens band.png",
+      img: "assets/suzens band-web.jpg",
       link: "suzens.html"
     },
     {
@@ -118,7 +118,7 @@
       subCategory: "Member Profile",
       type: "band",
       desc: "The Electric Spark of Suzens. Lead vocalist and rhythm guitarist for live metaverse holographic stage performances.",
-      img: "assets/suzana all out.png",
+      img: "assets/suzana all out-web.png",
       link: "suzens.html#sz-members"
     },
     {
@@ -128,7 +128,7 @@
       subCategory: "Member Profile",
       type: "band",
       desc: "The Holographic Virtuoso. Lead guitarist and synth composer blending neo-classical guitar solos with cyber electronics.",
-      img: "assets/tiara all out.png",
+      img: "assets/tiara all out-web.jpg",
       link: "suzens.html#sz-members"
     },
 

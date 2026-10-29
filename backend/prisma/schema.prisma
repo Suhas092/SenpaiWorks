@@ -354,9 +354,12 @@ model MotionRig {
   title     String
   type      String
   format    String
-  status    String   @default("Active")
-  img       String
-  createdAt DateTime @default(now())
+  status      String   @default("Active")
+  img         String
+  videoUrl    String?
+  duration    String?
+  description String?
+  createdAt   DateTime @default(now())
 }
 
 model DesignPollSuggestion {

@@ -1,4 +1,3 @@
-import { Download, Heart, MessageCircle, Star } from "lucide-react";
 import { post, put, patch, del } from "@/api";
 import type { AdminRecord, Field, FormValues, ResourceConfig } from "@/types";
 
@@ -57,7 +56,6 @@ const image = (key: string, label: string): Field => ({
 });
 
 export const ORDER_STATUSES = ["Processing", "Shipped", "Delivered", "Cancelled"];
-const POLL_STATUSES = ["Pending", "Approved", "Rejected", "Implemented"];
 const REPLACEMENT_STATUSES = ["Requested", "Approved", "Rejected"];
 
 /* ---------- Products ---------- */
@@ -275,6 +273,7 @@ const reviewRows = (raw: unknown): AdminRecord[] =>
     return {
       id: str(r["id"]),
       name: str(p["name"], "Product"),
+      category: str(p["category"]),
       sub: str(r["title"]),
       customer: str(u["name"] || u["username"], "Anonymous"),
       rating: num(r["rating"]),
@@ -305,6 +304,13 @@ const reviews: ResourceConfig = {
   description: "Every product review, with visibility controls.",
   singular: "review",
   listPath: "/admin/reviews",
+  statusOptions: ["Published", "Hidden"],
+  extraFilter: {
+    key: "category",
+    label: "Product type",
+    allLabel: "All product types",
+    options: [],
+  },
 };
 
 const productHealth: ResourceConfig = {
@@ -345,9 +351,7 @@ const artBody = (v: FormValues) => ({
   artist: String(v["artist"] ?? ""),
   img: String(v["img"]),
   description: String(v["description"] ?? ""),
-  sex: String(v["sex"] ?? ""),
   artstyle: String(v["artstyle"] ?? ""),
-  software: String(v["software"] ?? ""),
   aboutDesc: String(v["aboutDesc"] ?? ""),
 });
 
@@ -361,15 +365,9 @@ const art: ResourceConfig = {
   description: "Artwork shown in the community art library.",
   singular: "artwork",
   listPath: "/artworks",
-  visual: true,
+  visual: false,
   refetchInterval: 15_000,
   statusOptions: ART_CATEGORIES,
-  cardStats: [
-    { key: "likes", icon: Heart, label: "Likes", filled: true },
-    { key: "comments", icon: MessageCircle, label: "Comments" },
-    { key: "interested", icon: Star, label: "Interested", filled: true },
-    { key: "downloads", icon: Download, label: "Downloads" },
-  ],
   columns: [
     { key: "name", label: "Character" },
     { key: "category", label: "Category" },
@@ -382,9 +380,7 @@ const art: ResourceConfig = {
     text("source", "Source"),
     text("artist", "Artist", false),
     text("img", "Image URL"),
-    text("sex", "Sex", false),
     text("artstyle", "Art style", false),
-    text("software", "Software", false),
     area("description", "Description"),
     area("aboutDesc", "About this artwork", false),
   ],
@@ -399,9 +395,7 @@ const art: ResourceConfig = {
       artist: str(a["artist"]),
       img: str(a["img"]),
       description: str(a["description"]),
-      sex: str(a["sex"]),
       artstyle: str(a["artstyle"]),
-      software: str(a["software"]),
       aboutDesc: str(a["aboutDesc"]),
       likes: num(a["likeCount"]),
       comments: num(a["commentCount"]),
@@ -422,6 +416,9 @@ const motionRigs = (type: "motion" | "rig"): ResourceConfig => {
     format: String(v["format"]),
     img: String(v["img"]),
     status: String(v["status"]),
+    videoUrl: String(v["videoUrl"] ?? "").trim(),
+    duration: String(v["duration"] ?? "").trim(),
+    description: String(v["description"] ?? "").trim(),
   });
   return {
     title: type === "motion" ? "Motion library" : "Rig library",
@@ -431,7 +428,7 @@ const motionRigs = (type: "motion" | "rig"): ResourceConfig => {
         : "Character rigs available to customers.",
     singular: type === "motion" ? "motion asset" : "rig",
     listPath: `/admin/motion-rigs?type=${type}`,
-    visual: true,
+    visual: type === "rig",
     columns: [
       { key: "name", label: "Title" },
       { key: "format", label: "Format" },
@@ -441,6 +438,9 @@ const motionRigs = (type: "motion" | "rig"): ResourceConfig => {
       text("name", "Title"),
       text("format", "Format"),
       text("img", "Image URL"),
+      text("videoUrl", "YouTube link", false),
+      text("duration", "Duration / meta tag", false),
+      area("description", "Description", false),
       select("status", "Status", ["Active", "Draft", "Archived"]),
     ],
     toRows: (raw) =>
@@ -451,6 +451,9 @@ const motionRigs = (type: "motion" | "rig"): ResourceConfig => {
         format: str(m["format"]),
         img: str(m["img"]),
         status: str(m["status"]),
+        videoUrl: str(m["videoUrl"]),
+        duration: str(m["duration"]),
+        description: str(m["description"]),
       })),
     create: (v) => post("/admin/motion-rigs", body(v)),
     update: (row, v) => put(`/admin/motion-rigs/${enc(row.id)}`, body(v)),
@@ -469,7 +472,7 @@ const NEWS_CATEGORIES = [
   "Merchandise",
   "Community",
 ];
-const NEWS_PLACEMENTS = [
+export const NEWS_PLACEMENTS = [
   { value: "standard", label: "Standard story" },
   { value: "main_feature", label: "Main feature" },
   { value: "recommended", label: "Recommended card" },
@@ -613,42 +616,6 @@ const coupons: ResourceConfig = {
   },
 };
 
-/* ---------- Polls ---------- */
-
-const pollBody = (v: FormValues) => ({
-  suggestion: String(v["name"]),
-  date: String(v["date"]),
-  status: String(v["status"]),
-});
-
-const polls: ResourceConfig = {
-  title: "Design polls",
-  description: "Community design suggestions.",
-  singular: "suggestion",
-  listPath: "/admin/polls",
-  columns: [
-    { key: "name", label: "Suggestion" },
-    { key: "date", label: "Date" },
-    { key: "status", label: "Status" },
-  ],
-  fields: [
-    area("name", "Suggestion", true),
-    text("date", "Date"),
-    select("status", "Status", POLL_STATUSES),
-  ],
-  toRows: (raw) =>
-    list(raw).map((p) => ({
-      id: str(p["id"]),
-      name: str(p["suggestion"]),
-      sub: str(p["date"]),
-      date: str(p["date"]),
-      status: str(p["status"]),
-    })),
-  create: (v) => post("/admin/polls", pollBody(v)),
-  update: (row, v) => put(`/admin/polls/${enc(row.id)}`, pollBody(v)),
-  remove: (row) => del(`/admin/polls/${enc(row.id)}`),
-};
-
 /* ---------- Donations (read-only) ---------- */
 
 const donations: ResourceConfig = {
@@ -678,11 +645,12 @@ const donations: ResourceConfig = {
 
 /* ---------- Replacements ---------- */
 
-const replacements: ResourceConfig = {
+export const replacements: ResourceConfig = {
   title: "Replacements",
-  description: "Replacement requests raised against delivered orders.",
+  description: "Review replacement requests. Approved requests move to the replacement queue.",
   singular: "replacement",
   listPath: "/admin/replacements",
+  refetchInterval: 30_000,
   columns: [
     { key: "name", label: "Request" },
     { key: "orderNumber", label: "Order" },
@@ -695,16 +663,39 @@ const replacements: ResourceConfig = {
   toRows: (raw) =>
     list(raw).map((r) => {
       const order = obj(r["order"]);
+      const customer = obj(order["customer"]);
       const item = obj(r["orderItem"]);
+      const newOrder = obj(r["newOrder"]);
+      const hasItem = Object.keys(item).length > 0;
+      const lines = hasItem ? [item] : list(order["items"]);
       return {
         id: str(r["id"]),
         name: `REP-${str(r["id"])}`,
-        sub: str(item["productName"]),
-        orderNumber: str(order["orderNumber"]),
-        product: str(item["productName"]),
-        reason: str(r["reason"]),
+        orderId: str(r["orderId"]),
+        orderNumber: str(order["orderNumber"], `#${str(r["orderId"])}`),
+        orderTotal: num(order["total"]),
+        deliveredAt: str(order["deliveredAt"]),
+        customer: str(customer["name"] || customer["username"] || order["guestName"], "Guest"),
+        email: str(customer["email"] || order["guestEmail"] || order["email"]),
+        phone: str(order["guestPhone"], "Not provided"),
+        shipTo: shipTo(order["shippingAddress"]),
+        product: hasItem ? str(item["productName"], "Item") : "Entire order",
+        itemsJson: JSON.stringify(
+          lines.map((i) => ({
+            name: str(i["productName"], "Item"),
+            variant: str(i["variant"]),
+            quantity: num(i["quantity"]) || 1,
+            price: num(i["price"]),
+            img: str(i["img"]),
+          })),
+        ),
+        reason: str(r["reason"], "Defective/Damaged"),
         status: str(r["status"]),
         date: day(r["createdAt"]),
+        createdAt: str(r["createdAt"]),
+        newOrderId: str(r["newOrderId"]),
+        newOrderNumber: str(newOrder["orderNumber"]),
+        newOrderStatus: str(newOrder["status"]),
       };
     }),
   update: (row, v) =>
@@ -826,7 +817,6 @@ export const resources: Record<string, ResourceConfig> = {
   rigs: motionRigs("rig"),
   news,
   coupons,
-  polls,
   donations,
   replacements,
   users,

@@ -49,7 +49,7 @@ const SUGGESTED_STORE_PRODUCTS = [
     badge: "Limited Edition",
     discount: "48% OFF",
     variant: "Oversized / Black",
-    img: "assets/Store/Tshirts/Black and white kaneki tshirts/kaneki_bw_black_tshirt.jpg"
+    img: "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_black_tshirt_bw.jpg"
   },
   {
     id: "suzan-art-poster",

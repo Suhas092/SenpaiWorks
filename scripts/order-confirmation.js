@@ -253,7 +253,7 @@ async function renderLatestOrderReceipt() {
 
       itemsHtml += `
         <div class="order-item-card">
-          <img src="${item.img || item.productImage || (isDonItem ? 'assets/Ayana.png' : 'assets/Videos/SenpaiWorks logo.png')}" alt="${item.name || item.productName || 'Item'}" class="order-item-img">
+          <img src="${item.img || item.productImage || (isDonItem ? 'assets/Ayana-web.png' : 'assets/Videos/SenpaiWorks logo.png')}" alt="${item.name || item.productName || 'Item'}" class="order-item-img">
           <div class="order-item-details">
             <div class="order-item-name" style="display: flex; align-items: center; gap: 8px;">
               ${item.name || item.productName || (isDonItem ? 'Community Supporter Contribution' : 'SenpaiWorks Item')}
