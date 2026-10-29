@@ -48,12 +48,12 @@ export function LoginPage() {
             <img
               src={`${import.meta.env.BASE_URL}brand/senpaiworks-logo.png`}
               alt="SenpaiWorks"
-              className="h-10 w-10 object-contain"
+              className="brand-logo-img h-10 w-10 object-contain"
             />
             <img
               src={`${import.meta.env.BASE_URL}brand/senpaiworks-name-logo.png`}
               alt="SenpaiWorks"
-              className="h-6 w-auto object-contain"
+              className="brand-name-img h-6 w-auto object-contain"
             />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">

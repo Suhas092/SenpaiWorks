@@ -163,6 +163,16 @@ h3 {
   justify-content: center;
   gap: 2px;
 }
+.brand-logo-img,
+.brand-name-img,
+.brand img {
+  transition: filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dark .brand-logo-img,
+.dark .brand-name-img,
+.dark .brand img {
+  filter: brightness(0) invert(1);
+}
 .brand-name-img {
   height: 19px;
   width: auto;

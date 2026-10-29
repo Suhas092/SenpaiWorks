@@ -41,7 +41,7 @@ export function Sidebar({
           <img
             src={`${import.meta.env.BASE_URL}brand/senpaiworks-logo.png`}
             alt="SenpaiWorks"
-            className="h-9 w-9 object-contain flex-shrink-0"
+            className="brand-logo-img h-9 w-9 object-contain flex-shrink-0"
           />
           {!collapsed && (
             <div className="brand-text-container">
