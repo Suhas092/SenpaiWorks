@@ -33,7 +33,6 @@ export type HeroSlide = {
 };
 
 const HERO_FIELDS: Field[] = [
-  { key: "spotlight", label: "Spotlight label" },
   { key: "title", label: "Banner title", required: true },
   { key: "description", label: "Subtitle", type: "textarea" },
   { key: "bgType", label: "Background type", type: "select", options: ["image", "video"] },
@@ -42,15 +41,17 @@ const HERO_FIELDS: Field[] = [
   { key: "primaryBtnLink", label: "Button 1 link" },
   { key: "secondaryBtnText", label: "Button 2 text" },
   { key: "secondaryBtnLink", label: "Button 2 link" },
-  { key: "order", label: "Display order", type: "number" },
 ];
 
 const HERO_LINK_KEYS = ["primaryBtnLink", "secondaryBtnLink"];
 
-const toValues = (slide: HeroSlide | undefined, order: number): Record<string, string> =>
+/** The number in the label follows the position on the home page, so it is rebuilt from position. */
+export const spotlightLabel = (label: string, position: number) =>
+  `#${position} ${label.replace(/^#\d+\s*/, "").trim() || "Spotlight"}`;
+
+const toValues = (slide: HeroSlide | undefined): Record<string, string> =>
   slide
     ? {
-        spotlight: slide.spotlight ?? "",
         title: slide.title ?? "",
         description: slide.description ?? "",
         bgType: slide.bgType || "image",
@@ -59,10 +60,8 @@ const toValues = (slide: HeroSlide | undefined, order: number): Record<string, s
         primaryBtnLink: slide.primaryBtnLink ?? "",
         secondaryBtnText: slide.secondaryBtnText ?? "",
         secondaryBtnLink: slide.secondaryBtnLink ?? "",
-        order: String(slide.order ?? 0),
       }
     : {
-        spotlight: "#1 Spotlight",
         title: "",
         description: "",
         bgType: "image",
@@ -71,7 +70,6 @@ const toValues = (slide: HeroSlide | undefined, order: number): Record<string, s
         primaryBtnLink: "",
         secondaryBtnText: "Details",
         secondaryBtnLink: "",
-        order: String(order),
       };
 
 export function HeroEditor() {
@@ -80,7 +78,7 @@ export function HeroEditor() {
     () => (Array.isArray(slides.data) ? sortByOrder(slides.data) : []),
     [slides.data],
   );
-  const ranking = useRanking(serverRows, HERO_PATH);
+  const ranking = useRanking(serverRows, HERO_PATH, { autoSave: true });
   const mutation = useMutate<Record<string, unknown>>(HERO_PATH);
   const [editing, setEditing] = useState<HeroSlide | "new" | null>(null);
   const [removing, setRemoving] = useState<HeroSlide | null>(null);
@@ -92,7 +90,7 @@ export function HeroEditor() {
     slide: HeroSlide | undefined,
   ) => {
     const data = {
-      spotlight: values["spotlight"],
+      spotlight: slide?.spotlight ?? "Spotlight",
       title: values["title"],
       description: values["description"],
       bgType: values["bgType"],
@@ -101,7 +99,7 @@ export function HeroEditor() {
       primaryBtnLink: values["primaryBtnLink"],
       secondaryBtnText: values["secondaryBtnText"],
       secondaryBtnLink: values["secondaryBtnLink"],
-      order: Number(values["order"]) || 0,
+      ...(slide ? {} : { order: nextOrder(ranking.rows) }),
       published,
     };
     try {
@@ -139,11 +137,22 @@ export function HeroEditor() {
     }
   };
 
+  const publishedPosition = new Map(
+    ranking.rows.filter((slide) => slide.published).map((slide, i) => [slide.id, i + 1]),
+  );
+  const positionLabel = editingSlide
+    ? publishedPosition.get(editingSlide.id)
+      ? `#${publishedPosition.get(editingSlide.id)} on home page`
+      : "Hidden from home page"
+    : `#${publishedPosition.size + 1} on home page (added at the end)`;
+
   return (
     <>
       <RankedList<HeroSlide>
         rows={ranking.rows}
         changed={ranking.changed}
+        arrowsOnly
+        autoSave
         saving={ranking.saving}
         loading={slides.isLoading}
         loadError={
@@ -176,19 +185,24 @@ export function HeroEditor() {
             />
           )
         }
-        renderMeta={(slide) => (
-          <p className="truncate text-xs text-muted-foreground">
-            {slide.spotlight} · {slide.primaryBtnText || "No button"}
-          </p>
-        )}
+        renderMeta={(slide) => {
+          const position = publishedPosition.get(slide.id);
+          const label = position ? spotlightLabel(slide.spotlight, position) : slide.spotlight;
+          return (
+            <p className="truncate text-xs text-muted-foreground">
+              {label} · {slide.primaryBtnText || "No button"}
+            </p>
+          );
+        }}
       />
       {editing && (
         <ItemFormModal
           title={editingSlide ? "Edit hero banner" : "Add hero banner"}
           fields={HERO_FIELDS}
-          initialValues={toValues(editingSlide, nextOrder(ranking.rows))}
+          initialValues={toValues(editingSlide)}
           initialPublished={editingSlide ? editingSlide.published : true}
           linkKeys={HERO_LINK_KEYS}
+          positionLabel={positionLabel}
           onSubmit={(values, published) => saveSlide(values, published, editingSlide)}
           onClose={() => setEditing(null)}
         />

@@ -80,7 +80,14 @@ if (process.env.NODE_ENV !== 'production' && process.env.DISABLE_LIVERELOAD !== 
   });
   liveReloadServer.watch(path.join(__dirname, '..'));
 
-  app.use(connectLiveReload());
+  // Skip API responses: livereload buffers chunks as UTF-8 text, which corrupts binary PDFs
+  app.use(connectLiveReload({
+    ignore: [
+      /\.js(\?.*)?$/, /\.css(\?.*)?$/, /\.svg(\?.*)?$/, /\.ico(\?.*)?$/,
+      /\.woff(\?.*)?$/, /\.png(\?.*)?$/, /\.jpg(\?.*)?$/, /\.jpeg(\?.*)?$/, /\.gif(\?.*)?$/, /\.pdf(\?.*)?$/,
+      /\.json(\?.*)?$/, /^\/api\//
+    ]
+  }));
 }
 
 // Enable trust proxy so Express & rateLimit respect proxy/Cloudflare IP headers
@@ -3216,6 +3223,21 @@ app.delete('/api/community/reviews/:id', requireAdminToken, async (req, res) => 
   }
 });
 
+// Motion Rig Endpoints (public, active rows only)
+app.get('/api/motion-rigs', async (req, res) => {
+  try {
+    const rows = await prisma.motionRig.findMany({
+      where: { status: 'Active' },
+      orderBy: { id: 'asc' },
+      select: { id: true, title: true, type: true, format: true, img: true, videoUrl: true, duration: true, description: true }
+    });
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching motion rigs:', error);
+    res.status(500).json({ error: 'Failed to fetch motion rigs' });
+  }
+});
+
 // Product Endpoints
 app.get('/api/products', async (req, res) => {
   try {
@@ -5020,56 +5042,65 @@ app.patch('/api/admin/alerts/read-all', requireAdminToken, async (req, res) => {
 app.get('/api/admin/dashboard/stats', requireAdminToken, async (req, res) => {
   try {
     const istOffsetMs = 5.5 * 60 * 60 * 1000;
-    const now = new Date();
-    const istNow = new Date(now.getTime() + istOffsetMs);
+    const istNow = new Date(Date.now() + istOffsetMs);
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    // 1. Last 7 Days Sales Timeline (IST)
-    const timelineLabels = [];
-    const timelineData = [];
-
+    // Last 7 days (IST) windows, computed up front so every query can run in parallel.
+    const days = [];
     for (let i = 6; i >= 0; i--) {
       const targetIST = new Date(istNow.getTime() - i * 24 * 60 * 60 * 1000);
       const year = targetIST.getUTCFullYear();
       const month = targetIST.getUTCMonth();
       const day = targetIST.getUTCDate();
-
-      const startOfDayUTC = new Date(Date.UTC(year, month, day, 0, 0, 0, 0) - istOffsetMs);
-      const endOfDayUTC = new Date(Date.UTC(year, month, day, 23, 59, 59, 999) - istOffsetMs);
-
-      const dayOrders = await prisma.order.findMany({
-        where: {
-          createdAt: {
-            gte: startOfDayUTC,
-            lte: endOfDayUTC
-          },
-          status: { not: "Cancelled" }
-        },
-        select: { total: true }
+      days.push({
+        label: `${monthNames[month]} ${day}`,
+        start: new Date(Date.UTC(year, month, day, 0, 0, 0, 0) - istOffsetMs),
+        end: new Date(Date.UTC(year, month, day, 23, 59, 59, 999) - istOffsetMs),
       });
-
-      const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-      timelineLabels.push(`${monthNames[month]} ${day}`);
-      timelineData.push(dayRevenue);
     }
 
-    // 2. Category Breakdown from real orders & items
-    const orderItems = await prisma.orderItem.findMany({
-      where: {
-        order: {
-          status: { not: "Cancelled" }
-        }
-      },
-      include: {
-        product: { select: { category: true } }
-      }
-    });
+    // All reads run concurrently. Sums and groupings happen in the database,
+    // so no full table is pulled into memory.
+    const [recentOrders, categoryRows, totalArtworks, totalProducts, revenueAgg, totalOrders, emailGroups] =
+      await Promise.all([
+        prisma.order.findMany({
+          where: {
+            createdAt: { gte: days[0].start, lte: days[days.length - 1].end },
+            status: { not: "Cancelled" }
+          },
+          select: { createdAt: true, total: true }
+        }),
+        prisma.$queryRaw`
+          SELECT COALESCE(NULLIF(p."category", ''), 'Apparel') AS category,
+                 COALESCE(SUM(oi."price" * oi."quantity"), 0) AS revenue
+          FROM "OrderItem" oi
+          JOIN "Order" o ON o."id" = oi."orderId"
+          LEFT JOIN "Product" p ON p."id" = oi."productId"
+          WHERE o."status" <> 'Cancelled'
+          GROUP BY 1
+        `,
+        prisma.artwork.count(),
+        prisma.product.count(),
+        prisma.order.aggregate({
+          where: { status: { not: "Cancelled" } },
+          _sum: { total: true, shipping: true, discount: true }
+        }),
+        prisma.order.count(),
+        prisma.order.groupBy({ by: ["email"] })
+      ]);
 
+    // 1. Last 7 days sales timeline
+    const timelineLabels = days.map((d) => d.label);
+    const timelineData = days.map((d) =>
+      recentOrders
+        .filter((o) => o.createdAt >= d.start && o.createdAt <= d.end)
+        .reduce((sum, o) => sum + (o.total || 0), 0)
+    );
+
+    // 2. Category breakdown from real order items
     const categoryRevenueMap = {};
-    orderItems.forEach(item => {
-      const cat = (item.product && item.product.category) ? item.product.category : "Apparel";
-      const itemTotal = (item.price || 0) * (item.quantity || 1);
-      categoryRevenueMap[cat] = (categoryRevenueMap[cat] || 0) + itemTotal;
+    categoryRows.forEach((row) => {
+      categoryRevenueMap[row.category] = Number(row.revenue) || 0;
     });
 
     let categoryLabels = Object.keys(categoryRevenueMap);
@@ -5080,20 +5111,14 @@ app.get('/api/admin/dashboard/stats', requireAdminToken, async (req, res) => {
       categoryData = [0];
     }
 
-    // 3. Summary KPIs & Financial Reconciliation
-    const totalArtworks = await prisma.artwork.count();
-    const totalProducts = await prisma.product.count();
-    const validOrders = await prisma.order.findMany({
-      where: { status: { not: "Cancelled" } },
-      select: { total: true, subtotal: true, shipping: true, discount: true }
-    });
-    const totalRevenue = validOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-    const allOrderEmails = await prisma.order.findMany({ select: { email: true } });
-    const totalOrders = allOrderEmails.length;
-    const totalCustomers = new Set(allOrderEmails.map((o) => (o.email || '').trim().toLowerCase()).filter(Boolean)).size;
+    // 3. Summary KPIs
+    const totalRevenue = revenueAgg._sum.total || 0;
+    const shippingCollected = revenueAgg._sum.shipping || 0;
+    const discountsApplied = revenueAgg._sum.discount || 0;
+    const totalCustomers = new Set(
+      emailGroups.map((g) => (g.email || '').trim().toLowerCase()).filter(Boolean)
+    ).size;
     const productGmv = Object.values(categoryRevenueMap).reduce((sum, v) => sum + v, 0);
-    const shippingCollected = validOrders.reduce((sum, o) => sum + (o.shipping || 0), 0);
-    const discountsApplied = validOrders.reduce((sum, o) => sum + (o.discount || 0), 0);
 
     res.json({
       success: true,
@@ -5675,7 +5700,7 @@ app.get("/api/orders", requireUserToken, async (req, res) => {
         items: {
           include: { product: true }
         },
-        replacements: true
+        replacements: { include: { newOrder: { select: { status: true, orderNumber: true } } } }
       },
       orderBy: { createdAt: "desc" }
     });
@@ -6228,13 +6253,23 @@ app.patch("/api/admin/replacements/:id", requireAdminToken, async (req, res) => 
     const { status } = req.body;
     const replacementId = parseInt(req.params.id);
 
-    if (status === "Approved") {
-      const existingReq = await prisma.replacementRequest.findUnique({
-        where: { id: replacementId },
-        include: { order: { include: { items: true } } }
-      });
+    if (!["Requested", "Approved", "Rejected"].includes(status)) {
+      return res.status(400).json({ error: "Invalid replacement status" });
+    }
 
-      if (existingReq && !existingReq.newOrderId) {
+    const existingReq = await prisma.replacementRequest.findUnique({
+      where: { id: replacementId },
+      include: { order: { include: { items: true } } }
+    });
+    if (!existingReq) {
+      return res.status(404).json({ error: "Replacement request not found" });
+    }
+    if (existingReq.newOrderId && status !== "Approved") {
+      return res.status(409).json({ error: "A replacement order already exists for this request. Cancel it from Orders before changing the decision." });
+    }
+
+    if (status === "Approved") {
+      if (!existingReq.newOrderId) {
         const orig = existingReq.order;
         const newOrderNumber = "ORD-" + Math.floor(100000 + Math.random() * 900000);
 
@@ -6295,7 +6330,12 @@ app.get("/api/admin/replacements", requireAdminToken, async (req, res) => {
   try {
     const replacements = await prisma.replacementRequest.findMany({
       include: {
-        order: true,
+        order: {
+          include: {
+            items: true,
+            customer: { select: { id: true, username: true, name: true, email: true } }
+          }
+        },
         orderItem: true,
         newOrder: true
       },
@@ -8354,34 +8394,26 @@ async function seedInitialStoreProducts() {
 
     console.log('Seeding initial 19 store products (6 T-Shirts, 6 Hoodies, 7 Digital Assets/Courses)...');
 
-    const tshirtVariantsData = JSON.stringify({
-      colors: [
-        { name: "White", hex: "#ffffff", available: true },
-        { name: "Black", hex: "#111111", available: true },
-        { name: "Red", hex: "#dc2626", available: false },
-        { name: "Jeans", hex: "#4b6b94", available: false }
-      ],
-      sizes: [
-        { name: "S", available: true },
-        { name: "M", available: true },
-        { name: "L", available: true },
-        { name: "XL", available: false },
-        { name: "XXL", available: false }
-      ]
+    const variantSizes = [
+      { name: "S", available: true },
+      { name: "M", available: true },
+      { name: "L", available: true },
+      { name: "XL", available: false },
+      { name: "XXL", available: false }
+    ];
+
+    // Each colour is [name, hex, image]; the store falls back to the main img when a colour has none.
+    const makeTshirtVariantsData = (colors) => JSON.stringify({
+      colors: colors.map(([name, hex, img]) => ({ name, hex, img, available: true })),
+      sizes: variantSizes
     });
 
-    const hoodieVariantsData = JSON.stringify({
+    const makeHoodieVariantsData = (blackImg, whiteImg) => JSON.stringify({
       colors: [
-        { name: "White", hex: "#ffffff", available: true },
-        { name: "Black", hex: "#111111", available: true }
+        { name: "White", hex: "#ffffff", img: whiteImg, available: true },
+        { name: "Black", hex: "#111111", img: blackImg, available: true }
       ],
-      sizes: [
-        { name: "S", available: true },
-        { name: "M", available: true },
-        { name: "L", available: true },
-        { name: "XL", available: false },
-        { name: "XXL", available: false }
-      ]
+      sizes: variantSizes
     });
 
     const defaultFeatureHighlights = JSON.stringify([
@@ -8408,7 +8440,12 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: tshirtVariantsData,
+        variantsData: makeTshirtVariantsData([
+          ["Black", "#111111", "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg"],
+          ["White", "#ffffff", "assets/Store/Tshirts/Colored itachi tshirts/itachi_white_tshirt_colored.jpg"],
+          ["Purple", "#6d28d9", "assets/Store/Tshirts/Colored itachi tshirts/itachi_purple_tshirt_colored.jpg"],
+          ["Red", "#dc2626", "assets/Store/Tshirts/Colored itachi tshirts/itachi_red_tshirt_colored.jpg"]
+        ]),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White, Purple, Red"
@@ -8429,7 +8466,11 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: tshirtVariantsData,
+        variantsData: makeTshirtVariantsData([
+          ["Black", "#111111", "assets/Store/Tshirts/black and white itachi tshirts/itachi_black_tshirt_bw.jpg"],
+          ["White", "#ffffff", "assets/Store/Tshirts/black and white itachi tshirts/itachi_white_tshirt_bw.jpg"],
+          ["Red", "#dc2626", "assets/Store/Tshirts/black and white itachi tshirts/itachi_red_tshirt_bw.jpg"]
+        ]),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, Red, White"
@@ -8450,7 +8491,11 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: tshirtVariantsData,
+        variantsData: makeTshirtVariantsData([
+          ["Black", "#111111", "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_black_tshirt.jpg"],
+          ["Green", "#16a34a", "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_green_tshirt.jpg"],
+          ["White", "#ffffff", "assets/Store/Tshirts/colored Zoro tshirts/zoro_colored_white_tshirt.jpg"]
+        ]),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, Green, White"
@@ -8471,7 +8516,11 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: tshirtVariantsData,
+        variantsData: makeTshirtVariantsData([
+          ["Black", "#111111", "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_black_tshirt.jpg"],
+          ["Green", "#16a34a", "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_green_tshirt.jpg"],
+          ["White", "#ffffff", "assets/Store/Tshirts/Black and White Zoro tshirts/zoro_bw_white_tshirt.jpg"]
+        ]),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, Green, White"
@@ -8492,7 +8541,11 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: tshirtVariantsData,
+        variantsData: makeTshirtVariantsData([
+          ["Black", "#111111", "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_black_tshirt_bw.jpg"],
+          ["Maroon", "#800000", "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_maroon_tshirt_bw.jpg"],
+          ["White", "#ffffff", "assets/Store/Tshirts/Black and whirte kaneki tshirts/kaneki_white_tshirt_bw.jpg"]
+        ]),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, Maroon, White"
@@ -8513,7 +8566,11 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: tshirtVariantsData,
+        variantsData: makeTshirtVariantsData([
+          ["Black", "#111111", "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_black_tshirt_colored.jpg"],
+          ["White", "#ffffff", "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_white_tshirt_colored.jpg"],
+          ["Dark Grey", "#4b5563", "assets/Store/Tshirts/Colored kaneki tshirts/kaneki_darkgrey_tshirt_colored.jpg"]
+        ]),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White, Dark Grey"
@@ -8536,7 +8593,10 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: hoodieVariantsData,
+        variantsData: makeHoodieVariantsData(
+          "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie  color black.png",
+          "assets/Store/Hoodies/itachi hoodie/itachi hoodie color printed/itachi hoodie color white.png"
+        ),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White"
@@ -8557,7 +8617,10 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: hoodieVariantsData,
+        variantsData: makeHoodieVariantsData(
+          "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie black and white.png",
+          "assets/Store/Hoodies/itachi hoodie/itachi hoodie b&w printed/itachi hoodie b&w white.png"
+        ),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White"
@@ -8578,7 +8641,10 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: hoodieVariantsData,
+        variantsData: makeHoodieVariantsData(
+          "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color black.png",
+          "assets/Store/Hoodies/Zoro hoodie/zoro hoodie colored printed/zoro hoodie color white.png"
+        ),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White"
@@ -8599,7 +8665,10 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: hoodieVariantsData,
+        variantsData: makeHoodieVariantsData(
+          "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie  b&w black.png",
+          "assets/Store/Hoodies/Zoro hoodie/zoro hoodie b&w printed/zoro hoodie b&w white.png"
+        ),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White"
@@ -8620,7 +8689,10 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: hoodieVariantsData,
+        variantsData: makeHoodieVariantsData(
+          "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color black.png",
+          "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie color printed/kaneki hoodie  color white.png"
+        ),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White"
@@ -8641,7 +8713,10 @@ async function seedInitialStoreProducts() {
         creator: "SenpaiWorks",
         available: true,
         stockQuantity: 50,
-        variantsData: hoodieVariantsData,
+        variantsData: makeHoodieVariantsData(
+          "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie  b&w black.png",
+          "assets/Store/Hoodies/kaneki hoodie/kaneki hoodie b&w printed/kaneki hoodie b&w white.png"
+        ),
         featureHighlights: defaultFeatureHighlights,
         sizes: "S, M, L",
         colors: "Black, White"

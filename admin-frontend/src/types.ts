@@ -51,7 +51,7 @@ export type ResourceConfig = {
   };
   /** Public storefront URL for the row, opened from a row action. */
   liveUrl?: (row: AdminRecord) => string;
-  /** Dropdown that filters rows by one field, e.g. news category. */
+  /** Dropdown that filters rows by one field. Empty `options` are derived from the loaded rows. */
   extraFilter?: { key: string; label: string; allLabel: string; options: string[] };
   openDetail?: boolean;
   viewReviews?: boolean;

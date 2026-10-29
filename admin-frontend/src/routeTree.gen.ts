@@ -21,7 +21,6 @@ import { Route as MyProfileRouteImport } from './routes/my-profile'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as PaymentsRouteImport } from './routes/payments'
-import { Route as PollsRouteImport } from './routes/polls'
 import { Route as ProductHealthRouteImport } from './routes/product-health'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ReplacementsRouteImport } from './routes/replacements'
@@ -91,11 +90,6 @@ const PaymentsRoute = PaymentsRouteImport.update({
   path: '/payments',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PollsRoute = PollsRouteImport.update({
-  id: '/polls',
-  path: '/polls',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProductHealthRoute = ProductHealthRouteImport.update({
   id: '/product-health',
   path: '/product-health',
@@ -150,7 +144,6 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/orders': typeof OrdersRoute
   '/payments': typeof PaymentsRoute
-  '/polls': typeof PollsRoute
   '/product-health': typeof ProductHealthRoute
   '/products': typeof ProductsRoute
   '/replacements': typeof ReplacementsRoute
@@ -173,7 +166,6 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRoute
   '/orders': typeof OrdersRoute
   '/payments': typeof PaymentsRoute
-  '/polls': typeof PollsRoute
   '/product-health': typeof ProductHealthRoute
   '/products': typeof ProductsRoute
   '/replacements': typeof ReplacementsRoute
@@ -197,7 +189,6 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/orders': typeof OrdersRoute
   '/payments': typeof PaymentsRoute
-  '/polls': typeof PollsRoute
   '/product-health': typeof ProductHealthRoute
   '/products': typeof ProductsRoute
   '/replacements': typeof ReplacementsRoute
@@ -222,7 +213,6 @@ export interface FileRouteTypes {
     | '/news'
     | '/orders'
     | '/payments'
-    | '/polls'
     | '/product-health'
     | '/products'
     | '/replacements'
@@ -245,7 +235,6 @@ export interface FileRouteTypes {
     | '/news'
     | '/orders'
     | '/payments'
-    | '/polls'
     | '/product-health'
     | '/products'
     | '/replacements'
@@ -268,7 +257,6 @@ export interface FileRouteTypes {
     | '/news'
     | '/orders'
     | '/payments'
-    | '/polls'
     | '/product-health'
     | '/products'
     | '/replacements'
@@ -292,7 +280,6 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRoute
   OrdersRoute: typeof OrdersRoute
   PaymentsRoute: typeof PaymentsRoute
-  PollsRoute: typeof PollsRoute
   ProductHealthRoute: typeof ProductHealthRoute
   ProductsRoute: typeof ProductsRoute
   ReplacementsRoute: typeof ReplacementsRoute
@@ -389,13 +376,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/polls': {
-      id: '/polls'
-      path: '/polls'
-      fullPath: '/polls'
-      preLoaderRoute: typeof PollsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/product-health': {
       id: '/product-health'
       path: '/product-health'
@@ -468,7 +448,6 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRoute,
   OrdersRoute: OrdersRoute,
   PaymentsRoute: PaymentsRoute,
-  PollsRoute: PollsRoute,
   ProductHealthRoute: ProductHealthRoute,
   ProductsRoute: ProductsRoute,
   ReplacementsRoute: ReplacementsRoute,

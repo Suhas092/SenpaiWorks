@@ -5,7 +5,6 @@ import {
   ShoppingBag,
   Star,
   MessageSquare,
-  BarChart3,
   Palette,
   Clapperboard,
   Box,
@@ -48,7 +47,6 @@ export const navigation: NavGroup[] = [
       { name: "Orders", path: "/orders", icon: ShoppingBag, page: "orders" },
       { name: "Product reviews", path: "/reviews", icon: Star, page: "reviews" },
       { name: "Community feedback", path: "/feedback", icon: MessageSquare, page: "reviews" },
-      { name: "Polls", path: "/polls", icon: BarChart3, page: "polls" },
     ],
   },
   {

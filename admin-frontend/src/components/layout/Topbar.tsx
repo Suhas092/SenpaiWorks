@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, Search, ArrowUpRight, ChevronDown, LogOut, User, Settings } from "lucide-react";
+import { Menu, Search, ArrowUpRight, ChevronDown, LogOut, User, Settings, Moon, Sun } from "lucide-react";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { Button } from "@/components/ui/button";
 import { DEMO_MODE, post } from "@/api";
 import { ADMIN_SESSION_KEY, useAdminIdentity } from "@/hooks/useAdminSession";
+import { useTheme } from "@/hooks/useTheme";
 import { navigation } from "./navigation";
 import { NotificationBell } from "./NotificationBell";
 import { SystemStatus } from "./SystemStatus";
@@ -15,6 +16,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const client = useQueryClient();
   const identity = useAdminIdentity();
+  const { theme, toggleTheme } = useTheme();
 
   // Keyboard shortcut: Cmd+K / Ctrl+K focuses global search, Escape closes it
   useEffect(() => {
@@ -85,6 +87,15 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
             <span>View site</span>
             <ArrowUpRight size={14} />
           </a>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
         </Button>
         <span className="topbar-divider" />
         <NotificationBell />

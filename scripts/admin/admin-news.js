@@ -62,7 +62,7 @@
     }
 
     tbody.innerHTML = filtered.map(art => {
-      const coverImg = art.img || "assets/news page assets/news slide photoshoped.png";
+      const coverImg = art.img || "assets/News page assets/news slide photoshoped-web.jpg";
       const placementLabels = {
         main_feature: '<span class="badge" style="background:#6366f1;color:#fff;font-size:0.75rem;padding:4px 8px;border-radius:6px;">Main Feature</span>',
         recommended: '<span class="badge" style="background:#0284c7;color:#fff;font-size:0.75rem;padding:4px 8px;border-radius:6px;">Recommended Card</span>',

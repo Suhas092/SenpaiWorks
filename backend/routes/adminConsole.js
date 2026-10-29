@@ -10,6 +10,7 @@ module.exports = function (prisma, requireAdminToken) {
   const POLL_STATUSES = ['Pending', 'Approved', 'Rejected', 'Implemented'];
 
   const str = (v) => (v === undefined || v === null ? '' : String(v).trim());
+  const optStr = (v) => (str(v) || null);
   const handleError = (res, label, err) => {
     console.error(`[AdminConsole] ${label} failed:`, err);
     return res.status(500).json({ error: `Failed to ${label}` });
@@ -30,7 +31,7 @@ module.exports = function (prisma, requireAdminToken) {
 
   router.post('/api/admin/motion-rigs', requireAdminToken, async (req, res) => {
     try {
-      const { title, type, format, status, img } = req.body || {};
+      const { title, type, format, status, img, videoUrl, duration, description } = req.body || {};
       if (!str(title) || !MOTION_TYPES.includes(type) || !str(format) || !str(img)) {
         return res.status(400).json({ error: 'title, type (motion|rig), format and img are required' });
       }
@@ -40,7 +41,10 @@ module.exports = function (prisma, requireAdminToken) {
           type,
           format: str(format),
           status: MOTION_STATUSES.includes(status) ? status : 'Active',
-          img: str(img)
+          img: str(img),
+          videoUrl: optStr(videoUrl),
+          duration: optStr(duration),
+          description: optStr(description)
         }
       });
       res.status(201).json(item);
@@ -53,7 +57,7 @@ module.exports = function (prisma, requireAdminToken) {
     try {
       const id = parseInt(req.params.id, 10);
       if (Number.isNaN(id)) return res.status(400).json({ error: 'Invalid id' });
-      const { title, type, format, status, img } = req.body || {};
+      const { title, type, format, status, img, videoUrl, duration, description } = req.body || {};
       const data = {};
       if (title !== undefined) data.title = str(title);
       if (type !== undefined) {
@@ -66,6 +70,9 @@ module.exports = function (prisma, requireAdminToken) {
         data.status = status;
       }
       if (img !== undefined) data.img = str(img);
+      if (videoUrl !== undefined) data.videoUrl = optStr(videoUrl);
+      if (duration !== undefined) data.duration = optStr(duration);
+      if (description !== undefined) data.description = optStr(description);
       const item = await prisma.motionRig.update({ where: { id }, data });
       res.json(item);
     } catch (err) {

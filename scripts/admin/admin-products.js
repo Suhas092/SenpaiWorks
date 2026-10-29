@@ -106,14 +106,15 @@ function renderColorVariantInputRow(colorData = {}) {
   const row = document.createElement("div");
   row.className = "color-variant-row";
 
-  const defaultImg = "assets/Store/Tshirts/Colored itachi tshirts/itachi_black_tshirt_colored.jpg";
-  const nameVal = colorData.name || "Black";
+  // No shared fallback image: every colour must have its own image, so a
+  // missing value stays empty and is caught by validation on save.
+  const nameVal = colorData.name || "";
   const hexVal = colorData.hex || colorData.colorCode || "#111111";
-  const imgVal = colorData.img || defaultImg;
+  const imgVal = colorData.img || "";
   const isAvail = colorData.available !== false;
 
   row.innerHTML = `
-    <img src="${imgVal}" class="color-thumb-preview" onerror="this.src='${defaultImg}'">
+    <img src="${window.escapeHtml(imgVal)}" class="color-thumb-preview" alt="" onerror="this.style.visibility='hidden'" onload="this.style.visibility='visible'">
     <input type="text" class="color-name-field" placeholder="Color Name (e.g. Black)" value="${window.escapeHtml(nameVal)}">
     <input type="color" class="color-hex-field" value="${hexVal.startsWith('#') ? hexVal : '#111111'}" title="Swatch Hex Color">
     <input type="text" class="color-img-field" placeholder="Color Image URL (assets/... or https://...)" value="${window.escapeHtml(imgVal)}">
@@ -129,13 +130,19 @@ function renderColorVariantInputRow(colorData = {}) {
   const removeBtn = row.querySelector(".btn-remove-color");
 
   inputImg.addEventListener("input", () => {
-    imgThumb.src = inputImg.value.trim() || defaultImg;
+    const val = inputImg.value.trim();
+    imgThumb.style.visibility = "visible";
+    if (val) {
+      imgThumb.src = val;
+    } else {
+      imgThumb.removeAttribute("src");
+    }
   });
 
   removeBtn.addEventListener("click", () => {
     row.remove();
     if (container.children.length === 0) {
-      renderColorVariantInputRow({ name: "Black", hex: "#111111", img: "", available: true });
+      renderColorVariantInputRow({ name: "", hex: "#111111", img: "", available: true });
     }
   });
 
@@ -145,7 +152,7 @@ function renderColorVariantInputRow(colorData = {}) {
 function getColorVariantsData() {
   const rows = document.querySelectorAll("#color-variants-container .color-variant-row");
   return Array.from(rows).map(row => {
-    const name = row.querySelector(".color-name-field")?.value.trim() || "Black";
+    const name = row.querySelector(".color-name-field")?.value.trim() || "";
     const hex = row.querySelector(".color-hex-field")?.value || "#111111";
     const img = row.querySelector(".color-img-field")?.value.trim() || "";
     const available = row.querySelector(".color-avail-field")?.checked !== false;
@@ -875,7 +882,7 @@ window.initProductAddForm = function () {
 
   const addColorBtn = document.getElementById("btn-add-color-variant");
   if (addColorBtn) {
-    addColorBtn.onclick = () => renderColorVariantInputRow({ name: "Black", hex: "#111111", img: "", available: true });
+    addColorBtn.onclick = () => renderColorVariantInputRow({ name: "", hex: "#111111", img: "", available: true });
   }
 
   const addUrlBtn = document.getElementById("btn-add-additional-url");
@@ -947,11 +954,31 @@ window.initProductAddForm = function () {
       {
         title: document.getElementById("feat-3-title")?.value.trim() || "Heavyweight Organic Fabric",
         desc: document.getElementById("feat-3-desc")?.value.trim() || "Crafted from 100% premium 240 GSM organic combed cotton.",
-        img: document.getElementById("feat-3-img")?.value.trim() || "assets/closeup_performance.png"
+        img: document.getElementById("feat-3-img")?.value.trim() || "assets/closeup_functional.png"
       }
     ];
 
-    const variantsData = { printTypes, sizes };
+    // Colour variants (name, swatch, image) are saved inside variantsData.colors,
+    // which the public store reads for per-colour images.
+    const colorRows = getColorVariantsData();
+    const missingImg = colorRows.find(c => !c.name || !c.img);
+    if (missingImg) {
+      const label = missingImg.name ? `'${missingImg.name}'` : "an unnamed colour";
+      window.showAdminToast(`Add both a name and an image URL for ${label} before saving.`, "danger");
+      return;
+    }
+    const seenImg = new Map();
+    for (const c of colorRows) {
+      const key = c.img.toLowerCase();
+      if (seenImg.has(key) && seenImg.get(key) !== c.name) {
+        window.showAdminToast(`'${seenImg.get(key)}' and '${c.name}' use the same image. Each colour needs its own image.`, "danger");
+        return;
+      }
+      seenImg.set(key, c.name);
+    }
+    const colors = colorRows.map(c => ({ name: c.name, hex: c.hex, img: c.img, available: c.available }));
+
+    const variantsData = { printTypes, sizes, colors };
 
     const payload = {
       id,

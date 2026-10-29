@@ -17,6 +17,7 @@ import { DataTable, type Column } from "@/components/table/DataTable";
 import { TableSearch } from "@/components/table/TableSearch";
 import { TableFilters } from "@/components/table/TableFilters";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { mediaUrl } from "@/pages/HomeManager/shared";
 import { RecordForm } from "./RecordForm";
 import { Badge } from "./Badge";
 import { OrderDetailPanel } from "@/pages/orders/OrderDetail";
@@ -47,7 +48,7 @@ function renderCell(key: string, row: AdminRecord) {
         <div className="flex items-center gap-3">
           {row["img"] && (
             <div className="product-thumb">
-              <img src={String(row["img"])} alt="" className="product-image" />
+              <img src={mediaUrl(String(row["img"]))} alt="" className="product-image" />
             </div>
           )}
           <div>
@@ -120,7 +121,7 @@ function ResourceView({ resource, config }: { resource: string; config: Resource
   };
 
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("All statuses");
+  const [filter, setFilter] = useState("All");
   const extraAll = config.extraFilter?.allLabel ?? "";
   const extraKey = config.extraFilter?.key;
   const [extra, setExtra] = useState(extraAll);
@@ -145,19 +146,25 @@ function ResourceView({ resource, config }: { resource: string; config: Resource
   }, [config.openDetail, orderFocus, openedOrder, rows]);
   const statuses = useMemo(
     () => [
-      "All statuses",
+      "All",
       ...(config.statusOptions ??
         Array.from(new Set(rows.map((r) => r.status).filter((s): s is string => Boolean(s))))),
     ],
     [config.statusOptions, rows],
   );
+  const extraOptions = useMemo(() => {
+    if (!config.extraFilter) return [];
+    if (config.extraFilter.options.length) return config.extraFilter.options;
+    const key = config.extraFilter.key;
+    return Array.from(new Set(rows.map((r) => String(r[key] ?? "")).filter(Boolean))).sort();
+  }, [config.extraFilter, rows]);
   const filtered = useMemo(
     () =>
       rows.filter(
         (r) =>
           (!productFilter || r.name === productFilter) &&
           (!reviewFilter || r.id === reviewFilter) &&
-          (filter === "All statuses" || r.status === filter) &&
+          (filter === "All" || r.status === filter) &&
           (!extraKey || extra === extraAll || r[extraKey] === extra) &&
           Object.values(r).join(" ").toLowerCase().includes(search.toLowerCase()),
       ),
@@ -418,7 +425,7 @@ function ResourceView({ resource, config }: { resource: string; config: Resource
               value={extra}
               onChange={(e) => setExtra(e.target.value)}
             >
-              {[config.extraFilter.allLabel, ...config.extraFilter.options].map((o) => (
+              {[config.extraFilter.allLabel, ...extraOptions].map((o) => (
                 <option key={o}>{o}</option>
               ))}
             </select>
@@ -453,7 +460,7 @@ function ResourceView({ resource, config }: { resource: string; config: Resource
             <article className="asset-card" key={row.id}>
               {row["img"] && (
                 <div className="asset-image">
-                  <img src={String(row["img"])} alt={row.name} className="asset-photo" />
+                  <img src={mediaUrl(String(row["img"]))} alt={row.name} className="asset-photo" />
                 </div>
               )}
               <div className="asset-body">
