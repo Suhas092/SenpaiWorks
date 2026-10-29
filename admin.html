@@ -38,12 +38,11 @@
       <div class="sidebar-brand">
         <a href="index.html" class="brand-link">
           <img
-            src="assets/default-avatar.svg"
-            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzMzNDI1NiIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5TMjwvdGV4dD48L3N2Zz4='"
+            src="assets/Videos/senpaiworks_logo_black.png"
             alt="SenpaiWorks Admin" class="sidebar-logo">
           <div class="brand-text">
             <h2>SenpaiWorks</h2>
-            <span>Admin Control Center</span>
+            <span id="sidebar-role-subtitle">SUPER ADMIN</span>
           </div>
         </a>
       </div>
@@ -187,9 +186,9 @@
           </div>
 
           <!-- Live Status Indicator -->
-          <div class="status-indicator">
-            <div class="status-pulse-green"></div>
-            <span>Studio Engine Online</span>
+          <div class="status-indicator" id="live-system-status-container">
+            <div class="status-pulse-green" id="live-system-status-dot"></div>
+            <span id="live-system-status-text">System Online</span>
           </div>
 
           <a href="index.html" class="view-site-btn" target="_blank" title="Go to Website">

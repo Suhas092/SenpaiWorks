@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const path = require('path');
+
 
 // Staff roles. The super administrator (ADMIN_USERNAME) is not a staff role and keeps full access.
 //   admin        - full access, the same as the super administrator (every page, team, payments, settings).
@@ -42,7 +44,14 @@ const UPLOAD_PATHS = ['/api/upload'];
 const ALWAYS_ALLOWED = ['/api/admin/me', '/api/admin/profile', '/api/admin/alerts'];
 
 const READ_METHODS = ['GET', 'HEAD', 'OPTIONS'];
-const normalizePath = (pathname) => pathname.split('?')[0].replace(/\/+$/, '') || '/';
+const normalizePath = (pathname) => {
+  if (!pathname || typeof pathname !== 'string') return '/';
+  let cleaned = pathname.split('?')[0];
+  try {
+    cleaned = decodeURIComponent(cleaned);
+  } catch (e) {}
+  return path.posix.normalize(cleaned).replace(/\/+$/, '') || '/';
+};
 const matchesPrefix = (path, prefix) => path === prefix || path.startsWith(`${prefix}/`);
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 

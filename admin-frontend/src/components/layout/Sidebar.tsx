@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronsUpDown, PanelLeftClose, Sparkles } from "lucide-react";
+import { PanelLeftClose } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { navigation, type NavItem } from "./navigation";
 import { useAdminCounts } from "@/hooks/useAdminCounts";
@@ -41,29 +41,21 @@ export function Sidebar({
           <img
             src={`${import.meta.env.BASE_URL}brand/senpaiworks-logo.png`}
             alt="SenpaiWorks"
-            className="h-9 w-9 object-contain"
+            className="h-9 w-9 object-contain flex-shrink-0"
           />
           {!collapsed && (
-            <span>
-              Senpai<span className="font-normal">Works</span>
-              <small>ADMIN CONSOLE</small>
-            </span>
+            <div className="brand-text-container">
+              <img
+                src={`${import.meta.env.BASE_URL}brand/senpaiworks-name-logo.png`}
+                alt="SenpaiWorks"
+                className="brand-name-img"
+              />
+              <small title={identity.name ? `${identity.name} (${identity.roleLabel})` : identity.roleLabel}>
+                {identity.roleLabel}
+              </small>
+            </div>
           )}
         </Link>
-        <div className="workspace-switch">
-          <span className="workspace-icon">
-            <Sparkles size={17} />
-          </span>
-          {!collapsed && (
-            <>
-              <div>
-                <strong>Senpai Studio</strong>
-                <small>Workspace</small>
-              </div>
-              <ChevronsUpDown size={14} />
-            </>
-          )}
-        </div>
         <nav aria-label="Main navigation">
           {visibleGroups.map((group) => (
             <div className="nav-group" key={group.label}>
@@ -95,24 +87,29 @@ export function Sidebar({
           ))}
         </nav>
         <div className="sidebar-footer">
-          <div className="flex items-center gap-3">
-            <span className="avatar">{identity.initials}</span>
-            {!collapsed && (
-              <div>
-                <strong>{identity.name}</strong>
-                <small>{identity.role}</small>
-              </div>
-            )}
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            title="Collapse sidebar"
-            aria-label="Collapse sidebar"
-            onClick={onCollapse}
-          >
-            <PanelLeftClose />
-          </Button>
+          {!collapsed ? (
+            <button
+              type="button"
+              className="sidebar-collapse-trigger"
+              onClick={onCollapse}
+              title="Collapse sidebar"
+              aria-label="Collapse sidebar"
+            >
+              <PanelLeftClose size={17} />
+              <span>Collapse sidebar</span>
+            </button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              title="Expand sidebar"
+              aria-label="Expand sidebar"
+              onClick={onCollapse}
+              className="mx-auto"
+            >
+              <PanelLeftClose size={17} className="rotate-180" />
+            </Button>
+          )}
         </div>
       </aside>
     </>

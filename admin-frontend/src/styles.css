@@ -123,14 +123,27 @@ h3 {
   transition: width 0.2s;
 }
 .brand {
-  height: 83px;
+  height: 76px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 22px;
-  font-size: 20px;
-  font-weight: 700;
+  gap: 12px;
+  padding: 0 20px;
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+.brand-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+.brand-name-img {
+  height: 19px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
 }
 .brand-symbol {
   width: 34px;
@@ -156,11 +169,12 @@ h3 {
 }
 .brand small {
   display: block;
-  font-size: 8px;
-  font-weight: 500;
-  color: var(--muted-foreground);
-  margin-top: 3px;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #0284c7;
+  margin-top: 2px;
   letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 .workspace-switch {
   margin: 0 16px 20px;
@@ -254,10 +268,28 @@ h3 {
 }
 .sidebar-footer {
   border-top: 1px solid var(--border);
-  padding: 15px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+}
+.sidebar-collapse-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sidebar-collapse-trigger:hover {
+  background: var(--muted);
+  color: var(--foreground);
 }
 .avatar {
   width: 32px;
@@ -270,19 +302,6 @@ h3 {
   font-size: 10px;
   font-weight: 600;
   flex-shrink: 0;
-}
-.sidebar-footer strong {
-  font-size: 11px;
-  font-weight: 600;
-}
-.sidebar-footer small {
-  display: block;
-  font-size: 10px;
-  color: var(--muted-foreground);
-  margin-top: 3px;
-}
-.sidebar-footer button {
-  width: 24px;
 }
 .admin-main {
   margin-left: 236px;
@@ -340,25 +359,61 @@ h3 {
 .global-results a:hover {
   background: var(--secondary);
 }
-.environment {
+.system-status {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 6.5px;
   background: var(--muted);
   border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 4px 8px;
-  font-size: 10px;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--muted-foreground);
   white-space: nowrap;
+  user-select: none;
+  transition: all 0.2s ease;
 }
-.environment > span,
-.connection-dot {
-  width: 5px;
-  height: 5px;
-  display: inline-block;
-  background: var(--success);
+.system-status.status-online {
+  color: var(--foreground);
+}
+.system-status.status-offline {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+.system-status.status-connecting {
+  color: #d97706;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.status-dot.dot-online {
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: statusPulseGreen 2s infinite;
+}
+.status-dot.dot-offline {
+  background: #ef4444;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: statusPulseRed 1.5s infinite;
+}
+.status-dot.dot-connecting {
+  background: #f59e0b;
+}
+@keyframes statusPulseGreen {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  70% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+@keyframes statusPulseRed {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  70% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 .topbar-divider {
   height: 20px;
@@ -385,7 +440,34 @@ h3 {
   position: relative;
 }
 .avatar-button {
-  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 4px;
+  height: auto;
+  border-radius: 9999px;
+  background: transparent;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+.avatar-button:hover {
+  background: var(--muted);
+  border-color: var(--border);
+}
+.profile-btn-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--foreground);
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .profile-btn-name {
+    display: none;
+  }
 }
 .popover-panel {
   z-index: 40;
@@ -397,6 +479,70 @@ h3 {
   margin-top: 8px;
   max-width: 300px;
   font-size: 12px;
+}
+.profile-menu-panel {
+  width: 250px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
+}
+.profile-menu {
+  display: flex;
+  flex-direction: column;
+}
+.profile-menu-header {
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.02);
+}
+.profile-menu-badge {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 2px 7px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #0284c7;
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  border-radius: 4px;
+}
+.profile-menu-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 3px 0;
+}
+.profile-menu-links {
+  padding: 4px 6px;
+}
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+.profile-menu-item:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.profile-menu-logout {
+  color: #ef4444;
+}
+.profile-menu-logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
 }
 .notification-panel {
   width: 360px;
@@ -1361,8 +1507,8 @@ h3 {
   padding: 10px 0;
 }
 .is-collapsed .sidebar-footer {
-  padding: 15px 7px;
-  gap: 0;
+  padding: 10px 0;
+  justify-content: center;
 }
 .is-collapsed .nav-group {
   margin-bottom: 18px;
@@ -1463,7 +1609,7 @@ h3 {
   }
 }
 @media (max-width: 900px) {
-  .environment {
+  .system-status {
     display: none;
   }
   .dashboard-upper,

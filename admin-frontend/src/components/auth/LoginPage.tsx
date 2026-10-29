@@ -43,7 +43,19 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
-        <div className="text-center">
+        <div className="flex flex-col items-center text-center">
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src={`${import.meta.env.BASE_URL}brand/senpaiworks-logo.png`}
+              alt="SenpaiWorks"
+              className="h-10 w-10 object-contain"
+            />
+            <img
+              src={`${import.meta.env.BASE_URL}brand/senpaiworks-name-logo.png`}
+              alt="SenpaiWorks"
+              className="h-6 w-auto object-contain"
+            />
+          </div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Admin sign in
           </h1>

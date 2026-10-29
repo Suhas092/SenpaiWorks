@@ -47,12 +47,18 @@ export function useAdminIdentity() {
   const isStaff = Boolean(user?.staffId);
   const isSuper = DEMO_MODE || Boolean(user?.isSuper);
   const label = user?.name?.trim() || (username ? displayName(username) : "");
+  // Dynamic role title based on user permissions: SUPER ADMIN for full power, NORMAL ADMIN for restricted/junior staff
+  const roleLabel = !user && !DEMO_MODE && session.isPending
+    ? "ADMIN"
+    : (isSuper ? "SUPER ADMIN" : "NORMAL ADMIN");
+
   return {
     username,
     name: label || "Admin",
     initials: label ? initialsFor(label) : "AD",
     avatar: user?.avatar ?? "",
     role: role ? role.charAt(0).toUpperCase() + role.slice(1) : "Administrator",
+    roleLabel,
     isLoading: !DEMO_MODE && session.isPending,
     isSuper,
     isStaff,

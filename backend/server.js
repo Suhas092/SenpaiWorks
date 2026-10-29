@@ -20,6 +20,8 @@ const {
   sendContactInquiryToAdmin,
   sendContactConfirmationToUser
 } = require('./mailer');
+const staffAccess = require('./utils/staffAccess');
+const siteSettings = require('./routes/siteSettings');
 
 dotenv.config();
 
@@ -207,11 +209,30 @@ app.get(['/admin', '/admin.html'], (req, res) => {
   sendHtmlFile(res, path.join(__dirname, '../404.html'), 404);
 });
 
+// Admin Course Editor: Requires valid admin/staff session; unauthenticated requests return TRUE HTTP 404
+app.get(['/admin-course-editor', '/admin-course-editor.html'], (req, res) => {
+  let token = req.cookies?.adminToken;
+  if (!token && req.headers['authorization']) {
+    const authHeader = req.headers['authorization'];
+    token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+  }
+  if (!token) {
+    return sendHtmlFile(res, path.join(__dirname, '../404.html'), 404);
+  }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded && (decoded.role === 'admin' || decoded.role === 'staff')) {
+      return sendHtmlFile(res, path.join(__dirname, '../admin-course-editor.html'));
+    }
+  } catch (err) {}
+  return sendHtmlFile(res, path.join(__dirname, '../404.html'), 404);
+});
+
 // Automatically strip .html from browser URL bar (e.g. /home.html -> /home, /legal/privacy.html -> /legal/privacy)
 app.get(['/:page.html', '/legal/:page.html'], (req, res, next) => {
   const page = req.params.page;
   const isLegal = req.path.startsWith('/legal');
-  if (page.startsWith('api') || page === 'admin') return next();
+  if (page.startsWith('api') || page.startsWith('admin')) return next();
   const queryString = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
   const target = isLegal ? `/legal/${page}` : `/${page}`;
   res.redirect(302, `${target}${queryString}`);
@@ -230,7 +251,7 @@ app.get('/legal/:page', (req, res, next) => {
 // Clean URLs without .html extension (e.g. /home, /art-library, /store, /news, /privacy, /terms)
 app.get('/:page', (req, res, next) => {
   const page = req.params.page;
-  if (page.startsWith('api')) return next();
+  if (page.startsWith('api') || page.startsWith('admin')) return next();
 
   const rootPath = path.join(__dirname, '..', `${page}.html`);
   if (fs.existsSync(rootPath)) {
@@ -290,6 +311,56 @@ function staticCacheMiddleware(req, res, next) {
   next();
 }
 
+// =========================================================================
+// STATIC ASSET SECURITY GUARD MIDDLEWARE
+// Strictly prevents public access to backend source code, Prisma files,
+// database dumps, environment configs, build configs, and hidden files.
+// =========================================================================
+const BLOCKED_STATIC_PREFIXES = [
+  '/backend',
+  '/admin-frontend',
+  '/.git',
+  '/.vscode',
+  '/.agents',
+  '/archive',
+  '/scratch',
+  '/bin',
+  '/prisma',
+  '/node_modules'
+];
+
+const BLOCKED_STATIC_PATTERNS = [
+  /\.(env|prisma|sqlite|dump|bak|sql|lock|log|sh|bat|ps1)$/i,
+  /package(-lock)?\.json$/i,
+  /tsconfig\.json$/i,
+  /bunfig\.toml$/i,
+  /components\.json$/i,
+  /eslint\.config\.js$/i,
+  /\.md$/i
+];
+
+app.use((req, res, next) => {
+  // Never block API routes
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+
+  let normalizedPath = req.path.toLowerCase().replace(/\\/g, '/');
+  try {
+    normalizedPath = decodeURIComponent(normalizedPath);
+  } catch (e) {}
+
+  if (BLOCKED_STATIC_PREFIXES.some(prefix => normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`))) {
+    return sendHtmlFile(res, path.join(__dirname, '../404.html'), 404);
+  }
+
+  if (BLOCKED_STATIC_PATTERNS.some(pattern => pattern.test(normalizedPath))) {
+    return sendHtmlFile(res, path.join(__dirname, '../404.html'), 404);
+  }
+
+  next();
+});
+
 app.use(staticCacheMiddleware);
 
 // Serve static assets (CSS, JS, images) for all pages with custom cache settings
@@ -298,6 +369,16 @@ app.use(express.static(path.join(__dirname, '..'), {
   maxAge: 0, // Don't let express.static set its own cache
   etag: false // Disable etag to reduce processing
 }));
+
+// Dynamic System Health & Status Check Endpoint
+app.get('/api/health', (req, res) => {
+  return res.json({
+    status: 'ok',
+    uptime: Math.floor(process.uptime()),
+    timestamp: Date.now(),
+    service: 'SenpaiWorks System'
+  });
+});
 
 // Rate limiter for admin login (max 5 requests per 15 mins)
 const adminLoginLimiter = rateLimit({
@@ -343,7 +424,8 @@ async function requireAdminToken(req, res, next) {
       if (!member || !member.isActive) {
         return res.status(401).json({ error: 'Unauthorized: Account is inactive or no longer exists' });
       }
-      if (!staffAccess.canAccessPath(member.role, req.originalUrl, req.method, member.pageAccess)) {
+      const requestPath = req.path || req.originalUrl;
+      if (!staffAccess.canAccessPath(member.role, requestPath, req.method, member.pageAccess)) {
         return res.status(403).json({ error: 'Your role does not have access to this page.' });
       }
       req.adminUser = {
@@ -497,7 +579,6 @@ app.use(reviewsRouter);
 app.use(require('./routes/feedback')(prisma, requireUserToken, requireAdminToken));
 const adminConsoleRouter = require('./routes/adminConsole')(prisma, requireAdminToken);
 app.use(adminConsoleRouter);
-const siteSettings = require('./routes/siteSettings');
 app.use(siteSettings(prisma, requireAdminToken));
 const couponUtils = require('./utils/coupons');
 const staffRouter = require('./routes/staff');
@@ -8250,12 +8331,15 @@ app.get('/api/admin/metrics', requireAdminToken, async (req, res) => {
     });
   } catch (err) {
     console.error('[Metrics API] Error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    res.status(500).json({ success: false, error: 'Failed to compute dashboard metrics.' });
   }
 });
 
-// Catch-All 404 Fallback Handler for any unknown URL (e.g. /whatever, /xyz, /admin)
+// Catch-All 404 Fallback Handler for any unknown URL
 app.use((req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'Endpoint not found' });
+  }
   res.status(404).sendFile(path.join(__dirname, '../404.html'));
 });
 

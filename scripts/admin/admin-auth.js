@@ -60,7 +60,12 @@ window.initAdminAuth = async function () {
   try {
     const checkRes = await fetch("/api/admin/me");
     if (checkRes.ok) {
+      const data = await checkRes.json();
       if (overlay) overlay.classList.remove("active");
+      const roleSubtitle = document.getElementById("sidebar-role-subtitle");
+      if (roleSubtitle && data && data.adminUser) {
+        roleSubtitle.textContent = data.adminUser.isSuper ? "SUPER ADMIN" : "NORMAL ADMIN";
+      }
     } else {
       if (overlay) overlay.classList.add("active");
     }
